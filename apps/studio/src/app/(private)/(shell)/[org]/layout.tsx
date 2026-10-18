@@ -1,4 +1,5 @@
 import { isReservedOrgSlug } from "@loftlancer/ui/studio-routes";
+import { OrganizationLayoutShell } from "@/domain/organizations/components/organization-layout-shell";
 import { notFound } from "next/navigation";
 import {
   guardOrganizationSlugMembership,
@@ -21,5 +22,5 @@ export default async function OrganizationLayout({
   if (isReservedOrgSlug(slug)) notFound();
   await guardOrganizationSlugMembership(slug);
   await preflightOrgSubtree(slug);
-  return children;
+  return <OrganizationLayoutShell slug={slug}>{children}</OrganizationLayoutShell>;
 }

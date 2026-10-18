@@ -73,12 +73,12 @@ function HealthCard() {
 }
 
 export function AccountSettingsFrame({
-  title,
-  description,
+  title = "Account settings",
+  description = "Manage your profile and security settings.",
   children,
   top,
 }: {
-  title: string;
+  title?: string;
   description?: string;
   children: ReactNode;
   top?: ReactNode;

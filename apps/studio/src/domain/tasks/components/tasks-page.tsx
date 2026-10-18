@@ -17,7 +17,6 @@ import { ClientRelativeTime } from "@/components/patterns/client-relative-time";
 import DashboardSection from "@/components/section-dashboard";
 import { useProjectApps } from "@/domain/apps/hooks/use-project-apps";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
-import { useProjectTabs } from "@/domain/projects/hooks/use-project-tabs";
 import { withBasePath } from "@/lib/base-path";
 import { ListTodo, Plus } from "@/lib/icons";
 import { initialsFromLabel } from "@/lib/initials";
@@ -55,7 +54,6 @@ export function TasksPage({ slug }: { slug: string }) {
   const pathname = usePathname();
   const org = useOrgSlug();
   const { projectId, project, apps } = useProjectApps(slug);
-  const projectTabs = useProjectTabs(slug);
   const taskSettings = apps.find((a) => a.id === "tasks")?.settings;
   const createDefaults = useMemo(
     () =>
@@ -246,7 +244,6 @@ export function TasksPage({ slug }: { slug: string }) {
           : "Track work for this project."
       }
       back={routes.project(org, slug)}
-      {...projectTabs}
       action={
         canCreate.allowed ? (
           <Button size="sm" className="h-8" onClick={() => setCreateOpen(true)}>

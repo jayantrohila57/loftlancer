@@ -8,7 +8,6 @@ import { ProjectEnvironmentsSkeleton } from "@/domain/environments/components/sk
 import { useEnvironments } from "@/domain/environments/hooks/use-environments";
 import { routes } from "@/utils/navigation";
 import { useOrgSlug, useRouteScope } from "@/utils/use-route-scope";
-import { useProjectTabs } from "../hooks/use-project-tabs";
 import ProjectDetail from "./project-detail";
 
 interface ProjectEnvironmentsPageProps {
@@ -45,10 +44,8 @@ export function ProjectEnvironmentsLoadingSection({ slug }: { slug?: string }) {
   const { project: routeProject } = useRouteScope();
   const projectSlug = slug ?? routeProject ?? "";
   const org = useOrgSlug();
-  const projectTabs = useProjectTabs(projectSlug);
   return (
     <DashboardSection
-      {...projectTabs}
       title={ENVIRONMENTS_TITLE}
       description={ENVIRONMENTS_DESCRIPTION}
       back={routes.project(org, projectSlug)}
@@ -75,7 +72,6 @@ export default function ProjectEnvironmentsPage({
   } = useEnvironments(slug);
   const org = useOrgSlug();
   const backHref = routes.project(org, slug);
-  const projectTabs = useProjectTabs(slug);
 
   const showHeaderAction = Boolean(projectId && environments.length > 0);
 
@@ -98,7 +94,6 @@ export default function ProjectEnvironmentsPage({
       <DashboardSection
         title={ENVIRONMENTS_TITLE}
         back={backHref}
-        {...projectTabs}
       >
         <ErrorState
           title="Project unavailable"
@@ -111,7 +106,6 @@ export default function ProjectEnvironmentsPage({
 
   return (
     <DashboardSection
-      {...projectTabs}
       title={ENVIRONMENTS_TITLE}
       description={ENVIRONMENTS_DESCRIPTION}
       back={backHref}

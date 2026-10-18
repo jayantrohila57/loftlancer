@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { AccountSettingsFrame } from "@/domain/settings/components/account-settings-frame";
 import { ActivityOverview } from "@/domain/settings/components/activity-overview";
 
 export function SettingsSectionShell({
@@ -17,16 +16,13 @@ export function SettingsSectionShell({
   activity?: boolean;
 }) {
   return (
-    <AccountSettingsFrame
-      title={title}
-      description={description}
-      top={
-        activity ? (
-          <ActivityOverview scope="self" title="User activity" />
-        ) : undefined
-      }
-    >
+    <section className="min-w-0 space-y-4">
+      <header>
+        <h2 className="font-semibold text-xl tracking-tight">{title}</h2>
+        <p className="mt-1 text-muted-foreground text-sm">{description}</p>
+      </header>
+      {activity ? <ActivityOverview scope="self" title="User activity" /> : null}
       {children}
-    </AccountSettingsFrame>
+    </section>
   );
 }

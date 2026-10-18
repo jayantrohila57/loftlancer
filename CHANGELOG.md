@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep organization, project, and account settings identity and navigation stable while route content changes (#451)
+
 ## [1.12.3] - 2026-10-18
 
 ### Fixed
