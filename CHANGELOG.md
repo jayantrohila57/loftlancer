@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- New accounts without an organization are sent to onboarding instead of being blocked by the organizations page guard (#455)
+
 ## [1.12.4] - 2026-10-19
 
 ### Fixed

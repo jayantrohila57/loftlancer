@@ -189,9 +189,10 @@ const rows: MatrixRow[] = [
   },
   {
     name: "organization.list",
-    scope: "organization",
+    // Listing returns only the current user's memberships, so it must work
+    // before a first organization exists (for onboarding and empty states).
+    scope: "user",
     description: "List organizations",
-    member: true,
     entityType: "organization",
   },
   {

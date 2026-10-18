@@ -7,13 +7,13 @@ import { evaluatePermission } from "./evaluate";
  * (audit flag controls timeline writes only; see issues #40 / #11).
  */
 describe("permissions snapshot policy", () => {
-  it("denies org-scoped actions without org role instead of marking all actions allowed", () => {
+  it("allows users to list their orgs but denies org-scoped actions without a role", () => {
     const organizationList = evaluatePermission({
       action: "organization.list",
       orgRole: null,
       project: null,
     });
-    assert.equal(organizationList.allowed, false);
+    assert.equal(organizationList.allowed, true);
 
     const projectUpdate = evaluatePermission({
       action: "project.update",
