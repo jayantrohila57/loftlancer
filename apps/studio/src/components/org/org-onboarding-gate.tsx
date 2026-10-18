@@ -5,18 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "@/domain/auth/lib/auth-actions";
 import { authClient } from "@/lib/auth-client";
+import { isOnboardingRoute } from "@/lib/is-onboarding-route";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
 
 import { routes } from "@/utils/navigation";
-
-/** Pages that work without an active org: onboarding and the org list itself. */
-function isExemptPath(pathname: string): boolean {
-  return (
-    pathname === routes.home() ||
-    pathname === routes.newOrganization() ||
-    pathname.startsWith(routes.onboarding())
-  );
-}
 
 /**
  * `initialReady` comes from the server session (an active org is set), so the
@@ -42,7 +34,7 @@ export function OrgOnboardingGate({
       return;
     }
 
-    if (isExemptPath(pathname)) {
+    if (isOnboardingRoute(pathname, routes.onboarding())) {
       setReady(true);
       return;
     }
