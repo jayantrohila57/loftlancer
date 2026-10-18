@@ -3,7 +3,6 @@
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
-import { useProjectTabs } from "@/domain/projects/hooks/use-project-tabs";
 import { routes } from "@/utils/navigation";
 import { useOrgSlug } from "@/utils/use-route-scope";
 import { useProjectApps } from "../hooks/use-project-apps";
@@ -38,11 +37,9 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
     isMutating,
   } = useProjectApps(slug);
   const org = useOrgSlug();
-  const projectTabs = useProjectTabs(slug);
 
   return (
     <DashboardSection
-      {...projectTabs}
       title="Apps"
       description="Install apps to add features to this project. Apps are per project."
       back={routes.project(org, slug)}

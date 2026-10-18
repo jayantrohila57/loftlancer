@@ -1,3 +1,4 @@
+import { ProjectLayoutShell } from "@/domain/projects/components/project-layout-shell";
 import { guardProjectSlugPage } from "@/lib/page-guards";
 
 export default async function ProjectSlugLayout({
@@ -9,5 +10,5 @@ export default async function ProjectSlugLayout({
 }) {
   const { project: slug } = await params;
   await guardProjectSlugPage(slug);
-  return children;
+  return <ProjectLayoutShell slug={slug}>{children}</ProjectLayoutShell>;
 }

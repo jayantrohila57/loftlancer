@@ -15,7 +15,6 @@ import { CreateEnvironmentSheet } from "@/domain/environments/components/create-
 import { useEnvironments } from "@/domain/environments/hooks/use-environments";
 import { routes } from "@/utils/navigation";
 import { useOrgSlug } from "@/utils/use-route-scope";
-import { useProjectTabs } from "../hooks/use-project-tabs";
 import { EditProjectSheet } from "./edit-project-sheet";
 import { ProjectActions } from "./project-actions";
 import { ProjectDetailStats } from "./project-detail-stats";
@@ -30,7 +29,6 @@ const E2E_LONG_DESCRIPTION =
 
 interface ProjectDetailPageProps {
   slug: string;
-  initialName: string;
   initialDescription?: string;
 }
 
@@ -54,7 +52,6 @@ function ProjectHeaderBadges({
 
 function ProjectDetailPageContent({
   slug,
-  initialName,
   initialDescription,
 }: ProjectDetailPageProps) {
   const router = useRouter();
@@ -71,7 +68,6 @@ function ProjectDetailPageContent({
   } = useEnvironments(slug);
   const { installed } = useProjectApps(slug);
   const envInstalled = installed.some((a) => a.id === "env");
-  const projectTabs = useProjectTabs(slug);
 
   useEffect(() => {
     if (searchParams.get("edit") === "1" && status === "success" && project) {
@@ -94,13 +90,12 @@ function ProjectDetailPageContent({
   if (isLoading && !project) {
     return (
       <DashboardSection
-        title={initialName}
+        title="Overview"
         description={
           searchParams.get("e2eLongDescription") === "1"
             ? E2E_LONG_DESCRIPTION
             : initialDescription
         }
-        {...projectTabs}
         action={<Skeleton className="h-8 w-40 rounded-md" />}
         meta={
           <>
@@ -118,7 +113,7 @@ function ProjectDetailPageContent({
 
   if (status === "error" || !project) {
     return (
-      <DashboardSection title={initialName} {...projectTabs}>
+      <DashboardSection title="Overview">
         <ErrorState
           title="Project unavailable"
           description="This project could not be loaded. It may have been deleted."
@@ -131,9 +126,8 @@ function ProjectDetailPageContent({
   return (
     <>
       <DashboardSection
-        title={project.name}
+        title="Overview"
         description={headerDescription}
-        {...projectTabs}
         action={
           <div className="flex shrink-0 items-center gap-2">
             {projectId && envInstalled ? (
@@ -173,11 +167,10 @@ function ProjectDetailPageContent({
 }
 
 function ProjectDetailPageFallback({
-  initialName,
   initialDescription,
-}: Pick<ProjectDetailPageProps, "initialName" | "initialDescription">) {
+}: Pick<ProjectDetailPageProps, "initialDescription">) {
   return (
-    <DashboardSection title={initialName} description={initialDescription}>
+    <DashboardSection title="Overview" description={initialDescription}>
       <ProjectOverviewSectionsSkeleton />
     </DashboardSection>
   );
@@ -188,7 +181,6 @@ export default function ProjectDetailPage(props: ProjectDetailPageProps) {
     <Suspense
       fallback={
         <ProjectDetailPageFallback
-          initialName={props.initialName}
           initialDescription={props.initialDescription}
         />
       }

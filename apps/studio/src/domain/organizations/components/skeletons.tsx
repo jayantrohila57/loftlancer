@@ -10,7 +10,6 @@ import type { OrgListItem } from "@/components/org/active-organization-context";
 import { StatCardRowSkeleton } from "@/components/patterns/stat-card";
 import DashboardSection from "@/components/section-dashboard";
 import { cn } from "@/lib/utils";
-import { routes } from "@/utils/navigation";
 import { OrganizationOverviewSectionsSkeleton } from "./organization-overview-sections";
 
 const columnHelper = legacyCreateColumnHelper<OrgListItem>();
@@ -71,32 +70,19 @@ export function OrganizationsListSkeleton() {
 
 export function OrganizationDetailPageSkeleton() {
   return (
-    <DashboardSection
-      title="Organization"
-      description="Team workspace overview and administration."
-      back={routes.home()}
-      metadata={<Skeleton className="h-5 w-40 max-w-full" />}
-      stats={<StatCardRowSkeleton count={4} compact />}
-      action={
-        <Skeleton className="size-8 rounded-md sm:h-8 sm:w-auto sm:min-w-[8.5rem]" />
-      }
-    >
+    <div className="min-w-0 space-y-4" role="status" aria-busy="true">
+      <StatCardRowSkeleton count={4} compact />
       <OrganizationOverviewSectionsSkeleton />
-    </DashboardSection>
+    </div>
   );
 }
 
 /** Generic shell for org sub-routes (members, settings, …) during route transitions. */
 export function OrganizationSectionRouteSkeleton() {
   return (
-    <DashboardSection
-      title="Workspace"
-      description="Loading organization section…"
-      back={routes.home()}
-      titleAccessory={<Skeleton className="h-5 w-32 max-w-full" />}
-    >
+    <div className="min-w-0 space-y-4" role="status" aria-busy="true">
       <SettingsPanelSkeleton rows={4} />
-    </DashboardSection>
+    </div>
   );
 }
 
