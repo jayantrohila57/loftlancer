@@ -80,7 +80,12 @@ export function ProjectsListContent({
   );
 
   const newProjectButton = onCreateProject ? (
-    <Button type="button" size="sm" className="gap-2" onClick={onCreateProject}>
+    <Button
+      type="button"
+      size="sm"
+      className="gap-1.5"
+      onClick={onCreateProject}
+    >
       <AppIcon name="plus" className="text-current" />
       New project
     </Button>
