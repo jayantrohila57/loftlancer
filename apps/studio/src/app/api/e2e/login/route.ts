@@ -1,17 +1,17 @@
 import { auth } from "@loftlancer/auth";
+import { resolveE2eRouteAccess } from "@loftlancer/auth/e2e-route-access";
 import { e2ePasswordlessSignIn } from "@loftlancer/auth/passwordless";
 import { NextResponse } from "next/server";
-import { isE2eAuthRouteAllowed } from "@/lib/e2e-auth-allowed";
-import { isValidE2eSecret } from "@/lib/e2e-secret";
 import { type E2ePersona, e2ePersonaCredentials } from "@/lib/e2e-users";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  if (!isE2eAuthRouteAllowed()) {
+  const access = resolveE2eRouteAccess(request);
+  if (access === "not_found") {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  if (!isValidE2eSecret(request)) {
+  if (access === "forbidden") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

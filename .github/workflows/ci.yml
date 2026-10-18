@@ -25,6 +25,8 @@ jobs:
         env:
           SKIP_ENV_VALIDATION: true
           DATABASE_URL: postgresql://localhost:5432/test
+          # TEST-ONLY placeholder for CI; never use this value in any real environment.
+          E2E_TEST_SECRET: ci-e2e-test-secret-placeholder
       - run: pnpm build
         env:
           SKIP_ENV_VALIDATION: true

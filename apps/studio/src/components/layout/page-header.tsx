@@ -21,7 +21,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { PageBackButton } from "@/components/layout/page-back-button";
-import { PageHeaderDescription } from "@/components/layout/page-header-description";
 import {
   getPageBackFallback,
   getPageBackHref,
@@ -142,9 +141,7 @@ export function PageHeader({
       }
       title={title}
       titleAccessory={titleAccessory}
-      description={
-        description ? <PageHeaderDescription text={description} /> : null
-      }
+      description={description}
       actions={action}
       meta={meta ?? metadata}
       tabs={

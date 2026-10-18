@@ -3,6 +3,7 @@ import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { test } from "@playwright/test";
 import { E2E_PRIMARY_NAME } from "../src/lib/e2e-users";
+import { requireE2eTestSecret } from "./require-e2e-test-secret";
 import {
   E2E_DEMO_PROJECT_NAME,
   waitForStudioLoaded,
@@ -23,8 +24,6 @@ const appVersion = (
   }
 ).version;
 
-const e2eSecret = () => process.env.E2E_TEST_SECRET ?? "local-e2e-secret";
-
 test.describe.configure({ mode: "serial" });
 
 test("capture Loftlancer PWA screenshots", async ({
@@ -40,7 +39,7 @@ test("capture Loftlancer PWA screenshots", async ({
   const login = await page.request.post("/api/e2e/login", {
     headers: {
       "content-type": "application/json",
-      "x-e2e-secret": e2eSecret(),
+      "x-e2e-secret": requireE2eTestSecret(),
     },
     data: { persona: "primary" },
   });
