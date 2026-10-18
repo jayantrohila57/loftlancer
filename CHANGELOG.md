@@ -16,6 +16,18 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.12.3] - 2026-10-18
+
+### Fixed
+
+- Projects grid cards use equal widths and keep New project available in the page header (#55)
+- Notification list rows use the ghost Button (#38)
+- Timeline: readable labels, actor/project filters, and passive reads hidden (#68)
+- PWA manifests: screenshots, paths, maskable icons, and OG image (#404)
+- Project list and detail RBAC scope aligned in the API (#26)
+- Page descriptions: xs type, two-line clamp, and more/less toggle (#78)
+- E2E routes require an explicit `E2E_TEST_SECRET` (#20)
+
 ## [1.12.2] - 2026-10-17
 
 ### Fixed
@@ -490,7 +502,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.2...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.3...HEAD
+[1.12.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.2...v1.12.3
 [1.12.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.1...v1.12.2
 [1.12.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.11.1...v1.12.0

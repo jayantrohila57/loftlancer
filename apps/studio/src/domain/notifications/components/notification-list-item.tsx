@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
+import { Button } from "@loftlancer/ui/button";
 import type { Route } from "next";
 import Link from "next/link";
 import { AppIcon } from "@/components/patterns/app-icon";
@@ -38,14 +39,22 @@ function resolveIcon(icon: string): AppIconName {
   return "organization";
 }
 
+const notificationRowContentClass =
+  "flex min-w-0 flex-1 flex-col gap-0.5 text-start outline-none before:absolute before:inset-0 before:rounded-md focus-visible:before:ring-2 focus-visible:before:ring-ring disabled:cursor-default";
+
+/** Ghost Button overrides so multi-line rows are not clipped (#253, #38). */
+export const notificationRowButtonClass = cn(
+  notificationRowContentClass,
+  "static h-auto min-h-0 shrink items-stretch justify-start whitespace-normal border-0 border-transparent bg-transparent px-0 py-0 font-normal shadow-none before:pointer-events-auto hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-100 data-pressed:bg-transparent sm:h-auto",
+);
+
 /**
  * Notification row after ReUI c-item-12 (activity feed item: avatar media,
  * title, muted description, trailing relative time) inside the Sheet 7
  * notifications feed pattern. Dense: two fixed lines (title, then one muted
  * line of sender + message), trailing time + unread dot. A per-row
  * "Mark read" action swaps in over the time on hover/focus in the same fixed
- * slot, so nothing shifts. Plain elements, not <Button>: Button's size variant
- * keeps `sm:h-8`, which clipped rows to one line (#253).
+ * slot, so nothing shifts.
  */
 export function NotificationListItem({
   item,
@@ -97,9 +106,7 @@ export function NotificationListItem({
         <Link
           href={href as Route}
           onClick={onClick}
-          className={
-            "flex min-w-0 flex-1 flex-col gap-0.5 text-start outline-none before:absolute before:inset-0 before:rounded-md focus-visible:before:ring-2 focus-visible:before:ring-ring disabled:cursor-default"
-          }
+          className={notificationRowContentClass}
         >
           <span
             className={cn(
@@ -124,13 +131,12 @@ export function NotificationListItem({
           </span>
         </Link>
       ) : (
-        <button
+        <Button
+          variant="ghost"
           type="button"
           onClick={onClick}
           disabled={disabled}
-          className={
-            "flex min-w-0 flex-1 flex-col gap-0.5 text-start outline-none before:absolute before:inset-0 before:rounded-md focus-visible:before:ring-2 focus-visible:before:ring-ring disabled:cursor-default"
-          }
+          className={notificationRowButtonClass}
         >
           <span
             className={cn(
@@ -153,7 +159,7 @@ export function NotificationListItem({
               {item.body}
             </span>
           </span>
-        </button>
+        </Button>
       )}
 
       {/* Fixed-width trailing slot: time + dot, or the mark-read action. */}
@@ -175,16 +181,18 @@ export function NotificationListItem({
           aria-hidden
         />
         {canMarkRead ? (
-          <button
+          <Button
+            variant="ghost"
+            size="xs"
             type="button"
             onClick={onMarkRead}
             disabled={disabled}
             aria-label={`Mark "${item.title}" as read`}
-            className="pointer-events-none absolute inset-y-0 end-0 z-10 inline-flex items-center gap-1 rounded-md px-1.5 text-muted-foreground text-xs opacity-0 outline-none transition-opacity hover:bg-background hover:text-foreground focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring group-hover/notif:pointer-events-auto group-hover/notif:opacity-100"
+            className="pointer-events-none absolute inset-y-0 end-0 z-10 h-auto gap-1 border-transparent px-1.5 font-normal text-muted-foreground text-xs opacity-0 shadow-none transition-opacity hover:bg-background hover:text-foreground focus-visible:pointer-events-auto focus-visible:opacity-100 group-hover/notif:pointer-events-auto group-hover/notif:opacity-100 sm:h-auto"
           >
             <AppIcon name="markAllRead" className="size-3.5" />
             Read
-          </button>
+          </Button>
         ) : null}
       </span>
     </div>

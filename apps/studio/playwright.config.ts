@@ -1,7 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import { requireE2eTestSecret } from "./e2e/require-e2e-test-secret";
+
 const port = Number(process.env.PORT ?? 3000);
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${port}`;
+const e2eTestSecret = requireE2eTestSecret();
 
 export default defineConfig({
   testDir: "./e2e",
@@ -40,7 +43,7 @@ export default defineConfig({
           ...process.env,
           SKIP_ENV_VALIDATION: "1",
           E2E_TEST_MODE: process.env.E2E_TEST_MODE ?? "1",
-          E2E_TEST_SECRET: process.env.E2E_TEST_SECRET ?? "local-e2e-secret",
+          E2E_TEST_SECRET: e2eTestSecret,
           ORGANIZATIONS_ENABLED: process.env.ORGANIZATIONS_ENABLED ?? "true",
           NEXT_PUBLIC_ORGANIZATIONS_ENABLED:
             process.env.NEXT_PUBLIC_ORGANIZATIONS_ENABLED ?? "true",

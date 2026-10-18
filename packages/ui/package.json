@@ -71,6 +71,7 @@
     "./textarea": "./src/components/ui/textarea.tsx",
     "./data-table/*": "./src/data-table/*.tsx",
     "./patterns/page-header": "./src/patterns/page-header.tsx",
+    "./patterns/page-header-description": "./src/patterns/page-header-description.tsx",
     "./studio-routes": "./src/lib/studio-routes.ts",
     "./alert-dialog": "./src/components/ui/alert-dialog.tsx",
     "./avatar": "./src/components/ui/avatar.tsx",
@@ -110,7 +111,7 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "node --import tsx --test src/lib/auth-links.test.ts src/lib/platform-urls.test.ts src/lib/page-header-grid-classes.test.ts src/lib/local-day.test.ts src/lib/format-date.test.ts src/lib/page-header-classes.test.ts"
+    "test": "node --import tsx --test src/lib/auth-links.test.ts src/lib/platform-urls.test.ts src/lib/page-header-grid-classes.test.ts src/lib/local-day.test.ts src/lib/format-date.test.ts src/lib/page-header-classes.test.ts src/patterns/activity-timeline.test.ts src/lib/page-header-description-measure.test.ts"
   },
   "peerDependencies": {
     "next": "catalog:",
@@ -118,6 +119,7 @@
     "react-dom": "^19.3.0"
   },
   "dependencies": {
+    "@loftlancer/actions": "workspace:*",
     "@loftlancer/env": "workspace:*",
     "@base-ui/react": "^1.9.0",
     "class-variance-authority": "^0.7.1",

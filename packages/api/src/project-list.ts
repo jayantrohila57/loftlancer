@@ -1,5 +1,5 @@
 import { normalizeOrgRole } from "@loftlancer/actions";
-import { activeProjectWhere, db } from "@loftlancer/db";
+import { activeMemberWhere, activeProjectWhere, db } from "@loftlancer/db";
 import { member } from "@loftlancer/db/schema/organization";
 import {
   projectManager,
@@ -24,7 +24,12 @@ export async function listAccessibleProjectIds(
     .select({ role: member.role })
     .from(member)
     .where(
-      and(eq(member.organizationId, organizationId), eq(member.userId, userId)),
+      activeMemberWhere(
+        and(
+          eq(member.organizationId, organizationId),
+          eq(member.userId, userId),
+        ),
+      ),
     )
     .limit(1);
 
@@ -45,7 +50,7 @@ export async function listAccessibleProjectIds(
   }
 
   if (orgRole === "manager") {
-    const rows = await db
+    const managedRows = await db
       .select({ id: project.id })
       .from(project)
       .innerJoin(
@@ -62,7 +67,24 @@ export async function listAccessibleProjectIds(
           isNull(project.deletedAt),
         ),
       );
-    return rows.map((r) => r.id);
+
+    const createdRows = await db
+      .select({ id: project.id })
+      .from(project)
+      .where(
+        and(
+          eq(project.organizationId, organizationId),
+          eq(project.userId, userId),
+          isNull(project.deletedAt),
+        ),
+      );
+
+    return [
+      ...new Set([
+        ...managedRows.map((r) => r.id),
+        ...createdRows.map((r) => r.id),
+      ]),
+    ];
   }
 
   const teamProjects = await db
@@ -75,6 +97,7 @@ export async function listAccessibleProjectIds(
         eq(projectMemberGrant.projectId, projectTeam.projectId),
         eq(projectMemberGrant.userId, userId),
         isNull(projectMemberGrant.deletedAt),
+        sql`'project.read' = ANY(${projectMemberGrant.grants})`,
       ),
     )
     .where(
@@ -128,4 +151,19 @@ export async function projectReadWhere(
     return activeProjectWhere(idFilter);
   }
   return activeProjectWhere(and(orgScope, idFilter));
+}
+
+/** Resolve a slug only among projects the caller can read (same scope as list). */
+export async function findReadableProjectIdBySlug(
+  userId: string,
+  organizationId: string | null,
+  slug: string,
+): Promise<string | null> {
+  const readScope = await projectReadWhere(userId, organizationId);
+  const [row] = await db
+    .select({ id: project.id })
+    .from(project)
+    .where(and(eq(project.slug, slug), readScope))
+    .limit(1);
+  return row?.id ?? null;
 }

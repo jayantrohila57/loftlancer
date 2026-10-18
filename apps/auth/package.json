@@ -7,7 +7,7 @@
     "build": "SKIP_ENV_VALIDATION=1 next build",
     "start": "next start --port 3000",
     "check-types": "tsc --noEmit",
-    "test": "node --import tsx --test src/lib/status/betterstack.test.ts"
+    "test": "node --import tsx --test src/lib/status/betterstack.test.ts src/domain/notifications/components/notification-list-item.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

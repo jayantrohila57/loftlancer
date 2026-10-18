@@ -26,13 +26,13 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "any",
       },
       {
-        src: "/favicon/web-app-manifest-192x192.png",
+        src: "/favicon/web-app-manifest-maskable-192x192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "maskable",
       },
       {
-        src: "/favicon/web-app-manifest-512x512.png",
+        src: "/favicon/web-app-manifest-maskable-512x512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
@@ -48,7 +48,7 @@ export default function manifest(): MetadataRoute.Manifest {
       },
       {
         src: "/favicon/screenshot-narrow.png",
-        sizes: "1024x1536",
+        sizes: "390x844",
         type: "image/png",
         form_factor: "narrow",
         label: "Loftlancer dashboard mobile",

@@ -4,25 +4,25 @@
   "description": "Loftlancer is a developer-first system to securely manage environment variables, secrets, and third-party credentials across multiple repositories and environments (dev, staging, prod). It acts as a single source of truth and integrates with local development and CI/CD workflows.",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
+      "src": "/favicon/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/favicon/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/web-app-manifest-192x192.png",
+      "src": "/favicon/web-app-manifest-maskable-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/favicon/web-app-manifest-maskable-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -30,15 +30,15 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshot-wide.png",
+      "src": "/favicon/screenshot-wide.png",
       "sizes": "1200x630",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Loftlancer dashboard"
     },
     {
-      "src": "/screenshot-narrow.png",
-      "sizes": "1024x1536",
+      "src": "/favicon/screenshot-narrow.png",
+      "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Loftlancer dashboard mobile"

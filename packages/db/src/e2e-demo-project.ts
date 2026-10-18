@@ -1,31 +1,85 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 import { db } from "./client";
 import { seedE2eDemoVariables } from "./e2e-demo-variables";
-import { user } from "./schema/auth";
+import { session, user } from "./schema/auth";
+import { member, organization } from "./schema/organization";
 import { environment, project } from "./schema/projects";
 import {
   activeEnvironmentWhere,
+  activeMemberWhere,
   activeProjectWhere,
   activeUserWhere,
 } from "./soft-delete";
 
 const E2E_EMAIL = "e2e-playwright@loftlancer.local";
-const E2E_PROJECT_NAME = "E2E Demo Project";
+export const E2E_PROJECT_NAME = "E2E Demo Project";
 const E2E_PROJECT_SLUG = "e2e-demo-project";
 const E2E_ENV_NAME = "Development";
 const E2E_ENV_SLUG = "development";
 
-export async function ensureE2eDemoProject() {
+function personalOrgSlugForUser(userId: string, name: string): string {
+  const base = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40);
+  const suffix = userId.replace(/-/g, "").slice(0, 8);
+  return `${base || "workspace"}-personal-${suffix}`.slice(0, 255);
+}
+
+async function ensureE2ePersonalOrganization(
+  userId: string,
+  name: string,
+): Promise<string> {
+  const [existingMember] = await db
+    .select({ organizationId: member.organizationId })
+    .from(member)
+    .where(activeMemberWhere(eq(member.userId, userId)))
+    .limit(1);
+
+  if (existingMember?.organizationId) {
+    return existingMember.organizationId;
+  }
+
+  const organizationId = crypto.randomUUID();
+  const orgName = `${name.split(" ")[0] || "My"}'s Workspace`;
+  await db.insert(organization).values({
+    id: organizationId,
+    name: orgName,
+    slug: personalOrgSlugForUser(userId, name),
+    metadata: JSON.stringify({ type: "personal", e2e: true }),
+  });
+  await db.insert(member).values({
+    id: crypto.randomUUID(),
+    organizationId,
+    userId,
+    role: "owner",
+  });
+  return organizationId;
+}
+
+/** Idempotent Playwright demo workspace: personal org, project, env, and variables. */
+export async function ensureE2eDemoProject(): Promise<string | undefined> {
   const [userRow] = await db
-    .select({ id: user.id })
+    .select({ id: user.id, name: user.name })
     .from(user)
     .where(activeUserWhere(eq(user.email, E2E_EMAIL)))
     .limit(1);
 
   if (!userRow) {
-    return;
+    return undefined;
   }
+
+  const organizationId = await ensureE2ePersonalOrganization(
+    userRow.id,
+    userRow.name,
+  );
+
+  await db
+    .update(project)
+    .set({ organizationId })
+    .where(and(eq(project.userId, userRow.id), isNull(project.organizationId)));
 
   let [projectRow] = await db
     .select({ id: project.id })
@@ -50,12 +104,15 @@ export async function ensureE2eDemoProject() {
       slug: E2E_PROJECT_SLUG,
       description: "Seeded for Playwright local verification.",
       userId: userRow.id,
-      organizationId: null,
+      organizationId,
       ...demoUrls,
     });
     projectRow = { id: projectId };
   } else {
-    await db.update(project).set(demoUrls).where(eq(project.id, projectRow.id));
+    await db
+      .update(project)
+      .set({ ...demoUrls, organizationId })
+      .where(eq(project.id, projectRow.id));
   }
 
   let [envRow] = await db
@@ -83,4 +140,11 @@ export async function ensureE2eDemoProject() {
   }
 
   await seedE2eDemoVariables(envRow.id, userRow.id);
+
+  await db
+    .update(session)
+    .set({ activeOrganizationId: organizationId })
+    .where(eq(session.userId, userRow.id));
+
+  return organizationId;
 }

@@ -83,6 +83,18 @@ export function evaluatePermission(
   return { allowed: false, reason: "denied" };
 }
 
+/** Single predicate for project.read (list scope and assertProjectAccess). */
+export function canReadProject(
+  orgRole: OrgRole | null,
+  project?: ProjectAccessContext | null,
+): boolean {
+  return evaluatePermission({
+    action: "project.read",
+    orgRole,
+    project,
+  }).allowed;
+}
+
 /** Client/server helper: can this org role ever perform action without project context? */
 export function canOrgRoleAttempt(
   action: ActionName,

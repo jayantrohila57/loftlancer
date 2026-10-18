@@ -20,6 +20,7 @@ const listInput = z.object({
   scope: z.enum(["org", "self", "user"]),
   targetUserId: z.string().optional(),
   projectId: z.string().optional(),
+  actorUserId: z.string().optional(),
   action: z.string().optional(),
   result: z.enum(["success", "failure", "denied"]).optional(),
   excludePassive: z.boolean().optional(),
@@ -74,6 +75,9 @@ export const auditEventsRouter = router({
 
     if (input.projectId) {
       conditions.push(eq(auditEvent.projectId, input.projectId));
+    }
+    if (input.actorUserId) {
+      conditions.push(eq(auditEvent.actorUserId, input.actorUserId));
     }
     if (input.action) {
       conditions.push(eq(auditEvent.action, input.action));

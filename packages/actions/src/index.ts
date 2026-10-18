@@ -2,6 +2,7 @@ export * from "./apps";
 export * from "./better-auth-ac";
 export * from "./evaluate";
 export * from "./feature";
+export * from "./format-action-label";
 export * from "./mcp-scopes";
 export * from "./nav";
 export * from "./org-roles";

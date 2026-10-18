@@ -1,6 +1,6 @@
 {
   "name": "loftlancer",
-  "version": "1.12.2",
+  "version": "1.12.3",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -11,7 +11,7 @@
     "dev": "turbo dev",
     "build": "NODE_OPTIONS='--max-old-space-size=6144' turbo build --concurrency=2",
     "check-types": "turbo check-types",
-    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test turbo test",
+    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test turbo test && pnpm --filter studio exec node --import tsx --test ../../scripts/pwa-manifest.test.ts",
     "dev:docs": "turbo -F docs dev",
     "dev:auth": "turbo -F auth dev",
     "dev:studio": "turbo -F studio dev",
@@ -32,7 +32,9 @@
     "release:prepare": "node scripts/release/prepare.mjs",
     "release:check": "node scripts/release/check.mjs origin/main",
     "release:notes": "node scripts/release/notes.mjs",
-    "release:publish": "bash scripts/release/publish.sh"
+    "release:publish": "bash scripts/release/publish.sh",
+    "generate:pwa-maskable-icons": "pnpm --filter studio exec tsx ../../scripts/generate-pwa-maskable-icons.mts",
+    "capture:pwa-screenshots": "pnpm --filter studio exec tsx ../../scripts/capture-pwa-screenshots.mts"
   },
   "dependencies": {
     "@loftlancer/env": "workspace:*",

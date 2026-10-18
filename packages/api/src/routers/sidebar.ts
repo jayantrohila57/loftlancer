@@ -2,7 +2,6 @@ import {
   activeEnvironmentWhere,
   activeMemberWhere,
   activeOrganizationWhere,
-  activeProjectWhere,
   db,
 } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
@@ -21,12 +20,8 @@ import { and, asc, count, eq, gt, inArray, isNull } from "drizzle-orm";
 import { z } from "zod/v3";
 import { listInstalledAppIds } from "../apps/installed";
 import { protectedProcedure, router } from "../index";
-import { getActiveOrganizationId, projectListFilter } from "../org-access";
-import {
-  listAccessibleProjectIds,
-  projectIdsFilter,
-  projectReadWhere,
-} from "../project-list";
+import { getActiveOrganizationId } from "../org-access";
+import { projectReadWhere } from "../project-list";
 
 /** project_pin may not exist yet on a database that hasn't had 0014 applied. */
 function isMissingTable(err: unknown) {
@@ -38,16 +33,11 @@ async function accessibleProjects(
   userId: string,
   organizationId: string | null,
 ) {
-  const ids = await listAccessibleProjectIds(userId, organizationId);
-  const idFilter = projectIdsFilter(ids);
-  const where =
-    idFilter && organizationId
-      ? and(eq(project.organizationId, organizationId), idFilter)
-      : projectListFilter(userId, organizationId);
+  const scope = await projectReadWhere(userId, organizationId);
   return db
     .select({ id: project.id, name: project.name, slug: project.slug })
     .from(project)
-    .where(activeProjectWhere(and(where, eq(project.isArchived, false))))
+    .where(and(scope, eq(project.isArchived, false)))
     .orderBy(asc(project.name));
 }
 

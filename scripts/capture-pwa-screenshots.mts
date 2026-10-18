@@ -12,11 +12,17 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+if (!process.env.E2E_TEST_SECRET) {
+  console.error(
+    "E2E_TEST_SECRET must be set before running capture:pwa-screenshots.",
+  );
+  process.exit(1);
+}
+
 const env = {
   ...process.env,
   CAPTURE_PWA_SCREENSHOTS: "1",
   E2E_TEST_MODE: process.env.E2E_TEST_MODE ?? "1",
-  E2E_TEST_SECRET: process.env.E2E_TEST_SECRET ?? "local-e2e-secret",
 };
 
 function run(cwd: string, args: string[]) {
@@ -32,6 +38,6 @@ function run(cwd: string, args: string[]) {
 
 run(path.join(root, "apps/studio"), [
   "e2e/pwa-screenshots.spec.ts",
+  "--config=playwright.capture.config.ts",
   "--project=chromium",
 ]);
-run(path.join(root, "apps/www"), ["e2e/pwa-screenshots.spec.ts"]);

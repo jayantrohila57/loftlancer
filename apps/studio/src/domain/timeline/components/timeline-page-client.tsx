@@ -7,8 +7,12 @@ import {
   EmptyTitle,
 } from "@loftlancer/ui/empty";
 import {
+  type ActivityFilterOption,
   type ActivityResult,
   ActivityTimeline,
+  auditActionFilterOptions,
+  auditActorFilterOptions,
+  auditProjectFilterOptions,
   auditRowToActivityItem,
 } from "@loftlancer/ui/patterns/activity-timeline";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -21,7 +25,6 @@ import {
   CONTACT_MANAGER_TITLE,
 } from "@/domain/permissions/contact-manager";
 import { useUnassignedOrgMember } from "@/domain/permissions/hooks/use-permissions";
-import { formatActionLabel } from "@/lib/format-action-label";
 
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
@@ -34,6 +37,9 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
   const { unassigned, isLoading: unassignedLoading } = useUnassignedOrgMember();
   const org = useCurrentOrgSlug() ?? "";
   const [action, setAction] = useState("");
+  const [actorUserId, setActorUserId] = useState("");
+  const [projectId, setProjectId] = useState("");
+  const [includePassive, setIncludePassive] = useState(false);
   const [result, setResult] = useState<ActivityResult | "">("");
 
   const query = useInfiniteQuery(
@@ -42,7 +48,10 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
         scope,
         limit: 25,
         action: action || undefined,
+        actorUserId: scope === "org" && actorUserId ? actorUserId : undefined,
+        projectId: projectId || undefined,
         result: result || undefined,
+        excludePassive: includePassive ? false : undefined,
         excludeDenied: result === "denied" ? false : undefined,
       },
       { getNextPageParam: (last) => last.nextCursor },
@@ -63,14 +72,26 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
       ),
     [rows, org],
   );
-  const [seenActions, setSeenActions] = useState<string[]>([]);
-  const actionOptions = useMemo(() => {
-    const set = new Set([...seenActions, ...rows.map((r) => r.action)]);
-    if (action) set.add(action);
-    return [...set]
-      .sort()
-      .map((value) => ({ value, label: formatActionLabel(value) }));
-  }, [rows, seenActions, action]);
+
+  const [seenActions, setSeenActions] = useState<ActivityFilterOption[]>([]);
+  const [seenActors, setSeenActors] = useState<ActivityFilterOption[]>([]);
+  const [seenProjects, setSeenProjects] = useState<ActivityFilterOption[]>([]);
+
+  const actionOptions = useMemo(
+    () => auditActionFilterOptions(rows, seenActions, action),
+    [rows, seenActions, action],
+  );
+  const actorOptions = useMemo(
+    () =>
+      scope === "org"
+        ? auditActorFilterOptions(rows, seenActors, actorUserId)
+        : [],
+    [rows, seenActors, actorUserId, scope],
+  );
+  const projectOptions = useMemo(
+    () => auditProjectFilterOptions(rows, seenProjects, projectId),
+    [rows, seenProjects, projectId],
+  );
 
   if (query.error) {
     return (
@@ -82,6 +103,10 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
     );
   }
 
+  const filtersActive = Boolean(
+    action || result || actorUserId || projectId || includePassive,
+  );
+
   return (
     <ActivityTimeline
       filtersInHeader
@@ -90,9 +115,27 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
       actionOptions={actionOptions}
       action={action}
       onActionChange={(v) => {
-        setSeenActions(actionOptions.map((o) => o.value));
+        setSeenActions(actionOptions);
         setAction(v);
       }}
+      actorOptions={scope === "org" ? actorOptions : undefined}
+      actor={actorUserId}
+      onActorChange={
+        scope === "org"
+          ? (v) => {
+              setSeenActors(actorOptions);
+              setActorUserId(v);
+            }
+          : undefined
+      }
+      projectOptions={projectOptions}
+      project={projectId}
+      onProjectChange={(v) => {
+        setSeenProjects(projectOptions);
+        setProjectId(v);
+      }}
+      includePassive={includePassive}
+      onIncludePassiveChange={setIncludePassive}
       result={result}
       onResultChange={setResult}
       hasMore={query.hasNextPage}
@@ -114,8 +157,10 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
             <EmptyDescription>
               {scope === "org" && !unassignedLoading && unassigned
                 ? CONTACT_MANAGER_DESCRIPTION
-                : action || result
-                  ? "No events match these filters."
+                : filtersActive
+                  ? includePassive
+                    ? "No events match these filters."
+                    : "No events match these filters. Try enabling views & reads."
                   : "Changes in this organization will appear here."}
             </EmptyDescription>
           </EmptyHeader>
