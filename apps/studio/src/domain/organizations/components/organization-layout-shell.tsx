@@ -81,7 +81,11 @@ export function OrganizationLayoutShell({
             <SettingsRailCard
               title="Audit rail"
               items={[
-                { label: "Organization ID", value: organization.id, copy: true },
+                {
+                  label: "Organization ID",
+                  value: organization.id,
+                  copy: true,
+                },
                 { label: "Slug", value: organization.slug, copy: true },
                 ...(organization.createdAt
                   ? [
