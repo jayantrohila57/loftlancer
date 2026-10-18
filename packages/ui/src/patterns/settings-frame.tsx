@@ -93,7 +93,11 @@ export function SettingsTabs({
         ) : null}
         {tabs.map((tab) =>
           tab.disabled ? (
-            <span key={tab.href} aria-disabled="true" className={pageHeaderTabClass}>
+            <span
+              key={tab.href}
+              aria-disabled="true"
+              className={pageHeaderTabClass}
+            >
               {tab.icon}
               {tab.label}
             </span>

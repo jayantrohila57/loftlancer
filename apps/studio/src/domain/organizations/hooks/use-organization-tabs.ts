@@ -12,7 +12,11 @@ export function useOrganizationTabs(slug: string) {
   const base = routes.org(slug);
   const tabs: PageHeaderTab[] = [
     { value: base, label: "Overview", href: base },
-    { value: `${base}/settings`, label: "Settings", href: `${base}/settings` },
+    {
+      value: `${base}/settings`,
+      label: "Settings",
+      href: `${base}/settings`,
+    },
     { value: `${base}/members`, label: "Members", href: `${base}/members` },
     {
       value: `${base}/invitations`,

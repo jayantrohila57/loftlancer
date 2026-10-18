@@ -26,7 +26,9 @@ export function ProjectLayoutShell({
       LinkComponent={Link as never}
       back={{ href: routes.projects(org), label: "Projects" }}
       title={project?.name ?? slug}
-      description={project?.description ?? "Project workspace and applications."}
+      description={
+        project?.description ?? "Project workspace and applications."
+      }
       identity={org}
       subtitle={project?.slug ?? slug}
       tabs={tabs.map((tab) => ({

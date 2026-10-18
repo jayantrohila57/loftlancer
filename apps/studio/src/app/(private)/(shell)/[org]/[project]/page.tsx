@@ -37,7 +37,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <Suspense fallback={<ProjectDetailLoading />}>
         <ProjectDetailPage
           slug={slug}
-          initialName={data.name}
           initialDescription={data.description}
         />
       </Suspense>

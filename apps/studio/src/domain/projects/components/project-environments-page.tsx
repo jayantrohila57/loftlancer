@@ -91,10 +91,7 @@ export default function ProjectEnvironmentsPage({
 
   if (status === "error" || !project) {
     return (
-      <DashboardSection
-        title={ENVIRONMENTS_TITLE}
-        back={backHref}
-      >
+      <DashboardSection title={ENVIRONMENTS_TITLE} back={backHref}>
         <ErrorState
           title="Project unavailable"
           description="This project could not be loaded. It may have been deleted."

@@ -29,7 +29,6 @@ const E2E_LONG_DESCRIPTION =
 
 interface ProjectDetailPageProps {
   slug: string;
-  initialName: string;
   initialDescription?: string;
 }
 
@@ -53,7 +52,6 @@ function ProjectHeaderBadges({
 
 function ProjectDetailPageContent({
   slug,
-  initialName,
   initialDescription,
 }: ProjectDetailPageProps) {
   const router = useRouter();
@@ -169,9 +167,8 @@ function ProjectDetailPageContent({
 }
 
 function ProjectDetailPageFallback({
-  initialName,
   initialDescription,
-}: Pick<ProjectDetailPageProps, "initialName" | "initialDescription">) {
+}: Pick<ProjectDetailPageProps, "initialDescription">) {
   return (
     <DashboardSection title="Overview" description={initialDescription}>
       <ProjectOverviewSectionsSkeleton />
@@ -184,7 +181,6 @@ export default function ProjectDetailPage(props: ProjectDetailPageProps) {
     <Suspense
       fallback={
         <ProjectDetailPageFallback
-          initialName={props.initialName}
           initialDescription={props.initialDescription}
         />
       }
