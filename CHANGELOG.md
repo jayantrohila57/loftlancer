@@ -16,10 +16,11 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
-## [1.12.3] - 2026-10-17
+## [1.12.3] - 2026-10-18
 
 ### Fixed
 
+- Projects grid cards use equal widths and keep New project available in the page header (#55)
 - Notification list rows use the ghost Button (#38)
 - Timeline: readable labels, actor/project filters, and passive reads hidden (#68)
 - PWA manifests: screenshots, paths, maskable icons, and OG image (#404)
