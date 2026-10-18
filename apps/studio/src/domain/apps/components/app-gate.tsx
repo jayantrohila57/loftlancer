@@ -3,7 +3,6 @@
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import type { ReactNode } from "react";
 import DashboardSection from "@/components/section-dashboard";
-import { useProjectTabs } from "@/domain/projects/hooks/use-project-tabs";
 import { LayoutGrid } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
 import { useOrgSlug } from "@/utils/use-route-scope";
@@ -23,13 +22,11 @@ export function AppGate({
 }) {
   const org = useOrgSlug();
   const { apps, isLoading, canManage } = useProjectApps(slug);
-  const projectTabs = useProjectTabs(slug);
   if (isLoading) return <>{fallback}</>;
   const app = apps.find((a) => a.id === appId);
   if (app?.status === "active") return <>{children}</>;
   return (
     <DashboardSection
-      {...projectTabs}
       title={app?.name ?? "App"}
       back={routes.project(org, slug)}
     >

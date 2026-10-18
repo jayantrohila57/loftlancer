@@ -34,9 +34,10 @@ type LinkLike = React.ElementType<{
 
 export type SettingsTab = {
   href: string;
-  label: string;
+  label: ReactNode;
   icon?: ReactNode;
   active?: boolean;
+  disabled?: boolean;
 };
 
 export function SettingsAvatar({
@@ -90,22 +91,33 @@ export function SettingsTabs({
             All
           </span>
         ) : null}
-        {tabs.map((tab) => (
-          <L
-            key={tab.href}
-            href={tab.href}
-            aria-current={tab.active ? "page" : undefined}
-            className={cn(
-              pageHeaderTabClass,
-              tab.active
-                ? pageHeaderTabActiveClass
-                : pageHeaderTabInactiveClass,
-            )}
-          >
-            {tab.icon}
-            {tab.label}
-          </L>
-        ))}
+        {tabs.map((tab) =>
+          tab.disabled ? (
+            <span
+              key={tab.href}
+              aria-disabled="true"
+              className={pageHeaderTabClass}
+            >
+              {tab.icon}
+              {tab.label}
+            </span>
+          ) : (
+            <L
+              key={tab.href}
+              href={tab.href}
+              aria-current={tab.active ? "page" : undefined}
+              className={cn(
+                pageHeaderTabClass,
+                tab.active
+                  ? pageHeaderTabActiveClass
+                  : pageHeaderTabInactiveClass,
+              )}
+            >
+              {tab.icon}
+              {tab.label}
+            </L>
+          ),
+        )}
       </nav>
     </div>
   );
@@ -189,6 +201,7 @@ export function SettingsFrame({
                   {t.label}
                 </>
               ),
+              disabled: t.disabled,
             }))}
             activeTab={tabs?.find((t) => t.active)?.href}
           />

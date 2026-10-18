@@ -1,16 +1,11 @@
 "use client";
 
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PageHeaderActionButton } from "@/components/layout/app-layout";
 import { ErrorState } from "@/components/patterns/error-state";
-import DashboardSection from "@/components/section-dashboard";
 import { isPersonalOrganization } from "@/lib/org-personal";
-import { deSlug } from "@/lib/utils";
 import { routes } from "@/utils/navigation";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
-import { useOrganizationTabs } from "../hooks/use-organization-tabs";
 import { OrganizationDetailStats } from "./organization-detail-stats";
 import {
   OrganizationOverviewSections,
@@ -20,7 +15,6 @@ import {
 export default function OrganizationDetailPage({ slug }: { slug: string }) {
   const { organization, listItem, status, error, reload } =
     useOrganizationBySlug(slug);
-  const orgTabs = useOrganizationTabs(slug);
 
   if (status === "not-found") {
     notFound();
@@ -39,43 +33,30 @@ export default function OrganizationDetailPage({ slug }: { slug: string }) {
   const meta = listItem ?? organization;
   const personal = meta ? isPersonalOrganization(meta) : false;
   const settingsHref = routes.orgSection(slug, "settings");
-  const resolvedName = listItem?.name ?? organization?.name;
-  const displayName =
-    resolvedName ?? (status === "loading" ? deSlug(slug) : slug);
-
   return (
-    <DashboardSection
-      title={displayName}
-      description={
-        personal
-          ? "Personal workspace overview and administration."
-          : "Team workspace overview and administration."
-      }
-      back={routes.home()}
-      {...orgTabs}
-      meta={
-        status === "loading" ? (
-          <Skeleton className="h-3 w-40" />
-        ) : (
-          <p className="font-mono text-muted-foreground text-xs">
-            {organization?.slug ?? slug}
+    <section className="min-w-0 space-y-4">
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-semibold text-xl tracking-tight">Overview</h2>
+          <p className="mt-1 text-muted-foreground text-sm">
+            {personal
+              ? "Personal workspace overview and administration."
+              : "Team workspace overview and administration."}
           </p>
-        )
-      }
-      stats={<OrganizationDetailStats slug={slug} />}
-      action={
-        <PageHeaderActionButton
-          label="Settings"
-          icon="settings"
-          render={<Link href={settingsHref} />}
-        />
-      }
-    >
+        </div>
+        <Link
+          className="inline-flex h-8 items-center rounded-md border px-3 text-sm"
+          href={settingsHref}
+        >
+          Settings
+        </Link>
+      </header>
+      <OrganizationDetailStats slug={slug} />
       {status === "loading" ? (
         <OrganizationOverviewSectionsSkeleton />
       ) : (
         <OrganizationOverviewSections slug={slug} />
       )}
-    </DashboardSection>
+    </section>
   );
 }

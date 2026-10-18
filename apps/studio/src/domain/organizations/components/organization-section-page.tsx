@@ -1,28 +1,5 @@
 "use client";
 
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
-import {
-  SettingsFrame,
-  SettingsRailCard,
-} from "@loftlancer/ui/patterns/settings-frame";
-import { Skeleton } from "@loftlancer/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import { notFound, usePathname } from "next/navigation";
-import type { ReactNode } from "react";
-import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
-import {
-  Activity,
-  KeyRound,
-  LayoutGrid,
-  Mail,
-  Settings,
-  Users,
-  UsersRound,
-} from "@/lib/icons";
-import { routes } from "@/utils/navigation";
-import { trpc } from "@/utils/trpc";
-import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { ActivityOverview } from "./activity-overview";
 
 type OrganizationSectionPageProps = {
@@ -31,120 +8,30 @@ type OrganizationSectionPageProps = {
   description: string;
   children: React.ReactNode;
   action?: React.ReactNode;
-  /** Show the org activity heatmap above the section (Activity tab). */
   activity?: boolean;
 };
 
-function OrgHealthCard() {
-  const { data, isError } = useQuery(
-    trpc.dashboard.getOrgSettingsStats.queryOptions(undefined, {
-      retry: false,
-    }),
-  );
-  if (!data || isError) return null;
-  const rows: [string, ReactNode][] = [
-    [
-      "Your role",
-      <span key="role" className="capitalize">
-        {data.role}
-      </span>,
-    ],
-    ["Members", data.memberCount],
-    ["Pending invites", data.pendingInvites],
-    ["Projects", data.projectCount],
-  ];
-  return (
-    <SettingsRailCard title="Health">
-      <dl className="space-y-2 text-sm">
-        {rows.map(([label, value]) => (
-          <div key={label} className="flex items-center justify-between gap-2">
-            <dt className="text-muted-foreground">{label}</dt>
-            <dd className="font-medium tabular-nums">{value}</dd>
-          </div>
-        ))}
-      </dl>
-    </SettingsRailCard>
-  );
-}
-
+/** Route-specific content heading. Organization identity and tabs live in the layout. */
 export function OrganizationSectionPage({
-  slug,
   title,
   description,
   children,
   action,
   activity = false,
 }: OrganizationSectionPageProps) {
-  const { organization, status } = useOrganizationBySlug(slug);
-  const pathname = usePathname();
-
-  if (status === "not-found") {
-    notFound();
-  }
-
-  const base = routes.org(slug);
-  const tabs = [
-    { href: base, label: "Overview", icon: <LayoutGrid /> },
-    { href: `${base}/settings`, label: "General", icon: <Settings /> },
-    { href: `${base}/members`, label: "Members", icon: <Users /> },
-    { href: `${base}/invitations`, label: "Invitations", icon: <Mail /> },
-    { href: `${base}/teams`, label: "Teams", icon: <UsersRound /> },
-    { href: `${base}/roles`, label: "Roles", icon: <KeyRound /> },
-    ...(isActionsAuditEnabledOnClient()
-      ? [{ href: `${base}/activity`, label: "Activity", icon: <Activity /> }]
-      : []),
-  ].map((t) => ({ ...t, active: pathname === t.href }));
-
   return (
-    <SettingsFrame
-      LinkComponent={Link as never}
-      back={{ href: base, label: "Organization overview" }}
-      avatar={{ src: organization?.logo, name: organization?.name ?? null }}
-      title={title}
-      description={description}
-      identity={
-        organization ? (
-          organization.name
-        ) : (
-          <Skeleton className="inline-block h-3 w-28 align-middle" />
-        )
-      }
-      subtitle={organization ? `/${organization.slug}` : undefined}
-      actions={action}
-      tabs={tabs}
-      top={
-        activity ? (
-          <ActivityOverview scope="org" title="Organization activity" />
-        ) : undefined
-      }
-      aside={
-        organization ? (
-          <>
-            <SettingsRailCard
-              title="Audit rail"
-              items={[
-                {
-                  label: "Organization ID",
-                  value: organization.id,
-                  copy: true,
-                },
-                { label: "Slug", value: organization.slug, copy: true },
-                ...(organization.createdAt
-                  ? [
-                      {
-                        label: "Created",
-                        value: <LocalDateTime value={organization.createdAt} />,
-                      },
-                    ]
-                  : []),
-              ]}
-            />
-            <OrgHealthCard />
-          </>
-        ) : null
-      }
-    >
+    <section className="min-w-0 space-y-4">
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-semibold text-xl tracking-tight">{title}</h2>
+          <p className="mt-1 text-muted-foreground text-sm">{description}</p>
+        </div>
+        {action}
+      </header>
+      {activity ? (
+        <ActivityOverview scope="org" title="Organization activity" />
+      ) : null}
       {children}
-    </SettingsFrame>
+    </section>
   );
 }
