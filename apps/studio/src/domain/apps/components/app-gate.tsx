@@ -26,10 +26,7 @@ export function AppGate({
   const app = apps.find((a) => a.id === appId);
   if (app?.status === "active") return <>{children}</>;
   return (
-    <DashboardSection
-      title={app?.name ?? "App"}
-      back={routes.project(org, slug)}
-    >
+    <DashboardSection title={app?.name ?? "App"} back={false} hideTabs>
       <EmptyState
         icon={LayoutGrid}
         title={`${app?.name ?? "This app"} isn't installed`}

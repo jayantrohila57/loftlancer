@@ -50,6 +50,7 @@ function projectPathActive(pathname: string, org: string, slug: string) {
 }
 
 export function SidebarProjectsGroup({
+  organizationSlug,
   projects,
   projectsLoading,
   status,
@@ -60,6 +61,7 @@ export function SidebarProjectsGroup({
   favoriteCount = 0,
   favoriteLimit = 3,
 }: {
+  organizationSlug?: string | null;
   isPinned?: (projectId: string) => boolean;
   onTogglePin?: (projectId: string) => void;
   pinPending?: boolean;
@@ -70,7 +72,8 @@ export function SidebarProjectsGroup({
   status: "loading" | "error" | "empty" | "success";
   onRetry: () => void;
 }) {
-  const org = useCurrentOrgSlug() ?? "";
+  const currentOrgSlug = useCurrentOrgSlug();
+  const org = organizationSlug ?? currentOrgSlug ?? "";
   const pathname = usePathname();
   const [groupOpen, setGroupOpen] = useState(true);
   const [listExpanded, setListExpanded] = useState(false);
@@ -105,6 +108,8 @@ export function SidebarProjectsGroup({
       window.localStorage.setItem(PROJECTS_LIST_EXPANDED_KEY, open ? "1" : "0");
     }
   };
+
+  if (!org) return null;
 
   return (
     <Collapsible

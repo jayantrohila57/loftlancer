@@ -55,11 +55,9 @@ export function AppSettingsPage({
         queryKey: trpc.projectApps.list.pathKey(),
       }),
   });
-  const back = routes.projectSection(org, slug, "apps");
-
   if (isLoading) {
     return (
-      <DashboardSection title="App settings" back={back}>
+      <DashboardSection title="App settings" back={false} hideTabs>
         <div className="flex flex-col gap-4" role="status" aria-busy="true">
           <Skeleton className="h-32 rounded-xl" />
           <Skeleton className="h-40 rounded-xl" />
@@ -69,7 +67,7 @@ export function AppSettingsPage({
   }
   if (app?.status !== "active") {
     return (
-      <DashboardSection title={app?.name ?? "App"} back={back}>
+      <DashboardSection title={app?.name ?? "App"} back={false} hideTabs>
         <EmptyState
           icon={LayoutGrid}
           title={app ? `${app.name} isn't installed` : "Unknown app"}
@@ -102,7 +100,8 @@ export function AppSettingsPage({
       description={
         project ? `Configure ${app.name} for ${project.name}.` : undefined
       }
-      back={back}
+      back={false}
+      hideTabs
       action={
         <Button size="sm" variant="outline" render={<Link href={openHref} />}>
           Open {app.name}

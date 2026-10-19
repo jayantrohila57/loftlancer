@@ -12,7 +12,7 @@ import {
 import { Input } from "@loftlancer/ui/input";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { FormField } from "@/components/patterns/form-field";
@@ -30,7 +30,13 @@ import { TeamMembersSheet } from "./team-members-sheet";
 
 type TeamRow = { id: string; name: string };
 
-export function OrganizationTeamsPage({ slug }: { slug: string }) {
+export function OrganizationTeamsPage({
+  slug,
+  selectedTeamId,
+}: {
+  slug: string;
+  selectedTeamId?: string;
+}) {
   const { organization, status: orgStatus } = useOrganizationBySlug(slug);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -88,17 +94,21 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
   );
 
   const teams = teamsQuery.data?.items ?? [];
-  const sidebarTeamId = searchParams.get("team");
+  const requestedTeamId = selectedTeamId ?? searchParams.get("team");
 
   useEffect(() => {
-    if (!sidebarTeamId || teamsQuery.isPending) return;
-    const team = teams.find((item) => item.id === sidebarTeamId);
+    if (!requestedTeamId || teamsQuery.isPending) return;
+    const team = teams.find((item) => item.id === requestedTeamId);
     if (team) setMembersTeam(team);
-  }, [sidebarTeamId, teams, teamsQuery.isPending]);
+  }, [requestedTeamId, teams, teamsQuery.isPending]);
 
   const closeMembers = () => {
     setMembersTeam(null);
-    if (!sidebarTeamId) return;
+    if (selectedTeamId) {
+      router.replace(routes.orgSection(slug, "teams"));
+      return;
+    }
+    if (!requestedTeamId) return;
     const params = new URLSearchParams(searchParams.toString());
     params.delete("team");
     const query = params.toString();
@@ -165,9 +175,9 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => setMembersTeam(team)}
+                      onClick={() => router.push(routes.team(slug, team.id))}
                     >
-                      Members
+                      View members
                     </Button>
                     <Can action="team.update">
                       <Button
@@ -222,6 +232,12 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
           onAction={() => setCreateOpen(true)}
         />
       )}
+      {selectedTeamId &&
+      !teamsQuery.isPending &&
+      !teamsQuery.isError &&
+      !teams.some((team) => team.id === selectedTeamId)
+        ? notFound()
+        : null}
 
       <GuardedDialog
         open={createOpen}

@@ -3,8 +3,6 @@
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
-import { routes } from "@/utils/navigation";
-import { useOrgSlug } from "@/utils/use-route-scope";
 import { useProjectApps } from "../hooks/use-project-apps";
 import { AppCard } from "./app-card";
 
@@ -36,13 +34,12 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
     uninstall,
     isMutating,
   } = useProjectApps(slug);
-  const org = useOrgSlug();
-
   return (
     <DashboardSection
       title="Apps"
       description="Install apps to add features to this project. Apps are per project."
-      back={routes.project(org, slug)}
+      back={false}
+      hideTabs
     >
       {isLoading ? (
         <AppGridSkeleton />

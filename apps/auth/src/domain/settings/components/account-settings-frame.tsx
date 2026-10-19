@@ -24,7 +24,6 @@ import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { formatRelativeShort } from "@/lib/format-relative-short";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
 import { trpc } from "@/utils/trpc";
-import { AccountSettingsHeaderActions } from "./account-settings-header-actions";
 
 const TABS: (SettingsTab & { audit?: boolean })[] = [
   { href: "/settings/profile", label: "Profile", icon: <User /> },
@@ -109,7 +108,6 @@ export function AccountSettingsFrame({
       description={description}
       identity={user?.name}
       subtitle={user?.email}
-      actions={<AccountSettingsHeaderActions />}
       tabs={tabs}
       top={top}
       aside={

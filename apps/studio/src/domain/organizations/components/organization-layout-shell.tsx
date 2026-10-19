@@ -1,10 +1,8 @@
 "use client";
 
-import { Button } from "@loftlancer/ui/button";
 import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
-import { AppIcon } from "@/components/patterns/app-icon";
 import { BASE_PATH } from "@/lib/base-path";
 import { routes } from "@/utils/navigation";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
@@ -37,31 +35,30 @@ function OrganizationFrame({
   const { tabs } = useOrganizationTabs(slug);
   const pathname = usePathname() ?? "";
   const name = organization?.name ?? listItem?.name ?? slug;
+  const orgHome = routes.org(slug);
+  const isOrgHome = pathname === orgHome;
+  const teamsHref = routes.orgSection(slug, "teams");
+  const isTeamDetail = pathname.startsWith(`${teamsHref}/`);
 
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={{ href: routes.home(), label: "Organizations" }}
+      back={{
+        href: isOrgHome ? routes.home() : isTeamDetail ? teamsHref : orgHome,
+        label: isOrgHome ? "Organizations" : isTeamDetail ? "Teams" : name,
+      }}
       avatar={{ src: organization?.logo, name }}
       title={name}
       description="Organization workspace and administration."
-      actions={
-        <Button
-          render={<Link href={routes.orgSection(slug, "settings")} />}
-          variant="outline"
-          size="sm"
-          className="h-8 gap-2"
-        >
-          <AppIcon name="settings" />
-          Settings
-        </Button>
-      }
       identity={name}
       subtitle={`/${slug}`}
       tabs={tabs.map((tab) => ({
         href: tab.href ?? "#",
         label: tab.label,
-        active: pathname === tab.href,
+        active:
+          pathname === tab.href ||
+          (tab.href === routes.orgSection(slug, "teams") &&
+            pathname.startsWith(`${tab.href}/`)),
       }))}
     >
       {children}
