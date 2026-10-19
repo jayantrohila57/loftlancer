@@ -35,7 +35,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <HydrationBoundary state={data.dehydratedState}>
       <Suspense fallback={<ProjectDetailLoading />}>
-        <ProjectDetailPage slug={slug} initialDescription={data.description} />
+        <ProjectDetailPage slug={slug} />
       </Suspense>
     </HydrationBoundary>
   );

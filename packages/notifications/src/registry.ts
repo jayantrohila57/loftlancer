@@ -82,7 +82,7 @@ export const notificationRenderers: Record<
       title: "Organization invitation",
       body: `${data.inviterName} invited you to join ${data.organizationName}.`,
       icon: "invite",
-      href: "/",
+      href: `/invite/${encodeURIComponent(data.invitationId)}`,
     };
   },
   "invitation.accepted": (raw) => {

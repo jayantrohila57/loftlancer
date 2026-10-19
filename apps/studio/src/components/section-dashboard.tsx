@@ -44,6 +44,7 @@ export default function DashboardSection({
   stats,
   back = "auto",
   tabs,
+  hideTabs,
   activeTab,
   onTabChange,
   tabsEnd,
@@ -73,6 +74,7 @@ export default function DashboardSection({
           meta={meta ?? metadata}
           back={back}
           tabs={tabs}
+          hideTabs={hideTabs}
           activeTab={activeTab}
           onTabChange={onTabChange}
           tabsEnd={tabsEnd}
