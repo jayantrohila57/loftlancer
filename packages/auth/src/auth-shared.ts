@@ -171,8 +171,9 @@ export function organizationPlugin() {
       ac: orgAc,
       roles: orgBetterAuthRoles,
       teams: { enabled: true },
-      // No-op until RESEND_API_KEY is set (#336). Pending invites show at /studio.
+      // No-op until RESEND_API_KEY is set (#336). Invite links open the Studio response page.
       sendInvitationEmail: async ({
+        id,
         email,
         role,
         organization: org,
@@ -188,7 +189,7 @@ export function organizationPlugin() {
             organizationName: org.name,
             inviterName: inviter.user.name || inviter.user.email,
             role,
-            acceptUrl: studioUrl,
+            acceptUrl: `${studioUrl}/invite/${encodeURIComponent(id)}`,
           }),
           tags: [{ name: "type", value: "org-invite" }],
         });

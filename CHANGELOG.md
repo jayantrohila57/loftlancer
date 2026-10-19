@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Fixed
 
 - Project routes render their own navigation shell without nested organization tabs, and organization back navigation respects the Studio base path (#464)
+- Organization invitations have a public, account-aware accept and decline flow with explicit expired, revoked, and unavailable states (#432)
 
 ## [1.12.6] - 2026-10-19
 
