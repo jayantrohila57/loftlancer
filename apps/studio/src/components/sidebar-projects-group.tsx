@@ -57,10 +57,14 @@ export function SidebarProjectsGroup({
   isPinned,
   onTogglePin,
   pinPending,
+  favoriteCount = 0,
+  favoriteLimit = 3,
 }: {
   isPinned?: (projectId: string) => boolean;
   onTogglePin?: (projectId: string) => void;
   pinPending?: boolean;
+  favoriteCount?: number;
+  favoriteLimit?: number;
   projects: ProjectOutput[];
   projectsLoading: boolean;
   status: "loading" | "error" | "empty" | "success";
@@ -191,6 +195,8 @@ export function SidebarProjectsGroup({
                         <ProjectPinMenu
                           pinned={isPinned?.(project.id) ?? false}
                           pending={pinPending}
+                          limitReached={favoriteCount >= favoriteLimit}
+                          favoriteLimit={favoriteLimit}
                           onToggle={() => onTogglePin(project.id)}
                         />
                       ) : null}
