@@ -1,5 +1,6 @@
 import { isActionsAuditEnabled } from "@loftlancer/actions";
 import { activeMemberWhere, db } from "@loftlancer/db";
+import { user } from "@loftlancer/db/schema/auth";
 import {
   invitation,
   member,
@@ -14,11 +15,52 @@ import {
   orgAwareProcedure,
   orgProcedure,
   protectedProcedure,
+  publicProcedure,
   router,
 } from "../index";
+import { getPublicInvitationStatus } from "../invitation-preview";
 import { mcpMembersList } from "../mcp/organization-ops";
 
 export const organizationsRouter = router({
+  /**
+   * Public invitation landing preview. The invite ID is a random bearer link;
+   * never return the recipient email or any other account data here.
+   */
+  getInvitationPreview: publicProcedure
+    .input(z.object({ invitationId: z.string().min(1).max(200) }))
+    .query(async ({ input }) => {
+      const [row] = await db
+        .select({
+          status: invitation.status,
+          role: invitation.role,
+          expiresAt: invitation.expiresAt,
+          invitationDeletedAt: invitation.deletedAt,
+          organizationDeletedAt: organization.deletedAt,
+          organizationName: organization.name,
+          organizationSlug: organization.slug,
+          inviterName: user.name,
+        })
+        .from(invitation)
+        .innerJoin(organization, eq(invitation.organizationId, organization.id))
+        .leftJoin(user, eq(invitation.inviterId, user.id))
+        .where(eq(invitation.id, input.invitationId))
+        .limit(1);
+
+      if (!row) return { status: "not_found" as const };
+      return {
+        status: getPublicInvitationStatus({
+          status: row.status,
+          expiresAt: row.expiresAt,
+          deletedAt: row.invitationDeletedAt,
+          organizationDeletedAt: row.organizationDeletedAt,
+        }),
+        organizationName: row.organizationName,
+        organizationSlug: row.organizationSlug,
+        role: row.role,
+        inviterName: row.inviterName,
+      };
+    }),
+
   list: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
     if (isActionsAuditEnabled()) {
