@@ -3,7 +3,6 @@
 import { DataTableToolbar } from "@loftlancer/ui/data-table/data-table-toolbar";
 import { layoutSectionStackClass } from "@loftlancer/ui/layout-spacing";
 import { PageHeaderActionButton } from "@/components/layout/app-layout";
-import { StatCardRowSkeleton } from "@/components/patterns/stat-card";
 import DashboardSection from "@/components/section-dashboard";
 import { ProjectsListFiltersBar } from "./projects-list-filters";
 import { ProjectsTableView } from "./projects-table-view";
@@ -63,8 +62,8 @@ export function ProjectsPageSkeleton() {
       title="Projects"
       description="All workspace projects in one searchable list."
       back={false}
+      hideTabs
       action={<PageHeaderActionButton label="New project" disabled />}
-      stats={<StatCardRowSkeleton count={8} compact />}
     >
       <ProjectsSkeleton />
     </DashboardSection>
