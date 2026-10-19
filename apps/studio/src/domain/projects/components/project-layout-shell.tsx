@@ -8,6 +8,8 @@ import {
   StatusBadge,
   VisibilityBadge,
 } from "@/components/patterns/status-badge";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
+import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 import { useOrgSlug } from "@/utils/use-route-scope";
@@ -44,6 +46,10 @@ export function ProjectLayoutShell({
   const { data } = useQuery(trpc.projects.getBySlug.queryOptions({ slug }));
   const project = data?.data?.project;
   const projectHref = routes.project(org, slug);
+  const canListMembers = useCan("member.list");
+  const canViewActivity = useCan("audit.timeline.view.project", {
+    projectId: project?.id,
+  });
   const pathname = usePathname() ?? projectHref;
   const suffix = pathname.slice(projectHref.length).split("/").filter(Boolean);
   const isProjectOverview = suffix.length === 0;
@@ -59,6 +65,25 @@ export function ProjectLayoutShell({
     backHref = routes.env(org, slug);
     backLabel = "Environments";
   } else if (suffix[0] === "apps") {
+    if (suffix[1] === "tasks" && suffix.length > 2) {
+      backHref = routes.tasks(org, slug);
+      backLabel = "Tasks";
+    } else if (suffix[1] === "env" && suffix.length > 2) {
+      backHref = routes.env(org, slug);
+      backLabel = "Environments";
+    } else if (suffix.length > 2 && suffix[1]) {
+      backHref = routes.app(org, slug, suffix[1]);
+      backLabel = "App";
+    } else if (suffix.length > 1) {
+      backHref = routes.projectSection(org, slug, "apps");
+      backLabel = "Apps";
+    } else {
+      backHref = projectHref;
+      backLabel = "Project overview";
+    }
+  } else if (
+    ["access", "invitations", "activity", "settings"].includes(suffix[0] ?? "")
+  ) {
     backHref = projectHref;
     backLabel = "Project overview";
   } else if (suffix.length === 1) {
@@ -96,7 +121,49 @@ export function ProjectLayoutShell({
           <span className="truncate font-medium text-foreground">{org}</span>
         )
       }
-      hideTabs
+      tabs={[
+        { href: projectHref, label: "Overview", active: isProjectOverview },
+        {
+          href: routes.projectSection(org, slug, "apps"),
+          label: "Apps",
+          active:
+            suffix[0] === "apps" ||
+            suffix[0] === "tasks" ||
+            suffix[0] === "env" ||
+            (Boolean(suffix[0]) &&
+              !["access", "invitations", "activity", "settings"].includes(
+                suffix[0] ?? "",
+              )),
+        },
+        {
+          href: routes.projectSection(org, slug, "access"),
+          label: "Access",
+          active: suffix[0] === "access",
+        },
+        ...(canListMembers.allowed
+          ? [
+              {
+                href: routes.projectSection(org, slug, "invitations"),
+                label: "Invitations",
+                active: suffix[0] === "invitations",
+              },
+            ]
+          : []),
+        ...(isActionsAuditEnabledOnClient() && canViewActivity.allowed
+          ? [
+              {
+                href: routes.projectSection(org, slug, "activity"),
+                label: "Activity",
+                active: suffix[0] === "activity",
+              },
+            ]
+          : []),
+        {
+          href: routes.projectSection(org, slug, "settings"),
+          label: "Settings",
+          active: suffix[0] === "settings",
+        },
+      ]}
     >
       {children}
     </SettingsFrame>

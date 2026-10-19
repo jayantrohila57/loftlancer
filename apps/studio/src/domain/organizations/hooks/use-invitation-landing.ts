@@ -52,6 +52,11 @@ export function useInvitationLanding(invitationId: string) {
     },
     onSuccess: () => queryClient.clear(),
   });
+  const acceptProjectMutation = useMutation(
+    trpc.organizations.acceptProjectInvitation.mutationOptions({
+      onSuccess: () => queryClient.clear(),
+    }),
+  );
 
   const rejectMutation = useMutation({
     mutationFn: async () => {
@@ -87,8 +92,11 @@ export function useInvitationLanding(invitationId: string) {
     detailsError: detailsQuery.isError,
     accessFailure,
     declined,
-    acceptInvitation: acceptMutation.mutateAsync,
-    accepting: acceptMutation.isPending,
+    acceptInvitation: () =>
+      preview?.status !== "not_found" && preview?.projectId
+        ? acceptProjectMutation.mutateAsync({ invitationId })
+        : acceptMutation.mutateAsync(),
+    accepting: acceptMutation.isPending || acceptProjectMutation.isPending,
     declineInvitation: rejectMutation.mutateAsync,
     declining: rejectMutation.isPending,
     signInUrl,

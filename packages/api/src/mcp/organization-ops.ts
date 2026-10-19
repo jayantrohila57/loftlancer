@@ -26,6 +26,7 @@ import {
   projectMemberGrant,
   projectTeam,
 } from "@loftlancer/db/schema/project-access";
+import { project } from "@loftlancer/db/schema/projects";
 import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { and, eq, gt, inArray, isNull, sql } from "drizzle-orm";
@@ -355,12 +356,22 @@ export async function mcpMembersList(userId: string, organizationId: string) {
 export async function mcpMemberInvite(
   userId: string,
   organizationId: string,
-  input: { email: string; role?: string; teamId?: string },
+  input: { email: string; role?: string; teamId?: string; projectId?: string },
 ) {
   await requireAction("member.invite", { userId, organizationId });
+  if (input.projectId) {
+    await requireAction("project.permission.grant", {
+      userId,
+      organizationId,
+      projectId: input.projectId,
+    });
+  }
   const email = input.email.trim().toLowerCase();
   if (!email) throw new Error("invalid_invitation_email");
   const role = input.role ?? "member";
+  if (input.projectId && (input.teamId || role !== "member")) {
+    throw new Error("invalid_project_invitation_scope");
+  }
   if (!["member", "manager", "owner"].includes(role)) {
     throw new Error("invalid_invitation_role");
   }
@@ -387,6 +398,22 @@ export async function mcpMemberInvite(
     )
     .limit(1);
   if (!org || !inviter) throw new Error("organization_not_found");
+  let projectName: string | undefined;
+  if (input.projectId) {
+    const [projectRow] = await db
+      .select({ name: project.name })
+      .from(project)
+      .where(
+        and(
+          eq(project.id, input.projectId),
+          eq(project.organizationId, organizationId),
+          isNull(project.deletedAt),
+        ),
+      )
+      .limit(1);
+    if (!projectRow) throw new Error("invitation_project_not_found");
+    projectName = projectRow.name;
+  }
   const inviterRoles = inviter.role.split(",").map((item) => item.trim());
   if (role === "owner" && !inviterRoles.includes("owner")) {
     throw new Error("invitation_role_not_allowed");
@@ -436,7 +463,9 @@ export async function mcpMemberInvite(
         ),
       )
       .limit(1);
-    if (existingMember) throw new Error("invitation_email_is_already_a_member");
+    if (existingMember && !input.projectId) {
+      throw new Error("invitation_email_is_already_a_member");
+    }
 
     const [pendingInvite] = await tx
       .select({ id: invitation.id })
@@ -448,6 +477,9 @@ export async function mcpMemberInvite(
             sql`lower(${invitation.email}) = ${email}`,
             eq(invitation.status, "pending"),
             gt(invitation.expiresAt, new Date()),
+            input.projectId
+              ? eq(invitation.projectId, input.projectId)
+              : isNull(invitation.projectId),
           ),
         ),
       )
@@ -463,6 +495,7 @@ export async function mcpMemberInvite(
       expiresAt,
       inviterId: userId,
       teamId: input.teamId ?? null,
+      projectId: input.projectId ?? null,
     });
   });
   try {
@@ -470,13 +503,15 @@ export async function mcpMemberInvite(
       invitationId: inviteId,
       email,
       role,
-      organizationName: org.name,
+      organizationName: projectName
+        ? `project ${projectName} in ${org.name}`
+        : org.name,
       inviterName: inviter.name || inviter.email,
     });
   } catch (error) {
     await db
       .update(invitation)
-      .set({ status: "cancelled" })
+      .set({ status: "canceled" })
       .where(
         and(eq(invitation.id, inviteId), eq(invitation.status, "pending")),
       );
@@ -796,6 +831,7 @@ export async function mcpInvitationAccept(
         email: invitation.email,
         role: invitation.role,
         teamId: invitation.teamId,
+        projectId: invitation.projectId,
       })
       .from(invitation)
       .where(
@@ -828,16 +864,18 @@ export async function mcpInvitationAccept(
         ),
       )
       .limit(1);
-    if (existingMember)
+    if (existingMember && !invite.projectId)
       throw new Error("organization_membership_already_exists");
 
-    const memberId = crypto.randomUUID();
-    await tx.insert(member).values({
-      id: memberId,
-      organizationId: invite.organizationId,
-      userId,
-      role: invite.role,
-    });
+    const memberId = existingMember?.id ?? crypto.randomUUID();
+    if (!existingMember) {
+      await tx.insert(member).values({
+        id: memberId,
+        organizationId: invite.organizationId,
+        userId,
+        role: invite.role,
+      });
+    }
 
     if (invite.teamId) {
       const [teamRow] = await tx
@@ -881,6 +919,57 @@ export async function mcpInvitationAccept(
         actorUserId: userId,
         role: invite.role,
       });
+    }
+
+    if (invite.projectId) {
+      const [projectRow] = await tx
+        .select({ id: project.id })
+        .from(project)
+        .where(
+          and(
+            eq(project.id, invite.projectId),
+            eq(project.organizationId, invite.organizationId),
+            isNull(project.deletedAt),
+          ),
+        )
+        .limit(1)
+        .for("update");
+      if (!projectRow) throw new Error("invitation_project_not_found");
+      const [existingGrant] = await tx
+        .select({
+          id: projectMemberGrant.id,
+          grants: projectMemberGrant.grants,
+        })
+        .from(projectMemberGrant)
+        .where(
+          and(
+            eq(projectMemberGrant.organizationId, invite.organizationId),
+            eq(projectMemberGrant.projectId, invite.projectId),
+            eq(projectMemberGrant.userId, userId),
+            isNull(projectMemberGrant.deletedAt),
+          ),
+        )
+        .limit(1)
+        .for("update");
+      const grants = mergeProjectMemberGrants(
+        existingGrant?.grants ?? [],
+        DEFAULT_TEAM_PROJECT_GRANTS,
+      );
+      if (existingGrant) {
+        await tx
+          .update(projectMemberGrant)
+          .set({ grants, updatedBy: userId, updatedAt: new Date() })
+          .where(eq(projectMemberGrant.id, existingGrant.id));
+      } else {
+        await tx.insert(projectMemberGrant).values({
+          id: crypto.randomUUID(),
+          organizationId: invite.organizationId,
+          projectId: invite.projectId,
+          userId,
+          grants,
+          updatedBy: userId,
+        });
+      }
     }
 
     const [updatedInvite] = await tx

@@ -16,6 +16,16 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- Team overview, members, linked projects, invitations, and settings are dedicated pages; projects have dedicated access and invitation pages (#507).
+- Project invitations grant project read access when accepted, including for existing organization members (#507).
+- Project activity now has a dedicated page and project-scoped audit permission (#507).
+
+### Changed
+
+- Tasks and Environments now live under each project's Apps URL; existing app links remain reachable (#507).
+
 ## [1.13.3] - 2026-10-19
 
 ### Fixed

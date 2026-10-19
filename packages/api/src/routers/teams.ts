@@ -105,6 +105,57 @@ export const teamsRouter = router({
       return { items: visibleProjects.filter((row) => row !== null) };
     }),
 
+  linkableProjects: orgProcedure
+    .input(z.object({ teamId: z.string().min(1) }))
+    .use(actionGuard("member.list"))
+    .query(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) return { items: [] };
+      const [teamRow] = await db
+        .select({ id: team.id })
+        .from(team)
+        .where(
+          and(
+            eq(team.id, input.teamId),
+            eq(team.organizationId, organizationId),
+            isNull(team.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (!teamRow) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Team not found" });
+      }
+      const rows = await db
+        .select({ id: project.id, name: project.name, slug: project.slug })
+        .from(project)
+        .where(
+          and(
+            eq(project.organizationId, organizationId),
+            isNull(project.deletedAt),
+          ),
+        )
+        .orderBy(project.name);
+      const permitted = await Promise.all(
+        rows.map(async (row) => {
+          try {
+            await requireAction("project.assign_team", {
+              userId: ctx.session.user.id,
+              organizationId,
+              projectId: row.id,
+              audit: false,
+            });
+            return row;
+          } catch (error) {
+            if (error instanceof TRPCError && error.code === "FORBIDDEN") {
+              return null;
+            }
+            throw error;
+          }
+        }),
+      );
+      return { items: permitted.filter((row) => row !== null) };
+    }),
+
   create: orgProcedure
     .input(z.object({ name: z.string().min(1) }))
     .use(actionGuard("team.create"))

@@ -7,6 +7,7 @@ import {
 import { member, organization } from "@loftlancer/db/schema/organization";
 import { task } from "@loftlancer/db/schema/project-app";
 import { environment, project } from "@loftlancer/db/schema/projects";
+import { team } from "@loftlancer/db/schema/team";
 import { and, eq, isNull } from "drizzle-orm";
 import { assertProjectAccess } from "../org-access";
 import { PageNotFoundError } from "./errors";
@@ -52,6 +53,24 @@ export type ResolvedProject = {
   slug: string;
   organizationId: string | null;
 };
+
+export async function assertOrganizationTeamForPage(
+  organizationId: string,
+  teamId: string,
+): Promise<void> {
+  const [row] = await db
+    .select({ id: team.id })
+    .from(team)
+    .where(
+      and(
+        eq(team.id, teamId),
+        eq(team.organizationId, organizationId),
+        isNull(team.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (!row) throw new PageNotFoundError("Team not found");
+}
 
 export async function resolveProjectForPage(
   userId: string,

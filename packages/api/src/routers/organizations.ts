@@ -1,4 +1,5 @@
 import { isActionsAuditEnabled } from "@loftlancer/actions";
+import { sendOrganizationInvitationEmail } from "@loftlancer/auth/organization-invitation-email";
 import { activeMemberWhere, db } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
 import {
@@ -6,6 +7,8 @@ import {
   member,
   organization,
 } from "@loftlancer/db/schema/organization";
+import { project } from "@loftlancer/db/schema/projects";
+import { team } from "@loftlancer/db/schema/team";
 import { TRPCError } from "@trpc/server";
 import { and, desc, eq, gt, isNull, lte, type SQL, sql } from "drizzle-orm";
 import { z } from "zod/v3";
@@ -19,7 +22,11 @@ import {
   router,
 } from "../index";
 import { getPublicInvitationStatus } from "../invitation-preview";
-import { mcpMembersList } from "../mcp/organization-ops";
+import {
+  mcpInvitationAccept,
+  mcpMemberInvite,
+  mcpMembersList,
+} from "../mcp/organization-ops";
 import { transferOrganizationOwnership } from "../organization-ownership";
 
 export const organizationsRouter = router({
@@ -58,26 +65,270 @@ export const organizationsRouter = router({
           organizationName: organization.name,
           organizationSlug: organization.slug,
           inviterName: user.name,
+          projectId: invitation.projectId,
+          projectName: project.name,
+          projectSlug: project.slug,
+          projectDeletedAt: project.deletedAt,
         })
         .from(invitation)
         .innerJoin(organization, eq(invitation.organizationId, organization.id))
         .leftJoin(user, eq(invitation.inviterId, user.id))
+        .leftJoin(project, eq(invitation.projectId, project.id))
         .where(eq(invitation.id, input.invitationId))
         .limit(1);
 
       if (!row) return { status: "not_found" as const };
       return {
-        status: getPublicInvitationStatus({
-          status: row.status,
-          expiresAt: row.expiresAt,
-          deletedAt: row.invitationDeletedAt,
-          organizationDeletedAt: row.organizationDeletedAt,
-        }),
+        status:
+          row.projectId && row.projectDeletedAt
+            ? ("unavailable" as const)
+            : getPublicInvitationStatus({
+                status: row.status,
+                expiresAt: row.expiresAt,
+                deletedAt: row.invitationDeletedAt,
+                organizationDeletedAt: row.organizationDeletedAt,
+              }),
         organizationName: row.organizationName,
         organizationSlug: row.organizationSlug,
         role: row.role,
         inviterName: row.inviterName,
+        projectId: row.projectId,
+        projectName: row.projectName,
+        projectSlug: row.projectSlug,
       };
+    }),
+
+  acceptProjectInvitation: protectedProcedure
+    .input(z.object({ invitationId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session.user.emailVerified) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Verify your email before accepting this invitation.",
+        });
+      }
+      const [row] = await db
+        .select({ projectId: invitation.projectId })
+        .from(invitation)
+        .where(eq(invitation.id, input.invitationId))
+        .limit(1);
+      if (!row?.projectId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project invitation not found",
+        });
+      }
+      return mcpInvitationAccept(ctx.session.user.id, input.invitationId);
+    }),
+
+  inviteToProject: orgProcedure
+    .input(
+      z.object({ projectId: z.string().min(1), email: z.string().email() }),
+    )
+    .use(
+      actionGuard("project.permission.grant", (input) => ({
+        projectId: (input as { projectId: string }).projectId,
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No active organization",
+        });
+      }
+      return mcpMemberInvite(ctx.session.user.id, organizationId, {
+        email: input.email,
+        role: "member",
+        projectId: input.projectId,
+      });
+    }),
+
+  listProjectInvitations: orgProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        status: z
+          .enum([
+            "all",
+            "pending",
+            "expired",
+            "accepted",
+            "rejected",
+            "canceled",
+          ])
+          .default("pending"),
+        limit: z.number().int().min(1).max(200).default(50),
+        offset: z.number().int().min(0).default(0),
+      }),
+    )
+    .use(
+      actionGuard("project.read", (input) => ({
+        projectId: (input as { projectId: string }).projectId,
+      })),
+    )
+    .query(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) return { items: [], total: 0 };
+      await requireAction("member.list", {
+        userId: ctx.session.user.id,
+        organizationId,
+        audit: false,
+      });
+      const scope = and(
+        eq(invitation.organizationId, organizationId),
+        eq(invitation.projectId, input.projectId),
+        isNull(invitation.deletedAt),
+      );
+      const now = new Date();
+      const byStatus: Record<string, SQL | undefined> = {
+        all: scope,
+        pending: and(
+          scope,
+          eq(invitation.status, "pending"),
+          gt(invitation.expiresAt, now),
+        ),
+        expired: and(
+          scope,
+          eq(invitation.status, "pending"),
+          lte(invitation.expiresAt, now),
+        ),
+        accepted: and(scope, eq(invitation.status, "accepted")),
+        rejected: and(scope, eq(invitation.status, "rejected")),
+        canceled: and(scope, eq(invitation.status, "canceled")),
+      };
+      const where = byStatus[input.status];
+      const [items, counts] = await Promise.all([
+        db
+          .select({
+            id: invitation.id,
+            email: invitation.email,
+            role: invitation.role,
+            status: invitation.status,
+            createdAt: invitation.createdAt,
+            expiresAt: invitation.expiresAt,
+            inviterName: user.name,
+          })
+          .from(invitation)
+          .leftJoin(user, eq(invitation.inviterId, user.id))
+          .where(where)
+          .orderBy(desc(invitation.createdAt))
+          .limit(input.limit)
+          .offset(input.offset),
+        db
+          .select({ total: sql<number>`count(*)::int` })
+          .from(invitation)
+          .where(where),
+      ]);
+      return { items, total: counts[0]?.total ?? 0 };
+    }),
+
+  cancelProjectInvitation: orgProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        invitationId: z.string().min(1),
+      }),
+    )
+    .use(
+      actionGuard("project.permission.grant", (input) => ({
+        projectId: (input as { projectId: string }).projectId,
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No active organization",
+        });
+      }
+      const [row] = await db
+        .update(invitation)
+        .set({ status: "canceled" })
+        .where(
+          and(
+            eq(invitation.id, input.invitationId),
+            eq(invitation.organizationId, organizationId),
+            eq(invitation.projectId, input.projectId),
+            eq(invitation.status, "pending"),
+          ),
+        )
+        .returning({ id: invitation.id });
+      if (!row)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Pending invitation not found",
+        });
+      return { ok: true };
+    }),
+
+  resendProjectInvitation: orgProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        invitationId: z.string().min(1),
+      }),
+    )
+    .use(
+      actionGuard("project.permission.grant", (input) => ({
+        projectId: (input as { projectId: string }).projectId,
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No active organization",
+        });
+      }
+      await requireAction("member.invite", {
+        userId: ctx.session.user.id,
+        organizationId,
+        audit: false,
+      });
+      const [row] = await db
+        .select({
+          id: invitation.id,
+          email: invitation.email,
+          role: invitation.role,
+          projectName: project.name,
+          organizationName: organization.name,
+        })
+        .from(invitation)
+        .innerJoin(project, eq(invitation.projectId, project.id))
+        .innerJoin(organization, eq(invitation.organizationId, organization.id))
+        .where(
+          and(
+            eq(invitation.id, input.invitationId),
+            eq(invitation.projectId, input.projectId),
+            eq(invitation.organizationId, organizationId),
+            eq(invitation.status, "pending"),
+            isNull(invitation.deletedAt),
+            isNull(project.deletedAt),
+            isNull(organization.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (!row)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Pending invitation not found",
+        });
+      await db
+        .update(invitation)
+        .set({ expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) })
+        .where(eq(invitation.id, row.id));
+      await sendOrganizationInvitationEmail({
+        invitationId: row.id,
+        email: row.email,
+        role: row.role,
+        organizationName: `project ${row.projectName} in ${row.organizationName}`,
+        inviterName: ctx.session.user.name || ctx.session.user.email,
+      });
+      return { ok: true };
     }),
 
   /** Invitations addressed to the signed-in, verified email account. */
@@ -197,6 +448,7 @@ export const organizationsRouter = router({
     .input(
       z.object({
         organizationId: z.string().min(1),
+        teamId: z.string().min(1).optional(),
         status: z
           .enum([
             "all",
@@ -217,8 +469,30 @@ export const organizationsRouter = router({
         organizationId: input.organizationId,
         audit: false,
       });
+      if (input.teamId) {
+        const [teamRow] = await db
+          .select({ id: team.id })
+          .from(team)
+          .where(
+            and(
+              eq(team.id, input.teamId),
+              eq(team.organizationId, input.organizationId),
+              isNull(team.deletedAt),
+            ),
+          )
+          .limit(1);
+        if (!teamRow) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Team not found" });
+        }
+      }
       const now = new Date();
-      const org = eq(invitation.organizationId, input.organizationId);
+      const org = and(
+        eq(invitation.organizationId, input.organizationId),
+        isNull(invitation.projectId),
+        input.teamId
+          ? eq(invitation.teamId, input.teamId)
+          : isNull(invitation.teamId),
+      );
       const byStatus: Record<string, SQL | undefined> = {
         all: org,
         pending: and(

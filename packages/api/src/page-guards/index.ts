@@ -11,6 +11,7 @@ export {
 } from "./org-route-actions";
 export { requirePageAction } from "./require-action";
 export {
+  assertOrganizationTeamForPage,
   assertProjectEnvironmentForPage,
   assertProjectTaskForPage,
   type ResolvedOrganization,

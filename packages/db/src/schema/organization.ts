@@ -7,6 +7,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
+import { project } from "./projects";
 import { softDeleteColumns } from "./soft-delete-columns";
 
 export const organization = pgTable(
@@ -69,12 +70,16 @@ export const invitation = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     teamId: text("team_id"),
+    projectId: text("project_id").references(() => project.id, {
+      onDelete: "cascade",
+    }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     ...softDeleteColumns,
   },
   (table) => [
     index("invitation_organization_id_idx").on(table.organizationId),
     index("invitation_email_idx").on(table.email),
+    index("invitation_project_id_idx").on(table.projectId),
   ],
 );
 

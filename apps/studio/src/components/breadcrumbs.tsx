@@ -78,11 +78,17 @@ function generateBreadcrumbs(pathname: string): Crumb[] {
       index === 2 &&
       parts[1] &&
       !isReservedProjectSlug(parts[1]) &&
-      !["apps", "settings"].includes(segment)
+      !["apps", "access", "invitations", "activity", "settings"].includes(
+        segment,
+      )
     )
       kind = "app";
-    else if (index === 3 && parts[2] === "tasks" && segment !== "settings")
-      kind = "task";
+    else if (
+      (index === 3 && parts[2] === "tasks") ||
+      (index === 4 && parts[2] === "apps" && parts[3] === "tasks")
+    ) {
+      if (segment !== "settings") kind = "task";
+    }
     return { href, segment, kind };
   });
 }
@@ -139,9 +145,12 @@ export function Breadcrumbs({ className }: { className?: string }) {
   const breadcrumbLabel = (crumb: Crumb): React.ReactNode => {
     if (crumb.kind === "notFound") return "Not found";
     if (crumb.segment === "activity") {
-      return isReservedOrgSlug(pathname.split("/").filter(Boolean)[0] ?? "")
+      const depth = crumb.href.split("/").filter(Boolean).length;
+      return depth === 1
         ? "My activity"
-        : "Organization activity";
+        : depth === 2
+          ? "Organization activity"
+          : "Project activity";
     }
     // Unresolved org/project names: a placeholder while loading, not the slug.
     if (crumb.kind === "org" && !orgName && !initialLoadDone) {

@@ -32,7 +32,6 @@ import { isNotificationsEnabledOnClient } from "@/lib/notifications-enabled";
 import { captureEvent, STUDIO_EVENTS } from "@/lib/posthog";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/utils/trpc";
 
 const STATUS_LABEL: Record<ParsedInviteEmail["status"], string | null> = {
   valid: null,
@@ -51,6 +50,7 @@ type BulkInviteDialogProps = {
   memberEmails?: string[];
   pendingEmails?: string[];
   onInvited?: () => void;
+  fixedTeamId?: string;
 };
 
 /** Bulk email invite after reui dialog-2: paste emails, pick a role, send N invites. */
@@ -62,13 +62,13 @@ export function BulkInviteDialog({
   memberEmails,
   pendingEmails,
   onInvited,
+  fixedTeamId,
 }: BulkInviteDialogProps) {
   const { data: session } = useSession();
   const { syncInvitationReceived } = useNotificationMutations();
   const closeWithoutPromptRef = useRef<(() => void) | null>(null);
   const [raw, setRaw] = useState("");
   const [role, setRole] = useState<OrgInviteRole>("member");
-  const [teamId, setTeamId] = useState("");
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState<Record<string, string>>({});
 
@@ -86,12 +86,6 @@ export function BulkInviteDialog({
     inviterRole !== undefined ? inviterRole : (roleQuery.data ?? null);
   const roles = assignableInviteRoles(effectiveRole);
 
-  const teamsQuery = useQuery({
-    ...trpc.teams.list.queryOptions(),
-    enabled: open && Boolean(organizationId),
-  });
-  const teams = teamsQuery.data?.items ?? [];
-
   const parsed = useMemo(
     () => parseInviteEmails(raw, { memberEmails, pendingEmails }),
     [raw, memberEmails, pendingEmails],
@@ -102,7 +96,6 @@ export function BulkInviteDialog({
   const reset = () => {
     setRaw("");
     setRole("member");
-    setTeamId("");
     setFailed({});
   };
 
@@ -122,7 +115,7 @@ export function BulkInviteDialog({
         email,
         role,
         organizationId,
-        ...(teamId ? { teamId } : {}),
+        ...(fixedTeamId ? { teamId: fixedTeamId } : {}),
       });
       if (res.error) {
         nextFailed[email] = res.error.message ?? "Could not invite";
@@ -138,7 +131,7 @@ export function BulkInviteDialog({
       captureEvent(STUDIO_EVENTS.membersInvited, {
         count: sent,
         role,
-        with_team: Boolean(teamId),
+        with_team: Boolean(fixedTeamId),
       });
       onInvited?.();
     }
@@ -174,10 +167,12 @@ export function BulkInviteDialog({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-1.5 text-base">
               <AppIcon name="invite" className="size-4" />
-              Invite members
+              {fixedTeamId ? "Invite to team" : "Invite members"}
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Paste emails separated by commas, spaces or new lines.
+              {fixedTeamId
+                ? "Invite people into this team and organization. Paste emails separated by commas, spaces or new lines."
+                : "Paste emails separated by commas, spaces or new lines."}
             </DialogDescription>
           </DialogHeader>
           <DialogPanel className="flex flex-col gap-4">
@@ -261,26 +256,6 @@ export function BulkInviteDialog({
                   }))}
                 />
               </div>
-              {teams.length > 0 ? (
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="bulk-invite-team" className="text-sm">
-                    Team (optional)
-                  </Label>
-                  <SearchableCombobox
-                    id="bulk-invite-team"
-                    value={teamId}
-                    onChange={setTeamId}
-                    disabled={pending}
-                    ariaLabel="Team"
-                    placeholder="No team"
-                    searchPlaceholder="Search teams…"
-                    options={[
-                      { value: "", label: "No team" },
-                      ...teams.map((t) => ({ value: t.id, label: t.name })),
-                    ]}
-                  />
-                </div>
-              ) : null}
             </div>
             {effectiveRole !== null && roles.length === 0 ? (
               <Badge variant="outline" className="w-fit text-xs">
