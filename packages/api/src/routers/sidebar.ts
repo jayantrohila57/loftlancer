@@ -13,6 +13,7 @@ import {
 } from "@loftlancer/db/schema/organization";
 import { projectPin } from "@loftlancer/db/schema/project-pin";
 import { environment, project } from "@loftlancer/db/schema/projects";
+import { team } from "@loftlancer/db/schema/team";
 import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
 import { logger } from "@loftlancer/logger";
 import { TRPCError } from "@trpc/server";
@@ -22,6 +23,7 @@ import { listInstalledAppIds } from "../apps/installed";
 import { protectedProcedure, router } from "../index";
 import { getActiveOrganizationId } from "../org-access";
 import { projectReadWhere } from "../project-list";
+import { canAddSidebarFavorite } from "../sidebar-favorites";
 
 /** project_pin may not exist yet on a database that hasn't had 0014 applied. */
 function isMissingTable(err: unknown) {
@@ -99,7 +101,7 @@ export const sidebarRouter = router({
           )
         : null;
 
-      const [projects, unread, invites, members, pins, projectCount] =
+      const [projects, unread, invites, members, pins, projectCount, teams] =
         await Promise.all([
           accessibleProjects(userId, organizationId).catch(() => []),
           db
@@ -151,6 +153,20 @@ export const sidebarRouter = router({
               return [] as string[];
             }),
           countOrgProjects(userId, organizationId).catch(() => 0),
+          organizationId
+            ? db
+                .select({ id: team.id, name: team.name })
+                .from(team)
+                .where(
+                  and(
+                    eq(team.organizationId, organizationId),
+                    isNull(team.deletedAt),
+                  ),
+                )
+                .orderBy(asc(team.name))
+                .limit(5)
+                .catch(() => [])
+            : Promise.resolve([]),
         ]);
 
       const orgRow = organizationId
@@ -196,6 +212,7 @@ export const sidebarRouter = router({
         })),
         pins: pins.filter((id) => projectIds.includes(id)),
         members,
+        teams,
         counts: {
           unreadNotifications: unread,
           pendingInvites: invites,
@@ -216,6 +233,22 @@ export const sidebarRouter = router({
           const allowed = await accessibleProjects(userId, organizationId);
           if (!allowed.some((p) => p.id === input.projectId)) {
             return { ok: false as const };
+          }
+          const existingPins = await db
+            .select({ projectId: projectPin.projectId })
+            .from(projectPin)
+            .where(eq(projectPin.userId, userId));
+          if (
+            !canAddSidebarFavorite(
+              existingPins.length,
+              existingPins.some((pin) => pin.projectId === input.projectId),
+            )
+          ) {
+            throw new TRPCError({
+              code: "PRECONDITION_FAILED",
+              message:
+                "You can favorite up to 3 projects. Remove a favorite to add another.",
+            });
           }
           await db
             .insert(projectPin)

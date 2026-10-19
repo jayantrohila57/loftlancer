@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@loftlancer/ui/button";
 import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import {
@@ -14,6 +13,7 @@ import {
 } from "@loftlancer/ui/patterns/local-date-time";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { RoleBadge, StatusBadge } from "@/components/patterns/status-badge";
 import { Can } from "@/domain/permissions/components/can";
 import {
@@ -64,6 +64,34 @@ export function OrganizationInvitationsTable({
       ),
       cell: ({ getValue }) => <StatusBadge status={String(getValue())} />,
     }),
+    columnHelper.accessor("inviterName", {
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Invited by" />
+      ),
+      cell: ({ getValue }) => (
+        <span className="text-muted-foreground">
+          {String(getValue() || "Organization admin")}
+        </span>
+      ),
+    }),
+    columnHelper.accessor("createdAt", {
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Sent" />
+      ),
+      cell: ({ getValue }) => {
+        const value = getValue();
+        return value ? (
+          <span className="text-muted-foreground text-xs">
+            <LocalDateTime
+              value={String(value)}
+              options={LOCAL_DATE_TIME_FORMAT}
+            />
+          </span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        );
+      },
+    }),
     columnHelper.accessor("expiresAt", {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Expires" />
@@ -88,26 +116,30 @@ export function OrganizationInvitationsTable({
         }
         return (
           <Can action="member.invite" fallback={null}>
-            <div className="flex flex-wrap justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={resendingId === invite.id || revokingId === invite.id}
-                onClick={() => onResend(invite)}
-              >
-                Resend
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={revokingId === invite.id || resendingId === invite.id}
-                onClick={() => onRevoke(invite.id)}
-              >
-                Revoke
-              </Button>
-            </div>
+            <DataTableRowActions
+              label={`Actions for invitation to ${invite.email}`}
+              actions={[
+                {
+                  label:
+                    resendingId === invite.id
+                      ? "Resending…"
+                      : "Resend invitation",
+                  onSelect: () => onResend(invite),
+                  disabled:
+                    resendingId === invite.id || revokingId === invite.id,
+                },
+                {
+                  label:
+                    revokingId === invite.id
+                      ? "Revoking…"
+                      : "Revoke invitation",
+                  onSelect: () => onRevoke(invite.id),
+                  destructive: true,
+                  disabled:
+                    revokingId === invite.id || resendingId === invite.id,
+                },
+              ]}
+            />
           </Can>
         );
       },

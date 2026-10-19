@@ -30,7 +30,8 @@ test("projects grid uses equal-width card layout (#55)", () => {
     "utf8",
   );
   assert.match(gridSource, /\[&>\*\]:w-full/);
-  assert.match(gridSource, /self-stretch/);
+  assert.match(gridSource, /items-start/);
+  assert.doesNotMatch(gridSource, /auto-rows-fr|self-stretch/);
 
   const cardSource = readFileSync(
     join(projectsDir, "project-card.tsx"),

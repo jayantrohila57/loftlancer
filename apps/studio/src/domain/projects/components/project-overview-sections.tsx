@@ -21,13 +21,11 @@ function formatEnvironmentsSectionSummary(
 
 export function ProjectOverviewSectionsSkeleton() {
   return (
-    <div
-      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      role="status"
-      aria-busy="true"
-      aria-live="polite"
-    >
-      <Skeleton className="h-[7.5rem] rounded-2xl" />
+    <div className="flex flex-col gap-3" role="status" aria-busy="true">
+      <Skeleton className="h-4 w-10" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Skeleton className="h-28 rounded-xl" />
+      </div>
     </div>
   );
 }

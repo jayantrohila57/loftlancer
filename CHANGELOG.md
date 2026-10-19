@@ -16,8 +16,19 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-10-19
+
+### Changed
+
+- Studio sidebar footer includes product updates, help and support links, copyright, and the current version (#483)
+- Sidebar favorites are limited to three, a Teams section links to organization teams, and the duplicate account footer is removed (#473)
+
 ### Fixed
 
+- Organization member management shows membership and invitation context, uses action menus, and moves ownership transfer into a sheet; organization activity is grouped in collapsible date sections (#479)
+- Organization actions are available in the shared header, and pending invitations are managed from the Invitations tab instead of being duplicated on Members (#479)
+- Organization overview removes redundant metadata and health rails, uses compact summary cards, and lists recently updated projects (#477)
+- Organization directory headers align without phantom back buttons or empty metadata spacing; the directory uses the shared table, drops redundant summary cards, and provides an incoming invitations view with working notification links (#475)
 - Project routes render their own navigation shell without nested organization tabs, and organization back navigation respects the Studio base path (#464)
 - Organization invitations have a public, account-aware accept and decline flow with explicit expired, revoked, and unavailable states (#432)
 - Organization owners can remove members with confirmation, and removed users’ team and project access is cleaned up within that organization (#433)
@@ -26,6 +37,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Team lifecycle mutations validate organization membership, repair member counts, preserve audit history, and revoke deleted-team access (#469)
 - Team members invited or added after a team is linked to a project receive its default read grants (#469)
 - Project permissions require active organization members and same-organization teams; deleted teams no longer grant project access (#470)
+- Project pages keep shared project identity and actions in one header, move app navigation into the Apps view, and compact the project directory (#481)
 
 ## [1.12.6] - 2026-10-19
 
@@ -531,7 +543,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.6...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.6...v1.13.0
 [1.12.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.5...v1.12.6
 [1.12.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.4...v1.12.5
 [1.12.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.3...v1.12.4

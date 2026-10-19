@@ -56,7 +56,6 @@ export function OrganizationsPageSkeleton() {
       description="Workspaces you belong to, with members, teams, and access settings."
       back={false}
       action={organizationsPageActionSkeleton}
-      stats={<StatCardRowSkeleton count={4} compact />}
     >
       <OrganizationsListBodySkeleton />
     </DashboardSection>

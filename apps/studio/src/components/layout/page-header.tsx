@@ -29,9 +29,8 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Back is always rendered. `false` and `"auto"` both resolve to the logical
- * parent route (or history back with a parent fallback); a string or object
- * pins the target.
+ * `false` hides back navigation. `auto` resolves to the logical parent route
+ * (or history back with a parent fallback); a string or object pins the target.
  */
 export type PageHeaderBackProp =
   | false
@@ -50,6 +49,8 @@ export type PageHeaderTab = {
 export type PageHeaderTabsProps = {
   /** Defaults to a single "All" tab. */
   tabs?: PageHeaderTab[];
+  /** Hide the tabs row when a page has no meaningful section navigation. */
+  hideTabs?: boolean;
   activeTab?: string;
   onTabChange?: (value: string) => void;
   /** Right side of the tabs row (filters, view toggles…). */
@@ -68,7 +69,14 @@ function resolveBack(
   back: PageHeaderBackProp | undefined,
   pathname: string,
 ): ResolvedBack {
-  if (back === false || back === "auto" || back === undefined) {
+  if (back === false) {
+    return {
+      href: null,
+      fallbackHref: getPageBackFallback(pathname),
+      useHistory: false,
+    };
+  }
+  if (back === "auto" || back === undefined) {
     const href = getPageBackHref(pathname);
     if (href) return { href, fallbackHref: href, useHistory: false };
     return { fallbackHref: getPageBackFallback(pathname), useHistory: true };
@@ -117,6 +125,7 @@ export function PageHeader({
   activeTab,
   onTabChange,
   tabsEnd,
+  hideTabs,
 }: {
   title: string;
   titleAccessory?: ReactNode;
@@ -145,12 +154,14 @@ export function PageHeader({
       actions={action}
       meta={meta ?? metadata}
       tabs={
-        <PageHeaderTabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={onTabChange}
-          tabsEnd={tabsEnd}
-        />
+        hideTabs ? null : (
+          <PageHeaderTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={onTabChange}
+            tabsEnd={tabsEnd}
+          />
+        )
       }
     />
   );
@@ -235,10 +246,12 @@ function PageHeaderSkeletonTopRow({
 export function PageHeaderSkeleton({
   withDescription = true,
   withAction = true,
+  withMeta = false,
   tabCount = 1,
 }: {
   withDescription?: boolean;
   withAction?: boolean;
+  withMeta?: boolean;
   tabCount?: number;
 }) {
   return (
@@ -247,9 +260,11 @@ export function PageHeaderSkeleton({
         withDescription={withDescription}
         withAction={withAction}
       />
-      <div className={pageHeaderMetaRowClass(true)}>
-        <Skeleton className="h-3 w-32" />
-      </div>
+      {withMeta ? (
+        <div className={pageHeaderMetaRowClass(true)}>
+          <Skeleton className="h-3 w-32" />
+        </div>
+      ) : null}
       <div className={tabsRowClass}>
         <div className="flex h-9 items-center gap-3 px-2.5">
           {Array.from({ length: tabCount }, (_, i) => (

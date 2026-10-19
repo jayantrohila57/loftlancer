@@ -1,128 +1,107 @@
 "use client";
 
+import type { ProjectOutput } from "@loftlancer/api/types";
+import { Button } from "@loftlancer/ui/button";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import { ErrorState } from "@/components/patterns/error-state";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
-import {
-  type OrgHubSection,
-  orgHubSectionActions,
-} from "@/domain/permissions/org-section-actions";
+import { orgHubSectionActions } from "@/domain/permissions/org-section-actions";
+import { ProjectsTableView } from "@/domain/projects/components/projects-table-view";
 import { useOrgQueryEnabled } from "@/hooks/use-org-query-enabled";
+import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { ORGANIZATION_SECTIONS } from "../config/org-sections";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
-import { OrganizationSectionCard } from "./organization-section-card";
-
-function formatCountLabel(count: number, singular: string, plural: string) {
-  return `${count} ${count === 1 ? singular : plural}`;
-}
 
 export function OrganizationOverviewSectionsSkeleton() {
   return (
-    <div
-      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      role="status"
-      aria-busy="true"
-    >
-      {(
-        [
-          "section-a",
-          "section-b",
-          "section-c",
-          "section-d",
-          "section-e",
-          "section-f",
-          "section-g",
-        ] as const
-      ).map((id) => (
-        <Skeleton key={id} className="h-[7.5rem] rounded-2xl" />
-      ))}
-    </div>
-  );
-}
-
-function SectionCardGated({
-  sectionId,
-  slug,
-  summary,
-}: {
-  sectionId: OrgHubSection;
-  slug: string;
-  summary: string;
-}) {
-  const action = orgHubSectionActions[sectionId];
-  const { allowed, isLoading } = useCan(action);
-  const section = ORGANIZATION_SECTIONS.find((s) => s.id === sectionId);
-  if (isLoading || !allowed || !section) return null;
-
-  return (
-    <OrganizationSectionCard
-      href={section.href(slug)}
-      icon={section.icon}
-      title={section.title}
-      description={section.description}
-      summary={summary}
-    />
+    <section className="min-w-0 space-y-4" role="status" aria-busy="true">
+      <div className="flex items-center justify-between gap-3">
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-36" />
+          <Skeleton className="h-4 w-56" />
+        </div>
+        <Skeleton className="h-8 w-24" />
+      </div>
+      <ProjectsTableView
+        projects={[]}
+        isLoading
+        searchable={false}
+        limitRows={5}
+      />
+    </section>
   );
 }
 
 export function OrganizationOverviewSections({ slug }: { slug: string }) {
   const { organization, status } = useOrganizationBySlug(slug);
   const queryEnabled = useOrgQueryEnabled();
-  const stats = useQuery({
-    ...trpc.dashboard.getOrgSettingsStats.queryOptions(),
-    enabled: queryEnabled && status === "success" && Boolean(organization?.id),
+  const { allowed, isLoading: permissionLoading } = useCan(
+    orgHubSectionActions.projects,
+  );
+  const projectsQuery = useQuery({
+    ...trpc.projects.list.queryOptions(),
+    enabled:
+      queryEnabled &&
+      status === "success" &&
+      Boolean(organization?.id) &&
+      allowed,
   });
 
-  // Same condition as OrganizationDetailStats so stats and cards resolve together.
-  if (status === "loading" || !queryEnabled || stats.isPending) {
+  if (status === "loading" || permissionLoading) {
     return <OrganizationOverviewSectionsSkeleton />;
   }
 
-  // One source of truth with the stats rail: server SQL counts (#251).
-  // getFullOrganization caps members at 100, so its array length is wrong.
-  const memberCount = stats.data?.memberCount;
-  const invitationCount = stats.data?.pendingInvites;
-  const projectCount = stats.data?.projectCount;
+  if (!allowed) return null;
+
+  if (projectsQuery.isPending) return <OrganizationOverviewSectionsSkeleton />;
+
+  if (projectsQuery.isError) {
+    return (
+      <ErrorState
+        title="Projects unavailable"
+        description="Could not load this workspace’s projects."
+        onRetry={() => void projectsQuery.refetch()}
+      />
+    );
+  }
+
+  const recentProjects = [...(projectsQuery.data?.data ?? [])]
+    .filter((project: ProjectOutput) => !project.isArchived)
+    .sort(
+      (a: ProjectOutput, b: ProjectOutput) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    )
+    .slice(0, 5);
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {ORGANIZATION_SECTIONS.map((section) => {
-        let summary =
-          section.id === "teams" || section.id === "timeline" ? "Open" : "View";
-        if (section.id === "projects" && projectCount !== undefined) {
-          summary = formatCountLabel(projectCount, "project", "projects");
-        }
-        if (section.id === "members" && memberCount !== undefined) {
-          summary = formatCountLabel(memberCount, "member", "members");
-          if (invitationCount !== undefined && invitationCount > 0) {
-            summary += ` · ${formatCountLabel(
-              invitationCount,
-              "pending invite",
-              "pending invites",
-            )}`;
-          }
-        }
-        if (section.id === "invitations" && invitationCount !== undefined) {
-          summary = formatCountLabel(
-            invitationCount,
-            "pending invite",
-            "pending invites",
-          );
-        }
-        if (section.id === "settings") {
-          summary = organization?.slug ?? "—";
-        }
-
-        return (
-          <SectionCardGated
-            key={section.id}
-            sectionId={section.id}
-            slug={slug}
-            summary={summary}
-          />
-        );
-      })}
-    </div>
+    <section className="min-w-0 space-y-4">
+      <header className="flex items-center justify-between gap-3">
+        <div>
+          <h2 className="font-semibold text-lg tracking-tight">
+            Recent projects
+          </h2>
+          <p className="mt-1 text-muted-foreground text-sm">
+            Recently updated projects in this workspace.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          render={<Link href={routes.projects(slug)} />}
+        >
+          View all
+        </Button>
+      </header>
+      <ProjectsTableView
+        projects={recentProjects}
+        isLoading={projectsQuery.isPending}
+        searchable={false}
+        limitRows={5}
+        caption="Recently updated projects"
+        captionSrOnly
+      />
+    </section>
   );
 }

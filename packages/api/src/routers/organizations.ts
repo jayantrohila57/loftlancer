@@ -80,6 +80,38 @@ export const organizationsRouter = router({
       };
     }),
 
+  /** Invitations addressed to the signed-in, verified email account. */
+  listMyInvitations: protectedProcedure.query(async ({ ctx }) => {
+    const currentUser = ctx.session.user;
+    if (!currentUser.emailVerified) return { items: [] };
+
+    const rows = await db
+      .select({
+        id: invitation.id,
+        organizationName: organization.name,
+        organizationSlug: organization.slug,
+        role: invitation.role,
+        inviterName: user.name,
+        createdAt: invitation.createdAt,
+        expiresAt: invitation.expiresAt,
+      })
+      .from(invitation)
+      .innerJoin(organization, eq(invitation.organizationId, organization.id))
+      .leftJoin(user, eq(invitation.inviterId, user.id))
+      .where(
+        and(
+          sql`lower(${invitation.email}) = lower(${currentUser.email})`,
+          eq(invitation.status, "pending"),
+          isNull(invitation.deletedAt),
+          isNull(organization.deletedAt),
+          gt(invitation.expiresAt, new Date()),
+        ),
+      )
+      .orderBy(desc(invitation.createdAt));
+
+    return { items: rows };
+  }),
+
   list: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
     if (isActionsAuditEnabled()) {
@@ -211,9 +243,12 @@ export const organizationsRouter = router({
             email: invitation.email,
             role: invitation.role,
             status: invitation.status,
+            createdAt: invitation.createdAt,
             expiresAt: invitation.expiresAt,
+            inviterName: user.name,
           })
           .from(invitation)
+          .leftJoin(user, eq(invitation.inviterId, user.id))
           .where(where)
           .orderBy(desc(invitation.expiresAt))
           .limit(input.limit)
