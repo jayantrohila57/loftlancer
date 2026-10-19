@@ -20,9 +20,11 @@ export default async function OrganizationLayout({
   const { org: slug } = await params;
   // Route words (old /dashboard, /p/…) can never be an org: 404 without a DB hit.
   if (isReservedOrgSlug(slug)) notFound();
-  await guardOrganizationSlugMembership(slug);
+  const { org } = await guardOrganizationSlugMembership(slug);
   await preflightOrgSubtree(slug);
   return (
-    <OrganizationLayoutShell slug={slug}>{children}</OrganizationLayoutShell>
+    <OrganizationLayoutShell slug={slug} initialOrganization={org}>
+      {children}
+    </OrganizationLayoutShell>
   );
 }

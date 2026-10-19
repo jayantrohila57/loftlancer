@@ -8,6 +8,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { isBenignClientError } from "@/lib/errors/client-errors";
 import { countPendingInvitations } from "@/lib/organization-invitations";
+import { useOrganizationIdentity } from "../components/organization-identity-context";
 
 export type OrganizationDetail = {
   id: string;
@@ -22,7 +23,12 @@ export type OrganizationDetail = {
 
 type LoadStatus = "loading" | "success" | "error" | "not-found";
 
-export function useOrganizationBySlug(slug: string) {
+export function useOrganizationBySlug(
+  slug: string,
+  initialOrganization?: Pick<OrganizationDetail, "id" | "name" | "slug">,
+) {
+  const contextOrganization = useOrganizationIdentity();
+  const organizationIdentity = initialOrganization ?? contextOrganization;
   const {
     orgs,
     initialLoadDone,
@@ -30,22 +36,29 @@ export function useOrganizationBySlug(slug: string) {
     setActiveOrganization,
     activeOrganizationId,
   } = useActiveOrganization();
+  const hasInitialOrganization = organizationIdentity?.slug === slug;
   const [organization, setOrganization] = useState<OrganizationDetail | null>(
-    null,
+    hasInitialOrganization ? organizationIdentity : null,
   );
-  const [status, setStatus] = useState<LoadStatus>("loading");
+  const [status, setStatus] = useState<LoadStatus>(
+    hasInitialOrganization ? "success" : "loading",
+  );
   const [error, setError] = useState<Error | null>(null);
 
   const listItem = orgs.find((o) => o.slug === slug) as OrgListItem | undefined;
 
   const load = useCallback(async () => {
-    setStatus("loading");
+    if (!hasInitialOrganization) setStatus("loading");
     setError(null);
     try {
       const result = await authClient.organization.getFullOrganization({
         query: { organizationSlug: slug },
       });
       if (!result.data) {
+        if (hasInitialOrganization) {
+          setStatus("success");
+          return;
+        }
         setOrganization(null);
         setStatus("not-found");
         return;
@@ -74,9 +87,9 @@ export function useOrganizationBySlug(slug: string) {
         return;
       }
       setError(err instanceof Error ? err : new Error("Failed to load"));
-      setStatus("error");
+      setStatus(hasInitialOrganization ? "success" : "error");
     }
-  }, [slug]);
+  }, [hasInitialOrganization, slug]);
 
   useEffect(() => {
     void load();

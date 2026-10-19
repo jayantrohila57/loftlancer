@@ -1,15 +1,35 @@
 import type { QueryClient } from "@tanstack/react-query";
 
+const ORG_SCOPED_TRPC_ROUTERS = new Set([
+  "auditLogs",
+  "dashboard",
+  "environmentVariables",
+  "environments",
+  "notifications",
+  "organizations",
+  "permissions",
+  "projectAccess",
+  "projectApps",
+  "projects",
+  "sidebar",
+  "tasks",
+  "teams",
+]);
+
+const ORG_SCOPED_CUSTOM_QUERY_KEYS = new Set([
+  "org-active-member-role",
+  "team-members-sheet",
+]);
+
 function isOrgScopedQuery(queryKey: unknown): boolean {
-  const serialized = JSON.stringify(queryKey);
+  if (!Array.isArray(queryKey)) return false;
+
+  const queryRoot = queryKey[0];
+  const namespace = Array.isArray(queryRoot) ? queryRoot[0] : queryRoot;
   return (
-    serialized.includes("dashboard") ||
-    serialized.includes("projects") ||
-    serialized.includes("environments") ||
-    serialized.includes("audit") ||
-    serialized.includes("notifications") ||
-    serialized.includes("permissions") ||
-    serialized.includes("organizations")
+    typeof namespace === "string" &&
+    (ORG_SCOPED_TRPC_ROUTERS.has(namespace) ||
+      ORG_SCOPED_CUSTOM_QUERY_KEYS.has(namespace))
   );
 }
 
