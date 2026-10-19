@@ -189,6 +189,19 @@ export function organizationPlugin() {
         });
       },
       organizationHooks: {
+        beforeAcceptInvitation: async ({ invitation: invite }) => {
+          const [scope] = await db
+            .select({ projectId: organizationSchema.invitation.projectId })
+            .from(organizationSchema.invitation)
+            .where(eq(organizationSchema.invitation.id, invite.id))
+            .limit(1);
+          if (scope?.projectId) {
+            throw new APIError("BAD_REQUEST", {
+              message:
+                "Accept this project invitation from its Studio invitation page.",
+            });
+          }
+        },
         // Org slugs are the first URL segment (#299); never shadow a route.
         beforeCreateOrganization: async ({ organization: org }) => {
           assertOrgSlugAllowed(org.slug);

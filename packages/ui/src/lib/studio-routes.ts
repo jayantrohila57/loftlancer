@@ -10,11 +10,13 @@
  *   /onboarding
  *   /:org                                org overview
  *   /:org/{projects,projects/new,members,teams,teams/:teamId,invitations,roles,activity,settings}
+ *   /:org/teams/:teamId/{members,projects,invitations,settings}
  *   /:org/:project                       project overview
- *   /:org/:project/{apps,settings}
- *   /:org/:project/env[/:envSlug]        env app
- *   /:org/:project/tasks[/:number]       tasks app
- *   /:org/:project/:app[/settings]       any app
+ *   /:org/:project/{apps,access,invitations,activity,settings}
+ *   /:org/:project/apps/env[/:envSlug]   Environments app
+ *   /:org/:project/apps/tasks[/:number]  Tasks app
+ *   /:org/:project/apps/:app[/settings]  registered app
+ *   Legacy sibling app URLs remain reachable for existing links.
  */
 export type OrgSection =
   | "projects"
@@ -25,7 +27,14 @@ export type OrgSection =
   | "activity"
   | "settings";
 
-export type ProjectSection = "apps" | "settings";
+export type ProjectSection =
+  | "apps"
+  | "access"
+  | "invitations"
+  | "activity"
+  | "settings";
+
+export type TeamSection = "members" | "projects" | "invitations" | "settings";
 
 const seg = (value: string | number) => encodeURIComponent(String(value));
 
@@ -46,6 +55,8 @@ export const routes = {
   org: (org: string) => `/${seg(org)}`,
   orgSection: (org: string, section: OrgSection) => `/${seg(org)}/${section}`,
   team: (org: string, teamId: string) => `/${seg(org)}/teams/${seg(teamId)}`,
+  teamSection: (org: string, teamId: string, section: TeamSection) =>
+    `/${seg(org)}/teams/${seg(teamId)}/${section}`,
   projects: (org: string) => `/${seg(org)}/projects`,
   newProject: (org: string) => `/${seg(org)}/projects/new`,
 
@@ -53,14 +64,15 @@ export const routes = {
   projectSection: (org: string, project: string, section: ProjectSection) =>
     `/${seg(org)}/${seg(project)}/${section}`,
   app: (org: string, project: string, app: string) =>
-    `/${seg(org)}/${seg(project)}/${seg(app)}`,
+    `/${seg(org)}/${seg(project)}/apps/${seg(app)}`,
   appSettings: (org: string, project: string, app: string) =>
-    `/${seg(org)}/${seg(project)}/${seg(app)}/settings`,
+    `/${seg(org)}/${seg(project)}/apps/${seg(app)}/settings`,
   env: (org: string, project: string, envSlug?: string) =>
-    `/${seg(org)}/${seg(project)}/env${envSlug ? `/${seg(envSlug)}` : ""}`,
-  tasks: (org: string, project: string) => `/${seg(org)}/${seg(project)}/tasks`,
+    `/${seg(org)}/${seg(project)}/apps/env${envSlug ? `/${seg(envSlug)}` : ""}`,
+  tasks: (org: string, project: string) =>
+    `/${seg(org)}/${seg(project)}/apps/tasks`,
   task: (org: string, project: string, number: number | string) =>
-    `/${seg(org)}/${seg(project)}/tasks/${seg(number)}`,
+    `/${seg(org)}/${seg(project)}/apps/tasks/${seg(number)}`,
 } as const;
 
 export {

@@ -11,28 +11,16 @@ import { routes } from "@/utils/navigation";
 
 /** Installed apps nested under the active project (apps system, #245). */
 export function SidebarProjectApps({ slug }: { slug: string }) {
-  const org = useCurrentOrgSlug() ?? "";
+  const org = useCurrentOrgSlug();
   const pathname = usePathname();
-  const { installed, canManage, isLoading } = useProjectApps(slug);
-  if (isLoading) return null;
-  const items = [
-    ...installed.map((a) => ({
-      key: a.id,
-      label: a.name,
-      icon: a.icon,
-      href: routes.app(org, slug, a.nav[0]?.path ?? a.id),
-    })),
-    ...(canManage
-      ? [
-          {
-            key: "apps",
-            label: "Apps",
-            icon: "LayoutGrid",
-            href: routes.projectSection(org, slug, "apps"),
-          },
-        ]
-      : []),
-  ];
+  const { installed, isLoading } = useProjectApps(slug);
+  if (isLoading || !org) return null;
+  const items = installed.map((a) => ({
+    key: a.id,
+    label: a.name,
+    icon: a.icon,
+    href: routes.app(org, slug, a.nav[0]?.path ?? a.id),
+  }));
   return (
     <>
       {items.map((item) => (

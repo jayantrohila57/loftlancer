@@ -1,10 +1,11 @@
-import { KeyRound, LayoutGrid, ListTodo } from "@/lib/icons";
+import { KeyRound, LayoutGrid, ListTodo, Settings } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
 const icons: Record<string, typeof KeyRound> = {
   KeyRound,
   LayoutGrid,
   ListTodo,
+  Settings,
 };
 
 /** Square app tile icon (reui card-style, dense). */

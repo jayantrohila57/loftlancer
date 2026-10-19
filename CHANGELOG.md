@@ -16,6 +16,18 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.14.0] - 2026-10-20
+
+### Added
+
+- Team overview, members, linked projects, invitations, and settings are dedicated pages; projects have dedicated access and invitation pages (#507).
+- Project invitations grant project read access when accepted, including for existing organization members (#507).
+- Project activity now has a dedicated page and project-scoped audit permission (#507).
+
+### Changed
+
+- Tasks and Environments now live under each project's Apps URL; existing app links remain reachable (#507).
+
 ## [1.13.3] - 2026-10-19
 
 ### Fixed
@@ -565,7 +577,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.3...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.3...v1.14.0
 [1.13.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.2...v1.13.3
 [1.13.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.1...v1.13.2
 [1.13.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.0...v1.13.1

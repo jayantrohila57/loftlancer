@@ -2,6 +2,7 @@ import "server-only";
 
 import type { ActionName } from "@loftlancer/actions";
 import {
+  assertOrganizationTeamForPage,
   assertProjectEnvironmentForPage,
   assertProjectTaskForPage,
   organizationChildAction,
@@ -168,6 +169,13 @@ export async function preflightOrgSubtree(orgSlug: string): Promise<void> {
   const plan = planOrgSubtree(pathname, orgSlug);
   if (plan.kind === "org") return;
   if (plan.kind === "not-found") notFound();
+  if (plan.kind === "team") {
+    const { org } = await guardOrganizationSlugMembership(orgSlug);
+    await runPageGuard(() =>
+      assertOrganizationTeamForPage(org.id, plan.teamId),
+    );
+    return;
+  }
   const { project } = await guardProjectSlugPage(plan.projectSlug);
   const resource = plan.resource;
   if (!resource) return;

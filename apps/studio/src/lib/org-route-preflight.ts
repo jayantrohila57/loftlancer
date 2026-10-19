@@ -30,6 +30,13 @@ export const ORG_STATIC_ROUTES: readonly string[] = [
 /** Static pages under /[org]/[project] (relative to the project). */
 export const PROJECT_STATIC_ROUTES: readonly string[] = [
   "apps",
+  "apps/env",
+  "apps/env/settings",
+  "apps/tasks",
+  "apps/tasks/settings",
+  "access",
+  "invitations",
+  "activity",
   "settings",
   "env",
   "env/settings",
@@ -44,6 +51,8 @@ export type OrgSubtreePlan =
   | { kind: "org" }
   /** The path can't match any real page. */
   | { kind: "not-found" }
+  /** /[org]/teams/[teamId]/…: verify the team before streaming. */
+  | { kind: "team"; teamId: string }
   /** /[org]/[project]/…: resolve the project, then the optional resource. */
   | {
       kind: "project";
@@ -72,6 +81,15 @@ export function planOrgSubtree(
   if (rest.length === 0) return { kind: "org" };
 
   const [first, ...below] = rest as [string, ...string[]];
+  if (first === "teams" && below.length > 0) {
+    return below.length === 1 ||
+      (below.length === 2 &&
+        ["members", "projects", "invitations", "settings"].includes(
+          below[1] ?? "",
+        ))
+      ? { kind: "team", teamId: below[0] ?? "" }
+      : { kind: "not-found" };
+  }
   // Org-level words (members, projects, …) can never be a project slug.
   if (isReservedProjectSlug(first)) {
     return ORG_STATIC_ROUTES.includes(rest.join("/"))
@@ -82,6 +100,21 @@ export function planOrgSubtree(
   const project = { kind: "project", projectSlug: first } as const;
   if (below.length === 0) return project;
   if (PROJECT_STATIC_ROUTES.includes(below.join("/"))) return project;
+  if (below[0] === "apps") {
+    const app = below[1];
+    if (!app || !getAppManifest(app)) return { kind: "not-found" };
+    if (below.length === 2) return project;
+    if (below.length !== 3) return { kind: "not-found" };
+    const child = below[2] ?? "";
+    if (child === "settings") return project;
+    if (app === "env") {
+      return { ...project, resource: { kind: "env", envSlug: child } };
+    }
+    if (app === "tasks" && TASK_NUMBER.test(child)) {
+      return { ...project, resource: { kind: "task", number: Number(child) } };
+    }
+    return { kind: "not-found" };
+  }
   if (below.length !== 2) return { kind: "not-found" };
 
   const [section, child] = below as [string, string];

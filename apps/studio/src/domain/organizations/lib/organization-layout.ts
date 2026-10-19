@@ -34,5 +34,8 @@ export function isOrganizationShellRoute(
   });
 
   if (orgIndex < 0 || orgIndex === segments.length - 1) return true;
+  if (segments[orgIndex + 1] === "teams" && segments[orgIndex + 2]) {
+    return false;
+  }
   return ORGANIZATION_SECTIONS.has(segments[orgIndex + 1] ?? "");
 }

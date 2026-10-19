@@ -30,10 +30,14 @@ import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 
 type TimelinePageClientProps = {
-  scope: "org" | "self";
+  scope: "org" | "project" | "self";
+  projectId?: string;
 };
 
-export function TimelinePageClient({ scope }: TimelinePageClientProps) {
+export function TimelinePageClient({
+  scope,
+  projectId: fixedProjectId,
+}: TimelinePageClientProps) {
   const { unassigned, isLoading: unassignedLoading } = useUnassignedOrgMember();
   const org = useCurrentOrgSlug() ?? "";
   const [action, setAction] = useState("");
@@ -48,8 +52,8 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
         scope,
         limit: 25,
         action: action || undefined,
-        actorUserId: scope === "org" && actorUserId ? actorUserId : undefined,
-        projectId: projectId || undefined,
+        actorUserId: scope !== "self" && actorUserId ? actorUserId : undefined,
+        projectId: fixedProjectId || projectId || undefined,
         result: result || undefined,
         excludePassive: includePassive ? false : undefined,
         excludeDenied: result === "denied" ? false : undefined,
@@ -83,7 +87,7 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
   );
   const actorOptions = useMemo(
     () =>
-      scope === "org"
+      scope !== "self"
         ? auditActorFilterOptions(rows, seenActors, actorUserId)
         : [],
     [rows, seenActors, actorUserId, scope],
@@ -104,7 +108,11 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
   }
 
   const filtersActive = Boolean(
-    action || result || actorUserId || projectId || includePassive,
+    action ||
+      result ||
+      actorUserId ||
+      (!fixedProjectId && projectId) ||
+      includePassive,
   );
 
   return (
@@ -118,22 +126,26 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
         setSeenActions(actionOptions);
         setAction(v);
       }}
-      actorOptions={scope === "org" ? actorOptions : undefined}
+      actorOptions={scope !== "self" ? actorOptions : undefined}
       actor={actorUserId}
       onActorChange={
-        scope === "org"
+        scope !== "self"
           ? (v) => {
               setSeenActors(actorOptions);
               setActorUserId(v);
             }
           : undefined
       }
-      projectOptions={projectOptions}
-      project={projectId}
-      onProjectChange={(v) => {
-        setSeenProjects(projectOptions);
-        setProjectId(v);
-      }}
+      projectOptions={fixedProjectId ? undefined : projectOptions}
+      project={fixedProjectId ? undefined : projectId}
+      onProjectChange={
+        fixedProjectId
+          ? undefined
+          : (v) => {
+              setSeenProjects(projectOptions);
+              setProjectId(v);
+            }
+      }
       includePassive={includePassive}
       onIncludePassiveChange={setIncludePassive}
       result={result}
@@ -161,7 +173,9 @@ export function TimelinePageClient({ scope }: TimelinePageClientProps) {
                   ? includePassive
                     ? "No events match these filters."
                     : "No events match these filters. Try enabling views & reads."
-                  : "Changes in this organization will appear here."}
+                  : scope === "project"
+                    ? "Changes in this project will appear here."
+                    : "Changes in this organization will appear here."}
             </EmptyDescription>
           </EmptyHeader>
         </Empty>

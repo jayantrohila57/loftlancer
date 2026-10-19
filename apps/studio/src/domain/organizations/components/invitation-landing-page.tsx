@@ -26,7 +26,11 @@ export function InvitationLandingPage({
         await invite.acceptInvitation();
         toast.success("Invitation accepted");
         if (preview?.organizationSlug) {
-          router.replace(routes.org(preview.organizationSlug));
+          router.replace(
+            preview.projectSlug
+              ? routes.project(preview.organizationSlug, preview.projectSlug)
+              : routes.org(preview.organizationSlug),
+          );
         }
       } else {
         await invite.declineInvitation();
@@ -79,6 +83,14 @@ export function InvitationLandingPage({
             {preview.role}
           </span>
         </p>
+        {preview.projectName ? (
+          <p>
+            Project:{" "}
+            <span className="font-medium text-foreground">
+              {preview.projectName}
+            </span>
+          </p>
+        ) : null}
         {preview.inviterName ? <p>Invited by {preview.inviterName}</p> : null}
       </div>
     ) : null;
@@ -116,9 +128,20 @@ export function InvitationLandingPage({
         action={
           preview.organizationSlug ? (
             <Button
-              render={<Link href={routes.org(preview.organizationSlug)} />}
+              render={
+                <Link
+                  href={
+                    preview.projectSlug
+                      ? routes.project(
+                          preview.organizationSlug,
+                          preview.projectSlug,
+                        )
+                      : routes.org(preview.organizationSlug)
+                  }
+                />
+              }
             >
-              Open workspace
+              {preview.projectSlug ? "Open project" : "Open workspace"}
             </Button>
           ) : undefined
         }
@@ -198,7 +221,11 @@ export function InvitationLandingPage({
     content = (
       <InvitationState
         title="Accept your invitation"
-        description={`You’re signed in as ${invite.session.user.email}. Accept to join ${preview.organizationName} as a ${preview.role}.`}
+        description={
+          preview.projectName
+            ? `You’re signed in as ${invite.session.user.email}. Accept to access ${preview.projectName} in ${preview.organizationName}.`
+            : `You’re signed in as ${invite.session.user.email}. Accept to join ${preview.organizationName} as a ${preview.role}.`
+        }
         details={metadata}
         action={
           <div className="flex flex-wrap gap-2">

@@ -46,7 +46,7 @@ function readStoredBoolean(key: string, defaultValue: boolean) {
 
 function projectPathActive(pathname: string, org: string, slug: string) {
   const href = routes.project(org, slug);
-  return pathname === href || pathname.startsWith(`${href}/`);
+  return pathname === href;
 }
 
 export function SidebarProjectsGroup({
