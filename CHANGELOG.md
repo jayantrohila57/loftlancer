@@ -16,6 +16,16 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.13.1] - 2026-10-19
+
+### Changed
+
+- Routine pull requests run fast CI checks while release validation retains the full build and accessibility suite (#487)
+
+### Fixed
+
+- Automated release publishing configures the Git identity needed to create its version tag (#487)
+
 ## [1.13.0] - 2026-10-19
 
 ### Changed
@@ -543,7 +553,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.1...HEAD
+[1.13.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.6...v1.13.0
 [1.12.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.5...v1.12.6
 [1.12.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.4...v1.12.5

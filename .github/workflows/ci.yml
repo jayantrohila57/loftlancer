@@ -5,6 +5,16 @@ on:
     branches: [main]
   pull_request:
   workflow_call:
+    inputs:
+      full_validation:
+        description: Run the production build and browser accessibility suite
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality:
@@ -28,6 +38,21 @@ jobs:
           DATABASE_URL: postgresql://localhost:5432/test
           # TEST-ONLY placeholder for CI; never use this value in any real environment.
           E2E_TEST_SECRET: ci-e2e-test-secret-placeholder
+
+  full-validation:
+    # Keep expensive checks out of routine PR runs. Release validation opts in before promotion.
+    if: inputs.full_validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.11.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm build
         env:
           SKIP_ENV_VALIDATION: true
