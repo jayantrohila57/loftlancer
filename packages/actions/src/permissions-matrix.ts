@@ -38,6 +38,14 @@ export const PERMISSION_MATRIX_ROWS: PermissionMatrixRow[] = [
     admin: "—",
   },
   {
+    action: "member.remove",
+    label: "Remove organization members",
+    owner: "Y",
+    manager: "—",
+    member: "—",
+    admin: "—",
+  },
+  {
     action: "team.create",
     label: "Manage teams",
     owner: "Y",
