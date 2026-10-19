@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.12.6] - 2026-10-19
+
 ### Added
 
 - GitHub Actions automates release preparation, promotion PRs, and GitHub Release publishing while retaining a human production merge gate (#459)
@@ -518,7 +520,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.5...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.6...HEAD
+[1.12.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.5...v1.12.6
 [1.12.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.4...v1.12.5
 [1.12.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.3...v1.12.4
 [1.12.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.2...v1.12.3
