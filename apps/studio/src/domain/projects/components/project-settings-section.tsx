@@ -11,7 +11,6 @@ import {
 } from "@/components/patterns/settings-layout";
 import { StatusBadge } from "@/components/patterns/status-badge";
 import { useProjectActions } from "../hooks/use-project-actions";
-import { ProjectAccessSection } from "./project-access-section";
 import { ProjectDangerZone } from "./project-danger-zone";
 
 interface ProjectSettingsSectionProps {
@@ -76,7 +75,6 @@ export function ProjectSettingsSection({
           </div>
         </SettingsRow>
       </SettingsPanel>
-      <ProjectAccessSection project={project} />
       <ProjectDangerZone project={project} />
 
       <ConfirmDialog

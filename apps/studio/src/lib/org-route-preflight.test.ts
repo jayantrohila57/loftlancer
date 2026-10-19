@@ -37,6 +37,25 @@ describe("planOrgSubtree (#309)", () => {
     }
   });
 
+  it("recognizes team modules without treating them as projects", () => {
+    for (const route of [
+      "teams/t1",
+      "teams/t1/members",
+      "teams/t1/projects",
+      "teams/t1/invitations",
+      "teams/t1/settings",
+    ]) {
+      assert.deepEqual(
+        plan(`/acme/${route}`),
+        { kind: "team", teamId: "t1" },
+        route,
+      );
+    }
+    assert.deepEqual(plan("/acme/teams/t1/unknown"), {
+      kind: "not-found",
+    });
+  });
+
   it("resolves the project for its static pages", () => {
     assert.deepEqual(plan("/acme/web"), {
       kind: "project",
@@ -58,6 +77,16 @@ describe("planOrgSubtree (#309)", () => {
       resource: { kind: "env", envSlug: "prod" },
     });
     assert.deepEqual(plan("/acme/web/tasks/12"), {
+      kind: "project",
+      projectSlug: "web",
+      resource: { kind: "task", number: 12 },
+    });
+    assert.deepEqual(plan("/acme/web/apps/env/prod"), {
+      kind: "project",
+      projectSlug: "web",
+      resource: { kind: "env", envSlug: "prod" },
+    });
+    assert.deepEqual(plan("/acme/web/apps/tasks/12"), {
       kind: "project",
       projectSlug: "web",
       resource: { kind: "task", number: 12 },
@@ -117,9 +146,17 @@ describe("route tables match the [org] folder", () => {
       // Dynamic pages planOrgSubtree handles explicitly.
       "[project]/[app]",
       "[project]/[app]/settings",
+      "[project]/apps/[app]",
+      "[project]/apps/[app]/settings",
+      "[project]/apps/env/[envSlug]",
+      "[project]/apps/tasks/[taskNumber]",
       "[project]/env/[envSlug]",
       "[project]/tasks/[taskNumber]",
       "teams/[teamId]",
+      "teams/[teamId]/members",
+      "teams/[teamId]/projects",
+      "teams/[teamId]/invitations",
+      "teams/[teamId]/settings",
     ]);
     assert.deepEqual(orgPages(), [...known].sort());
   });

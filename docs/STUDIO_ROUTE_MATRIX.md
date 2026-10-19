@@ -32,32 +32,39 @@ This matrix records the current route contract for the dashboard hierarchy work 
 | `/studio/:org/projects/new` | Project create route | Project create workflow; same project-list scope | `/studio/:org/projects` |
 | `/studio/:org/members` | Organization members | Member list, role/access queries and member mutations | `/studio/:org` People area |
 | `/studio/:org/invitations` | Organization invitations | Invitation list/create/resend/revoke hooks | `/studio/:org` People area |
-| `/studio/:org/teams` | Organization teams | Team list and create/edit/delete hooks | `/studio/:org` People area |
-| `/studio/:org/teams/:teamId` | Team detail, members and linked projects | Team detail query; linked project results filtered by `project.read`; member management opens the existing members surface | `/studio/:org/teams` |
+| `/studio/:org/teams` | Organization teams | Team list and create action; detail pages own editing and deletion | `/studio/:org` People area |
+| `/studio/:org/teams/:teamId` | Team overview | Team members and linked-project summaries | `/studio/:org/teams` |
+| `/studio/:org/teams/:teamId/members` | Team members | `teams.members`, `organizations.listMembers`, add/remove mutations | Team overview |
+| `/studio/:org/teams/:teamId/projects` | Team project links | `teams.projects` and permission-filtered `teams.linkableProjects`; `projectAccess.assignTeam/removeTeam` | Team overview |
+| `/studio/:org/teams/:teamId/invitations` | Team invitations | Better Auth invitation with `teamId`, scoped list, resend/revoke | Team overview |
+| `/studio/:org/teams/:teamId/settings` | Team identity and lifecycle | `teams.update/delete` | Team overview |
 | `/studio/:org/roles` | Organization roles and access explanation | Role/permission metadata and org scope | `/studio/:org` People area |
 | `/studio/:org/activity` | Organization activity | `TimelinePageClient` / audit queries with org scope | `/studio/:org` |
 | `/studio/:org/settings` | Organization identity and lifecycle | Organization detail/update hooks and canonical permission gates | `/studio/:org` |
 | `/studio/:org/:project` | Project overview, status and access summary | Project detail/access queries; links to installed app destinations | `/studio/:org/projects` |
-| `/studio/:org/:project/settings` | Project identity, access and lifecycle settings | Project update/access hooks; canonical server permission checks | `/studio/:org/:project` |
+| `/studio/:org/:project/settings` | Project identity and lifecycle settings | Project update hooks; canonical server permission checks | `/studio/:org/:project` |
+| `/studio/:org/:project/access` | Project access | Managers, linked teams, and direct grants via `projectAccess` | Project overview |
+| `/studio/:org/:project/invitations` | Project invitations | Scoped invitation with status filter and server pagination; acceptance joins the organization if needed and adds default project read grants | Project overview |
+| `/studio/:org/:project/activity` | Project activity | `auditEvents.list` with project scope, fixed project ID, and project timeline permission | Project overview |
 | `/studio/:org/:project/apps` | App directory and install management | `useProjectApps`; install/uninstall/configure mutations and invalidation | `/studio/:org/:project` |
-| `/studio/:org/:project/:app` | Installed app work surface | `AppGate` → app-specific domain hook/API; Environments and Tasks use static app routes | `/studio/:org/:project/apps` or the app's parent item list |
-| `/studio/:org/:project/:app/settings` | Installed app configuration | `AppGate` → `AppSettingsPage` → `useProjectApps` and `projectApps.configure`; Tasks and Environments settings are static routes below | app work surface; uninstalled-app action returns to Apps when manageable |
-| `/studio/:org/:project/env` | Environments list and selected environment | `useEnvironments`, `useEnvironmentVariableCounts`; environment tabs are URL links | Project Apps / Environments |
-| `/studio/:org/:project/env/:envSlug` | Environment variables for one target | Project environment detail query and variable CRUD hooks | `/studio/:org/:project/env` |
-| `/studio/:org/:project/env/settings` | Environments app settings | Static `AppSettingsPage` route for `env` | `/studio/:org/:project/env` |
-| `/studio/:org/:project/tasks` | Task list, filters and create action | `TasksPage` task list/people/permission hooks; task create mutation | Project Apps / Tasks |
-| `/studio/:org/:project/tasks/:taskNumber` | Task detail (direct URLs open the task sheet) | `tasks.get`, task update/comment/delete mutations; unavailable task now offers retry or a task-list explanation | `/studio/:org/:project/tasks` |
-| `/studio/:org/:project/tasks/settings` | Tasks app settings | Static `AppSettingsPage` route for `tasks` | `/studio/:org/:project/tasks` |
+| `/studio/:org/:project/apps/:app` | Installed app work surface | `AppGate` → app-specific domain hook/API; Environments and Tasks use static app routes | `/studio/:org/:project/apps` or the app's parent item list |
+| `/studio/:org/:project/apps/:app/settings` | Installed app configuration | `AppGate` → `AppSettingsPage` → `useProjectApps` and `projectApps.configure`; Tasks and Environments settings are static routes below | app work surface; uninstalled-app action returns to Apps when manageable |
+| `/studio/:org/:project/apps/env` | Environments list and selected environment | `useEnvironments`, `useEnvironmentVariableCounts`; environment tabs are URL links | Project Apps / Environments |
+| `/studio/:org/:project/apps/env/:envSlug` | Environment variables for one target | Project environment detail query and variable CRUD hooks | `/studio/:org/:project/apps/env` |
+| `/studio/:org/:project/apps/env/settings` | Environments app settings | Static `AppSettingsPage` route for `env` | `/studio/:org/:project/apps/env` |
+| `/studio/:org/:project/apps/tasks` | Task list, filters and create action | `TasksPage` task list/people/permission hooks; task create mutation | Project Apps / Tasks |
+| `/studio/:org/:project/apps/tasks/:taskNumber` | Task detail (direct URLs open the task sheet) | `tasks.get`, task update/comment/delete mutations; unavailable task now offers retry or a task-list explanation | `/studio/:org/:project/apps/tasks` |
+| `/studio/:org/:project/apps/tasks/settings` | Tasks app settings | Static `AppSettingsPage` route for `tasks` | `/studio/:org/:project/apps/tasks` |
 | `/studio/invite/:invitationId` | Invitation acceptance | Public invitation lookup/accept route, linked from invitation notifications | `/studio` or organization overview after acceptance |
 
 ## Route precedence and navigation rules
 
-- Static `env`, `tasks`, and `apps` routes take precedence over the generic `:app` segment. In particular, `/env/settings` and `/tasks/settings` are app settings routes, not environment/task items.
-- `/tasks/:taskNumber` validates a positive integer on the server and renders the task list with the matching task detail sheet open. The sheet closes to the task list; its error state covers removed or inaccessible tasks.
-- `/env/:envSlug` is a real destination. Tabs use links so refresh, copy-link, and modified-click behavior preserve the selected environment.
+- Static `apps/env` and `apps/tasks` routes take precedence over the generic app segment. Legacy `/env` and `/tasks` deep links remain reachable. In particular, `/env/settings` and `/tasks/settings` are app settings routes, not environment/task items.
+- `/apps/tasks/:taskNumber` validates a positive integer on the server and renders the task list with the matching task detail sheet open. The sheet closes to the task list; its error state covers removed or inaccessible tasks.
+- `/apps/env/:envSlug` is a real destination. Tabs use links so refresh, copy-link, and modified-click behavior preserve the selected environment.
 - Generic app IDs that do not resolve to a known app return not found; known but uninstalled apps show an install/access explanation. Only project managers can navigate onward to Apps to install.
 - Organization routes are URL-scoped; the org layout guards membership and synchronizes the active org. The shell hides project links until org context is resolved.
-- Team shortcuts use `/teams/:teamId`; the legacy query form remains supported and opens the same selected team detail.
+- Team shortcuts use `/teams/:teamId`; the legacy `?team=` form redirects to the team detail URL.
 - Breadcrumbs represent the scope chain. Back controls are omitted when they repeat a sibling/tab action; project-level and app-level parents are resolved by `ProjectLayoutShell`.
 - Notification destinations are event-specific: task events open task detail when the organization slug exists, invitations open acceptance or the owning organization, and ticket replies open ticket detail. Old task events without an org slug fall back to the notification inbox because their destination cannot be reconstructed safely.
 
@@ -89,3 +96,9 @@ The normal path is server route guard/metadata → hydrated scope shell → doma
 5. Create a task, open its detail from a notification, and return to Tasks.
 
 Record completion without hints, wrong turns, dead ends, time to target, and participants' own explanation of each scope. Do not count a source review or an agent walkthrough as user-study evidence.
+
+## Scoped management update (#507)
+
+Organization invitations are limited to organization scope; team invitations carry `team_id`; project invitations carry `project_id`. A project invitation is accepted through the transactional API path, which creates organization membership when needed and grants project read access. The Better Auth organization acceptance endpoint rejects project-scoped invitations to prevent bypassing the grant. Team-to-project linking is available from both team Projects and project Access. Canonical app URLs are below `/apps`; legacy app URLs remain reachable during migration. The project invitation column requires `packages/db/src/migrations/0019_project_scoped_invitations.sql` before deploying the code. Authenticated Owner/Manager/Member browser validation and the five-person study in #500 are still required.
+
+Team-to-project linking currently materializes default grants in each member's project grant row. Unlinking a team or deleting it removes the association but does not revoke those member grants. Project Access is the place to review or remove them. A future access model should track grant source if automatic revocation is desired.

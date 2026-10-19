@@ -93,7 +93,7 @@ function ProjectAccessOverview({ project }: { project: ProjectOutput }) {
         </div>
         <Can action="project.assign_team" projectId={project.id}>
           <Link
-            href={routes.projectSection(org, project.slug, "settings")}
+            href={routes.projectSection(org, project.slug, "access")}
             className="text-primary text-sm underline-offset-4 hover:underline"
           >
             Review access

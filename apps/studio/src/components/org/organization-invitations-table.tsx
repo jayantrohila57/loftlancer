@@ -32,6 +32,9 @@ export type OrganizationInvitationsTableProps = {
   onResend: (invite: OrganizationInvitationRow) => void;
   /** Off when the caller paginates server-side (#261). */
   clientPagination?: boolean;
+  caption?: string;
+  /** Project invitations also require the project grant permission. */
+  projectId?: string;
 };
 
 export function OrganizationInvitationsTable({
@@ -42,6 +45,8 @@ export function OrganizationInvitationsTable({
   onRevoke,
   onResend,
   clientPagination = true,
+  caption = "Organization invitations",
+  projectId,
 }: OrganizationInvitationsTableProps) {
   const columns: DataTableColumnDef<OrganizationInvitationRow>[] = [
     columnHelper.accessor("email", {
@@ -49,7 +54,12 @@ export function OrganizationInvitationsTable({
         <DataTableColumnHeader column={column} title="Email" />
       ),
       cell: ({ getValue }) => (
-        <span className="font-medium">{String(getValue())}</span>
+        <span
+          className="block max-w-56 truncate font-medium"
+          title={String(getValue())}
+        >
+          {String(getValue())}
+        </span>
       ),
     }),
     columnHelper.accessor("role", {
@@ -114,32 +124,41 @@ export function OrganizationInvitationsTable({
         if (!isPendingInvitationStatus(invite.status)) {
           return <span className="text-muted-foreground text-xs">—</span>;
         }
+        const actions = (
+          <DataTableRowActions
+            label={`Actions for invitation to ${invite.email}`}
+            actions={[
+              {
+                label:
+                  resendingId === invite.id
+                    ? "Resending…"
+                    : "Resend invitation",
+                onSelect: () => onResend(invite),
+                disabled: resendingId === invite.id || revokingId === invite.id,
+              },
+              {
+                label:
+                  revokingId === invite.id ? "Revoking…" : "Revoke invitation",
+                onSelect: () => onRevoke(invite.id),
+                destructive: true,
+                disabled: revokingId === invite.id || resendingId === invite.id,
+              },
+            ]}
+          />
+        );
         return (
           <Can action="member.invite" fallback={null}>
-            <DataTableRowActions
-              label={`Actions for invitation to ${invite.email}`}
-              actions={[
-                {
-                  label:
-                    resendingId === invite.id
-                      ? "Resending…"
-                      : "Resend invitation",
-                  onSelect: () => onResend(invite),
-                  disabled:
-                    resendingId === invite.id || revokingId === invite.id,
-                },
-                {
-                  label:
-                    revokingId === invite.id
-                      ? "Revoking…"
-                      : "Revoke invitation",
-                  onSelect: () => onRevoke(invite.id),
-                  destructive: true,
-                  disabled:
-                    revokingId === invite.id || resendingId === invite.id,
-                },
-              ]}
-            />
+            {projectId ? (
+              <Can
+                action="project.permission.grant"
+                projectId={projectId}
+                fallback={null}
+              >
+                {actions}
+              </Can>
+            ) : (
+              actions
+            )}
           </Can>
         );
       },
@@ -150,7 +169,7 @@ export function OrganizationInvitationsTable({
     <DataTable
       columns={columns}
       data={invitations}
-      caption="Organization invitations"
+      caption={caption}
       captionSrOnly
       empty={empty}
       framed

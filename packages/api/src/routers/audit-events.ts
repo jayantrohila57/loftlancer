@@ -5,7 +5,18 @@ import { user } from "@loftlancer/db/schema/auth";
 import { organization } from "@loftlancer/db/schema/organization";
 import { project } from "@loftlancer/db/schema/projects";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, gte, lt, lte, ne, type SQL, sql } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  gte,
+  isNull,
+  lt,
+  lte,
+  ne,
+  type SQL,
+  sql,
+} from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
 const targetUser = alias(user, "target_user");
@@ -17,7 +28,7 @@ import { orgAwareProcedure, router } from "../index";
 import { getActiveOrganizationId } from "../org-access";
 
 const listInput = z.object({
-  scope: z.enum(["org", "self", "user"]),
+  scope: z.enum(["org", "project", "self", "user"]),
   targetUserId: z.string().optional(),
   projectId: z.string().optional(),
   actorUserId: z.string().optional(),
@@ -42,7 +53,37 @@ export const auditEventsRouter = router({
     const organizationId = getActiveOrganizationId(ctx.session);
     const userId = ctx.session.user.id;
 
-    if (input.scope === "self") {
+    if (input.scope === "project") {
+      if (!organizationId || !input.projectId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select a project first.",
+        });
+      }
+      const [projectRow] = await db
+        .select({ id: project.id })
+        .from(project)
+        .where(
+          and(
+            eq(project.id, input.projectId),
+            eq(project.organizationId, organizationId),
+            isNull(project.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (!projectRow) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+      await requireAction("audit.timeline.view.project", {
+        userId,
+        organizationId,
+        projectId: input.projectId,
+        audit: false,
+      });
+    } else if (input.scope === "self") {
       await requireAction("audit.timeline.view.self", {
         userId,
         organizationId,
@@ -65,7 +106,16 @@ export const auditEventsRouter = router({
 
     const conditions: SQL[] = [];
 
-    if (input.scope === "self") {
+    if (input.scope === "project") {
+      if (!organizationId || !input.projectId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select a project first.",
+        });
+      }
+      conditions.push(eq(auditEvent.organizationId, organizationId));
+      conditions.push(eq(auditEvent.projectId, input.projectId));
+    } else if (input.scope === "self") {
       conditions.push(eq(auditEvent.actorUserId, userId));
     } else if (input.scope === "user" && input.targetUserId) {
       conditions.push(eq(auditEvent.actorUserId, input.targetUserId));

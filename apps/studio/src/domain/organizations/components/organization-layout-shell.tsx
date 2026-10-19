@@ -24,17 +24,21 @@ export function OrganizationLayoutShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname() ?? "";
-  if (!isOrganizationShellRoute(pathname, slug, BASE_PATH)) return children;
+  const showFrame = isOrganizationShellRoute(pathname, slug, BASE_PATH);
 
   return (
     <OrganizationIdentityProvider organization={initialOrganization}>
-      <OrganizationFrame
-        key={slug}
-        slug={slug}
-        initialOrganization={initialOrganization}
-      >
-        {children}
-      </OrganizationFrame>
+      {showFrame ? (
+        <OrganizationFrame
+          key={slug}
+          slug={slug}
+          initialOrganization={initialOrganization}
+        >
+          {children}
+        </OrganizationFrame>
+      ) : (
+        children
+      )}
     </OrganizationIdentityProvider>
   );
 }

@@ -103,7 +103,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   });
   const teams =
     nav.groups.find((group) => group.heading === "Teams")?.items ?? [];
-  const orgSlug = scope.org ?? nav.organizationSlug;
+  const orgSlug = scope.org;
   const navigate = (href: string) => {
     if (/^https?:/.test(href)) window.location.assign(href);
     else router.push(href as Route);
@@ -226,17 +226,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarFavorites
-          items={nav.favorites}
-          isActive={(href) =>
-            pathname === href || pathname.startsWith(`${href}/`)
-          }
-          LinkComponent={({ href, className, children }) => (
-            <Link href={href as Route} className={className}>
-              {children}
-            </Link>
-          )}
-        />
+        {orgSlug ? (
+          <SidebarFavorites
+            items={nav.favorites}
+            isActive={(href) =>
+              pathname === href || pathname.startsWith(`${href}/`)
+            }
+            LinkComponent={({ href, className, children }) => (
+              <Link href={href as Route} className={className}>
+                {children}
+              </Link>
+            )}
+          />
+        ) : null}
 
         {orgSlug ? (
           <SidebarGroup>
@@ -245,7 +247,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    isActive={pathname.startsWith(teamsHref(orgSlug))}
+                    isActive={pathname === teamsHref(orgSlug)}
                     tooltip="Teams"
                     render={<Link href={teamsHref(orgSlug) as Route} />}
                   >
@@ -275,18 +277,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         <SidebarSeparator className="mx-2" />
 
-        <SidebarProjectsGroup
-          organizationSlug={orgSlug}
-          isPinned={nav.isPinned}
-          onTogglePin={nav.togglePin}
-          pinPending={nav.pinPending}
-          favoriteCount={nav.favoriteCount}
-          favoriteLimit={MAX_SIDEBAR_FAVORITES}
-          projects={projects}
-          projectsLoading={projectsLoading}
-          status={status}
-          onRetry={() => void refetch()}
-        />
+        {orgSlug ? (
+          <SidebarProjectsGroup
+            organizationSlug={orgSlug}
+            isPinned={nav.isPinned}
+            onTogglePin={nav.togglePin}
+            pinPending={nav.pinPending}
+            favoriteCount={nav.favoriteCount}
+            favoriteLimit={MAX_SIDEBAR_FAVORITES}
+            projects={projects}
+            projectsLoading={projectsLoading}
+            status={status}
+            onRetry={() => void refetch()}
+          />
+        ) : null}
       </SidebarContent>
 
       <SidebarFooter className="mt-auto shrink-0 border-sidebar-border border-t bg-sidebar">
