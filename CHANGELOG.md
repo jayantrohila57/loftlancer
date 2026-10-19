@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-10-19
+
 ### Changed
 
 - Studio sidebar footer includes product updates, help and support links, copyright, and the current version (#483)
@@ -541,7 +543,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.6...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.6...v1.13.0
 [1.12.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.5...v1.12.6
 [1.12.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.4...v1.12.5
 [1.12.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.3...v1.12.4
