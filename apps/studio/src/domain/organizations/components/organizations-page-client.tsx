@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import type { Route } from "next";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { PageHeaderActionButton } from "@/components/layout/app-layout";
 import DashboardSection from "@/components/section-dashboard";
@@ -8,7 +9,7 @@ import { Can } from "@/domain/permissions/components/can";
 import { routes } from "@/utils/navigation";
 import { CreateOrganizationSheet } from "./create-organization-sheet";
 import { OrganizationsList } from "./organizations-list";
-import { OrganizationsListStats } from "./organizations-list-stats";
+import { OrganizationsListInvitations } from "./organizations-list-invitations";
 
 /**
  * Studio home (#299): the org list. `/new` renders the same page with the
@@ -20,6 +21,7 @@ export function OrganizationsPageClient({
   createRoute?: boolean;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [createOpen, setCreateOpen] = useState(createRoute);
 
   const closeCreate = useCallback(() => {
@@ -32,6 +34,20 @@ export function OrganizationsPageClient({
   const openCreate = useCallback(() => {
     setCreateOpen(true);
   }, []);
+  const activeTab = searchParams.get("tab") === "invites" ? "invites" : "all";
+  const setActiveTab = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(window.location.search);
+      if (value === "invites") params.set("tab", value);
+      else params.delete("tab");
+      const query = params.toString();
+      router.replace(
+        (query ? `${routes.home()}?${query}` : routes.home()) as Route,
+        { scroll: false },
+      );
+    },
+    [router],
+  );
 
   return (
     <>
@@ -47,9 +63,18 @@ export function OrganizationsPageClient({
             />
           </Can>
         }
-        stats={<OrganizationsListStats />}
+        tabs={[
+          { value: "all", label: "All" },
+          { value: "invites", label: "Invitations" },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       >
-        <OrganizationsList onCreateOrganization={openCreate} />
+        {activeTab === "invites" ? (
+          <OrganizationsListInvitations />
+        ) : (
+          <OrganizationsList onCreateOrganization={openCreate} />
+        )}
       </DashboardSection>
       <CreateOrganizationSheet
         open={createOpen}

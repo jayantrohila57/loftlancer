@@ -9,16 +9,6 @@ import type {
   OrganizationsTypeFilter,
 } from "../lib/filter-organizations";
 
-const VIEW_STORAGE_KEY = "loftlancer-organizations-view";
-
-export type OrganizationsViewMode = "grid" | "list";
-
-function readStoredView(): OrganizationsViewMode {
-  if (typeof window === "undefined") return "list";
-  const stored = window.localStorage.getItem(VIEW_STORAGE_KEY);
-  return stored === "grid" ? "grid" : "list";
-}
-
 function parseType(value: string | null): OrganizationsTypeFilter {
   if (value === "personal" || value === "team") return value;
   return "all";
@@ -29,11 +19,6 @@ function parseSort(value: string | null): OrganizationsSort {
   return "name-asc";
 }
 
-function parseView(value: string | null): OrganizationsViewMode {
-  if (value === "grid" || value === "list") return value;
-  return readStoredView();
-}
-
 export function useOrganizationsListParams() {
   const router = useRouter();
   const pathname = usePathname();
@@ -42,7 +27,6 @@ export function useOrganizationsListParams() {
   const urlSearch = searchParams.get("q") ?? "";
   const type = parseType(searchParams.get("type"));
   const sort = parseSort(searchParams.get("sort"));
-  const view = parseView(searchParams.get("view"));
 
   const replaceParams = useCallback(
     (mutate: (params: URLSearchParams) => void) => {
@@ -88,23 +72,12 @@ export function useOrganizationsListParams() {
     [replaceParams],
   );
 
-  const setView = useCallback(
-    (value: OrganizationsViewMode) => {
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(VIEW_STORAGE_KEY, value);
-      }
-      replaceParams((params) => {
-        params.set("view", value);
-      });
-    },
-    [replaceParams],
-  );
-
   const clearFilters = useCallback(() => {
     replaceParams((params) => {
       params.delete("q");
       params.delete("type");
       params.delete("sort");
+      params.delete("view");
     });
   }, [replaceParams]);
 
@@ -117,11 +90,9 @@ export function useOrganizationsListParams() {
     search,
     type,
     sort,
-    view,
     setSearch,
     setType,
     setSort,
-    setView,
     clearFilters,
     filtersActive,
   };

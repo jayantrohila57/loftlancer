@@ -307,6 +307,7 @@ export function PageHeaderLayout({
   tabs: ReactNode;
 }) {
   const hasBack = back != null;
+  const hasMeta = meta != null && meta !== false;
   return (
     <header className={pageHeaderRootClass} data-slot="page-header">
       <PageHeaderTopRow
@@ -316,12 +317,14 @@ export function PageHeaderLayout({
         description={description}
         actions={actions}
       />
-      <div
-        className={pageHeaderMetaRowClass(hasBack)}
-        data-slot="page-header-meta"
-      >
-        {meta}
-      </div>
+      {hasMeta ? (
+        <div
+          className={pageHeaderMetaRowClass(hasBack)}
+          data-slot="page-header-meta"
+        >
+          {meta}
+        </div>
+      ) : null}
       {tabs}
     </header>
   );

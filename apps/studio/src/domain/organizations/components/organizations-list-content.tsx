@@ -6,11 +6,9 @@ import { useCallback, useMemo, useState } from "react";
 import { runDataTableClearAllFilters } from "@/components/data-table/run-data-table-clear-all-filters";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { FilteredListNoResultsEmpty } from "@/components/patterns/filtered-list-no-results-empty";
-import { ProjectsViewToggle } from "@/domain/projects/components/projects-view-toggle";
 import { cn } from "@/lib/utils";
 import { useOrganizationsListParams } from "../hooks/use-organizations-list-params";
 import { filterAndSortOrganizations } from "../lib/filter-organizations";
-import { OrganizationsGridView } from "./organizations-grid-view";
 import { OrganizationsListFiltersBar } from "./organizations-list-filters";
 import { OrganizationsTableView } from "./organizations-table-view";
 
@@ -60,23 +58,12 @@ export function OrganizationsListContent() {
             tableLoading={filterTableLoading}
           />
         }
-        trailing={
-          <ProjectsViewToggle
-            view={params.view}
-            onViewChange={params.setView}
-          />
-        }
       />
 
       {filtered.length === 0 ? (
         params.filtersActive ? (
           emptyNoResults
         ) : null
-      ) : params.view === "grid" ? (
-        <OrganizationsGridView
-          orgs={filtered}
-          activeOrganizationId={activeOrganizationId}
-        />
       ) : (
         <OrganizationsTableView
           orgs={filtered}
