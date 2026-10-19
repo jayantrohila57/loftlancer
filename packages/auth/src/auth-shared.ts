@@ -25,6 +25,7 @@ import { admin } from "better-auth/plugins/admin";
 import { eq } from "drizzle-orm";
 import { writeAuthAuditEvent } from "./audit-event";
 import { resolveDefaultActiveOrganizationId } from "./bootstrap-active-organization";
+import { cleanupOrganizationMemberAccess } from "./organization-member-removal";
 import { sessionCookieMigrationPlugin } from "./session-cookie-migration-plugin";
 import { LOFTLANCER_COOKIE_PREFIX } from "./session-cookies";
 
@@ -284,6 +285,10 @@ export function organizationPlugin() {
           organization: org,
         }) => {
           if (!org) return;
+          await cleanupOrganizationMemberAccess({
+            organizationId: org.id,
+            userId: memberRow.userId,
+          });
           await writeAuthAuditEvent({
             action: "member.remove",
             result: "success",

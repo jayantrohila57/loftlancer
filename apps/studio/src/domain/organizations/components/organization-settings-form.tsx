@@ -1,5 +1,6 @@
 "use client";
 
+import { getMemberRemovalBlockReason } from "@loftlancer/auth/member-removal-policy";
 import { Button } from "@loftlancer/ui/button";
 import {
   Empty,
@@ -207,6 +208,13 @@ export function OrganizationSettingsForm({
   const [leavePending, setLeavePending] = useState(false);
   const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [roleConfirmOpen, setRoleConfirmOpen] = useState(false);
+  const [memberRemovalConfirmOpen, setMemberRemovalConfirmOpen] =
+    useState(false);
+  const [memberRemovalPendingId, setMemberRemovalPendingId] = useState<
+    string | null
+  >(null);
+  const [pendingMemberRemoval, setPendingMemberRemoval] =
+    useState<MemberRow | null>(null);
   const [pendingRoleChange, setPendingRoleChange] = useState<{
     memberId: string;
     role: string;
@@ -221,6 +229,7 @@ export function OrganizationSettingsForm({
   const canInvite = assignableInviteRoles(myMembership?.role).length > 0;
   const isPersonal = isPersonalOrganization({ metadata: orgMetadata });
   const pendingInvitations = pendingOrganizationInvitations(invitations);
+  const ownerCount = members.filter((member) => member.role === "owner").length;
 
   const editDraftDirty = isOrganizationProfileEditDirty(
     editDraftName,
@@ -394,6 +403,54 @@ export function OrganizationSettingsForm({
       // Toast handled by toast.promise
     } finally {
       setRolePendingId(null);
+    }
+  };
+
+  const requestMemberRemoval = (member: MemberRow) => {
+    const blockReason = getMemberRemovalBlockReason({
+      actorUserId: currentUserId ?? "",
+      targetUserId: member.user.id ?? "",
+      targetRole: member.role,
+      activeOwnerCount: ownerCount,
+    });
+    if (blockReason) {
+      toast.error(
+        blockReason === "self"
+          ? "Use Leave organization to remove yourself."
+          : "Transfer ownership before removing the only owner.",
+      );
+      return;
+    }
+    setPendingMemberRemoval(member);
+    setMemberRemovalConfirmOpen(true);
+  };
+
+  const handleMemberRemoval = async () => {
+    const member = pendingMemberRemoval;
+    const memberIdOrEmail = member?.user.id ?? member?.user.email;
+    if (!member || !memberIdOrEmail) return;
+
+    setMemberRemovalPendingId(member.id);
+    try {
+      const result = await authClient.organization.removeMember({
+        memberIdOrEmail,
+        organizationId,
+      });
+      if (result.error) {
+        throw new Error(result.error.message ?? "Could not remove member");
+      }
+      toast.success(`Removed ${member.user.name || member.user.email}`);
+      setMemberRemovalConfirmOpen(false);
+      setPendingMemberRemoval(null);
+      await loadOrganization(organizationId);
+      void invalidateAfterOrganizationChange(queryClient);
+      await refreshOrganizations();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Could not remove member",
+      );
+    } finally {
+      setMemberRemovalPendingId(null);
     }
   };
 
@@ -725,6 +782,9 @@ export function OrganizationSettingsForm({
                     roleSelectItems={ROLE_SELECT_ITEMS}
                     isOwner={isOwner}
                     rolePendingId={rolePendingId}
+                    currentUserId={currentUserId}
+                    removalPendingId={memberRemovalPendingId}
+                    onRemove={requestMemberRemoval}
                     onRoleChange={(memberId, role) => {
                       const member = members.find((m) => m.id === memberId);
                       requestRoleChange(
@@ -976,6 +1036,26 @@ export function OrganizationSettingsForm({
         confirmLabel="Update role"
         onConfirm={handleRoleChange}
         isPending={rolePendingId !== null}
+      />
+
+      <ConfirmDialog
+        open={memberRemovalConfirmOpen}
+        onOpenChange={(open) => {
+          setMemberRemovalConfirmOpen(open);
+          if (!open && memberRemovalPendingId === null) {
+            setPendingMemberRemoval(null);
+          }
+        }}
+        title="Remove organization member"
+        description={
+          pendingMemberRemoval
+            ? `Remove ${pendingMemberRemoval.user.name || pendingMemberRemoval.user.email} from ${orgName}? They will lose access to this organization’s teams and projects.`
+            : "Confirm member removal."
+        }
+        confirmLabel="Remove member"
+        variant="destructive"
+        onConfirm={handleMemberRemoval}
+        isPending={memberRemovalPendingId !== null}
       />
 
       <ConfirmDialog
