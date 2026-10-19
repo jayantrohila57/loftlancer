@@ -16,6 +16,14 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Routine pull requests run fast CI checks while release validation retains the full build and accessibility suite (#487)
+
+### Fixed
+
+- Automated release publishing configures the Git identity needed to create its version tag (#487)
+
 ## [1.13.0] - 2026-10-19
 
 ### Changed
