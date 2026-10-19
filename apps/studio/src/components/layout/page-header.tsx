@@ -50,6 +50,8 @@ export type PageHeaderTab = {
 export type PageHeaderTabsProps = {
   /** Defaults to a single "All" tab. */
   tabs?: PageHeaderTab[];
+  /** Hide the tabs row when a page has no meaningful section navigation. */
+  hideTabs?: boolean;
   activeTab?: string;
   onTabChange?: (value: string) => void;
   /** Right side of the tabs row (filters, view toggles…). */
@@ -117,6 +119,7 @@ export function PageHeader({
   activeTab,
   onTabChange,
   tabsEnd,
+  hideTabs,
 }: {
   title: string;
   titleAccessory?: ReactNode;
@@ -145,12 +148,14 @@ export function PageHeader({
       actions={action}
       meta={meta ?? metadata}
       tabs={
-        <PageHeaderTabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={onTabChange}
-          tabsEnd={tabsEnd}
-        />
+        hideTabs ? null : (
+          <PageHeaderTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={onTabChange}
+            tabsEnd={tabsEnd}
+          />
+        )
       }
     />
   );

@@ -10,7 +10,6 @@ import { useOrgSlug } from "@/utils/use-route-scope";
 import { useProjects } from "../hooks/use-projects";
 import { CreateProjectSheet } from "./create-project-sheet";
 import ProjectList from "./project-list";
-import { ProjectsListStats } from "./projects-list-stats";
 
 export function ProjectsPageClient({
   createRoute = false,
@@ -47,12 +46,12 @@ export function ProjectsPageClient({
         title="Projects"
         description="All workspace projects in one searchable list."
         back={false}
+        hideTabs
         action={
           <Can action="project.create">
             <PageHeaderActionButton label="New project" onClick={openCreate} />
           </Can>
         }
-        stats={<ProjectsListStats list={projectsList} />}
       >
         <ProjectList list={projectsList} onCreateProject={openCreate} />
       </DashboardSection>

@@ -26,6 +26,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Team lifecycle mutations validate organization membership, repair member counts, preserve audit history, and revoke deleted-team access (#469)
 - Team members invited or added after a team is linked to a project receive its default read grants (#469)
 - Project permissions require active organization members and same-organization teams; deleted teams no longer grant project access (#470)
+- Project pages keep shared project identity and actions in one header, move app navigation into the Apps view, and compact the project directory (#481)
 
 ## [1.12.6] - 2026-10-19
 

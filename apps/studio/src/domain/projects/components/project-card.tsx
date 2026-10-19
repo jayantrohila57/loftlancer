@@ -27,22 +27,22 @@ import { ProjectActions } from "./project-actions";
 export function ProjectCard({ project }: { project: ProjectOutput }) {
   const org = useOrgSlug();
   const href = routes.project(org, project.slug);
-  const description = project.description?.trim() || "No description";
+  const description = project.description?.trim();
 
   return (
-    <Card className="flex h-full w-full min-w-0 flex-col">
-      <CardHeader className="gap-2 p-4 pb-2">
-        <div className="flex items-start gap-3">
-          <Avatar className="size-9 shrink-0">
+    <Card className="w-full min-w-0">
+      <CardHeader className="gap-2 p-3 pb-2">
+        <div className="flex min-w-0 items-start gap-2.5">
+          <Avatar className="size-8 shrink-0">
             <AvatarFallback className="bg-muted font-medium text-xs">
               {initialsFromLabel(project.name, "PR")}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <div className="flex items-start justify-between gap-2">
+            <div className="flex min-w-0 items-start gap-2">
               <Link
                 href={href}
-                className="truncate font-medium text-sm leading-tight hover:underline"
+                className="min-w-0 flex-1 truncate font-medium text-sm leading-tight hover:underline"
                 onMouseEnter={() =>
                   prefetchProjectDetail(queryClient, project.slug)
                 }
@@ -50,14 +50,15 @@ export function ProjectCard({ project }: { project: ProjectOutput }) {
               >
                 {project.name}
               </Link>
-              <ProjectActions project={project} />
+              <div className="shrink-0">
+                <ProjectActions project={project} />
+              </div>
             </div>
-            <p
-              className="mt-1 line-clamp-2 text-muted-foreground text-xs"
-              title={description}
-            >
-              {description}
-            </p>
+            {description ? (
+              <p className="mt-1 line-clamp-2 text-muted-foreground text-xs">
+                {description}
+              </p>
+            ) : null}
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
               <VisibilityBadge isPublic={project.isPublic} />
               {project.isArchived ? (
@@ -69,7 +70,7 @@ export function ProjectCard({ project }: { project: ProjectOutput }) {
           </div>
         </div>
       </CardHeader>
-      <CardPanel className="mt-auto flex flex-wrap items-center justify-between gap-2 px-4 pt-0 pb-4 text-muted-foreground text-xs">
+      <CardPanel className="flex flex-wrap items-center justify-between gap-2 px-3 pt-1 pb-3 text-muted-foreground text-xs">
         <span className="tabular-nums">
           Updated <LocalDateTime value={project.updatedAt} />
         </span>
