@@ -71,7 +71,6 @@ export function EnvironmentsTabsView({
 }: EnvironmentsTabsViewProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [createOpen, setCreateOpen] = useState(false);
 
   const resolvedActive =
     activeTab && environments.some((e) => e.id === activeTab)
@@ -190,10 +189,6 @@ export function EnvironmentsTabsView({
                   <TooltipContent>Environment actions</TooltipContent>
                 </Tooltip>
                 <MenuPopup align="end">
-                  <MenuItem onClick={() => setCreateOpen(true)}>
-                    <AppIcon name="plus" className="me-2 text-foreground" />
-                    Add environment
-                  </MenuItem>
                   <MenuItem onClick={() => setEditOpen(true)}>
                     <AppIcon name="edit" className="me-2 text-foreground" />
                     Rename
@@ -224,15 +219,6 @@ export function EnvironmentsTabsView({
           ))}
         </div>
       </Tabs>
-
-      <CreateEnvironmentSheet
-        onConfirm={onCreate}
-        isPending={isCreating}
-        triggerText="Add environment"
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        hideTrigger
-      />
 
       {activeEnvironment ? (
         <>

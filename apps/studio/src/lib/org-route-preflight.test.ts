@@ -119,6 +119,7 @@ describe("route tables match the [org] folder", () => {
       "[project]/[app]/settings",
       "[project]/env/[envSlug]",
       "[project]/tasks/[taskNumber]",
+      "teams/[teamId]",
     ]);
     assert.deepEqual(orgPages(), [...known].sort());
   });

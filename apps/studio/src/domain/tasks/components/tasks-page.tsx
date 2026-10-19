@@ -324,17 +324,9 @@ export function TasksPage({ slug }: { slug: string }) {
           empty: {
             icon: ListTodo,
             title: "No tasks yet",
-            description: "Create the first task for this project.",
-            action: canCreate.allowed ? (
-              <Button
-                size="sm"
-                className="h-8"
-                onClick={() => setCreateOpen(true)}
-              >
-                <Plus className="size-4" aria-hidden />
-                New task
-              </Button>
-            ) : undefined,
+            description: canCreate.allowed
+              ? "Create the first task for this project with New task."
+              : "Tasks will appear here when someone creates them.",
           },
           noResults: {
             title: "No matching tasks",

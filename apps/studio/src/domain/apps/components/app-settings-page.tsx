@@ -7,7 +7,6 @@ import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import DashboardSection from "@/components/section-dashboard";
 import { FieldSelect } from "@/domain/tasks/components/field-select";
@@ -73,11 +72,15 @@ export function AppSettingsPage({
           title={app ? `${app.name} isn't installed` : "Unknown app"}
           description={
             app
-              ? "Install it from the Apps page to configure it."
+              ? canManage
+                ? "Install it from the Apps page to configure it."
+                : "Ask a project manager to install this app."
               : "This app doesn't exist."
           }
-          actionLabel="Go to Apps"
-          actionHref={routes.projectSection(org, slug, "apps")}
+          actionLabel={canManage ? "Go to Apps" : undefined}
+          actionHref={
+            canManage ? routes.projectSection(org, slug, "apps") : undefined
+          }
         />
       </DashboardSection>
     );
@@ -92,21 +95,14 @@ export function AppSettingsPage({
   const customized = app.settingsSchema.some(
     (d) => app.settings[d.key] !== d.default,
   );
-  const openHref = routes.app(org, slug, app.nav[0]?.path ?? app.id);
-
   return (
     <DashboardSection
-      title={`${app.name} settings`}
+      title={`Settings for ${app.name}`}
       description={
         project ? `Configure ${app.name} for ${project.name}.` : undefined
       }
       back={false}
       hideTabs
-      action={
-        <Button size="sm" variant="outline" render={<Link href={openHref} />}>
-          Open {app.name}
-        </Button>
-      }
     >
       <div className="flex max-w-3xl flex-col gap-4">
         <section className={cardClass}>
