@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Organization and project shells reuse server-verified scope identity and clear only scoped query caches when switching organizations (#500)
+
 ## [1.13.2] - 2026-10-19
 
 ### Fixed
