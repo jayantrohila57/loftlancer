@@ -1,13 +1,11 @@
 "use client";
 
 import type { ProjectOutput } from "@loftlancer/api/types";
-import { Button } from "@loftlancer/ui/button";
 import { DataTableToolbar } from "@loftlancer/ui/data-table/data-table-toolbar";
 import { layoutSectionStackClass } from "@loftlancer/ui/layout-spacing";
 import { useCallback, useMemo, useState } from "react";
 import { projectsTableEmpty } from "@/components/data-table/data-table-empty-presets";
 import { runDataTableClearAllFilters } from "@/components/data-table/run-data-table-clear-all-filters";
-import { AppIcon } from "@/components/patterns/app-icon";
 import { FilteredListNoResultsEmpty } from "@/components/patterns/filtered-list-no-results-empty";
 import { cn } from "@/lib/utils";
 import { useProjectsListParams } from "../hooks/use-projects-list-params";
@@ -23,13 +21,9 @@ import { ProjectsViewToggle } from "./projects-view-toggle";
 
 type ProjectsListContentProps = {
   projects: ProjectOutput[];
-  onCreateProject?: () => void;
 };
 
-export function ProjectsListContent({
-  projects,
-  onCreateProject,
-}: ProjectsListContentProps) {
+export function ProjectsListContent({ projects }: ProjectsListContentProps) {
   const params = useProjectsListParams();
   const [filterTableLoading, setFilterTableLoading] = useState(false);
 
@@ -78,18 +72,6 @@ export function ProjectsListContent({
       }),
     [params.search, params.sort, params.status, params.visibility, projects],
   );
-
-  const newProjectButton = onCreateProject ? (
-    <Button
-      type="button"
-      size="sm"
-      className="gap-1.5"
-      onClick={onCreateProject}
-    >
-      <AppIcon name="plus" className="text-current" />
-      New project
-    </Button>
-  ) : null;
 
   const emptyNoResults = (
     <FilteredListNoResultsEmpty title="No matching projects" />
@@ -140,8 +122,7 @@ export function ProjectsListContent({
           searchable={false}
           isLoading={filterTableLoading}
           filterActive={params.filtersActive}
-          onCreateProject={onCreateProject}
-          empty={projectsTableEmpty(newProjectButton ?? undefined)}
+          empty={projectsTableEmpty()}
         />
       )}
     </div>

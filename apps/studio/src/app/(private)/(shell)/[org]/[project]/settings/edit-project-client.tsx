@@ -7,7 +7,6 @@ import DashboardSection from "@/components/section-dashboard";
 import { ProjectDetailSkeleton } from "@/domain/environments/components/skeletons";
 import { ProjectDetailStats } from "@/domain/projects/components/project-detail-stats";
 import { ProjectSettingsSection } from "@/domain/projects/components/project-settings-section";
-import { useProjectTabs } from "@/domain/projects/hooks/use-project-tabs";
 import { trpc } from "@/utils/trpc";
 
 const EditProject = dynamic(
@@ -31,14 +30,13 @@ export default function EditProjectClient({ slug }: EditProjectClientProps) {
   });
 
   const project = projectBySlug?.data?.project;
-  const projectTabs = useProjectTabs(slug);
-
   if (isLoading) {
     return (
       <DashboardSection
-        {...projectTabs}
-        title="Settings"
+        title="Project settings"
         description="Update project information and settings."
+        back={false}
+        hideTabs
         stats={<ProjectDetailStats slug={slug} />}
       >
         <ProjectDetailSkeleton />
@@ -52,9 +50,10 @@ export default function EditProjectClient({ slug }: EditProjectClientProps) {
 
   return (
     <DashboardSection
-      {...projectTabs}
-      title="Settings"
+      title="Project settings"
       description="Update project information and settings."
+      back={false}
+      hideTabs
       stats={<ProjectDetailStats slug={slug} />}
     >
       <div className="flex flex-col gap-4">

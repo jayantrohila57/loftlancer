@@ -13,14 +13,10 @@ import { ProjectsListContent } from "./projects-list-content";
 import { ProjectsSkeleton } from "./skeletons";
 
 interface ProjectListProps {
-  onCreateProject?: () => void;
   list?: ReturnType<typeof useProjects>;
 }
 
-export default function ProjectList({
-  onCreateProject,
-  list,
-}: ProjectListProps) {
+export default function ProjectList({ list }: ProjectListProps) {
   const internal = useProjects();
   const { projects, status, error, refetch } = list ?? internal;
   const { unassigned, isLoading: unassignedLoading } = useUnassignedOrgMember();
@@ -52,16 +48,9 @@ export default function ProjectList({
           icon={appIcons.project}
           title="No projects yet"
           description="Create a project to manage environments and variables."
-          actionLabel="New project"
-          onAction={onCreateProject}
         />
       );
     case "success":
-      return (
-        <ProjectsListContent
-          projects={projects}
-          onCreateProject={onCreateProject}
-        />
-      );
+      return <ProjectsListContent projects={projects} />;
   }
 }
