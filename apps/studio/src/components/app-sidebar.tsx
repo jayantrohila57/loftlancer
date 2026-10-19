@@ -1,6 +1,7 @@
 "use client";
 
 import { type PlatformNavKey, platformNav } from "@loftlancer/actions/nav";
+import { MAX_SIDEBAR_FAVORITES } from "@loftlancer/api/sidebar-favorites";
 import {
   NavCountBadge,
   SidebarBrand,
@@ -34,10 +35,11 @@ import {
   FolderClosedIcon,
   LifeBuoyIcon,
   SparklesIcon,
+  UsersRound,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { OrgSwitcher } from "@/components/org/org-switcher";
 import { useSidebarNavigator } from "@/components/sidebar/use-sidebar-navigator";
@@ -71,6 +73,8 @@ const footerLinks = [
 const projectHref = (org: string, slug: string) => routes.project(org, slug);
 const envHref = (org: string, p: string, e: string) => routes.env(org, p, e);
 const memberHref = (org: string) => routes.orgSection(org, "members");
+const teamsHref = (org: string, teamId?: string) =>
+  `${routes.orgSection(org, "teams")}${teamId ? `?team=${encodeURIComponent(teamId)}` : ""}`;
 
 const navIcons: Record<PlatformNavKey, LucideIcon> = {
   organizations: Building2,
@@ -82,6 +86,7 @@ const navIcons: Record<PlatformNavKey, LucideIcon> = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const scope = useRouteScope();
   const settingsLinks = [
     { label: "Account settings", href: accountSettingsHref },
@@ -94,8 +99,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     projectHref,
     envHref,
     memberHref,
+    teamHref: teamsHref,
     settingsLinks,
   });
+  const teams =
+    nav.groups.find((group) => group.heading === "Teams")?.items ?? [];
   const orgSlug = scope.org ?? nav.organizationSlug;
   const navigate = (href: string) => {
     if (/^https?:/.test(href)) window.location.assign(href);
@@ -226,12 +234,49 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           )}
         />
 
+        {orgSlug ? (
+          <SidebarGroup>
+            <SidebarGroupLabel>Teams</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={pathname.startsWith(teamsHref(orgSlug))}
+                    tooltip="Teams"
+                    render={<Link href={teamsHref(orgSlug) as Route} />}
+                  >
+                    <UsersRound />
+                    <span>Manage teams</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                {teams.map((item) => (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      isActive={
+                        pathname === teamsHref(orgSlug) &&
+                        searchParams.get("team") === item.id.slice(2)
+                      }
+                      tooltip={item.label}
+                      render={<Link href={item.href as Route} />}
+                    >
+                      <UsersRound />
+                      <span>{item.label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ) : null}
+
         <SidebarSeparator className="mx-2" />
 
         <SidebarProjectsGroup
           isPinned={nav.isPinned}
           onTogglePin={nav.togglePin}
           pinPending={nav.pinPending}
+          favoriteCount={nav.favoriteCount}
+          favoriteLimit={MAX_SIDEBAR_FAVORITES}
           projects={projects}
           projectsLoading={projectsLoading}
           status={status}

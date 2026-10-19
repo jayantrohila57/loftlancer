@@ -12,7 +12,8 @@ import {
 import { Input } from "@loftlancer/ui/input";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { FormField } from "@/components/patterns/form-field";
 import { GuardedDialog } from "@/components/patterns/guarded-dialog";
@@ -21,6 +22,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { isTeamCreateFormDirty } from "@/lib/form-dirty";
 import { appIcons } from "@/lib/icons";
 import { toast } from "@/lib/toast";
+import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { OrganizationSectionPage } from "./organization-section-page";
@@ -30,6 +32,8 @@ type TeamRow = { id: string; name: string };
 
 export function OrganizationTeamsPage({ slug }: { slug: string }) {
   const { organization, status: orgStatus } = useOrganizationBySlug(slug);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const closeWithoutPromptRef = useRef<(() => void) | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
@@ -84,6 +88,25 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
   );
 
   const teams = teamsQuery.data?.items ?? [];
+  const sidebarTeamId = searchParams.get("team");
+
+  useEffect(() => {
+    if (!sidebarTeamId || teamsQuery.isPending) return;
+    const team = teams.find((item) => item.id === sidebarTeamId);
+    if (team) setMembersTeam(team);
+  }, [sidebarTeamId, teams, teamsQuery.isPending]);
+
+  const closeMembers = () => {
+    setMembersTeam(null);
+    if (!sidebarTeamId) return;
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("team");
+    const query = params.toString();
+    router.replace(
+      `${routes.orgSection(slug, "teams")}${query ? `?${query}` : ""}`,
+      { scroll: false },
+    );
+  };
   const { confirm, ConfirmDialog: confirmOutlet } = useConfirm();
 
   return (
@@ -290,7 +313,7 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
           team={membersTeam}
           open={Boolean(membersTeam)}
           onOpenChange={(open) => {
-            if (!open) setMembersTeam(null);
+            if (!open) closeMembers();
           }}
         />
       ) : null}

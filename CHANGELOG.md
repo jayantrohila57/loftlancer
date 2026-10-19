@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Changed
 
 - Studio sidebar footer includes product updates, help and support links, copyright, and the current version (#483)
+- Sidebar favorites are limited to three, a Teams section links to organization teams, and the duplicate account footer is removed (#473)
 
 ### Fixed
 

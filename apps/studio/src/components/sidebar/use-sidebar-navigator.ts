@@ -6,6 +6,7 @@ import type {
 } from "@loftlancer/ui/patterns/sidebar-kit";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
 import { useNavigatorQuery } from "./use-navigator-query";
 
@@ -17,6 +18,7 @@ export function useSidebarNavigator(opts: {
   projectHref: (orgSlug: string, slug: string) => string;
   envHref: (orgSlug: string, projectSlug: string, envSlug: string) => string;
   memberHref: (orgSlug: string, userId: string) => string;
+  teamHref: (orgSlug: string, teamId?: string) => string;
   settingsLinks: { label: string; href: string }[];
 }) {
   const qc = useQueryClient();
@@ -26,10 +28,14 @@ export function useSidebarNavigator(opts: {
     trpc.sidebar.pin.mutationOptions({
       onSettled: () =>
         qc.invalidateQueries({ queryKey: trpc.sidebar.navigator.pathKey() }),
+      onError: (error) =>
+        toast.error("Could not update favorites", {
+          description: error.message,
+        }),
     }),
   );
 
-  const { projectHref, envHref, memberHref, settingsLinks } = opts;
+  const { projectHref, envHref, memberHref, teamHref, settingsLinks } = opts;
   const org = data?.organizationSlug ?? "";
   const groups = useMemo<CommandGroup[]>(() => {
     const projects = org ? (data?.projects ?? []) : [];
@@ -42,6 +48,16 @@ export function useSidebarNavigator(opts: {
           label: p.name,
           href: projectHref(org, p.slug),
           keywords: p.slug,
+        })),
+      },
+      {
+        heading: "Teams",
+        icon: "member",
+        items: (data?.teams ?? []).map((team) => ({
+          id: `t:${team.id}`,
+          label: team.name,
+          href: org ? teamHref(org, team.id) : "/studio",
+          keywords: "team organization",
         })),
       },
       {
@@ -79,7 +95,7 @@ export function useSidebarNavigator(opts: {
         ),
       },
     ];
-  }, [data, org, projectHref, envHref, memberHref, settingsLinks]);
+  }, [data, org, projectHref, envHref, memberHref, teamHref, settingsLinks]);
 
   const pins = data?.pins ?? [];
   const favorites = useMemo<FavoriteProject[]>(() => {
@@ -114,6 +130,7 @@ export function useSidebarNavigator(opts: {
     loading: query.isPending,
     groups,
     favorites,
+    favoriteCount: pins.length,
     counts: data?.counts,
     organizationSlug: data?.organizationSlug ?? null,
     isPinned: (projectId: string) => pins.includes(projectId),
