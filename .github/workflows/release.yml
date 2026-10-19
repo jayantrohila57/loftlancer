@@ -1,0 +1,220 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semantic version bump for the release batch
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - CHANGELOG.md
+      - package.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prepare-release:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Set up Node and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.11.2
+
+      - name: Prepare version and changelog
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          node scripts/release/prepare.mjs "$BUMP"
+          pnpm release:check origin/main
+
+      - name: Create release PR to dev
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          branch="chore/release-v${version}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "Branch $branch already exists; resolve or close its existing release PR before retrying." >&2
+            exit 1
+          fi
+
+          git switch -c "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json CHANGELOG.md
+          git commit -m "chore(release): v${version}"
+          git push origin "$branch"
+
+          cat > "$RUNNER_TEMP/release-pr.md" <<EOF
+          ## Release v${version}
+
+          This PR was prepared by the Release workflow from the selected semver bump.
+
+          Review the dated changelog entry, then merge this PR into the dev branch. Once it is integrated and quality CI passes, the workflow opens the production release PR to main.
+          EOF
+          gh pr create \
+            --base dev \
+            --head "$branch" \
+            --title "chore(release): v${version}" \
+            --body-file "$RUNNER_TEMP/release-pr.md"
+
+          echo "Prepared and opened release PR for v${version}." >> "$GITHUB_STEP_SUMMARY"
+
+  detect-dev-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    outputs:
+      is_release: ${{ steps.detect.outputs.is_release }}
+      version: ${{ steps.detect.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Node and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.11.2
+      - name: Detect and validate a release version
+        id: detect
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          import { compareSemver, readVersion } from './scripts/release/changelog.mjs';
+
+          const current = JSON.parse(execFileSync('git', ['show', 'origin/main:package.json'], { encoding: 'utf8' })).version;
+          const next = readVersion();
+          appendFileSync(process.env.GITHUB_OUTPUT, `version=${next}\n`);
+          if (compareSemver(next, current) <= 0) {
+            appendFileSync(process.env.GITHUB_OUTPUT, 'is_release=false\n');
+            console.log(`No release version on dev (${next}; main is ${current}).`);
+            process.exit(0);
+          }
+
+          execFileSync(process.execPath, ['scripts/release/check.mjs', 'origin/main'], { stdio: 'inherit' });
+          appendFileSync(process.env.GITHUB_OUTPUT, 'is_release=true\n');
+          NODE
+
+  quality:
+    needs: detect-dev-release
+    if: needs.detect-dev-release.outputs.is_release == 'true'
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  open-production-release:
+    needs: [detect-dev-release, quality]
+    if: needs.detect-dev-release.outputs.is_release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Node and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.11.2
+      - name: Revalidate and open dev-to-main release PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch origin main dev
+          if [ "$(git rev-parse origin/dev)" != "$GITHUB_SHA" ]; then
+            echo "dev advanced while release validation was running; a new workflow run will validate the latest commit." >&2
+            exit 1
+          fi
+          git fetch origin main
+          pnpm release:check origin/main
+          version="$(node -p "require('./package.json').version")"
+          existing="$(gh pr list --base main --head dev --state open --json url --jq '.[0].url // empty')"
+          if [ -n "$existing" ]; then
+            echo "Release PR already exists: $existing" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { changelogSection, readVersion } from './scripts/release/changelog.mjs';
+
+          const version = readVersion();
+          const changelog = readFileSync('CHANGELOG.md', 'utf8');
+          const section = changelogSection(changelog, version);
+          if (!section) throw new Error(`Missing changelog section for ${version}`);
+          const issues = [...new Set([...section.matchAll(/#(\d+)/g)].map((match) => match[1]))];
+          const references = issues.map((number) => `Fixes #${number}`).join('\n');
+          const body = [
+            `## Production release v${version}`,
+            '',
+            'Promotes the validated `dev` release to production. Merging this PR updates `main`, which triggers the production deployment and publishes the matching Git tag and GitHub Release.',
+            '',
+            `Quality CI and release validation passed in [workflow run](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}).`,
+            '',
+            references,
+          ].filter(Boolean).join('\n');
+          writeFileSync(process.env.RUNNER_TEMP + '/production-release-pr.md', body + '\n');
+          NODE
+
+          gh pr create \
+            --base main \
+            --head dev \
+            --title "Release v${version}" \
+            --body-file "$RUNNER_TEMP/production-release-pr.md"
+
+  publish-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Set up Node and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.11.2
+      - name: Publish tag and GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: pnpm release:publish

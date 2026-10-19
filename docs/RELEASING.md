@@ -35,7 +35,17 @@ Write for users: what changed, not how.
 
 ## Release procedure
 
-1. On a branch from `dev` (e.g. `chore/release-v1.9.0`), run:
+The GitHub Actions **Release** workflow automates the repeatable parts. From
+the Actions tab, run **Release** on the default branch and choose `patch`,
+`minor`, or `major`. It prepares a dated changelog/version branch from `dev`
+and opens a release PR to `dev`. After that PR is reviewed and merged, the
+workflow validates the version and changelog, runs the shared CI workflow on
+the integrated `dev` commit, and opens a `dev` → `main` release PR. Review and
+merge that production PR to deploy. A push to `main` automatically publishes
+the matching tag and GitHub Release.
+
+The automated and manual procedures use the same release scripts. To prepare a
+release locally instead, on a branch from `dev` (e.g. `chore/release-v1.9.0`), run:
 
    ```bash
    pnpm release:prepare minor   # or major / patch
@@ -49,7 +59,8 @@ Write for users: what changed, not how.
    fails if the version is not above `main`'s or the changelog has no dated
    section for it.
 4. Merge the PR. That push to `main` is the one production deploy.
-5. Tag and publish from an up-to-date checkout:
+5. Tag and publish from an up-to-date checkout (normally automated after the
+   `main` merge):
 
    ```bash
    pnpm release:publish
@@ -60,6 +71,14 @@ Write for users: what changed, not how.
 
 Tags and GitHub Releases never deploy: `vercel.json` enables Git deployments
 for the `main` branch only, and CI does not run on tags.
+
+The workflow uses GitHub's built-in `GITHUB_TOKEN`; it adds no repository
+package dependency or long-lived personal token. PRs it creates do not trigger
+another `pull_request` workflow, so it runs the shared CI workflow on `dev`
+before opening the production PR. The production PR still requires a human
+merge decision. Repository Actions settings must allow workflows to create
+pull requests and grant the workflow the `contents: write` and
+`pull-requests: write` permissions declared in the workflow.
 
 ## Where the version shows
 

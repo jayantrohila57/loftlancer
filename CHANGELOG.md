@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- GitHub Actions automates release preparation, promotion PRs, and GitHub Release publishing while retaining a human production merge gate (#459)
+
 ## [1.12.5] - 2026-10-19
 
 ### Fixed
