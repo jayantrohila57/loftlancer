@@ -2,19 +2,14 @@
 
 import type { ProjectOutput } from "@loftlancer/api/types";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
 import { Tabs, TabsList, TabsTab } from "@loftlancer/ui/tabs";
 import { useState } from "react";
-import { AppIcon } from "@/components/patterns/app-icon";
 import {
   SettingsPanel,
   SettingsRow,
   SettingsSectionHeader,
 } from "@/components/patterns/settings-layout";
-import {
-  StatusBadge,
-  VisibilityBadge,
-} from "@/components/patterns/status-badge";
+import { StatusBadge } from "@/components/patterns/status-badge";
 import { useProjectActions } from "../hooks/use-project-actions";
 import { ProjectAccessSection } from "./project-access-section";
 import { ProjectDangerZone } from "./project-danger-zone";
@@ -34,14 +29,9 @@ export function ProjectSettingsSection({
   const [pendingStatus, setPendingStatus] = useState<
     "active" | "inactive" | "maintenance" | null
   >(null);
-  const [visibilityDialogOpen, setVisibilityDialogOpen] = useState(false);
-
-  const {
-    changeProjectStatus,
-    toggleProjectPublic,
-    isChangingStatus,
-    isTogglingPublic,
-  } = useProjectActions({ projectId: project.id });
+  const { changeProjectStatus, isChangingStatus } = useProjectActions({
+    projectId: project.id,
+  });
 
   const statusLabel = pendingStatus ?? project.status;
 
@@ -49,8 +39,8 @@ export function ProjectSettingsSection({
     <div className="flex flex-col gap-4">
       <SettingsPanel>
         <SettingsSectionHeader
-          title="Project settings"
-          description="Status, visibility, and runtime behavior."
+          title="Project status"
+          description="Set the operational state of this project."
           icon="settings"
         />
         <SettingsRow
@@ -85,40 +75,6 @@ export function ProjectSettingsSection({
             </Tabs>
           </div>
         </SettingsRow>
-        <SettingsRow
-          label="Visibility"
-          icon="globe"
-          description={
-            project.isPublic
-              ? "Visible to anyone with the link."
-              : "Only organization members can access."
-          }
-        >
-          <div className="flex flex-col items-start gap-2 sm:items-end">
-            <VisibilityBadge isPublic={project.isPublic} />
-            <LoadingButton
-              type="button"
-              variant="outline"
-              size="sm"
-              className="w-fit gap-2"
-              loading={isTogglingPublic}
-              loadingLabel="Updating…"
-              onClick={() => setVisibilityDialogOpen(true)}
-            >
-              {project.isPublic ? (
-                <>
-                  <AppIcon name="lock" className="text-current" />
-                  Make private
-                </>
-              ) : (
-                <>
-                  <AppIcon name="globe" className="text-current" />
-                  Make public
-                </>
-              )}
-            </LoadingButton>
-          </div>
-        </SettingsRow>
       </SettingsPanel>
       <ProjectAccessSection project={project} />
       <ProjectDangerZone project={project} />
@@ -137,22 +93,6 @@ export function ProjectSettingsSection({
           await changeProjectStatus(pendingStatus);
         }}
         isPending={isChangingStatus}
-      />
-
-      <ConfirmDialog
-        open={visibilityDialogOpen}
-        onOpenChange={setVisibilityDialogOpen}
-        title={
-          project.isPublic ? "Make project private" : "Make project public"
-        }
-        description={
-          project.isPublic
-            ? `Make "${project.name}" private? Metadata will no longer be exposed publicly.`
-            : `Make "${project.name}" public? Project metadata may be visible to others.`
-        }
-        confirmLabel={project.isPublic ? "Make private" : "Make public"}
-        onConfirm={toggleProjectPublic}
-        isPending={isTogglingPublic}
       />
     </div>
   );

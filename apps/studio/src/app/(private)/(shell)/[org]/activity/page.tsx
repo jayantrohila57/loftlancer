@@ -10,7 +10,7 @@ import { guardOrganizationSlugPage } from "@/lib/page-guards";
 import { routes } from "@/utils/navigation";
 
 export const metadata: Metadata = {
-  title: "Activity",
+  title: "Organization activity",
   description: "Organization activity timeline.",
 };
 
@@ -28,7 +28,7 @@ export default async function OrganizationTimelineRoute({
     <OrganizationsFeatureGate>
       <OrganizationSectionPage
         slug={slug}
-        title="Activity"
+        title="Organization activity"
         activity
         description="Audit events for this organization."
       >

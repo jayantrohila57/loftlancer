@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { studioDashboardPath } from "@/lib/studio-url";
 
 const LABELS: Record<string, string> = {
-  settings: "Settings",
+  settings: "Account settings",
   profile: "Profile",
   security: "Security",
   sessions: "Sessions",
@@ -41,12 +41,14 @@ export function SettingsBreadcrumbs({ className }: { className?: string }) {
     <BreadcrumbTrail
       homeHref={studioDashboardPath(routes.home())}
       className={className}
-      items={[
-        { href: "/settings/profile", label: "Settings" },
-        ...(current
-          ? [{ href: `/settings/${current}`, label: segmentLabel(current) }]
-          : []),
-      ]}
+      items={
+        current
+          ? [
+              { href: "/settings", label: "Account settings" },
+              { href: `/settings/${current}`, label: segmentLabel(current) },
+            ]
+          : [{ href: "/settings", label: "Account settings" }]
+      }
     />
   );
 }

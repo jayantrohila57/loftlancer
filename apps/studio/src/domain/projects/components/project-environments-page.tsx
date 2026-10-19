@@ -6,8 +6,6 @@ import DashboardSection from "@/components/section-dashboard";
 import { CreateEnvironmentSheet } from "@/domain/environments/components/create-environment-sheet";
 import { ProjectEnvironmentsSkeleton } from "@/domain/environments/components/skeletons";
 import { useEnvironments } from "@/domain/environments/hooks/use-environments";
-import { routes } from "@/utils/navigation";
-import { useOrgSlug, useRouteScope } from "@/utils/use-route-scope";
 import ProjectDetail from "./project-detail";
 
 interface ProjectEnvironmentsPageProps {
@@ -40,15 +38,13 @@ const ENVIRONMENTS_DESCRIPTION = "Variables and secrets per deployment target.";
  * the loaded page (project tabs, back to the project, action slot) and a body
  * that mirrors the env tab rail + variables table (#326).
  */
-export function ProjectEnvironmentsLoadingSection({ slug }: { slug?: string }) {
-  const { project: routeProject } = useRouteScope();
-  const projectSlug = slug ?? routeProject ?? "";
-  const org = useOrgSlug();
+export function ProjectEnvironmentsLoadingSection() {
   return (
     <DashboardSection
       title={ENVIRONMENTS_TITLE}
       description={ENVIRONMENTS_DESCRIPTION}
-      back={routes.project(org, projectSlug)}
+      back={false}
+      hideTabs
       action={
         <Skeleton className="size-8 rounded-md sm:h-8 sm:w-auto sm:min-w-[8.5rem]" />
       }
@@ -70,9 +66,6 @@ export default function ProjectEnvironmentsPage({
     createEnvironment,
     isCreating,
   } = useEnvironments(slug);
-  const org = useOrgSlug();
-  const backHref = routes.project(org, slug);
-
   const showHeaderAction = Boolean(projectId && environments.length > 0);
 
   const headerAction =
@@ -86,12 +79,12 @@ export default function ProjectEnvironmentsPage({
     ) : null;
 
   if (isLoading && !project) {
-    return <ProjectEnvironmentsLoadingSection slug={slug} />;
+    return <ProjectEnvironmentsLoadingSection />;
   }
 
   if (status === "error" || !project) {
     return (
-      <DashboardSection title={ENVIRONMENTS_TITLE} back={backHref}>
+      <DashboardSection title={ENVIRONMENTS_TITLE} back={false} hideTabs>
         <ErrorState
           title="Project unavailable"
           description="This project could not be loaded. It may have been deleted."
@@ -105,7 +98,8 @@ export default function ProjectEnvironmentsPage({
     <DashboardSection
       title={ENVIRONMENTS_TITLE}
       description={ENVIRONMENTS_DESCRIPTION}
-      back={backHref}
+      back={false}
+      hideTabs
       action={headerAction}
     >
       <ProjectDetail projectSlug={slug} project={project} />

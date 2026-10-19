@@ -136,9 +136,26 @@ export function TaskDetailSheet({
               <Skeleton className="h-24 w-full" />
               <Skeleton className="h-8 w-2/3" />
             </div>
+          ) : detail.isError ? (
+            <div className="flex flex-col gap-2">
+              <p className="text-muted-foreground text-sm">
+                This task is unavailable. It may have been removed or you may no
+                longer have access.
+              </p>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="self-start"
+                onClick={() => void detail.refetch()}
+              >
+                Try again
+              </Button>
+            </div>
           ) : !t ? (
             <p className="text-muted-foreground text-sm">
-              This task doesn't exist or was deleted.
+              This task is no longer available. Return to the task list to see
+              the current project work.
             </p>
           ) : (
             <>

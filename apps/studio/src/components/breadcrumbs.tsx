@@ -46,6 +46,7 @@ type CrumbKind =
   | "static"
   | "org"
   | "project"
+  | "team"
   | "app"
   | "ticket"
   | "task"
@@ -70,7 +71,9 @@ function generateBreadcrumbs(pathname: string): Crumb[] {
       )
         kind = "ticket";
     } else if (index === 0) kind = "org";
+    else if (index === 1 && parts[1] === "teams") kind = "static";
     else if (index === 1 && !isReservedProjectSlug(segment)) kind = "project";
+    else if (index === 2 && parts[1] === "teams") kind = "team";
     else if (
       index === 2 &&
       parts[1] &&
@@ -107,8 +110,17 @@ export function Breadcrumbs({ className }: { className?: string }) {
 
   const orgSlug = breadcrumbs.find((c) => c.kind === "org")?.segment;
   const projectSlug = breadcrumbs.find((c) => c.kind === "project")?.segment;
+  const teamId = breadcrumbs.find((c) => c.kind === "team")?.segment;
   const orgName = orgs.find((o) => o.slug === orgSlug)?.name;
   const projectName = projects.find((p) => p.slug === projectSlug)?.name;
+  const teamsQuery = useQuery({
+    ...trpc.teams.list.queryOptions(),
+    enabled: Boolean(teamId),
+    staleTime: 60_000,
+  });
+  const teamName = teamsQuery.data?.items.find(
+    (team) => team.id === teamId,
+  )?.name;
 
   const supportTicketId = breadcrumbs.find((c) => c.kind === "ticket")?.segment;
   const supportTicketQuery = useQuery({
@@ -126,6 +138,11 @@ export function Breadcrumbs({ className }: { className?: string }) {
 
   const breadcrumbLabel = (crumb: Crumb): React.ReactNode => {
     if (crumb.kind === "notFound") return "Not found";
+    if (crumb.segment === "activity") {
+      return isReservedOrgSlug(pathname.split("/").filter(Boolean)[0] ?? "")
+        ? "My activity"
+        : "Organization activity";
+    }
     // Unresolved org/project names: a placeholder while loading, not the slug.
     if (crumb.kind === "org" && !orgName && !initialLoadDone) {
       return <Skeleton className="inline-block h-3 w-20 align-middle" />;
@@ -143,11 +160,13 @@ export function Breadcrumbs({ className }: { className?: string }) {
         ? orgName
         : crumb.kind === "project"
           ? projectName
-          : crumb.kind === "ticket"
-            ? supportTicketLabel
-            : crumb.kind === "task"
-              ? `Task #${crumb.segment}`
-              : undefined,
+          : crumb.kind === "team"
+            ? teamName
+            : crumb.kind === "ticket"
+              ? supportTicketLabel
+              : crumb.kind === "task"
+                ? `Task #${crumb.segment}`
+                : undefined,
     );
   };
 

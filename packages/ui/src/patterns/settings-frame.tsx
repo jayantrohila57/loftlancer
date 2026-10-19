@@ -135,6 +135,8 @@ export type SettingsFrameProps = {
   meta?: ReactNode;
   actions?: ReactNode;
   tabs?: SettingsTab[];
+  /** Hide section navigation when the current resource is navigated elsewhere. */
+  hideTabs?: boolean;
   LinkComponent?: LinkLike | "a";
   /** Full-width block under the tabs (e.g. activity heatmap). */
   top?: ReactNode;
@@ -153,6 +155,7 @@ export function SettingsFrame({
   meta,
   actions,
   tabs,
+  hideTabs = false,
   LinkComponent = "a",
   top,
   aside,
@@ -190,21 +193,23 @@ export function SettingsFrame({
         actions={actions}
         meta={metaContent}
         tabs={
-          <PageHeaderTabsRow
-            LinkComponent={LinkComponent}
-            tabs={(tabs ?? []).map((t) => ({
-              value: t.href,
-              href: t.href,
-              label: (
-                <>
-                  {t.icon}
-                  {t.label}
-                </>
-              ),
-              disabled: t.disabled,
-            }))}
-            activeTab={tabs?.find((t) => t.active)?.href}
-          />
+          hideTabs ? null : (
+            <PageHeaderTabsRow
+              LinkComponent={LinkComponent}
+              tabs={(tabs ?? []).map((t) => ({
+                value: t.href,
+                href: t.href,
+                label: (
+                  <>
+                    {t.icon}
+                    {t.label}
+                  </>
+                ),
+                disabled: t.disabled,
+              }))}
+              activeTab={tabs?.find((t) => t.active)?.href}
+            />
+          )
         }
       />
       {top}

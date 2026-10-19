@@ -124,6 +124,8 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
 
   const summary = summaryQuery.data;
   const teams = teamsQuery.data?.items ?? [];
+  const linkedTeamIds = new Set(summary?.teams.map((row) => row.teamId) ?? []);
+  const availableTeams = teams.filter((team) => !linkedTeamIds.has(team.id));
 
   const loadGrantsForUser = (userId: string) => {
     setGrantUserId(userId);
@@ -137,6 +139,41 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      <SettingsPanel>
+        <SettingsSectionHeader
+          title="Access summary"
+          description="Public visibility controls project metadata. Project data access follows the manager, team, and member grants below."
+          icon="lock"
+        />
+        <dl className="grid gap-3 px-4 pb-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <dt className="text-muted-foreground text-xs">Visibility</dt>
+            <dd className="font-medium text-sm">
+              {project.isPublic ? "Public metadata" : "Private"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground text-xs">Project managers</dt>
+            <dd className="font-medium text-sm">
+              {summary?.managers.length ?? 0}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground text-xs">Linked teams</dt>
+            <dd className="font-medium text-sm">
+              {summary?.teams.length ?? 0}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground text-xs">
+              Direct member grants
+            </dt>
+            <dd className="font-medium text-sm">
+              {summary?.memberGrants.length ?? 0}
+            </dd>
+          </div>
+        </dl>
+      </SettingsPanel>
       <Can action="project.assign_manager">
         <SettingsPanel>
           <SettingsSectionHeader
@@ -224,7 +261,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
         <SettingsPanel>
           <SettingsSectionHeader
             title="Teams on project"
-            description="Linked teams receive default read grants for members."
+            description="Team members receive default project grants when linked. Direct member grants can add or change specific capabilities."
             icon="member"
           />
           {summary?.teams.length ? (
@@ -264,7 +301,14 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
               No teams linked yet.
             </p>
           )}
-          <SettingsRow label="Link team">
+          <SettingsRow
+            label="Link a team"
+            description={
+              availableTeams.length
+                ? "Team members receive the default read grants for this project."
+                : "Every team in this organization is already linked."
+            }
+          >
             <div className="flex flex-wrap items-end gap-2">
               <SearchableCombobox
                 value={teamId}
@@ -273,7 +317,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                 placeholder="Select team"
                 searchPlaceholder="Search teams…"
                 className="w-56"
-                options={teams.map((team) => ({
+                options={availableTeams.map((team) => ({
                   value: team.id,
                   label: team.name,
                 }))}
