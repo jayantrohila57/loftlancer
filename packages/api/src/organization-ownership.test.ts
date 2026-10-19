@@ -91,4 +91,49 @@ describe("organization ownership mutations", () => {
     assert.match(block, /organization_member_not_found/);
     assert.match(block, /count\(\*\)::int/);
   });
+
+  it("applies linked-project defaults when an invited or existing member joins a team", () => {
+    const helperStart = mcpSource.indexOf(
+      "async function applyTeamProjectDefaults",
+    );
+    const helperEnd = mcpSource.indexOf(
+      "function slugifyOrganizationName",
+      helperStart,
+    );
+    const helper = mcpSource.slice(helperStart, helperEnd);
+    assert.match(
+      helper,
+      /eq\(projectTeam\.organizationId, input\.organizationId\)/,
+    );
+    assert.match(helper, /eq\(projectTeam\.teamId, input\.teamId\)/);
+    assert.match(helper, /isNull\(projectTeam\.deletedAt\)/);
+    assert.match(helper, /DEFAULT_TEAM_PROJECT_GRANTS/);
+    assert.match(helper, /mergeProjectMemberGrants/);
+    assert.match(helper, /isNull\(projectMemberGrant\.deletedAt\)/);
+    assert.match(helper, /if \(input\.role !== "member"\) return/);
+
+    const acceptStart = mcpSource.indexOf(
+      "export async function mcpInvitationAccept",
+    );
+    const acceptEnd = mcpSource.indexOf(
+      "export async function mcpInvitationReject",
+      acceptStart,
+    );
+    assert.match(
+      mcpSource.slice(acceptStart, acceptEnd),
+      /applyTeamProjectDefaults\(tx/,
+    );
+
+    const addStart = mcpSource.indexOf(
+      "export async function mcpTeamAddMember",
+    );
+    const addEnd = mcpSource.indexOf(
+      "export async function mcpTeamRemoveMember",
+      addStart,
+    );
+    assert.match(
+      mcpSource.slice(addStart, addEnd),
+      /applyTeamProjectDefaults\(tx/,
+    );
+  });
 });

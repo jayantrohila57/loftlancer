@@ -1,3 +1,7 @@
+import {
+  DEFAULT_TEAM_PROJECT_GRANTS,
+  mergeProjectMemberGrants,
+} from "@loftlancer/actions";
 import { writeAuthAuditEvent } from "@loftlancer/auth/audit-event";
 import {
   getOwnerMutationBlockReason,
@@ -20,6 +24,7 @@ import {
 import {
   projectManager,
   projectMemberGrant,
+  projectTeam,
 } from "@loftlancer/db/schema/project-access";
 import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
@@ -27,6 +32,78 @@ import { and, eq, gt, inArray, isNull, sql } from "drizzle-orm";
 import { requireAction } from "../actions/require-action";
 import { transferOrganizationOwnership } from "../organization-ownership";
 import { resolveOrganizationIdForUser } from "./resolve-organization";
+
+type OrganizationMutationTx = Parameters<
+  Parameters<typeof db.transaction>[0]
+>[0];
+
+async function applyTeamProjectDefaults(
+  tx: OrganizationMutationTx,
+  input: {
+    organizationId: string;
+    teamId: string;
+    userId: string;
+    actorUserId: string;
+    role: string;
+  },
+) {
+  if (input.role !== "member") return;
+
+  const linkedProjects = await tx
+    .select({ projectId: projectTeam.projectId })
+    .from(projectTeam)
+    .where(
+      and(
+        eq(projectTeam.organizationId, input.organizationId),
+        eq(projectTeam.teamId, input.teamId),
+        isNull(projectTeam.deletedAt),
+      ),
+    )
+    .orderBy(projectTeam.projectId);
+
+  for (const { projectId } of linkedProjects) {
+    const [existing] = await tx
+      .select({
+        id: projectMemberGrant.id,
+        grants: projectMemberGrant.grants,
+      })
+      .from(projectMemberGrant)
+      .where(
+        and(
+          eq(projectMemberGrant.organizationId, input.organizationId),
+          eq(projectMemberGrant.projectId, projectId),
+          eq(projectMemberGrant.userId, input.userId),
+          isNull(projectMemberGrant.deletedAt),
+        ),
+      )
+      .limit(1)
+      .for("update");
+    const grants = mergeProjectMemberGrants(
+      existing?.grants ?? [],
+      DEFAULT_TEAM_PROJECT_GRANTS,
+    );
+
+    if (existing) {
+      await tx
+        .update(projectMemberGrant)
+        .set({
+          grants,
+          updatedBy: input.actorUserId,
+          updatedAt: new Date(),
+        })
+        .where(eq(projectMemberGrant.id, existing.id));
+    } else {
+      await tx.insert(projectMemberGrant).values({
+        id: crypto.randomUUID(),
+        organizationId: input.organizationId,
+        projectId,
+        userId: input.userId,
+        grants,
+        updatedBy: input.actorUserId,
+      });
+    }
+  }
+}
 
 function slugifyOrganizationName(name: string): string {
   const base = name
@@ -797,6 +874,13 @@ export async function mcpInvitationAccept(
           .set({ memberCount: sql`${team.memberCount} + 1` })
           .where(eq(team.id, invite.teamId));
       }
+      await applyTeamProjectDefaults(tx, {
+        organizationId: invite.organizationId,
+        teamId: invite.teamId,
+        userId,
+        actorUserId: userId,
+        role: invite.role,
+      });
     }
 
     const [updatedInvite] = await tx
@@ -1087,7 +1171,7 @@ export async function mcpTeamAddMember(
   await requireAction("team.member.add", { userId, organizationId });
   await db.transaction(async (tx) => {
     const [activeMember] = await tx
-      .select({ id: member.id })
+      .select({ id: member.id, role: member.role })
       .from(member)
       .where(
         activeMemberWhere(
@@ -1126,6 +1210,13 @@ export async function mcpTeamAddMember(
         userId: targetUserId,
       });
     }
+    await applyTeamProjectDefaults(tx, {
+      organizationId,
+      teamId,
+      userId: targetUserId,
+      actorUserId: userId,
+      role: activeMember.role,
+    });
     const [count] = await tx
       .select({ count: sql<number>`count(*)::int` })
       .from(teamMember)
