@@ -11,10 +11,13 @@ import {
 } from "@loftlancer/ui/dialog";
 import { Input } from "@loftlancer/ui/input";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
+import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
+import { ErrorState } from "@/components/patterns/error-state";
 import { FormField } from "@/components/patterns/form-field";
 import { GuardedDialog } from "@/components/patterns/guarded-dialog";
 import { Can } from "@/domain/permissions/components/can";
@@ -28,7 +31,7 @@ import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { OrganizationSectionPage } from "./organization-section-page";
 import { TeamMembersSheet } from "./team-members-sheet";
 
-type TeamRow = { id: string; name: string };
+type TeamRow = { id: string; name: string; memberCount?: number };
 
 export function OrganizationTeamsPage({
   slug,
@@ -94,20 +97,22 @@ export function OrganizationTeamsPage({
   );
 
   const teams = teamsQuery.data?.items ?? [];
+  const selectedTeam = teams.find((team) => team.id === selectedTeamId);
   const requestedTeamId = selectedTeamId ?? searchParams.get("team");
+  const teamProjectsQuery = useQuery({
+    ...trpc.teams.projects.queryOptions({ teamId: selectedTeamId ?? "" }),
+    enabled: Boolean(selectedTeamId && selectedTeam),
+  });
 
   useEffect(() => {
-    if (!requestedTeamId || teamsQuery.isPending) return;
-    const team = teams.find((item) => item.id === requestedTeamId);
-    if (team) setMembersTeam(team);
-  }, [requestedTeamId, teams, teamsQuery.isPending]);
+    if (selectedTeamId || !requestedTeamId || teamsQuery.isPending) return;
+    const legacyTeam = teams.find((item) => item.id === requestedTeamId);
+    if (legacyTeam) setMembersTeam(legacyTeam);
+  }, [requestedTeamId, selectedTeamId, teams, teamsQuery.isPending]);
 
   const closeMembers = () => {
     setMembersTeam(null);
-    if (selectedTeamId) {
-      router.replace(routes.orgSection(slug, "teams"));
-      return;
-    }
+    if (selectedTeamId) return;
     if (!requestedTeamId) return;
     const params = new URLSearchParams(searchParams.toString());
     params.delete("team");
@@ -122,10 +127,25 @@ export function OrganizationTeamsPage({
   return (
     <OrganizationSectionPage
       slug={slug}
-      title="Teams"
-      description="Group members into teams within this organization."
+      title={selectedTeam?.name ?? "Teams"}
+      description={
+        selectedTeam
+          ? `Team members and project access in ${organization?.name ?? slug}.`
+          : "Group members into teams within this organization."
+      }
       action={
-        organization ? (
+        selectedTeam ? (
+          <Can action="team.member.add">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => setMembersTeam(selectedTeam)}
+            >
+              Manage members
+            </Button>
+          </Can>
+        ) : organization ? (
           <Can action="team.create">
             <Button
               type="button"
@@ -140,10 +160,61 @@ export function OrganizationTeamsPage({
         ) : undefined
       }
     >
-      {orgStatus === "loading" ||
-      !organization ||
-      teamsQuery.isLoading ||
-      teams.length > 0 ? (
+      {selectedTeam ? (
+        <div className="space-y-4">
+          <section className="rounded-xl border bg-card p-4">
+            <h2 className="font-medium text-sm">Team access</h2>
+            <p className="mt-1 text-muted-foreground text-sm">
+              {selectedTeam.memberCount ?? 0} members. Team membership can grant
+              access to linked projects; project-specific grants may also apply.
+            </p>
+          </section>
+          <section className="space-y-3">
+            <div>
+              <h2 className="font-medium text-sm">Linked projects</h2>
+              <p className="mt-1 text-muted-foreground text-sm">
+                Projects this team can access and that you are allowed to view.
+              </p>
+            </div>
+            {teamProjectsQuery.isPending ? (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <Skeleton className="h-24 rounded-xl" />
+                <Skeleton className="h-24 rounded-xl" />
+              </div>
+            ) : teamProjectsQuery.isError ? (
+              <ErrorState
+                title="Could not load linked projects"
+                description="Project access could not be loaded for this team."
+                onRetry={() => void teamProjectsQuery.refetch()}
+              />
+            ) : teamProjectsQuery.data.items.length === 0 ? (
+              <EmptyState
+                icon={appIcons.project}
+                title="No projects linked"
+                description="Link this team from a project’s Access settings to give the team project access."
+              />
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {teamProjectsQuery.data.items.map((project) => (
+                  <Link
+                    key={project.id}
+                    href={routes.project(slug, project.slug)}
+                    className="rounded-xl border bg-card p-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <span className="font-medium text-sm">{project.name}</span>
+                    <span className="mt-1 block truncate text-muted-foreground text-xs">
+                      {project.slug}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      ) : orgStatus === "loading" ||
+        !organization ||
+        teamsQuery.isLoading ||
+        teams.length > 0 ? (
         <DataTable
           framed
           searchable
@@ -177,7 +248,7 @@ export function OrganizationTeamsPage({
                       size="sm"
                       onClick={() => router.push(routes.team(slug, team.id))}
                     >
-                      View members
+                      Open team
                     </Button>
                     <Can action="team.update">
                       <Button
