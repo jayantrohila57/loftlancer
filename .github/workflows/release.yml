@@ -130,6 +130,8 @@ jobs:
     needs: detect-dev-release
     if: needs.detect-dev-release.outputs.is_release == 'true'
     uses: ./.github/workflows/ci.yml
+    with:
+      full_validation: true
     permissions:
       contents: read
 
@@ -214,6 +216,10 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 12.11.2
+      - name: Configure Git identity for release tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Publish tag and GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
