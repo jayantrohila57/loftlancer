@@ -87,6 +87,7 @@ import { BulkInviteDialog } from "./bulk-invite-dialog";
 type MemberRow = {
   id: string;
   role: string;
+  createdAt?: Date | string;
   user: { name: string; email: string; id?: string };
 };
 
@@ -209,6 +210,7 @@ export function OrganizationSettingsForm({
   const [leavePending, setLeavePending] = useState(false);
   const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [transferConfirmOpen, setTransferConfirmOpen] = useState(false);
+  const [transferSheetOpen, setTransferSheetOpen] = useState(false);
   const [transferTargetUserId, setTransferTargetUserId] = useState("");
   const [roleConfirmOpen, setRoleConfirmOpen] = useState(false);
   const [memberRemovalConfirmOpen, setMemberRemovalConfirmOpen] =
@@ -312,6 +314,7 @@ export function OrganizationSettingsForm({
           `Ownership transferred to ${target?.user.name || target?.user.email || "the selected member"}`,
         );
         setTransferConfirmOpen(false);
+        setTransferSheetOpen(false);
         setTransferTargetUserId("");
         await loadOrganization(organizationId);
         await refreshOrganizations();
@@ -710,59 +713,30 @@ export function OrganizationSettingsForm({
           <SettingsTabsPanel value="members" className="min-w-0 space-y-2">
             {mode === "members" && canInvite ? (
               <PageHeaderActionsPortal>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="h-8 gap-2"
-                  onClick={() => setInviteOpen(true)}
-                >
-                  <AppIcon name="invite" className="text-current" />
-                  Invite member
-                </Button>
-              </PageHeaderActionsPortal>
-            ) : null}
-            {isOwner ? (
-              <SettingsPanel>
-                <SettingsSectionHeader
-                  title="Transfer ownership"
-                  description="Give another active organization member ownership. You will become a manager."
-                  icon="member"
-                />
-                <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-end">
-                  <FormField id="organization-new-owner" label="New owner">
-                    <SearchableCombobox
-                      id="organization-new-owner"
-                      value={transferTargetUserId}
-                      onChange={setTransferTargetUserId}
-                      ariaLabel="Choose a new organization owner"
-                      placeholder="Select a member"
-                      searchPlaceholder="Search members…"
-                      className="w-full sm:min-w-64"
-                      options={members
-                        .filter(
-                          (member) =>
-                            member.user.id && member.user.id !== currentUserId,
-                        )
-                        .map((member) => ({
-                          value: member.user.id as string,
-                          label: member.user.name || member.user.email,
-                          hint: member.user.email,
-                        }))}
-                    />
-                  </FormField>
+                <div className="flex items-center gap-2">
+                  {isOwner ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-8 gap-2"
+                      onClick={() => setTransferSheetOpen(true)}
+                    >
+                      <AppIcon name="member" />
+                      Transfer ownership
+                    </Button>
+                  ) : null}
                   <Button
                     type="button"
-                    variant="outline"
-                    disabled={
-                      !transferTargetUserId ||
-                      transferOwnershipMutation.isPending
-                    }
-                    onClick={() => setTransferConfirmOpen(true)}
+                    size="sm"
+                    className="h-8 gap-2"
+                    onClick={() => setInviteOpen(true)}
                   >
-                    Transfer ownership
+                    <AppIcon name="invite" className="text-current" />
+                    Invite member
                   </Button>
                 </div>
-              </SettingsPanel>
+              </PageHeaderActionsPortal>
             ) : null}
             <SettingsPanel>
               {mode !== "members" ? (
@@ -831,17 +805,6 @@ export function OrganizationSettingsForm({
                       {members.length}{" "}
                       {members.length === 1 ? "member" : "members"}
                     </span>
-                    {canInvite ? (
-                      <Button
-                        type="button"
-                        size="sm"
-                        className="ms-auto gap-2"
-                        onClick={() => setInviteOpen(true)}
-                      >
-                        <AppIcon name="invite" className="text-current" />
-                        Invite member
-                      </Button>
-                    ) : null}
                   </div>
                   <OrganizationMembersTable
                     members={members.filter((m) => {
@@ -883,62 +846,66 @@ export function OrganizationSettingsForm({
               )}
             </SettingsPanel>
 
-            <SettingsPanel>
-              <SettingsSectionHeader
-                title="Invitations"
-                description="Pending email invites."
-                icon="mail"
-              />
-              <div className="px-4 py-4">
-                {pendingInvitations.length === 0 ? (
-                  <Empty className="border border-dashed py-8">
-                    <EmptyHeader>
-                      <EmptyMedia variant="icon">
-                        <AppIcon name="mail" className="size-5" />
-                      </EmptyMedia>
-                      <EmptyTitle>{invitationsEmpty().empty.title}</EmptyTitle>
-                      <EmptyDescription>
-                        {invitationsEmpty().empty.description}
-                      </EmptyDescription>
-                    </EmptyHeader>
-                    <EmptyContent>
-                      {canInvite ? (
-                        <Button
-                          type="button"
-                          size="sm"
-                          className="gap-2"
-                          onClick={() => setInviteOpen(true)}
-                        >
-                          <AppIcon name="invite" className="text-current" />
-                          Invite member
-                        </Button>
-                      ) : null}
-                    </EmptyContent>
-                  </Empty>
-                ) : (
-                  <OrganizationInvitationsTable
-                    invitations={pendingInvitations}
-                    empty={invitationsEmpty(
-                      canInvite ? (
-                        <Button
-                          type="button"
-                          size="sm"
-                          className="gap-2"
-                          onClick={() => setInviteOpen(true)}
-                        >
-                          <AppIcon name="invite" className="text-current" />
-                          Invite member
-                        </Button>
-                      ) : undefined,
-                    )}
-                    revokingId={revokingId}
-                    resendingId={resendingId}
-                    onRevoke={(id) => void revokeInvitation(id)}
-                    onResend={(invite) => void resendInvitation(invite)}
-                  />
-                )}
-              </div>
-            </SettingsPanel>
+            {mode !== "members" ? (
+              <SettingsPanel>
+                <SettingsSectionHeader
+                  title="Invitations"
+                  description="Pending email invites."
+                  icon="mail"
+                />
+                <div className="px-4 py-4">
+                  {pendingInvitations.length === 0 ? (
+                    <Empty className="border border-dashed py-8">
+                      <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                          <AppIcon name="mail" className="size-5" />
+                        </EmptyMedia>
+                        <EmptyTitle>
+                          {invitationsEmpty().empty.title}
+                        </EmptyTitle>
+                        <EmptyDescription>
+                          {invitationsEmpty().empty.description}
+                        </EmptyDescription>
+                      </EmptyHeader>
+                      <EmptyContent>
+                        {canInvite ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => setInviteOpen(true)}
+                          >
+                            <AppIcon name="invite" className="text-current" />
+                            Invite member
+                          </Button>
+                        ) : null}
+                      </EmptyContent>
+                    </Empty>
+                  ) : (
+                    <OrganizationInvitationsTable
+                      invitations={pendingInvitations}
+                      empty={invitationsEmpty(
+                        canInvite ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => setInviteOpen(true)}
+                          >
+                            <AppIcon name="invite" className="text-current" />
+                            Invite member
+                          </Button>
+                        ) : undefined,
+                      )}
+                      revokingId={revokingId}
+                      resendingId={resendingId}
+                      onRevoke={(id) => void revokeInvitation(id)}
+                      onResend={(invite) => void resendInvitation(invite)}
+                    />
+                  )}
+                </div>
+              </SettingsPanel>
+            ) : null}
           </SettingsTabsPanel>
         )}
 
@@ -1081,6 +1048,73 @@ export function OrganizationSettingsForm({
         pendingEmails={pendingInvitations.map((i) => i.email)}
         onInvited={() => void loadOrganization(organizationId)}
       />
+
+      <FormSheet
+        open={transferSheetOpen}
+        onOpenChange={(open) => {
+          setTransferSheetOpen(open);
+          if (
+            !open &&
+            !transferConfirmOpen &&
+            !transferOwnershipMutation.isPending
+          ) {
+            setTransferTargetUserId("");
+          }
+        }}
+      >
+        <FormSheetPopup>
+          <FormSheetHeader>
+            <SheetTitleWithIcon icon="member">
+              Transfer ownership
+            </SheetTitleWithIcon>
+            <SheetDescription>
+              Choose an active member to own this organization. You will become
+              a manager.
+            </SheetDescription>
+          </FormSheetHeader>
+          <FormSheetBody>
+            <FormField id="organization-new-owner" label="New owner">
+              <SearchableCombobox
+                id="organization-new-owner"
+                value={transferTargetUserId}
+                onChange={setTransferTargetUserId}
+                ariaLabel="Choose a new organization owner"
+                placeholder="Select a member"
+                searchPlaceholder="Search members…"
+                className="w-full"
+                options={members
+                  .filter(
+                    (member) =>
+                      member.user.id && member.user.id !== currentUserId,
+                  )
+                  .map((member) => ({
+                    value: member.user.id as string,
+                    label: member.user.name || member.user.email,
+                    hint: member.user.email,
+                  }))}
+              />
+            </FormField>
+          </FormSheetBody>
+          <FormSheetFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setTransferSheetOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              disabled={
+                !transferTargetUserId || transferOwnershipMutation.isPending
+              }
+              onClick={() => setTransferConfirmOpen(true)}
+            >
+              Continue
+            </Button>
+          </FormSheetFooter>
+        </FormSheetPopup>
+      </FormSheet>
 
       <ConfirmDialog
         open={leaveConfirmOpen}

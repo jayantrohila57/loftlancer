@@ -18,6 +18,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Fixed
 
+- Organization member management shows membership and invitation context, uses action menus, and moves ownership transfer into a sheet; organization activity is grouped in collapsible date sections (#479)
+- Organization actions are available in the shared header, and pending invitations are managed from the Invitations tab instead of being duplicated on Members (#479)
 - Project routes render their own navigation shell without nested organization tabs, and organization back navigation respects the Studio base path (#464)
 - Organization invitations have a public, account-aware accept and decline flow with explicit expired, revoked, and unavailable states (#432)
 - Organization owners can remove members with confirmation, and removed users’ team and project access is cleaned up within that organization (#433)

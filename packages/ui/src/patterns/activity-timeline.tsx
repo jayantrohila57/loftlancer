@@ -1,6 +1,7 @@
 "use client";
 
 import { formatActionLabel } from "@loftlancer/actions";
+import { ChevronDown } from "lucide-react";
 import { type ComponentType, type ReactNode, useId } from "react";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
@@ -572,12 +573,25 @@ export function ActivityTimeline({
             )}
             aria-busy={loading || undefined}
           >
-            {groups.map((g) => (
-              <div key={g.key} className="space-y-3">
-                <h3 className="min-h-4 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                  {g.label}
-                </h3>
-                <ol className="relative">
+            {groups.map((g, index) => (
+              <details
+                key={g.key}
+                className="group overflow-hidden rounded-xl border bg-card"
+                open={index === 0}
+              >
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 font-medium text-sm marker:hidden hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
+                  <span className="text-muted-foreground text-xs uppercase tracking-wide">
+                    {g.label}
+                  </span>
+                  <span className="flex items-center gap-2 text-muted-foreground text-xs">
+                    {g.items.length} {g.items.length === 1 ? "event" : "events"}
+                    <ChevronDown
+                      aria-hidden
+                      className="size-4 transition-transform group-open:rotate-180"
+                    />
+                  </span>
+                </summary>
+                <ol className="relative border-t px-4 pt-3">
                   {g.items.map((item, i) => (
                     <ActivityRow
                       key={item.id}
@@ -588,7 +602,7 @@ export function ActivityTimeline({
                     />
                   ))}
                 </ol>
-              </div>
+              </details>
             ))}
             {hasMore ? (
               <div className="flex justify-center">
