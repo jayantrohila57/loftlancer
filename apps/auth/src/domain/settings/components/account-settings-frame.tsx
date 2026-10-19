@@ -103,6 +103,11 @@ export function AccountSettingsFrame({
   return (
     <SettingsFrame
       LinkComponent={Link as never}
+      back={
+        pathname === "/settings"
+          ? undefined
+          : { href: "/settings", label: "Account settings" }
+      }
       avatar={{ src: user?.image, name: user?.name }}
       title={title}
       description={description}
