@@ -9,9 +9,12 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { BASE_PATH } from "@/lib/base-path";
+import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { useOrganizationTabs } from "../hooks/use-organization-tabs";
+import { isOrganizationShellRoute } from "../lib/organization-layout";
 
 function OrganizationHealthCard() {
   const { data, isError } = useQuery(
@@ -55,6 +58,19 @@ export function OrganizationLayoutShell({
   slug: string;
   children: React.ReactNode;
 }) {
+  const pathname = usePathname() ?? "";
+  if (!isOrganizationShellRoute(pathname, slug, BASE_PATH)) return children;
+
+  return <OrganizationFrame slug={slug}>{children}</OrganizationFrame>;
+}
+
+function OrganizationFrame({
+  slug,
+  children,
+}: {
+  slug: string;
+  children: React.ReactNode;
+}) {
   const { organization, listItem, status } = useOrganizationBySlug(slug);
   if (status === "not-found") notFound();
   const { tabs } = useOrganizationTabs(slug);
@@ -64,7 +80,7 @@ export function OrganizationLayoutShell({
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={{ href: "/studio", label: "Organizations" }}
+      back={{ href: routes.home(), label: "Organizations" }}
       avatar={{ src: organization?.logo, name }}
       title={name}
       description="Organization workspace and administration."

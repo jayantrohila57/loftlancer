@@ -9,7 +9,6 @@ import * as oauthSchema from "@loftlancer/db/schema/oauth";
 import * as organizationSchema from "@loftlancer/db/schema/organization";
 import * as teamSchema from "@loftlancer/db/schema/team";
 import { teamMember } from "@loftlancer/db/schema/team";
-import { OrgInviteEmail, sendEmail } from "@loftlancer/email";
 import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
 import { isReservedOrgSlug } from "@loftlancer/env/reserved-slugs";
 import {
@@ -25,6 +24,8 @@ import { admin } from "better-auth/plugins/admin";
 import { eq } from "drizzle-orm";
 import { writeAuthAuditEvent } from "./audit-event";
 import { resolveDefaultActiveOrganizationId } from "./bootstrap-active-organization";
+import { sendOrganizationInvitationEmail } from "./organization-invitation-email";
+import { cleanupOrganizationMemberAccess } from "./organization-member-removal";
 import { sessionCookieMigrationPlugin } from "./session-cookie-migration-plugin";
 import { LOFTLANCER_COOKIE_PREFIX } from "./session-cookies";
 
@@ -171,26 +172,20 @@ export function organizationPlugin() {
       ac: orgAc,
       roles: orgBetterAuthRoles,
       teams: { enabled: true },
-      // No-op until RESEND_API_KEY is set (#336). Pending invites show at /studio.
+      // Shared with MCP invitations so both paths deliver identical response links.
       sendInvitationEmail: async ({
+        id,
         email,
         role,
         organization: org,
         inviter,
       }) => {
-        const studioUrl = (
-          process.env.NEXT_PUBLIC_STUDIO_URL ?? "https://loftlancer.com/studio"
-        ).replace(/\/$/, "");
-        await sendEmail({
-          to: email,
-          subject: `${inviter.user.name || "Someone"} invited you to ${org.name} on Loftlancer`,
-          react: OrgInviteEmail({
-            organizationName: org.name,
-            inviterName: inviter.user.name || inviter.user.email,
-            role,
-            acceptUrl: studioUrl,
-          }),
-          tags: [{ name: "type", value: "org-invite" }],
+        await sendOrganizationInvitationEmail({
+          invitationId: id,
+          email,
+          role,
+          organizationName: org.name,
+          inviterName: inviter.user.name || inviter.user.email,
         });
       },
       organizationHooks: {
@@ -283,6 +278,10 @@ export function organizationPlugin() {
           organization: org,
         }) => {
           if (!org) return;
+          await cleanupOrganizationMemberAccess({
+            organizationId: org.id,
+            userId: memberRow.userId,
+          });
           await writeAuthAuditEvent({
             action: "member.remove",
             result: "success",

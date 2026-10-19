@@ -3,6 +3,7 @@ import { DEFAULT_STUDIO_URL } from "@loftlancer/env/platform";
 import { resolvePublicServiceUrl } from "@loftlancer/env/vercel-services";
 import { isReservedOrgSlug } from "@loftlancer/ui/studio-routes";
 import { type NextRequest, NextResponse } from "next/server";
+import { isPublicInvitationRoute } from "@/lib/public-invitation-route";
 import { siblingAuth } from "@/lib/sibling-auth";
 
 const appOrigin = (
@@ -100,16 +101,19 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Everything in studio needs a session; signed-out visitors go to the landing.
-  const gated = platformSessionMiddleware(request, {
-    appOrigin,
-    protectedPrefixes: ["/"],
-  });
+  const publicInvitation = isPublicInvitationRoute(pathname);
+  const gated = publicInvitation
+    ? undefined
+    : platformSessionMiddleware(request, {
+        appOrigin,
+        protectedPrefixes: ["/"],
+      });
   if (gated) {
     return gated;
   }
 
   const first = pathname.split("/")[1] ?? "";
-  if (first && !isReservedOrgSlug(first)) {
+  if (!publicInvitation && first && !isReservedOrgSlug(first)) {
     const synced = await syncActiveOrganization(request, first);
     if (synced) return synced;
   }

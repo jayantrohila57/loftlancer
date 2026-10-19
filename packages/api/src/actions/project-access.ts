@@ -5,7 +5,7 @@ import {
   projectTeam,
 } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
-import { teamMember } from "@loftlancer/db/schema/team";
+import { team, teamMember } from "@loftlancer/db/schema/team";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 
 export async function loadProjectAccessContext(
@@ -60,8 +60,13 @@ export async function loadProjectAccessContext(
     const [membership] = await db
       .select({ id: teamMember.id })
       .from(teamMember)
+      .innerJoin(team, eq(teamMember.teamId, team.id))
       .where(
-        and(eq(teamMember.userId, userId), inArray(teamMember.teamId, teamIds)),
+        and(
+          eq(teamMember.userId, userId),
+          inArray(teamMember.teamId, teamIds),
+          isNull(team.deletedAt),
+        ),
       )
       .limit(1);
     hasTeamLink = Boolean(membership);

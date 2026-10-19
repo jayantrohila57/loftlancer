@@ -16,6 +16,23 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Project routes render their own navigation shell without nested organization tabs, and organization back navigation respects the Studio base path (#464)
+- Organization invitations have a public, account-aware accept and decline flow with explicit expired, revoked, and unavailable states (#432)
+- Organization owners can remove members with confirmation, and removed users’ team and project access is cleaned up within that organization (#433)
+- Organization ownership transfers are transactional, audited, and guarded against removing or demoting the final owner (#434)
+- MCP organization invitations reject duplicates, send the shared invite email, audit lifecycle changes, and add accepted members to assigned teams (#435)
+- Team lifecycle mutations validate organization membership, repair member counts, preserve audit history, and revoke deleted-team access (#469)
+- Team members invited or added after a team is linked to a project receive its default read grants (#469)
+- Project permissions require active organization members and same-organization teams; deleted teams no longer grant project access (#470)
+
+## [1.12.6] - 2026-10-19
+
+### Added
+
+- GitHub Actions automates release preparation, promotion PRs, and GitHub Release publishing while retaining a human production merge gate (#459)
+
 ## [1.12.5] - 2026-10-19
 
 ### Fixed
@@ -514,7 +531,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.5...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.6...HEAD
+[1.12.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.5...v1.12.6
 [1.12.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.4...v1.12.5
 [1.12.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.3...v1.12.4
 [1.12.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.12.2...v1.12.3

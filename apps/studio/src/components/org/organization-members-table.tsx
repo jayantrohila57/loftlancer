@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
+import { Button } from "@loftlancer/ui/button";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
@@ -26,7 +27,10 @@ interface OrganizationMembersTableProps {
   roleSelectItems: { value: string; label: string }[];
   isOwner: boolean;
   rolePendingId: string | null;
+  currentUserId?: string;
+  removalPendingId?: string | null;
   onRoleChange: (memberId: string, role: string) => void;
+  onRemove?: (member: OrganizationMemberRow) => void;
   empty?: DataTableEmptyConfig;
 }
 
@@ -35,7 +39,10 @@ export function OrganizationMembersTable({
   roleSelectItems,
   isOwner,
   rolePendingId,
+  currentUserId,
+  removalPendingId,
   onRoleChange,
+  onRemove,
   empty,
 }: OrganizationMembersTableProps) {
   const columns = [
@@ -89,6 +96,34 @@ export function OrganizationMembersTable({
         );
       },
     }),
+    ...(onRemove && isOwner
+      ? [
+          columnHelper.display({
+            id: "actions",
+            meta: { role: "actions" },
+            header: () => <span className="sr-only">Actions</span>,
+            cell: ({ row }) => {
+              const member = row.original;
+              if (member.user.id === currentUserId) return null;
+              return (
+                <div className="flex justify-end">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive"
+                    disabled={removalPendingId === member.id}
+                    aria-label={`Remove ${member.user.name || member.user.email}`}
+                    onClick={() => onRemove(member)}
+                  >
+                    {removalPendingId === member.id ? "Removing…" : "Remove"}
+                  </Button>
+                </div>
+              );
+            },
+          }),
+        ]
+      : []),
   ] as LegacyColumnDef<OrganizationMemberRow, unknown>[];
 
   return (

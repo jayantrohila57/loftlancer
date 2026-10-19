@@ -1,5 +1,6 @@
 "use client";
 
+import { getMemberRemovalBlockReason } from "@loftlancer/auth/member-removal-policy";
 import { Button } from "@loftlancer/ui/button";
 import {
   Empty,
@@ -14,11 +15,12 @@ import { Input } from "@loftlancer/ui/input";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { DiscardChangesDialog } from "@loftlancer/ui/patterns/discard-changes-dialog";
 import { PageHeaderActionsPortal } from "@loftlancer/ui/patterns/page-header";
+import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetDescription } from "@loftlancer/ui/sheet";
 import { Spinner } from "@loftlancer/ui/spinner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
   type ReactNode,
@@ -206,7 +208,16 @@ export function OrganizationSettingsForm({
   const [deletePending, setDeletePending] = useState(false);
   const [leavePending, setLeavePending] = useState(false);
   const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
+  const [transferConfirmOpen, setTransferConfirmOpen] = useState(false);
+  const [transferTargetUserId, setTransferTargetUserId] = useState("");
   const [roleConfirmOpen, setRoleConfirmOpen] = useState(false);
+  const [memberRemovalConfirmOpen, setMemberRemovalConfirmOpen] =
+    useState(false);
+  const [memberRemovalPendingId, setMemberRemovalPendingId] = useState<
+    string | null
+  >(null);
+  const [pendingMemberRemoval, setPendingMemberRemoval] =
+    useState<MemberRow | null>(null);
   const [pendingRoleChange, setPendingRoleChange] = useState<{
     memberId: string;
     role: string;
@@ -221,6 +232,7 @@ export function OrganizationSettingsForm({
   const canInvite = assignableInviteRoles(myMembership?.role).length > 0;
   const isPersonal = isPersonalOrganization({ metadata: orgMetadata });
   const pendingInvitations = pendingOrganizationInvitations(invitations);
+  const ownerCount = members.filter((member) => member.role === "owner").length;
 
   const editDraftDirty = isOrganizationProfileEditDirty(
     editDraftName,
@@ -290,6 +302,23 @@ export function OrganizationSettingsForm({
       setInvitations((inviteData.rows ?? []) as OrganizationInvitationRow[]);
     },
     [queryClient],
+  );
+
+  const transferOwnershipMutation = useMutation(
+    trpc.organizations.transferOwnership.mutationOptions({
+      onSuccess: async () => {
+        const target = members.find((m) => m.user.id === transferTargetUserId);
+        toast.success(
+          `Ownership transferred to ${target?.user.name || target?.user.email || "the selected member"}`,
+        );
+        setTransferConfirmOpen(false);
+        setTransferTargetUserId("");
+        await loadOrganization(organizationId);
+        await refreshOrganizations();
+      },
+      onError: (error) =>
+        toast.error(error.message || "Could not transfer ownership"),
+    }),
   );
 
   useEffect(() => {
@@ -373,6 +402,15 @@ export function OrganizationSettingsForm({
   const handleRoleChange = async () => {
     if (!pendingRoleChange) return;
     const { memberId, role } = pendingRoleChange;
+    const target = members.find((member) => member.id === memberId);
+    if (target?.role === "owner" && ownerCount <= 1 && role !== "owner") {
+      toast.error(
+        "Transfer ownership first; the organization must have an owner.",
+      );
+      setRoleConfirmOpen(false);
+      setPendingRoleChange(null);
+      return;
+    }
     setRolePendingId(memberId);
     try {
       await toast.promise(
@@ -394,6 +432,54 @@ export function OrganizationSettingsForm({
       // Toast handled by toast.promise
     } finally {
       setRolePendingId(null);
+    }
+  };
+
+  const requestMemberRemoval = (member: MemberRow) => {
+    const blockReason = getMemberRemovalBlockReason({
+      actorUserId: currentUserId ?? "",
+      targetUserId: member.user.id ?? "",
+      targetRole: member.role,
+      activeOwnerCount: ownerCount,
+    });
+    if (blockReason) {
+      toast.error(
+        blockReason === "self"
+          ? "Use Leave organization to remove yourself."
+          : "Transfer ownership before removing the only owner.",
+      );
+      return;
+    }
+    setPendingMemberRemoval(member);
+    setMemberRemovalConfirmOpen(true);
+  };
+
+  const handleMemberRemoval = async () => {
+    const member = pendingMemberRemoval;
+    const memberIdOrEmail = member?.user.id ?? member?.user.email;
+    if (!member || !memberIdOrEmail) return;
+
+    setMemberRemovalPendingId(member.id);
+    try {
+      const result = await authClient.organization.removeMember({
+        memberIdOrEmail,
+        organizationId,
+      });
+      if (result.error) {
+        throw new Error(result.error.message ?? "Could not remove member");
+      }
+      toast.success(`Removed ${member.user.name || member.user.email}`);
+      setMemberRemovalConfirmOpen(false);
+      setPendingMemberRemoval(null);
+      await loadOrganization(organizationId);
+      void invalidateAfterOrganizationChange(queryClient);
+      await refreshOrganizations();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Could not remove member",
+      );
+    } finally {
+      setMemberRemovalPendingId(null);
     }
   };
 
@@ -635,6 +721,49 @@ export function OrganizationSettingsForm({
                 </Button>
               </PageHeaderActionsPortal>
             ) : null}
+            {isOwner ? (
+              <SettingsPanel>
+                <SettingsSectionHeader
+                  title="Transfer ownership"
+                  description="Give another active organization member ownership. You will become a manager."
+                  icon="member"
+                />
+                <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-end">
+                  <FormField id="organization-new-owner" label="New owner">
+                    <SearchableCombobox
+                      id="organization-new-owner"
+                      value={transferTargetUserId}
+                      onChange={setTransferTargetUserId}
+                      ariaLabel="Choose a new organization owner"
+                      placeholder="Select a member"
+                      searchPlaceholder="Search members…"
+                      className="w-full sm:min-w-64"
+                      options={members
+                        .filter(
+                          (member) =>
+                            member.user.id && member.user.id !== currentUserId,
+                        )
+                        .map((member) => ({
+                          value: member.user.id as string,
+                          label: member.user.name || member.user.email,
+                          hint: member.user.email,
+                        }))}
+                    />
+                  </FormField>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={
+                      !transferTargetUserId ||
+                      transferOwnershipMutation.isPending
+                    }
+                    onClick={() => setTransferConfirmOpen(true)}
+                  >
+                    Transfer ownership
+                  </Button>
+                </div>
+              </SettingsPanel>
+            ) : null}
             <SettingsPanel>
               {mode !== "members" ? (
                 <SettingsSectionHeader
@@ -725,6 +854,9 @@ export function OrganizationSettingsForm({
                     roleSelectItems={ROLE_SELECT_ITEMS}
                     isOwner={isOwner}
                     rolePendingId={rolePendingId}
+                    currentUserId={currentUserId}
+                    removalPendingId={memberRemovalPendingId}
+                    onRemove={requestMemberRemoval}
                     onRoleChange={(memberId, role) => {
                       const member = members.find((m) => m.id === memberId);
                       requestRoleChange(
@@ -976,6 +1108,54 @@ export function OrganizationSettingsForm({
         confirmLabel="Update role"
         onConfirm={handleRoleChange}
         isPending={rolePendingId !== null}
+      />
+
+      <ConfirmDialog
+        open={memberRemovalConfirmOpen}
+        onOpenChange={(open) => {
+          setMemberRemovalConfirmOpen(open);
+          if (!open && memberRemovalPendingId === null) {
+            setPendingMemberRemoval(null);
+          }
+        }}
+        title="Remove organization member"
+        description={
+          pendingMemberRemoval
+            ? `Remove ${pendingMemberRemoval.user.name || pendingMemberRemoval.user.email} from ${orgName}? They will lose access to this organization’s teams and projects.`
+            : "Confirm member removal."
+        }
+        confirmLabel="Remove member"
+        variant="destructive"
+        onConfirm={handleMemberRemoval}
+        isPending={memberRemovalPendingId !== null}
+      />
+
+      <ConfirmDialog
+        open={transferConfirmOpen}
+        onOpenChange={(open) => {
+          setTransferConfirmOpen(open);
+          if (!open && !transferOwnershipMutation.isPending) {
+            setTransferTargetUserId("");
+          }
+        }}
+        title="Transfer organization ownership"
+        description={(() => {
+          const target = members.find(
+            (member) => member.user.id === transferTargetUserId,
+          );
+          return target
+            ? `Transfer ${orgName} to ${target.user.name || target.user.email}? You will become a manager and the new owner will control membership and organization settings.`
+            : "Choose an active organization member to receive ownership.";
+        })()}
+        confirmLabel="Transfer ownership"
+        onConfirm={() => {
+          if (transferTargetUserId) {
+            transferOwnershipMutation.mutate({
+              targetUserId: transferTargetUserId,
+            });
+          }
+        }}
+        isPending={transferOwnershipMutation.isPending}
       />
 
       <ConfirmDialog
