@@ -33,6 +33,7 @@ export const routes = {
   home: () => "/",
   newOrganization: () => "/new",
   notifications: () => "/notifications",
+  invitation: (id: string) => `/invite/${seg(id)}`,
   activity: () => "/activity",
   onboarding: () => "/onboarding",
   support: () => "/support",

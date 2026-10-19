@@ -16,9 +16,14 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Studio sidebar footer includes product updates, help and support links, copyright, and the current version (#483)
+
 ### Fixed
 
 - Organization overview removes redundant metadata and health rails, uses compact summary cards, and lists recently updated projects (#477)
+- Organization directory headers align without phantom back buttons or empty metadata spacing; the directory uses the shared table, drops redundant summary cards, and provides an incoming invitations view with working notification links (#475)
 - Project routes render their own navigation shell without nested organization tabs, and organization back navigation respects the Studio base path (#464)
 - Organization invitations have a public, account-aware accept and decline flow with explicit expired, revoked, and unavailable states (#432)
 - Organization owners can remove members with confirmation, and removed users’ team and project access is cleaned up within that organization (#433)
@@ -27,6 +32,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Team lifecycle mutations validate organization membership, repair member counts, preserve audit history, and revoke deleted-team access (#469)
 - Team members invited or added after a team is linked to a project receive its default read grants (#469)
 - Project permissions require active organization members and same-organization teams; deleted teams no longer grant project access (#470)
+- Project pages keep shared project identity and actions in one header, move app navigation into the Apps view, and compact the project directory (#481)
 
 ## [1.12.6] - 2026-10-19
 

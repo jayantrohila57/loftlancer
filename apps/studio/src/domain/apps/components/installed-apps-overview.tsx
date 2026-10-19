@@ -3,6 +3,8 @@
 import { Button } from "@loftlancer/ui/button";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import Link from "next/link";
+import { AppIcon } from "@/components/patterns/app-icon";
+import { ErrorState } from "@/components/patterns/error-state";
 import { LayoutGrid } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
 import { useOrgSlug } from "@/utils/use-route-scope";
@@ -22,21 +24,45 @@ export function InstalledAppsOverview({
   const { installed, isLoading, isError, canManage } = useProjectApps(slug);
   if (isLoading) return <AppGridSkeleton count={1} />;
 
-  if (!isError && installed.length === 0) {
+  if (isError) {
     return (
-      <EmptyState
-        icon={LayoutGrid}
-        title="No apps installed"
-        description={
-          canManage
-            ? "Install Environments, Tasks and more to start working in this project."
-            : "A project manager hasn't installed any apps on this project yet."
-        }
-        actionLabel={canManage ? "Browse apps" : undefined}
-        actionHref={
-          canManage ? routes.projectSection(org, slug, "apps") : undefined
-        }
+      <ErrorState
+        title="Apps unavailable"
+        description="We couldn't load the apps for this project."
+        onRetry={() => window.location.reload()}
       />
+    );
+  }
+
+  const appsHref = routes.projectSection(org, slug, "apps");
+  const addAppCard = canManage ? (
+    <Link
+      href={appsHref}
+      className="flex min-h-28 flex-col items-center justify-center gap-2 rounded-xl border border-dashed bg-muted/10 p-4 text-center transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      <span className="flex size-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <AppIcon name="plus" className="size-4 text-current" />
+      </span>
+      <span className="font-medium text-sm">Add an app</span>
+    </Link>
+  ) : null;
+
+  if (installed.length === 0) {
+    return (
+      <div className="flex flex-col gap-3">
+        <h2 className="font-medium text-sm">Apps</h2>
+        {canManage ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {addAppCard}
+          </div>
+        ) : (
+          <EmptyState
+            icon={LayoutGrid}
+            title="No apps installed"
+            description="A project manager hasn't installed any apps on this project yet."
+          />
+        )}
+      </div>
     );
   }
 
@@ -44,11 +70,7 @@ export function InstalledAppsOverview({
     <div className="flex flex-col gap-3">
       <div className="flex h-8 items-center justify-between">
         <h2 className="font-medium text-sm">Apps</h2>
-        <Button
-          size="sm"
-          variant="ghost"
-          render={<Link href={routes.projectSection(org, slug, "apps")} />}
-        >
+        <Button size="sm" variant="ghost" render={<Link href={appsHref} />}>
           {canManage ? "Manage apps" : "All apps"}
         </Button>
       </div>
@@ -66,11 +88,14 @@ export function InstalledAppsOverview({
             <p className="line-clamp-2 flex-1 text-muted-foreground text-xs">
               {app.description}
             </p>
-            <p className="text-muted-foreground text-xs tabular-nums">
-              {summaries?.[app.id] ?? "\u00a0"}
-            </p>
+            {summaries?.[app.id] ? (
+              <p className="text-muted-foreground text-xs tabular-nums">
+                {summaries[app.id]}
+              </p>
+            ) : null}
           </Link>
         ))}
+        {addAppCard}
       </div>
     </div>
   );
