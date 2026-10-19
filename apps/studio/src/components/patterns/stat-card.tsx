@@ -27,21 +27,19 @@ export type StatCardItem = {
 const headerClass = (compact?: boolean) =>
   cn(
     "gap-0.5 pb-0",
-    compact ? "p-2 sm:gap-1 sm:p-4 sm:pb-1" : "gap-1 p-3 pb-1 sm:p-4 sm:pb-1",
+    compact ? "gap-0.5 p-2 sm:p-2.5 sm:pb-2" : "gap-1 p-3 pb-1 sm:p-4 sm:pb-1",
   );
 const iconClass = (compact?: boolean) =>
   compact ? "size-3.5 sm:size-4" : "size-4";
 const titleClass = (compact?: boolean) =>
   cn(
     "truncate text-nowrap tabular-nums",
-    compact ? "text-base sm:text-2xl" : "text-xl sm:text-2xl",
+    compact ? "text-base" : "text-xl sm:text-2xl",
   );
 const hintClass = (compact?: boolean) =>
   cn(
     "truncate text-nowrap pt-0 text-muted-foreground text-xs",
-    compact
-      ? "hidden px-2 pb-2 sm:block sm:px-4 sm:pb-4"
-      : "px-3 pb-3 sm:px-4 sm:pb-4",
+    compact ? "hidden" : "px-3 pb-3 sm:px-4 sm:pb-4",
   );
 
 function StatCardInner({

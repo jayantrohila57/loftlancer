@@ -23,6 +23,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Fixed
 
+- Organization overview removes redundant metadata and health rails, uses compact summary cards, and lists recently updated projects (#477)
 - Organization directory headers align without phantom back buttons or empty metadata spacing; the directory uses the shared table, drops redundant summary cards, and provides an incoming invitations view with working notification links (#475)
 - Project routes render their own navigation shell without nested organization tabs, and organization back navigation respects the Studio base path (#464)
 - Organization invitations have a public, account-aware accept and decline flow with explicit expired, revoked, and unavailable states (#432)
