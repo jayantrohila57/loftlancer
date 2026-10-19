@@ -63,16 +63,22 @@ This matrix records the current route contract for the dashboard hierarchy work 
 
 ## Data-flow findings and verification
 
-The normal path is server route guard/metadata → hydrated scope shell → domain client surface → React Query/tRPC hook → server router/action with canonical permission checks. Shell prefetch shares cached organization/project identity queries with pages where query keys match. Several page surfaces still invoke their own project/org hooks, so the cache avoids some repeat network work but data ownership is not yet fully centralized. Do not infer that every route has one server-prefetched query or a single shared permission object.
+The normal path is server route guard/metadata → hydrated scope shell → domain client surface → React Query/tRPC hook → server router/action with canonical permission checks. Project layouts now hydrate the request-cached project detail query before rendering the shared project shell and page. Organization layouts pass the membership-guarded id, slug, and name into an identity context consumed by the shell and organization pages; the client auth query still fills logo and counts. Organization switching removes queries by explicit router/custom-key namespace instead of substring-matching serialized keys. Several page surfaces still invoke their own project/org hooks, so data ownership is not yet fully centralized. Do not infer that every route has one server-prefetched query or a single shared permission object.
 
 | Check | Current state |
 | --- | --- |
 | Route inventory and parent destinations | Recorded above; source review completed for all Studio route families, including account/support and dynamic app/item routes |
-| Type and route-literal checks | Run on the final branch before merge; results recorded in the PR/parent issue |
-| Browser verification of loading, empty, error, and success states | Must be run against a configured local `pnpm --filter studio dev` instance; fixture credentials/data are required for authenticated route coverage |
+| Type and route-literal checks | Run on the final branch before merge; results recorded in the PR |
+| Browser verification of loading, empty, error, and success states | Still requires an authenticated browser session and configured test data; the current browser inspection opened an empty loading shell and did not verify authenticated content |
 | Desktop/narrow viewport and keyboard review | Requires a browser pass over the authenticated fixture routes before merge |
 | Owner/Manager/Member/no-access comparison | Permission guards are source-reviewed; each live role scenario needs matching seeded fixture accounts |
 | Five-person task-based usability study | Not performed; recruit five representative participants and attach task completion, misclick, and time-to-target findings before closing #491/#500 |
+
+### Validation follow-up
+
+- Shared project detail hydration with the project shell and seeded organization identity across the shell/pages.
+- Organization-switch cache cleanup now matches exact tRPC router namespaces and known organization-specific custom keys; global support and preference caches are retained.
+- Authenticated role/viewport/keyboard walkthroughs and the five-person study remain outstanding.
 
 ### Human walkthrough tasks
 

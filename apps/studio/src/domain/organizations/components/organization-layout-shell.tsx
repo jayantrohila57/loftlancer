@@ -5,32 +5,53 @@ import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 import { BASE_PATH } from "@/lib/base-path";
 import { routes } from "@/utils/navigation";
-import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
+import {
+  type OrganizationDetail,
+  useOrganizationBySlug,
+} from "../hooks/use-organization-by-slug";
 import { useOrganizationTabs } from "../hooks/use-organization-tabs";
 import { isOrganizationShellRoute } from "../lib/organization-layout";
+import { OrganizationIdentityProvider } from "./organization-identity-context";
 
 /** Stable organization identity and navigation shared by every org route. */
 export function OrganizationLayoutShell({
   slug,
+  initialOrganization,
   children,
 }: {
   slug: string;
+  initialOrganization: Pick<OrganizationDetail, "id" | "name" | "slug">;
   children: React.ReactNode;
 }) {
   const pathname = usePathname() ?? "";
   if (!isOrganizationShellRoute(pathname, slug, BASE_PATH)) return children;
 
-  return <OrganizationFrame slug={slug}>{children}</OrganizationFrame>;
+  return (
+    <OrganizationIdentityProvider organization={initialOrganization}>
+      <OrganizationFrame
+        key={slug}
+        slug={slug}
+        initialOrganization={initialOrganization}
+      >
+        {children}
+      </OrganizationFrame>
+    </OrganizationIdentityProvider>
+  );
 }
 
 function OrganizationFrame({
   slug,
+  initialOrganization,
   children,
 }: {
   slug: string;
+  initialOrganization: Pick<OrganizationDetail, "id" | "name" | "slug">;
   children: React.ReactNode;
 }) {
-  const { organization, listItem, status } = useOrganizationBySlug(slug);
+  const { organization, listItem, status } = useOrganizationBySlug(
+    slug,
+    initialOrganization,
+  );
   if (status === "not-found") notFound();
   const { tabs } = useOrganizationTabs(slug);
   const pathname = usePathname() ?? "";
