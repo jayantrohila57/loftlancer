@@ -1,4 +1,8 @@
 import {
+  getOwnerMutationBlockReason,
+  isOwnerRole,
+} from "@loftlancer/auth/member-removal-policy";
+import {
   activeInvitationWhere,
   activeMemberWhere,
   db,
@@ -15,6 +19,7 @@ import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { requireAction } from "../actions/require-action";
+import { transferOrganizationOwnership } from "../organization-ownership";
 import { resolveOrganizationIdForUser } from "./resolve-organization";
 
 function slugifyOrganizationName(name: string): string {
@@ -194,37 +199,11 @@ export async function mcpOrganizationTransferOwnership(
     organizationId,
     targetUserId,
   });
-
-  const members = await db
-    .select({ id: member.id, userId: member.userId, role: member.role })
-    .from(member)
-    .where(
-      activeMemberWhere(
-        and(
-          eq(member.organizationId, organizationId),
-          isNull(member.deletedAt),
-        ),
-      ),
-    );
-
-  const currentOwner = members.find(
-    (m) => m.userId === userId && m.role === "owner",
-  );
-  const target = members.find((m) => m.userId === targetUserId);
-  if (!currentOwner || !target) {
-    throw new Error("transfer_not_allowed");
-  }
-
-  await db
-    .update(member)
-    .set({ role: "manager" })
-    .where(eq(member.id, currentOwner.id));
-  await db
-    .update(member)
-    .set({ role: "owner" })
-    .where(eq(member.id, target.id));
-
-  return { organizationId, newOwnerUserId: targetUserId };
+  return transferOrganizationOwnership({
+    actorUserId: userId,
+    organizationId,
+    targetUserId,
+  });
 }
 
 export async function mcpMembersList(userId: string, organizationId: string) {
@@ -289,29 +268,52 @@ export async function mcpMemberRemove(
     organizationId,
     targetUserId,
   });
-  const [row] = await db
-    .select({ id: member.id })
-    .from(member)
-    .where(
-      activeMemberWhere(
+  await db.transaction(async (tx) => {
+    await tx
+      .select({ id: organization.id })
+      .from(organization)
+      .where(
         and(
-          eq(member.organizationId, organizationId),
-          eq(member.userId, targetUserId),
+          eq(organization.id, organizationId),
+          isNull(organization.deletedAt),
         ),
-      ),
-    )
-    .limit(1);
-  if (!row) {
-    throw new Error("member_not_found");
-  }
-  if (isSoftDeletesEnabled()) {
-    await db
-      .update(member)
-      .set(softDeleteSet(userId))
-      .where(eq(member.id, row.id));
-  } else {
-    await db.delete(member).where(eq(member.id, row.id));
-  }
+      )
+      .for("update");
+    const rows = await tx
+      .select({ id: member.id, userId: member.userId, role: member.role })
+      .from(member)
+      .where(
+        activeMemberWhere(
+          and(
+            eq(member.organizationId, organizationId),
+            isNull(member.deletedAt),
+          ),
+        ),
+      )
+      .for("update");
+    const target = rows.find((row) => row.userId === targetUserId);
+    if (!target) throw new Error("member_not_found");
+    const ownerCount = rows.filter((row) => isOwnerRole(row.role)).length;
+    if (
+      getOwnerMutationBlockReason({
+        targetRole: target.role,
+        activeOwnerCount: ownerCount,
+        removing: true,
+      })
+    ) {
+      throw new Error(
+        "Transfer ownership first; the organization must have an owner.",
+      );
+    }
+    if (isSoftDeletesEnabled()) {
+      await tx
+        .update(member)
+        .set(softDeleteSet(userId))
+        .where(eq(member.id, target.id));
+    } else {
+      await tx.delete(member).where(eq(member.id, target.id));
+    }
+  });
   return { success: true, userId: targetUserId };
 }
 
@@ -326,22 +328,50 @@ export async function mcpMemberUpdateRole(
     organizationId,
     targetUserId,
   });
-  const [row] = await db
-    .update(member)
-    .set({ role })
-    .where(
-      activeMemberWhere(
+  return db.transaction(async (tx) => {
+    await tx
+      .select({ id: organization.id })
+      .from(organization)
+      .where(
         and(
-          eq(member.organizationId, organizationId),
-          eq(member.userId, targetUserId),
+          eq(organization.id, organizationId),
+          isNull(organization.deletedAt),
         ),
-      ),
-    )
-    .returning({ id: member.id, userId: member.userId, role: member.role });
-  if (!row) {
-    throw new Error("member_not_found");
-  }
-  return row;
+      )
+      .for("update");
+    const rows = await tx
+      .select({ id: member.id, userId: member.userId, role: member.role })
+      .from(member)
+      .where(
+        activeMemberWhere(
+          and(
+            eq(member.organizationId, organizationId),
+            isNull(member.deletedAt),
+          ),
+        ),
+      )
+      .for("update");
+    const target = rows.find((row) => row.userId === targetUserId);
+    if (!target) throw new Error("member_not_found");
+    const ownerCount = rows.filter((row) => isOwnerRole(row.role)).length;
+    if (
+      getOwnerMutationBlockReason({
+        targetRole: target.role,
+        activeOwnerCount: ownerCount,
+        nextRole: role,
+      })
+    ) {
+      throw new Error(
+        "Transfer ownership first; the organization must have an owner.",
+      );
+    }
+    const [updated] = await tx
+      .update(member)
+      .set({ role })
+      .where(eq(member.id, target.id))
+      .returning({ id: member.id, userId: member.userId, role: member.role });
+    return updated;
+  });
 }
 
 export async function mcpInvitationsList(

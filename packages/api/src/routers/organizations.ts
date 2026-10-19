@@ -20,8 +20,27 @@ import {
 } from "../index";
 import { getPublicInvitationStatus } from "../invitation-preview";
 import { mcpMembersList } from "../mcp/organization-ops";
+import { transferOrganizationOwnership } from "../organization-ownership";
 
 export const organizationsRouter = router({
+  transferOwnership: orgProcedure
+    .input(z.object({ targetUserId: z.string().min(1) }))
+    .use(actionGuard("organization.transfer_ownership"))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      return transferOrganizationOwnership({
+        actorUserId: ctx.session.user.id,
+        organizationId,
+        targetUserId: input.targetUserId,
+      });
+    }),
+
   /**
    * Public invitation landing preview. The invite ID is a random bearer link;
    * never return the recipient email or any other account data here.
