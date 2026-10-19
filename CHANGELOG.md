@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Studio sidebar footer includes product updates, help and support links, copyright, and the current version (#483)
+
 ### Fixed
 
 - Project routes render their own navigation shell without nested organization tabs, and organization back navigation respects the Studio base path (#464)
