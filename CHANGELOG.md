@@ -22,6 +22,9 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Organization invitations have a public, account-aware accept and decline flow with explicit expired, revoked, and unavailable states (#432)
 - Organization owners can remove members with confirmation, and removed users’ team and project access is cleaned up within that organization (#433)
 - Organization ownership transfers are transactional, audited, and guarded against removing or demoting the final owner (#434)
+- MCP organization invitations reject duplicates, send the shared invite email, audit lifecycle changes, and add accepted members to assigned teams (#435)
+- Team lifecycle mutations validate organization membership, repair member counts, preserve audit history, and revoke deleted-team access (#469)
+- Project permissions require active organization members and same-organization teams; deleted teams no longer grant project access (#470)
 
 ## [1.12.6] - 2026-10-19
 

@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@loftlancer/ui/table";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { ErrorState } from "@/components/patterns/error-state";
@@ -42,17 +42,6 @@ type TeamMemberRow = {
   teamId: string;
 };
 
-type OrganizationTeamsClient = {
-  addTeamMember?: (input: {
-    teamId: string;
-    userId: string;
-  }) => Promise<unknown>;
-  removeTeamMember?: (input: {
-    teamId: string;
-    userId: string;
-  }) => Promise<unknown>;
-};
-
 type TeamMembersSheetProps = {
   organizationId: string;
   team: { id: string; name: string };
@@ -66,7 +55,6 @@ export function TeamMembersSheet({
   open,
   onOpenChange,
 }: TeamMembersSheetProps) {
-  const teamsClient = authClient.organization as OrganizationTeamsClient;
   const { allowed: canAdd } = useCan("team.member.add");
   const { allowed: canRemove } = useCan("team.member.remove");
 
@@ -84,6 +72,10 @@ export function TeamMembersSheet({
     { enabled: open, retry: false, refetchOnWindowFocus: false },
   );
   const teamMembersQuery = useQuery(teamMembersQueryOptions);
+  const addMemberMutation = useMutation(trpc.teams.addMember.mutationOptions());
+  const removeMemberMutation = useMutation(
+    trpc.teams.removeMember.mutationOptions(),
+  );
   const orgMembersQuery = useQuery({
     queryKey: ["team-members-sheet", "org-members", organizationId],
     enabled: open,
@@ -127,11 +119,11 @@ export function TeamMembersSheet({
   });
 
   const handleAdd = async () => {
-    if (!addUserId || !teamsClient.addTeamMember) return;
+    if (!addUserId) return;
     setAddPending(true);
     try {
       await toast.promise(
-        teamsClient.addTeamMember({ teamId: team.id, userId: addUserId }),
+        addMemberMutation.mutateAsync({ teamId: team.id, userId: addUserId }),
         {
           loading: "Adding member…",
           success: "Member added to team",
@@ -146,11 +138,10 @@ export function TeamMembersSheet({
   };
 
   const handleRemove = async (userId: string) => {
-    if (!teamsClient.removeTeamMember) return;
     setRemovingUserId(userId);
     try {
       await toast.promise(
-        teamsClient.removeTeamMember({ teamId: team.id, userId }),
+        removeMemberMutation.mutateAsync({ teamId: team.id, userId }),
         {
           loading: "Removing member…",
           success: "Member removed from team",

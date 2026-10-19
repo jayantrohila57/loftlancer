@@ -10,6 +10,7 @@ import {
   projectMemberGrant,
   projectTeam,
 } from "@loftlancer/db/schema/project-access";
+import { project } from "@loftlancer/db/schema/projects";
 import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { and, eq, inArray, isNull } from "drizzle-orm";
@@ -111,7 +112,11 @@ export async function loadProjectAccessSummary(projectId: string) {
     .from(projectTeam)
     .innerJoin(team, eq(projectTeam.teamId, team.id))
     .where(
-      and(eq(projectTeam.projectId, projectId), isNull(projectTeam.deletedAt)),
+      and(
+        eq(projectTeam.projectId, projectId),
+        isNull(projectTeam.deletedAt),
+        isNull(team.deletedAt),
+      ),
     );
 
   const grants = await db
@@ -214,6 +219,32 @@ export async function upsertProjectTeamLink(input: {
   teamId: string;
   createdBy: string;
 }) {
+  const [projectRow] = await db
+    .select({ id: project.id })
+    .from(project)
+    .where(
+      and(
+        eq(project.id, input.projectId),
+        eq(project.organizationId, input.organizationId),
+        isNull(project.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (!projectRow) throw new Error("project_not_found");
+
+  const [teamRow] = await db
+    .select({ id: team.id })
+    .from(team)
+    .where(
+      and(
+        eq(team.id, input.teamId),
+        eq(team.organizationId, input.organizationId),
+        isNull(team.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (!teamRow) throw new Error("team_not_found");
+
   const [existing] = await db
     .select({ id: projectTeam.id, deletedAt: projectTeam.deletedAt })
     .from(projectTeam)
@@ -260,6 +291,7 @@ export async function upsertProjectTeamLink(input: {
 }
 
 export async function softDeleteProjectTeamLink(input: {
+  organizationId: string;
   projectId: string;
   teamId: string;
   actorUserId: string;
@@ -271,6 +303,7 @@ export async function softDeleteProjectTeamLink(input: {
         and(
           eq(projectTeam.projectId, input.projectId),
           eq(projectTeam.teamId, input.teamId),
+          eq(projectTeam.organizationId, input.organizationId),
         ),
       );
     return { ok: true };
@@ -283,6 +316,7 @@ export async function softDeleteProjectTeamLink(input: {
       and(
         eq(projectTeam.projectId, input.projectId),
         eq(projectTeam.teamId, input.teamId),
+        eq(projectTeam.organizationId, input.organizationId),
         isNull(projectTeam.deletedAt),
       ),
     );

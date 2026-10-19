@@ -991,6 +991,7 @@ export const platformAdminEndpoints = {
     .mutation(async ({ ctx, input }) => {
       await assertPlatformOperatorList(ctx.session.user.id);
       return softDeleteProjectTeamLink({
+        organizationId: input.organizationId,
         projectId: input.projectId,
         teamId: input.teamId,
         actorUserId: ctx.session.user.id,
