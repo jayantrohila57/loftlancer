@@ -1,15 +1,16 @@
 "use client";
 
 import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
-import { Button } from "@loftlancer/ui/button";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
+import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import {
   type LegacyColumnDef,
   legacyCreateColumnHelper,
 } from "@tanstack/react-table/legacy";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { RoleBadge } from "@/components/patterns/status-badge";
 import { TableLeadingCell } from "@/components/patterns/table-leading-cell";
 import { initialsFromLabel } from "@/lib/initials";
@@ -17,6 +18,7 @@ import { initialsFromLabel } from "@/lib/initials";
 export type OrganizationMemberRow = {
   id: string;
   role: string;
+  createdAt?: Date | string;
   user: { name: string; email: string; id?: string };
 };
 
@@ -96,6 +98,24 @@ export function OrganizationMembersTable({
         );
       },
     }),
+    columnHelper.accessor("createdAt", {
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Joined" />
+      ),
+      cell: ({ getValue }) => {
+        const value = getValue();
+        return value ? (
+          <span className="text-muted-foreground text-xs">
+            <LocalDateTime
+              value={String(value)}
+              options={{ dateStyle: "medium" }}
+            />
+          </span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        );
+      },
+    }),
     ...(onRemove && isOwner
       ? [
           columnHelper.display({
@@ -106,19 +126,20 @@ export function OrganizationMembersTable({
               const member = row.original;
               if (member.user.id === currentUserId) return null;
               return (
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-destructive hover:text-destructive"
-                    disabled={removalPendingId === member.id}
-                    aria-label={`Remove ${member.user.name || member.user.email}`}
-                    onClick={() => onRemove(member)}
-                  >
-                    {removalPendingId === member.id ? "Removing…" : "Remove"}
-                  </Button>
-                </div>
+                <DataTableRowActions
+                  label={`Actions for ${member.user.name || member.user.email}`}
+                  actions={[
+                    {
+                      label:
+                        removalPendingId === member.id
+                          ? "Removing…"
+                          : "Remove member",
+                      onSelect: () => onRemove(member),
+                      destructive: true,
+                      disabled: removalPendingId === member.id,
+                    },
+                  ]}
+                />
               );
             },
           }),

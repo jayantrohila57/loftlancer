@@ -1,8 +1,10 @@
 "use client";
 
+import { Button } from "@loftlancer/ui/button";
 import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
+import { AppIcon } from "@/components/patterns/app-icon";
 import { BASE_PATH } from "@/lib/base-path";
 import { routes } from "@/utils/navigation";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
@@ -43,6 +45,17 @@ function OrganizationFrame({
       avatar={{ src: organization?.logo, name }}
       title={name}
       description="Organization workspace and administration."
+      actions={
+        <Button
+          render={<Link href={routes.orgSection(slug, "settings")} />}
+          variant="outline"
+          size="sm"
+          className="h-8 gap-2"
+        >
+          <AppIcon name="settings" />
+          Settings
+        </Button>
+      }
       identity={name}
       subtitle={`/${slug}`}
       tabs={tabs.map((tab) => ({

@@ -243,9 +243,12 @@ export const organizationsRouter = router({
             email: invitation.email,
             role: invitation.role,
             status: invitation.status,
+            createdAt: invitation.createdAt,
             expiresAt: invitation.expiresAt,
+            inviterName: user.name,
           })
           .from(invitation)
+          .leftJoin(user, eq(invitation.inviterId, user.id))
           .where(where)
           .orderBy(desc(invitation.expiresAt))
           .limit(input.limit)

@@ -3,7 +3,9 @@ export type OrganizationInvitationRow = {
   email: string;
   role: string;
   status: string;
+  createdAt?: Date | string;
   expiresAt: Date | string;
+  inviterName?: string | null;
 };
 
 export function isPendingInvitationStatus(status: string | undefined): boolean {
