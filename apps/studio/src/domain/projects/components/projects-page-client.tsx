@@ -44,7 +44,7 @@ export function ProjectsPageClient({
     <>
       <DashboardSection
         title="Projects"
-        description="All workspace projects in one searchable list."
+        description="Projects in this organization. Search, sort, or create a project here."
         back={false}
         hideTabs
         action={
@@ -53,7 +53,7 @@ export function ProjectsPageClient({
           </Can>
         }
       >
-        <ProjectList list={projectsList} onCreateProject={openCreate} />
+        <ProjectList list={projectsList} />
       </DashboardSection>
       <CreateProjectSheet
         open={createOpen}

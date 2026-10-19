@@ -9,7 +9,7 @@
  *   /support /support/tickets[/new|/:id] /support/help[/:slug]
  *   /onboarding
  *   /:org                                org overview
- *   /:org/{projects,projects/new,members,teams,invitations,roles,activity,settings}
+ *   /:org/{projects,projects/new,members,teams,teams/:teamId,invitations,roles,activity,settings}
  *   /:org/:project                       project overview
  *   /:org/:project/{apps,settings}
  *   /:org/:project/env[/:envSlug]        env app
@@ -45,6 +45,7 @@ export const routes = {
 
   org: (org: string) => `/${seg(org)}`,
   orgSection: (org: string, section: OrgSection) => `/${seg(org)}/${section}`,
+  team: (org: string, teamId: string) => `/${seg(org)}/teams/${seg(teamId)}`,
   projects: (org: string) => `/${seg(org)}/projects`,
   newProject: (org: string) => `/${seg(org)}/projects/new`,
 

@@ -41,7 +41,11 @@ const PAGE_SIZE = 50;
 
 export function TasksPageSkeleton() {
   return (
-    <DashboardSection title="Tasks" description="Track work for this project.">
+    <DashboardSection
+      title="Tasks"
+      description="Track work for this project."
+      hideTabs
+    >
       <div className="flex flex-col gap-3" role="status" aria-busy="true">
         <Skeleton className="h-8 w-full rounded-md" />
         <Skeleton className="h-96 w-full rounded-xl" />
@@ -243,7 +247,8 @@ export function TasksPage({ slug }: { slug: string }) {
           ? `Track work for ${project.name}.`
           : "Track work for this project."
       }
-      back={routes.project(org, slug)}
+      back={false}
+      hideTabs
       action={
         canCreate.allowed ? (
           <Button size="sm" className="h-8" onClick={() => setCreateOpen(true)}>
@@ -319,17 +324,9 @@ export function TasksPage({ slug }: { slug: string }) {
           empty: {
             icon: ListTodo,
             title: "No tasks yet",
-            description: "Create the first task for this project.",
-            action: canCreate.allowed ? (
-              <Button
-                size="sm"
-                className="h-8"
-                onClick={() => setCreateOpen(true)}
-              >
-                <Plus className="size-4" aria-hidden />
-                New task
-              </Button>
-            ) : undefined,
+            description: canCreate.allowed
+              ? "Create the first task for this project with New task."
+              : "Tasks will appear here when someone creates them.",
           },
           noResults: {
             title: "No matching tasks",

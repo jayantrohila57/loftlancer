@@ -7,7 +7,6 @@ import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import DashboardSection from "@/components/section-dashboard";
 import { FieldSelect } from "@/domain/tasks/components/field-select";
@@ -55,11 +54,9 @@ export function AppSettingsPage({
         queryKey: trpc.projectApps.list.pathKey(),
       }),
   });
-  const back = routes.projectSection(org, slug, "apps");
-
   if (isLoading) {
     return (
-      <DashboardSection title="App settings" back={back}>
+      <DashboardSection title="App settings" back={false} hideTabs>
         <div className="flex flex-col gap-4" role="status" aria-busy="true">
           <Skeleton className="h-32 rounded-xl" />
           <Skeleton className="h-40 rounded-xl" />
@@ -69,17 +66,21 @@ export function AppSettingsPage({
   }
   if (app?.status !== "active") {
     return (
-      <DashboardSection title={app?.name ?? "App"} back={back}>
+      <DashboardSection title={app?.name ?? "App"} back={false} hideTabs>
         <EmptyState
           icon={LayoutGrid}
           title={app ? `${app.name} isn't installed` : "Unknown app"}
           description={
             app
-              ? "Install it from the Apps page to configure it."
+              ? canManage
+                ? "Install it from the Apps page to configure it."
+                : "Ask a project manager to install this app."
               : "This app doesn't exist."
           }
-          actionLabel="Go to Apps"
-          actionHref={routes.projectSection(org, slug, "apps")}
+          actionLabel={canManage ? "Go to Apps" : undefined}
+          actionHref={
+            canManage ? routes.projectSection(org, slug, "apps") : undefined
+          }
         />
       </DashboardSection>
     );
@@ -94,20 +95,14 @@ export function AppSettingsPage({
   const customized = app.settingsSchema.some(
     (d) => app.settings[d.key] !== d.default,
   );
-  const openHref = routes.app(org, slug, app.nav[0]?.path ?? app.id);
-
   return (
     <DashboardSection
-      title={`${app.name} settings`}
+      title={`Settings for ${app.name}`}
       description={
         project ? `Configure ${app.name} for ${project.name}.` : undefined
       }
-      back={back}
-      action={
-        <Button size="sm" variant="outline" render={<Link href={openHref} />}>
-          Open {app.name}
-        </Button>
-      }
+      back={false}
+      hideTabs
     >
       <div className="flex max-w-3xl flex-col gap-4">
         <section className={cardClass}>

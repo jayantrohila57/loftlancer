@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Studio navigation and management pages clarify the organization, team, project, app, and account hierarchy and remove duplicate controls (#491)
+
 ## [1.13.1] - 2026-10-19
 
 ### Changed

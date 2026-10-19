@@ -80,6 +80,7 @@ export async function notifyInvitationAccepted(invitationId: string) {
       email: invitation.email,
       organizationId: invitation.organizationId,
       organizationName: organization.name,
+      organizationSlug: organization.slug,
       inviterId: invitation.inviterId,
       status: invitation.status,
     })
@@ -137,6 +138,7 @@ export async function notifyInvitationAccepted(invitationId: string) {
     data: {
       organizationId: invite.organizationId,
       organizationName: invite.organizationName,
+      organizationSlug: invite.organizationSlug,
       invitationId: invite.invitationId,
       memberName: memberRow.name,
       memberUserId: memberRow.id,

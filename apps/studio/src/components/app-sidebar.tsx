@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { OrgSwitcher } from "@/components/org/org-switcher";
 import { useSidebarNavigator } from "@/components/sidebar/use-sidebar-navigator";
@@ -74,7 +74,7 @@ const projectHref = (org: string, slug: string) => routes.project(org, slug);
 const envHref = (org: string, p: string, e: string) => routes.env(org, p, e);
 const memberHref = (org: string) => routes.orgSection(org, "members");
 const teamsHref = (org: string, teamId?: string) =>
-  `${routes.orgSection(org, "teams")}${teamId ? `?team=${encodeURIComponent(teamId)}` : ""}`;
+  teamId ? routes.team(org, teamId) : routes.orgSection(org, "teams");
 
 const navIcons: Record<PlatformNavKey, LucideIcon> = {
   organizations: Building2,
@@ -86,7 +86,6 @@ const navIcons: Record<PlatformNavKey, LucideIcon> = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const scope = useRouteScope();
   const settingsLinks = [
     { label: "Account settings", href: accountSettingsHref },
@@ -133,7 +132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           (!actionsAudit || permissions.allowed || permissions.isLoading)
         );
       }
-      if (item.key === "activity" && actionsAudit) {
+      if (item.key === "activity" && actionsAudit && orgSlug) {
         return canTimeline.allowed || canTimeline.isLoading;
       }
       return true;
@@ -145,7 +144,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {
           key: item.key,
           href: href as Route,
-          label: item.label,
+          label:
+            item.key === "activity"
+              ? orgSlug
+                ? "Organization activity"
+                : "My activity"
+              : item.label,
           icon: navIcons[item.key],
           count:
             item.key === "notifications"
@@ -190,7 +194,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Platform</SidebarGroupLabel>
+          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="flex min-w-0 flex-col gap-1">
               {menuItems.map((item) => {
@@ -253,8 +257,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton
                       isActive={
-                        pathname === teamsHref(orgSlug) &&
-                        searchParams.get("team") === item.id.slice(2)
+                        pathname === item.href ||
+                        pathname.startsWith(`${item.href}/`)
                       }
                       tooltip={item.label}
                       render={<Link href={item.href as Route} />}
@@ -272,6 +276,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarSeparator className="mx-2" />
 
         <SidebarProjectsGroup
+          organizationSlug={orgSlug}
           isPinned={nav.isPinned}
           onTogglePin={nav.togglePin}
           pinPending={nav.pinPending}

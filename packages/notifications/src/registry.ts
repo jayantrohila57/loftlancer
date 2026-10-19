@@ -25,6 +25,8 @@ const invitationReceivedData = z.object({
 
 const invitationAcceptedData = z.object({
   organizationId: z.string(),
+  /** Missing on older rows; those still route to the inbox. */
+  organizationSlug: z.string().optional(),
   organizationName: z.string(),
   invitationId: z.string(),
   memberName: z.string(),
@@ -91,7 +93,9 @@ export const notificationRenderers: Record<
       title: "Invitation accepted",
       body: `${data.memberName} joined ${data.organizationName}.`,
       icon: "member",
-      href: "/",
+      href: data.organizationSlug
+        ? `/${encodeURIComponent(data.organizationSlug)}`
+        : "/",
     };
   },
   "support.ticket.reply": (raw) => {

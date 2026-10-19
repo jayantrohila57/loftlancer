@@ -56,7 +56,7 @@ function ProjectDetailPageContent({ slug }: ProjectDetailPageProps) {
 
   return (
     <>
-      <ProjectOverviewSections slug={slug} />
+      <ProjectOverviewSections slug={slug} project={project} />
       <EditProjectSheet
         project={project}
         open={editOpen}
