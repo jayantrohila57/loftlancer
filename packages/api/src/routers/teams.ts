@@ -2,8 +2,10 @@ import { z } from "zod/v3";
 import { actionGuard } from "../actions/action-guard";
 import { orgProcedure, router } from "../index";
 import {
+  mcpTeamAddMember,
   mcpTeamCreate,
   mcpTeamDelete,
+  mcpTeamRemoveMember,
   mcpTeamRestore,
   mcpTeamsList,
   mcpTeamUpdate,
@@ -81,5 +83,37 @@ export const teamsRouter = router({
         throw new Error("No active org");
       }
       return mcpTeamRestore(ctx.session.user.id, organizationId, input.teamId);
+    }),
+
+  addMember: orgProcedure
+    .input(z.object({ teamId: z.string().min(1), userId: z.string().min(1) }))
+    .use(actionGuard("team.member.add"))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new Error("No active org");
+      }
+      return mcpTeamAddMember(
+        ctx.session.user.id,
+        organizationId,
+        input.teamId,
+        input.userId,
+      );
+    }),
+
+  removeMember: orgProcedure
+    .input(z.object({ teamId: z.string().min(1), userId: z.string().min(1) }))
+    .use(actionGuard("team.member.remove"))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new Error("No active org");
+      }
+      return mcpTeamRemoveMember(
+        ctx.session.user.id,
+        organizationId,
+        input.teamId,
+        input.userId,
+      );
     }),
 });

@@ -34,4 +34,20 @@ describe("projectAccessRouter assignManager", () => {
     assert.notEqual(upsertIdx, -1);
     assert.ok(assertIdx < upsertIdx);
   });
+
+  it("requires manager targets to be active members in the active organization", () => {
+    const block = assignManagerBlock();
+    assert.match(block, /activeMemberWhere\(/);
+    assert.match(block, /eq\(member\.organizationId, organizationId\)/);
+    assert.match(block, /Project managers must be active organization members/);
+  });
+
+  it("checks the project and active organization member before changing grants", () => {
+    const start = routerSource.indexOf("setMemberGrants:");
+    const end = routerSource.indexOf("assignTeam:", start);
+    const block = routerSource.slice(start, end);
+    assert.match(block, /assertProjectAccess\(/);
+    assert.match(block, /activeMemberWhere\(/);
+    assert.match(block, /One or more project permission grants are invalid/);
+  });
 });

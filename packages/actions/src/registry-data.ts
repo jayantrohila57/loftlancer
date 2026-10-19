@@ -272,17 +272,17 @@ const rows: MatrixRow[] = [
   },
   {
     name: "invitation.accept",
-    scope: "organization",
+    scope: "user",
     description: "Accept invitation",
-    member: true,
+    selfOnly: true,
     entityType: "invitation",
     notifyOn: ["invitation.accepted"],
   },
   {
     name: "invitation.reject",
-    scope: "organization",
+    scope: "user",
     description: "Reject invitation",
-    member: true,
+    selfOnly: true,
     entityType: "invitation",
   },
   {

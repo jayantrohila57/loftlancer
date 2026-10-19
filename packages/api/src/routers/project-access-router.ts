@@ -2,7 +2,8 @@ import {
   isProjectMemberGrantKey,
   PROJECT_MEMBER_GRANT_KEYS,
 } from "@loftlancer/actions";
-import { db } from "@loftlancer/db";
+import { activeMemberWhere, db } from "@loftlancer/db";
+import { member } from "@loftlancer/db/schema/organization";
 import { projectMemberGrant } from "@loftlancer/db/schema/project-access";
 import { TRPCError } from "@trpc/server";
 import { and, eq, isNull } from "drizzle-orm";
@@ -76,6 +77,25 @@ export const projectAccessRouter = router({
         organizationId,
       );
 
+      const [target] = await db
+        .select({ id: member.id })
+        .from(member)
+        .where(
+          activeMemberWhere(
+            and(
+              eq(member.organizationId, organizationId),
+              eq(member.userId, input.userId),
+            ),
+          ),
+        )
+        .limit(1);
+      if (!target) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Project managers must be active organization members",
+        });
+      }
+
       return upsertProjectManagerRow({
         organizationId,
         projectId: input.projectId,
@@ -127,7 +147,37 @@ export const projectAccessRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "No active org" });
       }
 
-      const grants = input.grants.filter(isProjectMemberGrantKey);
+      await assertProjectAccess(
+        ctx.session.user.id,
+        input.projectId,
+        organizationId,
+      );
+      const [target] = await db
+        .select({ id: member.id })
+        .from(member)
+        .where(
+          activeMemberWhere(
+            and(
+              eq(member.organizationId, organizationId),
+              eq(member.userId, input.userId),
+            ),
+          ),
+        )
+        .limit(1);
+      if (!target) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Permission grants require an active organization member",
+        });
+      }
+
+      if (input.grants.some((grant) => !isProjectMemberGrantKey(grant))) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "One or more project permission grants are invalid",
+        });
+      }
+      const grants = input.grants;
 
       const [existing] = await db
         .select({ id: projectMemberGrant.id })
@@ -177,6 +227,12 @@ export const projectAccessRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "No active org" });
       }
 
+      await assertProjectAccess(
+        ctx.session.user.id,
+        input.projectId,
+        organizationId,
+      );
+
       return upsertProjectTeamLink({
         organizationId,
         projectId: input.projectId,
@@ -197,7 +253,13 @@ export const projectAccessRouter = router({
       if (!organizationId) {
         throw new TRPCError({ code: "FORBIDDEN", message: "No active org" });
       }
+      await assertProjectAccess(
+        ctx.session.user.id,
+        input.projectId,
+        organizationId,
+      );
       return softDeleteProjectTeamLink({
+        organizationId,
         projectId: input.projectId,
         teamId: input.teamId,
         actorUserId: ctx.session.user.id,

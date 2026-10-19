@@ -7,7 +7,7 @@ import {
   projectTeam,
 } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
-import { teamMember } from "@loftlancer/db/schema/team";
+import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
 import { and, eq, inArray, isNull, type SQL, sql } from "drizzle-orm";
 import { projectListFilter } from "./org-access";
@@ -90,6 +90,7 @@ export async function listAccessibleProjectIds(
   const teamProjects = await db
     .select({ projectId: projectTeam.projectId })
     .from(projectTeam)
+    .innerJoin(team, eq(team.id, projectTeam.teamId))
     .innerJoin(teamMember, eq(teamMember.teamId, projectTeam.teamId))
     .innerJoin(
       projectMemberGrant,
@@ -105,6 +106,7 @@ export async function listAccessibleProjectIds(
         eq(teamMember.userId, userId),
         eq(projectTeam.organizationId, organizationId),
         isNull(projectTeam.deletedAt),
+        isNull(team.deletedAt),
       ),
     );
 
