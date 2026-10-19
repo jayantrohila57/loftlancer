@@ -687,10 +687,14 @@ export function ProjectPinMenu({
   pinned,
   onToggle,
   pending,
+  limitReached = false,
+  favoriteLimit = 3,
 }: {
   pinned: boolean;
   onToggle: () => void;
   pending?: boolean;
+  limitReached?: boolean;
+  favoriteLimit?: number;
 }) {
   return (
     <Menu>
@@ -706,9 +710,16 @@ export function ProjectPinMenu({
         <MoreHorizontalIcon />
       </MenuTrigger>
       <MenuPopup side="right" align="start">
-        <MenuItem disabled={pending} onClick={onToggle}>
+        <MenuItem
+          disabled={pending || (!pinned && limitReached)}
+          onClick={onToggle}
+        >
           {pinned ? <StarOffIcon /> : <StarIcon />}
-          {pinned ? "Remove from Favorites" : "Pin to Favorites"}
+          {pinned
+            ? "Remove from Favorites"
+            : limitReached
+              ? `Favorites limit reached (${favoriteLimit})`
+              : "Pin to Favorites"}
         </MenuItem>
       </MenuPopup>
     </Menu>
