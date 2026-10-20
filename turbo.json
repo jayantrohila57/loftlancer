@@ -102,31 +102,6 @@
         "RUN_DB_INTEGRATION_TESTS"
       ]
     },
-    "a11y": {
-      "dependsOn": ["^a11y"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "e2e/**",
-        "playwright.config.ts",
-        "playwright.a11y.config.ts"
-      ],
-      "env": [
-        "CI",
-        "SKIP_ENV_VALIDATION",
-        "A11Y_SKIP",
-        "A11Y_DOCS_PORT",
-        "PLAYWRIGHT_BASE_URL",
-        "PORT",
-        "E2E_USE_PROD_SERVER",
-        "E2E_TEST_MODE",
-        "E2E_TEST_SECRET",
-        "E2E_SESSION_COOKIE",
-        "DATABASE_URL",
-        "DATABASE_URL_POOLED",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL"
-      ]
-    },
     "dev": {
       "cache": false,
       "persistent": true

@@ -131,7 +131,7 @@ jobs:
     if: needs.detect-dev-release.outputs.is_release == 'true'
     uses: ./.github/workflows/ci.yml
     with:
-      full_validation: true
+      production_build: true
     permissions:
       contents: read
 

@@ -39,8 +39,9 @@ The GitHub Actions **Release** workflow automates the repeatable parts. From
 the Actions tab, run **Release** on the default branch and choose `patch`,
 `minor`, or `major`. It prepares a dated changelog/version branch from `dev`
 and opens a release PR to `dev`. After that PR is reviewed and merged, the
-workflow validates the version and changelog, runs the shared CI workflow on
-the integrated `dev` commit, and opens a `dev` → `main` release PR. Review and
+workflow validates the version and changelog, runs the shared CI checks
+(lint, route literals, typechecks, tests, and a production build) on the
+integrated `dev` commit, and opens a `dev` → `main` release PR. Review and
 merge that production PR to deploy. A push to `main` automatically publishes
 the matching tag and GitHub Release.
 

@@ -424,7 +424,7 @@ Complete on a **Neon branch** (and matching Vercel **staging** hostnames or loca
 | **Account** | Profile, sessions, accounts, export, delete, personal timeline — no `/dashboard/settings` on studio. |
 | **Cross-app** | Sign-in on auth → studio dashboard; studio links to account settings; sign-out returns to expected origin. |
 | **Data** | Optional `pnpm db:reset-seed` on branch only ([DB_RESET.md](./DB_RESET.md)); owner `KEEP_USER_EMAIL` sign-in still works. |
-| **Automated** | `pnpm build`, `pnpm check-types`, Playwright/a11y suites green against staging URLs. |
+| **Automated** | CI lint, route checks, typechecks, unit tests, and production build pass on the release commit. |
 
 #### Pre-cutover checklist (prod gate)
 
