@@ -24,9 +24,7 @@ export function VersionBadge({
       variant="outline"
       size="sm"
       className={cn("font-mono text-muted-foreground tabular-nums", className)}
-      render={
-        <a href={href} aria-label={`Version ${version}, view the changelog`} />
-      }
+      render={<a href={href} aria-label={`v${version}, view the changelog`} />}
     >
       v{version}
     </Badge>
