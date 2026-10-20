@@ -49,6 +49,9 @@ coverage
 test-results
 playwright-report
 
+# Local DB reset-seed schema baseline
+packages/db/.reset-seed-schema-hash
+
 # Misc
 *.tgz
 .cache

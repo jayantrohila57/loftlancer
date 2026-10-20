@@ -20,6 +20,7 @@
     "db:generate": "turbo -F @loftlancer/db db:generate",
     "db:migrate": "turbo -F @loftlancer/db db:migrate",
     "db:reset-seed": "turbo -F @loftlancer/db db:reset-seed",
+    "db:check-schema": "turbo -F @loftlancer/db db:check-schema",
     "check": "biome check --write .",
     "format": "biome format --write .",
     "lint": "biome lint .",

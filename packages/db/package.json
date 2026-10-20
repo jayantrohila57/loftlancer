@@ -16,9 +16,10 @@
     "db:studio": "drizzle-kit studio",
     "db:migrate": "drizzle-kit migrate",
     "db:reset-seed": "tsx scripts/reset-seed.ts",
+    "db:check-schema": "tsx scripts/check-schema.ts",
     "db:seed-stress": "tsx scripts/seed-stress.ts",
     "db:seed-stress:clean": "tsx scripts/seed-stress-cleanup.ts",
-    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test node --import tsx --test src/connection-url.test.ts src/account-soft-delete.test.ts src/soft-delete.test.ts src/e2e-demo-variables.test.ts src/e2e-demo-seed-guard.test.ts"
+    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test node --import tsx --test src/connection-url.test.ts src/account-soft-delete.test.ts src/soft-delete.test.ts src/e2e-demo-variables.test.ts src/e2e-demo-seed-guard.test.ts scripts/schema-fingerprint.test.ts"
   },
   "dependencies": {
     "@loftlancer/crypto": "workspace:*",

@@ -1,15 +1,20 @@
 /**
- * Destructive production reset + sample seed.
+ * Destructive local development reset + sample seed.
  *
  *   RESET_CONFIRM=yes KEEP_USER_EMAIL=you@example.com \\
  *     DATABASE_URL=... pnpm db:reset-seed
  */
+
+import { writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { db } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
 import { eq, sql } from "drizzle-orm";
 
 import { purgeAppData } from "./reset-seed-purge";
 import { seedSampleData } from "./reset-seed-seed";
+import { schemaBaselinePath, schemaFingerprint } from "./schema-fingerprint";
 
 function requireEnv(name: string): string {
   const value = process.env[name]?.trim();
@@ -67,6 +72,12 @@ async function main() {
 
   console.log("Seeding sample data…");
   const summary = await seedSampleData(keepUser);
+
+  const packageDirectory = join(dirname(fileURLToPath(import.meta.url)), "..");
+  const fingerprint = await schemaFingerprint(
+    join(packageDirectory, "src", "schema"),
+  );
+  await writeFile(schemaBaselinePath(packageDirectory), `${fingerprint}\n`);
 
   console.log("Reset-seed complete.");
   console.log(
