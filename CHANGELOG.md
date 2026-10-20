@@ -16,6 +16,15 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Production database startup now warns when Neon SSL mode is not `verify-full` (#83).
+
+### Fixed
+
+- Batch variable creation now ignores soft-deleted environments and variables (#32).
+- Sign-in clicks now emit consent-gated GA4 events for each provider (#382).
+
 ## [1.14.5] - 2026-10-20
 
 ### Fixed
