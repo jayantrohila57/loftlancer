@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- A local schema check detects changes since the last reset-seed and offers a guarded owner-preserving reset (#84).
+
 ## [1.14.7] - 2026-10-20
 
 ### Added

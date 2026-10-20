@@ -9,10 +9,16 @@ Use this workflow when applying the combined platform migration (`0007`) to **pr
 For local development, run `pnpm db:reset-seed` only against a disposable local
 database. The command requires both `RESET_CONFIRM=yes` and
 `KEEP_USER_EMAIL=<owner-email>`, verifies that the owner exists before purge,
-and preserves that user's account and login rows. This command does not detect
-schema changes automatically; run it deliberately after schema changes when a
-reset is appropriate. Never point it at production unless the separate
-backup, migration, and owner approval procedure below explicitly calls for it.
+and preserves that user's account and login rows. Use `pnpm db:check-schema` to
+detect changes since the last successful local reset-seed. Never point it at
+production unless the separate backup, migration, and owner approval procedure
+below explicitly calls for it.
+
+Run `pnpm db:check-schema` after applying schema changes locally. It compares the
+current Drizzle schema files with a local fingerprint. The first check records a
+baseline without changing data. Later checks offer the guarded reset-seed command
+when the schema differs; a successful reset-seed records the new fingerprint.
+The check never resets data. The fingerprint file is local and ignored by Git.
 
 ## Prerequisites
 

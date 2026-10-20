@@ -119,6 +119,9 @@
     "db:generate": {
       "cache": false
     },
+    "db:check-schema": {
+      "cache": false
+    },
     "db:reset-seed": {
       "cache": false,
       "env": [
