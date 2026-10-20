@@ -4,6 +4,7 @@ import {
   evaluatePermission,
   getActionDefinition,
   isActionsAuditEnabled,
+  isAlwaysAuditedAction,
   isPlatformAdmin,
   normalizeOrgRole,
 } from "@loftlancer/actions";
@@ -48,8 +49,11 @@ export async function requireAction(
   action: ActionName,
   ctx: RequireActionContext,
 ): Promise<void> {
+  const alwaysAudit = isAlwaysAuditedAction(action);
   const auditEnabled =
-    isActionsAuditEnabled() && ctx.audit !== false && !isReadAction(action);
+    !isReadAction(action) &&
+    ctx.audit !== false &&
+    (alwaysAudit || isActionsAuditEnabled());
   const startedAt = Date.now();
   const def = getActionDefinition(action);
   let result: "success" | "denied" | "failure" = "denied";

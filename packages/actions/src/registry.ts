@@ -49,3 +49,10 @@ export function getActionDefinition(name: ActionName): ActionDefinition {
   }
   return def;
 }
+
+/** Security and critical actions are always recorded, even when optional audit
+ * telemetry is disabled. */
+export function isAlwaysAuditedAction(name: ActionName): boolean {
+  const severity = getActionDefinition(name).audit.severity;
+  return severity === "security" || severity === "critical";
+}
