@@ -3,15 +3,12 @@
 import type { ProjectOutput } from "@loftlancer/api/types";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+import { ErrorState } from "@/components/patterns/error-state";
 import { InstalledAppsOverview } from "@/domain/apps/components/installed-apps-overview";
-import { Can } from "@/domain/permissions/components/can";
 import { useOrgQueryEnabled } from "@/hooks/use-org-query-enabled";
 import { useOrgScopedQueryPlaceholder } from "@/hooks/use-org-scoped-query-placeholder";
 import { projectDetailQueryStaleTime } from "@/lib/prefetch-project-detail";
-import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { useOrgSlug } from "@/utils/use-route-scope";
 
 function formatCountLabel(count: number, singular: string, plural: string) {
   return `${count} ${count === 1 ? singular : plural}`;
@@ -75,7 +72,6 @@ export function ProjectOverviewSections({
 }
 
 function ProjectAccessOverview({ project }: { project: ProjectOutput }) {
-  const org = useOrgSlug();
   const summary = useQuery(
     trpc.projectAccess.getSummary.queryOptions({ projectId: project.id }),
   );
@@ -91,14 +87,6 @@ function ProjectAccessOverview({ project }: { project: ProjectOutput }) {
               : "Project data is limited by organization and project permissions."}
           </p>
         </div>
-        <Can action="project.assign_team" projectId={project.id}>
-          <Link
-            href={routes.projectSection(org, project.slug, "access")}
-            className="text-primary text-sm underline-offset-4 hover:underline"
-          >
-            Review access
-          </Link>
-        </Can>
       </div>
       {summary.isPending ? (
         <div
@@ -111,9 +99,13 @@ function ProjectAccessOverview({ project }: { project: ProjectOutput }) {
           <Skeleton className="h-12 rounded-md" />
         </div>
       ) : summary.isError ? (
-        <p className="mt-4 text-muted-foreground text-sm">
-          Access details are unavailable.
-        </p>
+        <div className="mt-4">
+          <ErrorState
+            title="Could not load access details"
+            description="Try loading the project access summary again."
+            onRetry={() => void summary.refetch()}
+          />
+        </div>
       ) : (
         <dl className="mt-4 grid gap-3 sm:grid-cols-3">
           <div className="rounded-lg bg-muted/40 p-3">

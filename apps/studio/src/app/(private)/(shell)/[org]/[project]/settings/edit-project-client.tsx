@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
+import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
 import { ProjectDetailSkeleton } from "@/domain/environments/components/skeletons";
 import { ProjectDetailStats } from "@/domain/projects/components/project-detail-stats";
@@ -24,13 +25,18 @@ interface EditProjectClientProps {
 }
 
 export default function EditProjectClient({ slug }: EditProjectClientProps) {
-  const { data: projectBySlug, isLoading } = useQuery({
+  const {
+    data: projectBySlug,
+    isPending,
+    isError,
+    refetch,
+  } = useQuery({
     ...trpc.projects.getBySlug.queryOptions({ slug }),
     meta: { toastOnError: false },
   });
 
   const project = projectBySlug?.data?.project;
-  if (isLoading) {
+  if (isPending) {
     return (
       <DashboardSection
         title="Project settings"
@@ -40,6 +46,23 @@ export default function EditProjectClient({ slug }: EditProjectClientProps) {
         stats={<ProjectDetailStats slug={slug} />}
       >
         <ProjectDetailSkeleton />
+      </DashboardSection>
+    );
+  }
+
+  if (isError) {
+    return (
+      <DashboardSection
+        title="Project settings"
+        description="Update project information and settings."
+        back={false}
+        hideTabs
+      >
+        <ErrorState
+          title="Could not load project settings"
+          description="Try loading the project settings again."
+          onRetry={() => void refetch()}
+        />
       </DashboardSection>
     );
   }
