@@ -16,7 +16,7 @@ const LABELS: Record<string, string> = {
   export: "Export",
   delete: "Delete account",
   danger: "Danger zone",
-  timeline: "Activity",
+  timeline: "My activity",
 };
 
 function segmentLabel(segment: string) {

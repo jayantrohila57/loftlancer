@@ -25,6 +25,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Project app screens now distinguish load failures from uninstalled apps, provide retry and empty states, and avoid duplicate app names or navigation actions (#497).
 - Task and invitation notifications now open the correct scoped destinations, unresolvable notices have no self-link, and activity destinations name their personal or organization scope (#498).
 - Notifications filters and mark-read actions now live in the page content instead of the navigation header (#498).
+- Support now has persistent Tickets/Help navigation with route-aware Back links; Account headings and settings labels clarify their scope (#499).
 
 ### Fixed
 

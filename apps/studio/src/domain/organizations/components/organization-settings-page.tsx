@@ -11,7 +11,7 @@ export function OrganizationSettingsPage({ slug }: { slug: string }) {
   return (
     <OrganizationSectionPage
       slug={slug}
-      title="Settings"
+      title="Organization settings"
       description="Workspace profile, slug, and danger zone."
     >
       <div className="flex flex-col gap-4">

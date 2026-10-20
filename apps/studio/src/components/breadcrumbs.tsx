@@ -144,6 +144,17 @@ export function Breadcrumbs({ className }: { className?: string }) {
 
   const breadcrumbLabel = (crumb: Crumb): React.ReactNode => {
     if (crumb.kind === "notFound") return "Not found";
+    if (crumb.segment === "settings") {
+      const segments = crumb.href.split("/").filter(Boolean);
+      if (segments.includes("teams")) return "Team settings";
+      if (
+        segments.some((segment) => ["apps", "env", "tasks"].includes(segment))
+      ) {
+        return "App settings";
+      }
+      if (segments.length === 2) return "Organization settings";
+      if (segments.length === 3) return "Project settings";
+    }
     if (crumb.segment === "activity") {
       const depth = crumb.href.split("/").filter(Boolean).length;
       return depth === 1

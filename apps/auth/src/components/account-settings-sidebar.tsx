@@ -143,11 +143,23 @@ export function AccountSettingsSidebar({
                   <SidebarMenuItem key={item.key}>
                     <SidebarMenuButton
                       isActive={false}
-                      tooltip={item.label}
+                      tooltip={
+                        item.key === "activity"
+                          ? nav.organizationSlug
+                            ? "Organization activity"
+                            : "My activity"
+                          : item.label
+                      }
                       render={<a href={studioDashboardPath(path)} />}
                     >
                       <Icon />
-                      <span>{item.label}</span>
+                      <span>
+                        {item.key === "activity"
+                          ? nav.organizationSlug
+                            ? "Organization activity"
+                            : "My activity"
+                          : item.label}
+                      </span>
                     </SidebarMenuButton>
                     <NavCountBadge
                       count={studioCount(item.key)}

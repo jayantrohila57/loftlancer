@@ -59,7 +59,7 @@ export function TeamLayoutShell({
         },
         {
           href: routes.teamSection(slug, teamId, "settings"),
-          label: "Settings",
+          label: "Team settings",
           active: pathname.endsWith("/settings"),
         },
       ]}

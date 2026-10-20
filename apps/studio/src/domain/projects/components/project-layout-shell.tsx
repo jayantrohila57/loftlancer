@@ -79,7 +79,7 @@ export function ProjectLayoutShell({
           : []),
         {
           href: routes.projectSection(org, slug, "settings"),
-          label: "Settings",
+          label: "Project settings",
           active: suffix[0] === "settings",
         },
       ]}
