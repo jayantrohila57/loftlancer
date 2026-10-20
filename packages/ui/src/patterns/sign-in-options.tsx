@@ -40,6 +40,8 @@ export type SignInOptionsProps = {
   returnTo?: string;
   /** Override the build-time Google flag (tests, previews). */
   googleEnabled?: boolean;
+  onProviderClick?: (provider: SignInProvider) => void;
+  onMagicLinkSubmit?: () => void;
   className?: string;
 };
 
@@ -47,6 +49,8 @@ export function SignInOptions({
   authOrigin,
   returnTo,
   googleEnabled = isGoogleSignInEnabled(),
+  onProviderClick,
+  onMagicLinkSubmit,
   className,
 }: SignInOptionsProps) {
   const auth = (authOrigin ?? resolveAuthAppOrigin()).replace(/\/$/, "");
@@ -74,6 +78,7 @@ export function SignInOptions({
     event.preventDefault();
     const address = email.trim();
     if (!address) return;
+    onMagicLinkSubmit?.();
     setMagic({ status: "sending" });
     const finish = new URL(`${auth}/api/auth/cross-app/finish`);
     finish.searchParams.set("return_to", returnTo ?? studioHomeUrl());
@@ -125,7 +130,10 @@ export function SignInOptions({
     <div className={cn("flex flex-col gap-2", className)}>
       <a
         href={providerHref("github")}
-        onClick={() => setRedirecting("github")}
+        onClick={() => {
+          setRedirecting("github");
+          onProviderClick?.("github");
+        }}
         aria-disabled={redirecting !== null}
         data-testid="sign-in-github"
         className={cn(buttonVariants(), "w-full")}
@@ -138,7 +146,10 @@ export function SignInOptions({
       {googleEnabled ? (
         <a
           href={providerHref("google")}
-          onClick={() => setRedirecting("google")}
+          onClick={() => {
+            setRedirecting("google");
+            onProviderClick?.("google");
+          }}
           aria-disabled={redirecting !== null}
           data-testid="sign-in-google"
           className={cn(buttonVariants({ variant: "outline" }), "w-full")}

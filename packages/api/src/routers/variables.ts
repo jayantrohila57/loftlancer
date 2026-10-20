@@ -429,9 +429,11 @@ export const environmentVariablesRouter = router({
             .select({ id: environmentVariable.id })
             .from(environmentVariable)
             .where(
-              and(
-                eq(environmentVariable.environmentId, environmentId),
-                eq(environmentVariable.key, normalizedKey),
+              activeEnvironmentVariableWhere(
+                and(
+                  eq(environmentVariable.environmentId, environmentId),
+                  eq(environmentVariable.key, normalizedKey),
+                ),
               ),
             )
             .limit(1);

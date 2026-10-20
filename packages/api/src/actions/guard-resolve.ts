@@ -1,4 +1,4 @@
-import { db } from "@loftlancer/db";
+import { activeEnvironmentWhere, db } from "@loftlancer/db";
 import {
   environment,
   environmentVariable,
@@ -28,7 +28,7 @@ export async function projectIdForEnvironmentId(
   const rows = await db
     .select({ projectId: environment.projectId })
     .from(environment)
-    .where(eq(environment.id, environmentId))
+    .where(activeEnvironmentWhere(eq(environment.id, environmentId)))
     .limit(1);
   return rows[0]?.projectId ?? null;
 }
