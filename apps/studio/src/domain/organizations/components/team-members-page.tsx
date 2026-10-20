@@ -7,11 +7,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { Can } from "@/domain/permissions/components/can";
+import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
 
 export function TeamMembersPage({ teamId }: { teamId: string }) {
   const queryClient = useQueryClient();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [userId, setUserId] = useState("");
   const members = useQuery(trpc.teams.members.queryOptions({ teamId }));
   const orgMembers = useQuery(trpc.organizations.listMembers.queryOptions());
@@ -129,7 +131,19 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
                         variant="outline"
                         disabled={remove.isPending}
                         onClick={() =>
-                          remove.mutate({ teamId, userId: row.userId })
+                          confirm({
+                            title: `Remove ${person?.name || person?.email || "this member"} from the team?`,
+                            description:
+                              "They will remain in the organization, but may lose project access they get through this team. Direct project access stays in place.",
+                            confirmLabel: "Remove from team",
+                            variant: "destructive",
+                            onConfirm: async () => {
+                              await remove.mutateAsync({
+                                teamId,
+                                userId: row.userId,
+                              });
+                            },
+                          })
                         }
                       >
                         Remove
@@ -142,6 +156,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
           )}
         </>
       )}
+      {ConfirmDialog}
     </section>
   );
 }

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { Can } from "@/domain/permissions/components/can";
+import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
@@ -20,6 +21,7 @@ export function TeamProjectsPage({
   teamId: string;
 }) {
   const queryClient = useQueryClient();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [projectId, setProjectId] = useState("");
   const linked = useQuery(trpc.teams.projects.queryOptions({ teamId }));
   const linkable = useQuery(
@@ -137,7 +139,19 @@ export function TeamProjectsPage({
                   size="sm"
                   disabled={remove.isPending}
                   onClick={() =>
-                    remove.mutate({ projectId: project.id, teamId })
+                    confirm({
+                      title: `Unlink ${project.name}?`,
+                      description:
+                        "Team members will lose access granted through this team. Direct project grants and project manager access stay in place.",
+                      confirmLabel: "Unlink project",
+                      variant: "destructive",
+                      onConfirm: async () => {
+                        await remove.mutateAsync({
+                          projectId: project.id,
+                          teamId,
+                        });
+                      },
+                    })
                   }
                 >
                   Unlink
@@ -147,6 +161,7 @@ export function TeamProjectsPage({
           ))}
         </ul>
       )}
+      {ConfirmDialog}
     </section>
   );
 }

@@ -774,19 +774,6 @@ export function OrganizationSettingsForm({
                           : "Paste a few emails to share projects and environments with your team."}
                       </EmptyDescription>
                     </EmptyHeader>
-                    <EmptyContent>
-                      {canInvite ? (
-                        <Button
-                          type="button"
-                          size="sm"
-                          className="gap-2"
-                          onClick={() => setInviteOpen(true)}
-                        >
-                          <AppIcon name="invite" className="text-current" />
-                          Invite member
-                        </Button>
-                      ) : null}
-                    </EmptyContent>
                   </Empty>
                 </div>
               ) : (
@@ -827,19 +814,7 @@ export function OrganizationSettingsForm({
                         member?.user.email ?? "member",
                       );
                     }}
-                    empty={membersTableEmpty(
-                      canInvite ? (
-                        <Button
-                          type="button"
-                          size="sm"
-                          className="gap-2"
-                          onClick={() => setInviteOpen(true)}
-                        >
-                          <AppIcon name="invite" className="text-current" />
-                          Invite member
-                        </Button>
-                      ) : undefined,
-                    )}
+                    empty={membersTableEmpty()}
                   />
                 </div>
               )}
