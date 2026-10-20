@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Studio navigation groups organization destinations, teams, projects, and project apps by scope, with one canonical selected location (#492).
+
 ### Fixed
 
 - Resource navigation frames now keep module actions and account diagnostics in their owning page content instead of repeating them across tabs (#494).

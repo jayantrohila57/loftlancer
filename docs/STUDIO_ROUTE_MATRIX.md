@@ -59,6 +59,7 @@ This matrix records the current route contract for the dashboard hierarchy work 
 
 ## Route precedence and navigation rules
 
+- The sidebar separates Studio-wide destinations from the active organization's Overview and Activity, organization team shortcuts, and project directory. Project apps remain nested beneath the selected project; the Apps tab opens the directory, while an installed app link opens its work surface. The project directory's `All projects` link remains visible beside the bounded project list. Favorites are shortcuts and do not claim the selected navigation state, so one canonical sidebar location stays active.
 - Static `apps/env` and `apps/tasks` routes take precedence over the generic app segment. Legacy `/env` and `/tasks` deep links remain reachable. In particular, `/env/settings` and `/tasks/settings` are app settings routes, not environment/task items.
 - `/apps/tasks/:taskNumber` validates a positive integer on the server and renders the task list with the matching task detail sheet open. The sheet closes to the task list; its error state covers removed or inaccessible tasks.
 - `/apps/env/:envSlug` is a real destination. Tabs use links so refresh, copy-link, and modified-click behavior preserve the selected environment.

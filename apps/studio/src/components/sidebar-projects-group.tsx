@@ -28,8 +28,8 @@ import { initialsFromLabel } from "@/lib/initials";
 import { prefetchProjectDetail } from "@/lib/prefetch-project-detail";
 import { selectSidebarProjects } from "@/lib/sidebar-project-nav";
 import { cn } from "@/lib/utils";
-
 import { routes } from "@/utils/navigation";
+
 import { queryClient } from "@/utils/trpc";
 import { useRouteScope } from "@/utils/use-route-scope";
 
@@ -135,6 +135,19 @@ export function SidebarProjectsGroup({
         <CollapsiblePanel>
           <SidebarGroupContent>
             <SidebarMenu className="flex min-w-0 flex-col gap-1">
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={
+                    pathname === routes.projects(org) ||
+                    pathname.startsWith(`${routes.projects(org)}/`)
+                  }
+                  tooltip="All projects"
+                  render={<Link href={routes.projects(org)} />}
+                >
+                  <AppIcon name="projectFolder" className="text-current" />
+                  <span>All projects</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {projectsLoading &&
                 [62, 68, 74].map((textWidthPercent) => (
                   <SidebarMenuItem key={`project-skeleton-${textWidthPercent}`}>

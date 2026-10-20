@@ -125,15 +125,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const canTimeline = useCan("audit.timeline.view.org");
   const menuItems = platformNav
     .filter((item) => {
+      // Scoped navigation belongs to the organization and project groups below.
+      if (item.key === "projects") return false;
+      if (item.key === "activity" && orgSlug) return false;
       if (item.key === "notifications") return notificationsEnabled;
       if (item.key === "organizations") {
         return (
           showOrgSwitcher &&
           (!actionsAudit || permissions.allowed || permissions.isLoading)
         );
-      }
-      if (item.key === "activity" && actionsAudit && orgSlug) {
-        return canTimeline.allowed || canTimeline.isLoading;
       }
       return true;
     })
@@ -144,28 +144,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {
           key: item.key,
           href: href as Route,
-          label:
-            item.key === "activity"
-              ? orgSlug
-                ? "Organization activity"
-                : "My activity"
-              : item.label,
+          label: item.key === "activity" ? "My activity" : item.label,
           icon: navIcons[item.key],
           count:
             item.key === "notifications"
               ? notificationCount
-              : item.key === "projects"
-                ? nav.counts?.projects
-                : item.key === "organizations"
-                  ? nav.counts?.pendingInvites
-                  : 0,
+              : item.key === "organizations"
+                ? nav.counts?.pendingInvites
+                : 0,
         },
       ];
     });
 
   const pathMatchesNavItem = (href: string) => {
     if (pathname === href) return true;
-    if (href === routes.home()) return false;
+    if (href === routes.home()) return pathname === href;
     return pathname.startsWith(`${href}/`);
   };
 
@@ -194,7 +187,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+          <SidebarGroupLabel>Studio</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="flex min-w-0 flex-col gap-1">
               {menuItems.map((item) => {
@@ -227,11 +220,49 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
 
         {orgSlug ? (
+          <SidebarGroup>
+            <SidebarGroupLabel>Organization</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={pathname === routes.org(orgSlug)}
+                    tooltip="Organization overview"
+                    render={<Link href={routes.org(orgSlug) as Route} />}
+                  >
+                    <Building2 />
+                    <span>Overview</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                {(!actionsAudit ||
+                  canTimeline.allowed ||
+                  canTimeline.isLoading) && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={
+                        pathname === routes.orgSection(orgSlug, "activity")
+                      }
+                      tooltip="Organization activity"
+                      render={
+                        <Link
+                          href={routes.orgSection(orgSlug, "activity") as Route}
+                        />
+                      }
+                    >
+                      <ActivityIcon />
+                      <span>Activity</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ) : null}
+
+        {orgSlug ? (
           <SidebarFavorites
             items={nav.favorites}
-            isActive={(href) =>
-              pathname === href || pathname.startsWith(`${href}/`)
-            }
+            isActive={() => false}
             LinkComponent={({ href, className, children }) => (
               <Link href={href as Route} className={className}>
                 {children}
@@ -252,7 +283,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     render={<Link href={teamsHref(orgSlug) as Route} />}
                   >
                     <UsersRound />
-                    <span>Manage teams</span>
+                    <span>All teams</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 {teams.map((item) => (
