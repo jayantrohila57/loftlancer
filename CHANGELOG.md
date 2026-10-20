@@ -16,23 +16,20 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
-### Fixed
-
-- Project Back links now follow tested route parents through Apps, Environments, Tasks, and app settings; page sections keep a single Back control (#493).
-
 ### Changed
 
 - Studio navigation groups organization destinations, teams, projects, and project apps by scope, with one canonical selected location (#492).
+- Organization navigation groups Members, Invitations, Teams, and Roles under People; team access changes explain their project permission effects and require confirmation (#495).
+- Project overview summaries no longer repeat navigation links already present in the project frame; the Apps destination remains the single route into app management (#496).
+- Project manager removal and team unlinking now explain which project permissions change before confirmation (#496).
 
 ### Fixed
 
+- Project Back links now follow tested route parents through Apps, Environments, Tasks, and app settings; page sections keep a single Back control (#493).
 - Resource navigation frames now keep module actions and account diagnostics in their owning page content instead of repeating them across tabs (#494).
 - Pages without sibling navigation no longer show an “All” tab; project overview and account profile also drop duplicate controls and headings (#494).
 - Organization member, team, and invitation pages now surface load failures with retry and avoid repeating invite actions in empty states (#495).
-
-### Changed
-
-- Organization navigation groups Members, Invitations, Teams, and Roles under People; team access changes explain their project permission effects and require confirmation (#495).
+- Project access and settings now show retry states for failed requests instead of empty data or a misleading missing-page result (#496).
 
 ## [1.14.0] - 2026-10-20
 
