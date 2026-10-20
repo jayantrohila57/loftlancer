@@ -411,11 +411,6 @@ export function AccountSettingsClient({
 
             <SettingsTabsPanel value="profile" className="min-w-0">
               <SettingsPanel>
-                <SettingsSectionHeader
-                  title="Profile"
-                  description="Your name and avatar shown across the app."
-                  icon="user"
-                />
                 <SettingsField label="Avatar" description="Image URL (HTTPS).">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                     <Avatar className="size-12 shrink-0">
