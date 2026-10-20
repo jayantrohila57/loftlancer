@@ -45,6 +45,7 @@
     "./patterns/searchable-combobox": "./src/patterns/searchable-combobox.tsx",
     "./combobox": "./src/components/ui/combobox.tsx",
     "./patterns/count-badge": "./src/patterns/count-badge.tsx",
+    "./patterns/accordion-section": "./src/patterns/accordion-section.tsx",
     "./patterns/settings-frame": "./src/patterns/settings-frame.tsx",
     "./patterns/activity-timeline": "./src/patterns/activity-timeline.tsx",
     "./patterns/auth-5": "./src/patterns/auth-5.tsx",

@@ -11,6 +11,7 @@ import {
   EmptyTitle,
 } from "@loftlancer/ui/empty";
 import { Input } from "@loftlancer/ui/input";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
@@ -34,7 +35,6 @@ import { useActiveOrganization } from "@/components/org/active-organization-cont
 import { OrgSlugInput } from "@/components/org/org-slug-input";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { OrganizationMembersTable } from "@/components/org/organization-members-table";
-import { AccordionSection } from "@/components/patterns/accordion-section";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { ErrorState } from "@/components/patterns/error-state";
 import { FormField } from "@/components/patterns/form-field";

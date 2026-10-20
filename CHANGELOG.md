@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Notification date groups and account preferences now use the shared accordion; notification filters no longer show a summary count (#516).
+
 ## [1.14.3] - 2026-10-20
 
 ### Changed

@@ -2,6 +2,7 @@
 
 import { Button } from "@loftlancer/ui/button";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "@loftlancer/ui/menu";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import {
   Tooltip,
@@ -11,7 +12,6 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { AccordionSection } from "@/components/patterns/accordion-section";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { appIcons } from "@/lib/icons";
 import { CreateEnvironmentSheet } from "./create-environment-sheet";
