@@ -22,6 +22,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Organization navigation groups Members, Invitations, Teams, and Roles under People; team access changes explain their project permission effects and require confirmation (#495).
 - Project overview summaries no longer repeat navigation links already present in the project frame; the Apps destination remains the single route into app management (#496).
 - Project manager removal and team unlinking now explain which project permissions change before confirmation (#496).
+- Project app screens now distinguish load failures from uninstalled apps, provide retry and empty states, and avoid duplicate app names or navigation actions (#497).
 
 ### Fixed
 
