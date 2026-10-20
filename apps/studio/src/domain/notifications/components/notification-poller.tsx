@@ -53,14 +53,19 @@ export function NotificationPoller() {
     }
 
     for (const item of newcomers.slice(0, MAX_TOASTS)) {
+      const href = item.href;
       toast(item.title, {
         description: item.body,
-        action: {
-          label: "View",
-          onClick: () => {
-            window.location.assign(withBasePath(item.href));
-          },
-        },
+        ...(href
+          ? {
+              action: {
+                label: "View",
+                onClick: () => {
+                  window.location.assign(withBasePath(href));
+                },
+              },
+            }
+          : {}),
       });
       seenIdsRef.current.add(item.id);
     }

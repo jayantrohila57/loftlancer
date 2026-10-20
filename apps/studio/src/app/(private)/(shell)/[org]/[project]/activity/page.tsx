@@ -24,7 +24,9 @@ export default async function ProjectActivityRoute({
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="font-semibold text-xl tracking-tight">Activity</h2>
+        <h2 className="font-semibold text-xl tracking-tight">
+          Project activity
+        </h2>
         <p className="mt-1 text-muted-foreground text-sm">
           Audit events for this project.
         </p>

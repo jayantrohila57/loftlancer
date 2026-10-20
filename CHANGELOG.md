@@ -23,6 +23,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Project overview summaries no longer repeat navigation links already present in the project frame; the Apps destination remains the single route into app management (#496).
 - Project manager removal and team unlinking now explain which project permissions change before confirmation (#496).
 - Project app screens now distinguish load failures from uninstalled apps, provide retry and empty states, and avoid duplicate app names or navigation actions (#497).
+- Task and invitation notifications now open the correct scoped destinations, unresolvable notices have no self-link, and activity destinations name their personal or organization scope (#498).
+- Notifications filters and mark-read actions now live in the page content instead of the navigation header (#498).
 
 ### Fixed
 
