@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- The version badge accessible name now includes its visible label.
+
 ## [1.14.8] - 2026-10-20
 
 ### Added
