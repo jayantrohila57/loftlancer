@@ -16,6 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.14.5] - 2026-10-20
+
+### Fixed
+
+- Account notification settings now render the shared interactive accordion without a server error (#520).
+
 ## [1.14.4] - 2026-10-20
 
 ### Changed
@@ -617,7 +623,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.4...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.5...HEAD
+[1.14.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.4...v1.14.5
 [1.14.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.3...v1.14.4
 [1.14.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.2...v1.14.3
 [1.14.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.1...v1.14.2
