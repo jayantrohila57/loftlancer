@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.14.4] - 2026-10-20
+
 ### Changed
 
 - Notification date groups and account preferences now use the shared accordion; notification filters no longer show a summary count (#516).
@@ -615,7 +617,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.3...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.4...HEAD
+[1.14.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.3...v1.14.4
 [1.14.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.2...v1.14.3
 [1.14.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.1...v1.14.2
 [1.14.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.0...v1.14.1
