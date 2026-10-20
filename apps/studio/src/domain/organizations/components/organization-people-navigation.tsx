@@ -1,8 +1,8 @@
 "use client";
 
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AccordionSection } from "@/components/patterns/accordion-section";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { routes } from "@/utils/navigation";
 

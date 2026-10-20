@@ -65,20 +65,10 @@ export function NotificationBell() {
         />
       </MenuTrigger>
       <MenuPopup align="end" className="w-[min(100vw-2rem,24rem)] p-2">
-        {/* Header after ReUI Sheet 7: title + unread badge + mark all read.
+        {/* Header after ReUI Sheet 7: title + mark all read.
             The action is always rendered (disabled at 0) so nothing reflows. */}
         <div className="flex h-8 items-center justify-between gap-2 px-1 pb-1">
-          <span className="flex items-center gap-1.5 font-medium text-sm">
-            Notifications
-            <span
-              className={cn(
-                "min-w-[3ch] rounded-full border border-border/60 px-1.5 text-center font-normal text-[10px] text-muted-foreground tabular-nums",
-                unread === 0 && "invisible",
-              )}
-            >
-              {unread > 99 ? "99+" : unread}
-            </span>
-          </span>
+          <span className="font-medium text-sm">Notifications</span>
           <LoadingButton
             type="button"
             variant="ghost"
