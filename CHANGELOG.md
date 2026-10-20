@@ -16,6 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.14.8] - 2026-10-20
+
+### Added
+
+- A local schema check detects changes since the last reset-seed and offers a guarded owner-preserving reset (#84).
+
 ## [1.14.7] - 2026-10-20
 
 ### Added
@@ -640,7 +646,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.7...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.8...HEAD
+[1.14.8]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.7...v1.14.8
 [1.14.7]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.6...v1.14.7
 [1.14.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.5...v1.14.6
 [1.14.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.4...v1.14.5
