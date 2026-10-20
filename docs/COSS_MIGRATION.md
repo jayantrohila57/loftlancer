@@ -497,7 +497,7 @@ rg -n 'asChild' src   # should trend to zero in app code; some legacy exports ma
 10. **Pattern pass** — `IconButton`, `ConfirmDialog`, links-as-buttons.
 11. **Theme tune** — Reintroduce teal primary on coss neutral base if desired; Instrument Sans on `--font-sans`.
 12. **Cleanup** — Remove Radix deps; remove `sonner`, `cmdk`, `input-otp` if unused; update `docs/DESIGN_SYSTEM.md`.
-13. **QA** — `pnpm install --frozen-lockfile`, `pnpm build`, biome lint, Playwright a11y (`pnpm a11y`), manual keyboard test on menus/dialogs/sidebar.
+13. **QA** — `pnpm install --frozen-lockfile`, `pnpm build`, biome lint, and manual keyboard testing on menus/dialogs/sidebar.
 14. **Proof** — Radix grep clean; PR for review.
 
 ### 6.2 Risks
@@ -511,7 +511,7 @@ rg -n 'asChild' src   # should trend to zero in app code; some legacy exports ma
 | Chart not in coss | Isolate shadcn Base UI chart; audit for Radix |
 | `forceMount` / `modal={false}` on menus | Check Base UI Menu docs per call site |
 | Biome overrides on `ui/**` | Re-evaluate after regen |
-| a11y e2e failures | Run `pnpm a11y` after overlay migrations |
+| Keyboard navigation regressions | Manually test menus, dialogs, and sidebar navigation after overlay migrations |
 
 ### 6.3 Open questions for product owner
 

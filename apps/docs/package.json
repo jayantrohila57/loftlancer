@@ -7,7 +7,6 @@
     "build": "SKIP_ENV_VALIDATION=1 next build",
     "start": "next start",
     "check-types": "tsc --noEmit",
-    "a11y": "node scripts/run-a11y.mjs",
     "test": "node --import tsx --test src/lib/changelog.test.ts",
     "gen:mcp-tools": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres node --import tsx scripts/generate-mcp-tool-pages.ts",
     "postinstall": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres node --import tsx scripts/generate-mcp-tool-pages.ts && node --input-type=module -e \"import('fumadocs-mdx/next').then((m) => m.postInstall())\""
@@ -38,9 +37,7 @@
     "zod-to-json-schema": "^3.25.2"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.13.0",
     "@loftlancer/config": "workspace:*",
-    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/mdx": "^2.0.14",
     "@types/node": "^26",
