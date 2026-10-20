@@ -27,4 +27,9 @@ describe("variables.createBatch environment access", () => {
     );
     assert.match(block, /assertEnvironmentsAccess\(/);
   });
+
+  it("filters duplicate checks to active variables", () => {
+    const block = createBatchBlock();
+    assert.match(block, /activeEnvironmentVariableWhere\(/);
+  });
 });

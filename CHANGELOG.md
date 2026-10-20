@@ -16,6 +16,17 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.14.6] - 2026-10-20
+
+### Changed
+
+- Production database startup now warns when Neon SSL mode is not `verify-full` (#83).
+
+### Fixed
+
+- Batch variable creation now ignores soft-deleted environments and variables (#32).
+- Sign-in clicks now emit consent-gated GA4 events for each provider (#382).
+
 ## [1.14.5] - 2026-10-20
 
 ### Fixed
@@ -623,7 +634,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.5...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.6...HEAD
+[1.14.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.5...v1.14.6
 [1.14.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.4...v1.14.5
 [1.14.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.3...v1.14.4
 [1.14.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.2...v1.14.3
