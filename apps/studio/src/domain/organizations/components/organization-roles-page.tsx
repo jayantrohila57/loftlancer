@@ -50,6 +50,7 @@ export function OrganizationRolesPage({ slug }: { slug: string }) {
       slug={slug}
       title="Roles & access"
       description="Organization roles and permission policies."
+      peopleNavigation
     >
       {body}
     </OrganizationSectionPage>

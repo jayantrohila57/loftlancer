@@ -57,7 +57,7 @@ function OrganizationFrame({
     initialOrganization,
   );
   if (status === "not-found") notFound();
-  const { tabs } = useOrganizationTabs(slug);
+  const { tabs, activeTab } = useOrganizationTabs(slug);
   const pathname = usePathname() ?? "";
   const name = organization?.name ?? listItem?.name ?? slug;
   const orgHome = routes.org(slug);
@@ -77,10 +77,7 @@ function OrganizationFrame({
       tabs={tabs.map((tab) => ({
         href: tab.href ?? "#",
         label: tab.label,
-        active:
-          pathname === tab.href ||
-          (tab.href === routes.orgSection(slug, "teams") &&
-            pathname.startsWith(`${tab.href}/`)),
+        active: tab.value === activeTab || pathname === tab.href,
       }))}
     >
       {children}

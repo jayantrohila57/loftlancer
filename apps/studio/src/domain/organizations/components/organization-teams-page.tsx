@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
+import { ErrorState } from "@/components/patterns/error-state";
 import { FormField } from "@/components/patterns/form-field";
 import { GuardedDialog } from "@/components/patterns/guarded-dialog";
 import { Can } from "@/domain/permissions/components/can";
@@ -27,7 +28,12 @@ import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { OrganizationSectionPage } from "./organization-section-page";
 
 export function OrganizationTeamsPage({ slug }: { slug: string }) {
-  const { organization, status: orgStatus } = useOrganizationBySlug(slug);
+  const {
+    organization,
+    status: orgStatus,
+    error: organizationError,
+    reload: reloadOrganization,
+  } = useOrganizationBySlug(slug);
   const router = useRouter();
   const queryClient = useQueryClient();
   const closeWithoutPromptRef = useRef<(() => void) | null>(null);
@@ -59,6 +65,7 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
       slug={slug}
       title="Teams"
       description="Group organization members and connect teams to projects."
+      peopleNavigation
       action={
         organization ? (
           <Can action="team.create" fallback={null}>
@@ -75,10 +82,24 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
         ) : undefined
       }
     >
-      {orgStatus === "loading" ||
-      !organization ||
-      teamsQuery.isLoading ||
-      teams.length > 0 ? (
+      {orgStatus === "error" ? (
+        <ErrorState
+          title="Could not load organization"
+          description={
+            organizationError?.message ?? "Try loading the organization again."
+          }
+          onRetry={() => void reloadOrganization()}
+        />
+      ) : teamsQuery.isError ? (
+        <ErrorState
+          title="Could not load teams"
+          description="Try loading the teams again."
+          onRetry={() => void teamsQuery.refetch()}
+        />
+      ) : orgStatus === "loading" ||
+        !organization ||
+        teamsQuery.isLoading ||
+        teams.length > 0 ? (
         <DataTable
           framed
           searchable
@@ -88,7 +109,6 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
           isLoading={
             orgStatus === "loading" || !organization || teamsQuery.isLoading
           }
-          isError={teamsQuery.isError}
           skeletonRowCount={3}
           data={teams}
           columns={[
@@ -108,6 +128,18 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
               accessorKey: "memberCount",
               header: "Members",
               cell: ({ row }) => row.original.memberCount ?? 0,
+            },
+            {
+              id: "projects",
+              header: "Project access",
+              cell: ({ row }) => (
+                <Link
+                  href={routes.teamSection(slug, row.original.id, "projects")}
+                  className="text-primary text-sm hover:underline"
+                >
+                  Review linked projects
+                </Link>
+              ),
             },
           ]}
         />

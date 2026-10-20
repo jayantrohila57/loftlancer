@@ -28,6 +28,11 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 - Resource navigation frames now keep module actions and account diagnostics in their owning page content instead of repeating them across tabs (#494).
 - Pages without sibling navigation no longer show an “All” tab; project overview and account profile also drop duplicate controls and headings (#494).
+- Organization member, team, and invitation pages now surface load failures with retry and avoid repeating invite actions in empty states (#495).
+
+### Changed
+
+- Organization navigation groups Members, Invitations, Teams, and Roles under People; team access changes explain their project permission effects and require confirmation (#495).
 
 ## [1.14.0] - 2026-10-20
 
