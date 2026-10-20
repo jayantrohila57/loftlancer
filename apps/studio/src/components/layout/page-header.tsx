@@ -47,7 +47,7 @@ export type PageHeaderTab = {
 };
 
 export type PageHeaderTabsProps = {
-  /** Defaults to a single "All" tab. */
+  /** Navigation tabs for distinct destinations or views. */
   tabs?: PageHeaderTab[];
   /** Hide the tabs row when a page has no meaningful section navigation. */
   hideTabs?: boolean;
@@ -62,8 +62,6 @@ type ResolvedBack = {
   fallbackHref: PageBackHref;
   useHistory: boolean;
 };
-
-const DEFAULT_TABS: PageHeaderTab[] = [{ value: "all", label: "All" }];
 
 function resolveBack(
   back: PageHeaderBackProp | undefined,
@@ -102,9 +100,10 @@ export function PageHeaderTabs({
   onTabChange,
   tabsEnd,
 }: PageHeaderTabsProps) {
+  if (!tabs?.length) return null;
   return (
     <PageHeaderTabsRow
-      tabs={tabs?.length ? tabs : DEFAULT_TABS}
+      tabs={tabs}
       activeTab={activeTab}
       onTabChange={onTabChange}
       end={tabsEnd}
@@ -154,7 +153,7 @@ export function PageHeader({
       actions={action}
       meta={meta ?? metadata}
       tabs={
-        hideTabs ? null : (
+        hideTabs || !tabs?.length ? null : (
           <PageHeaderTabs
             tabs={tabs}
             activeTab={activeTab}

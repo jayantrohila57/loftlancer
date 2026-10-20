@@ -95,7 +95,6 @@ export function InstalledAppsOverview({
             ) : null}
           </Link>
         ))}
-        {addAppCard}
       </div>
     </div>
   );

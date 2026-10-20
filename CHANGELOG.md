@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Fixed
 
 - Resource navigation frames now keep module actions and account diagnostics in their owning page content instead of repeating them across tabs (#494).
+- Pages without sibling navigation no longer show an “All” tab; project overview and account profile also drop duplicate controls and headings (#494).
 
 ## [1.14.0] - 2026-10-20
 
