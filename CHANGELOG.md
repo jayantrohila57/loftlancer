@@ -26,6 +26,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Task and invitation notifications now open the correct scoped destinations, unresolvable notices have no self-link, and activity destinations name their personal or organization scope (#498).
 - Notifications filters and mark-read actions now live in the page content instead of the navigation header (#498).
 - Support now has persistent Tickets/Help navigation with route-aware Back links; Account headings and settings labels clarify their scope (#499).
+- The route matrix now records page-owned actions, scoped settings labels, and route-aware Support parents alongside the remaining live QA requirements (#500).
 
 ### Fixed
 
