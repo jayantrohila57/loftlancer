@@ -181,41 +181,6 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <SettingsPanel>
-        <SettingsSectionHeader
-          title="Access summary"
-          description="Public visibility controls project metadata. Project data access follows the manager, team, and member grants below."
-          icon="lock"
-        />
-        <dl className="grid gap-3 px-4 pb-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <dt className="text-muted-foreground text-xs">Visibility</dt>
-            <dd className="font-medium text-sm">
-              {project.isPublic ? "Public metadata" : "Private"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-xs">Project managers</dt>
-            <dd className="font-medium text-sm">
-              {summary?.managers.length ?? 0}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-xs">Linked teams</dt>
-            <dd className="font-medium text-sm">
-              {summary?.teams.length ?? 0}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-xs">
-              Direct member grants
-            </dt>
-            <dd className="font-medium text-sm">
-              {summary?.memberGrants.length ?? 0}
-            </dd>
-          </div>
-        </dl>
-      </SettingsPanel>
       <Can action="project.assign_manager">
         <SettingsPanel>
           <SettingsSectionHeader

@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Dashboard page actions now follow their section navigation, resource subsections use accordions instead of nested tab bars, and dashboard metric cards are removed (#515).
+
 ## [1.14.2] - 2026-10-20
 
 ### Changed

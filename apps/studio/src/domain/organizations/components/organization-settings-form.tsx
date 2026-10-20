@@ -10,10 +10,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@loftlancer/ui/empty";
-import { useUnsavedChangesGuard } from "@loftlancer/ui/hooks/use-unsaved-changes-guard";
 import { Input } from "@loftlancer/ui/input";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { DiscardChangesDialog } from "@loftlancer/ui/patterns/discard-changes-dialog";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
@@ -36,6 +34,7 @@ import { useActiveOrganization } from "@/components/org/active-organization-cont
 import { OrgSlugInput } from "@/components/org/org-slug-input";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { OrganizationMembersTable } from "@/components/org/organization-members-table";
+import { AccordionSection } from "@/components/patterns/accordion-section";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { ErrorState } from "@/components/patterns/error-state";
 import { FormField } from "@/components/patterns/form-field";
@@ -53,12 +52,6 @@ import {
   SettingsRow,
   SettingsSectionHeader,
 } from "@/components/patterns/settings-layout";
-import {
-  SettingsTabs,
-  SettingsTabsList,
-  SettingsTabsPanel,
-  SettingsTabsTab,
-} from "@/components/patterns/settings-tabs";
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
 import { useSession } from "@/domain/auth/lib/auth-actions";
 import { useNotificationMutations } from "@/domain/notifications/hooks/use-notifications";
@@ -136,17 +129,23 @@ function EditOrganizationFormSheetPopup({ children }: { children: ReactNode }) {
   );
 }
 
-const ORG_TABS = ["general", "members", "danger"] as const;
-type OrgTab = (typeof ORG_TABS)[number];
-
-function readTabFromLocation(): OrgTab {
-  if (typeof window === "undefined") return "general";
-  const param = new URLSearchParams(window.location.search).get("tab");
-  return ORG_TABS.includes(param as OrgTab) ? (param as OrgTab) : "general";
+function OrganizationSettingsPanel({
+  title,
+  className,
+  children,
+}: {
+  title: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <AccordionSection title={title} className={className}>
+      {children}
+    </AccordionSection>
+  );
 }
 
 export type OrganizationSettingsMode =
-  | "legacy-tabs"
   | "settings-hub"
   | "general"
   | "members"
@@ -154,26 +153,12 @@ export type OrganizationSettingsMode =
 
 export function OrganizationSettingsForm({
   organizationId,
-  mode = "legacy-tabs",
+  mode,
 }: {
   organizationId: string;
-  mode?: OrganizationSettingsMode;
+  mode: OrganizationSettingsMode;
 }) {
   const router = useRouter();
-  const [activeTab, setActiveTabState] = useState<OrgTab>(() => {
-    if (mode === "members") return "members";
-    if (mode === "danger") return "danger";
-    return "general";
-  });
-
-  const showSettingsHubTabs = mode === "settings-hub";
-  const settingsTabBar = showSettingsHubTabs ? "line" : "sidebar";
-
-  useEffect(() => {
-    if (mode !== "legacy-tabs") return;
-    setActiveTabState(readTabFromLocation());
-  }, [mode]);
-
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { syncInvitationReceived } = useNotificationMutations();
@@ -242,39 +227,11 @@ export function OrganizationSettingsForm({
     editSnapshot.slug,
   );
 
-  const editProfileDirty = editOrgOpen && editDraftDirty;
-
   const resetEditDraft = useCallback(() => {
     setEditDraftName(editSnapshot.name);
     setEditDraftSlug(editSnapshot.slug);
     setSlugError(undefined);
   }, [editSnapshot.name, editSnapshot.slug]);
-
-  const editTabNavigationGuard = useUnsavedChangesGuard({
-    isDirty: editProfileDirty,
-    enabled: editOrgOpen,
-    onDiscard: () => {
-      resetEditDraft();
-      setEditOrgOpen(false);
-    },
-  });
-
-  const applyActiveTab = (tab: OrgTab) => {
-    setActiveTabState(tab);
-    if (mode !== "legacy-tabs") return;
-    const url = new URL(window.location.href);
-    url.searchParams.set("tab", tab);
-    window.history.replaceState(null, "", url.toString());
-  };
-
-  const setActiveTab = (tab: OrgTab) => {
-    if (tab === activeTab) return;
-    if (editProfileDirty) {
-      editTabNavigationGuard.guardNavigation(() => applyActiveTab(tab));
-      return;
-    }
-    applyActiveTab(tab);
-  };
 
   const loadOrganization = useCallback(
     async (targetOrgId: string) => {
@@ -621,340 +578,290 @@ export function OrganizationSettingsForm({
 
   return (
     <>
-      <DiscardChangesDialog
-        open={editTabNavigationGuard.discardDialogOpen}
-        onOpenChange={(next) => {
-          if (!next) editTabNavigationGuard.cancelDiscard();
-          else editTabNavigationGuard.setDiscardDialogOpen(true);
-        }}
-        onDiscard={editTabNavigationGuard.confirmDiscard}
-      />
-      <SettingsTabs
-        tabBar={settingsTabBar}
-        value={activeTab}
-        onValueChange={(value) => {
-          if (value) setActiveTab(value as OrgTab);
-        }}
-      >
-        {mode === "legacy-tabs" || showSettingsHubTabs ? (
-          <SettingsTabsList tabBar={settingsTabBar}>
-            <SettingsTabsTab
-              value="general"
+      {(mode === "general" || mode === "settings-hub") && (
+        <OrganizationSettingsPanel title="General" className="min-w-0">
+          <div className="mb-4 flex justify-end">
+            <Button
+              type="button"
+              size="sm"
+              className="h-8 gap-2"
+              onClick={() => {
+                const snapshot = { name: orgName, slug: orgSlug };
+                setEditSnapshot(snapshot);
+                setEditDraftName(snapshot.name);
+                setEditDraftSlug(snapshot.slug);
+                setSlugError(undefined);
+                setEditOrgOpen(true);
+              }}
+            >
+              <AppIcon name="edit" className="text-current" />
+              Edit organization
+            </Button>
+          </div>
+          <SettingsPanel>
+            <SettingsSectionHeader
+              title="Profile"
+              description="Name and slug for this workspace."
               icon="organization"
-              tabBar={settingsTabBar}
+            />
+            <SettingsRow label="Name" description="Organization display name.">
+              <span className="text-sm">{orgName}</span>
+            </SettingsRow>
+            <SettingsRow
+              label="Slug"
+              description="URL-safe workspace identifier."
             >
-              General
-            </SettingsTabsTab>
-            {mode === "legacy-tabs" ? (
-              <SettingsTabsTab
-                value="members"
-                icon="member"
-                tabBar={settingsTabBar}
-              >
-                Members
-              </SettingsTabsTab>
-            ) : null}
-            <SettingsTabsTab
-              value="danger"
-              icon="danger"
-              tabBar={settingsTabBar}
-            >
-              Danger zone
-            </SettingsTabsTab>
-          </SettingsTabsList>
-        ) : null}
+              <span className="font-mono text-sm">{orgSlug}</span>
+            </SettingsRow>
+          </SettingsPanel>
+        </OrganizationSettingsPanel>
+      )}
 
-        {(mode === "legacy-tabs" ||
-          mode === "general" ||
-          mode === "settings-hub") && (
-          <SettingsTabsPanel value="general" className="min-w-0">
-            <div className="mb-4 flex justify-end">
-              <Button
-                type="button"
-                size="sm"
-                className="h-8 gap-2"
-                onClick={() => {
-                  const snapshot = { name: orgName, slug: orgSlug };
-                  setEditSnapshot(snapshot);
-                  setEditDraftName(snapshot.name);
-                  setEditDraftSlug(snapshot.slug);
-                  setSlugError(undefined);
-                  setEditOrgOpen(true);
-                }}
-              >
-                <AppIcon name="edit" className="text-current" />
-                Edit organization
-              </Button>
+      {mode === "members" && (
+        <OrganizationSettingsPanel
+          title="Members and invitations"
+          className="min-w-0 space-y-2"
+        >
+          {mode === "members" && canInvite ? (
+            <div className="flex justify-end">
+              <div className="flex flex-wrap items-center gap-2">
+                {isOwner ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 gap-2"
+                    onClick={() => setTransferSheetOpen(true)}
+                  >
+                    <AppIcon name="member" />
+                    Transfer ownership
+                  </Button>
+                ) : null}
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-8 gap-2"
+                  onClick={() => setInviteOpen(true)}
+                >
+                  <AppIcon name="invite" className="text-current" />
+                  Invite member
+                </Button>
+              </div>
             </div>
-            <SettingsPanel>
+          ) : null}
+          <SettingsPanel>
+            {mode !== "members" ? (
               <SettingsSectionHeader
-                title="Profile"
-                description="Name and slug for this workspace."
-                icon="organization"
+                title="Members"
+                description="Invite teammates and manage roles."
+                icon="member"
               />
-              <SettingsRow
-                label="Name"
-                description="Organization display name."
-              >
-                <span className="text-sm">{orgName}</span>
-              </SettingsRow>
-              <SettingsRow
-                label="Slug"
-                description="URL-safe workspace identifier."
-              >
-                <span className="font-mono text-sm">{orgSlug}</span>
-              </SettingsRow>
-            </SettingsPanel>
-          </SettingsTabsPanel>
-        )}
-
-        {(mode === "legacy-tabs" || mode === "members") && (
-          <SettingsTabsPanel value="members" className="min-w-0 space-y-2">
-            {mode === "members" && canInvite ? (
-              <div className="flex justify-end">
-                <div className="flex flex-wrap items-center gap-2">
-                  {isOwner ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-8 gap-2"
-                      onClick={() => setTransferSheetOpen(true)}
-                    >
-                      <AppIcon name="member" />
-                      Transfer ownership
-                    </Button>
-                  ) : null}
+            ) : null}
+            {mode !== "members" ? (
+              <SettingsRow label="Invite" description="Add someone by email.">
+                {canInvite ? (
                   <Button
                     type="button"
                     size="sm"
-                    className="h-8 gap-2"
+                    className="w-fit gap-2"
                     onClick={() => setInviteOpen(true)}
                   >
                     <AppIcon name="invite" className="text-current" />
                     Invite member
                   </Button>
-                </div>
-              </div>
+                ) : null}
+              </SettingsRow>
             ) : null}
-            <SettingsPanel>
-              {mode !== "members" ? (
-                <SettingsSectionHeader
-                  title="Members"
-                  description="Invite teammates and manage roles."
-                  icon="member"
+            {members.length === 0 ? (
+              <div className="px-4 py-6">
+                <Empty className="border border-dashed py-8">
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <AppIcon name="member" className="size-5" />
+                    </EmptyMedia>
+                    <EmptyTitle>Invite your first member</EmptyTitle>
+                    <EmptyDescription>
+                      {pendingInvitations.length > 0
+                        ? `${pendingInvitations.length} pending ${pendingInvitations.length === 1 ? "invitation is" : "invitations are"} awaiting acceptance.`
+                        : "Paste a few emails to share projects and environments with your team."}
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
+              </div>
+            ) : (
+              <div className="min-w-0 space-y-3 overflow-x-auto px-4 py-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Input
+                    type="search"
+                    aria-label="Search members"
+                    placeholder="Search by name, email or role"
+                    value={memberQuery}
+                    onChange={(e) => setMemberQuery(e.target.value)}
+                    className="max-w-xs"
+                  />
+                  <span className="text-muted-foreground text-xs">
+                    {members.length}{" "}
+                    {members.length === 1 ? "member" : "members"}
+                  </span>
+                </div>
+                <OrganizationMembersTable
+                  members={members.filter((m) => {
+                    const q = memberQuery.trim().toLowerCase();
+                    if (!q) return true;
+                    return [m.user.name, m.user.email, m.role]
+                      .filter(Boolean)
+                      .some((v) => String(v).toLowerCase().includes(q));
+                  })}
+                  roleSelectItems={ROLE_SELECT_ITEMS}
+                  isOwner={isOwner}
+                  rolePendingId={rolePendingId}
+                  currentUserId={currentUserId}
+                  removalPendingId={memberRemovalPendingId}
+                  onRemove={requestMemberRemoval}
+                  onRoleChange={(memberId, role) => {
+                    const member = members.find((m) => m.id === memberId);
+                    requestRoleChange(
+                      memberId,
+                      role,
+                      member?.user.email ?? "member",
+                    );
+                  }}
+                  empty={membersTableEmpty()}
                 />
-              ) : null}
-              {mode !== "members" ? (
-                <SettingsRow label="Invite" description="Add someone by email.">
-                  {canInvite ? (
-                    <Button
-                      type="button"
-                      size="sm"
-                      className="w-fit gap-2"
-                      onClick={() => setInviteOpen(true)}
-                    >
-                      <AppIcon name="invite" className="text-current" />
-                      Invite member
-                    </Button>
-                  ) : null}
-                </SettingsRow>
-              ) : null}
-              {members.length === 0 ? (
-                <div className="px-4 py-6">
+              </div>
+            )}
+          </SettingsPanel>
+
+          {mode !== "members" ? (
+            <SettingsPanel>
+              <SettingsSectionHeader
+                title="Invitations"
+                description="Pending email invites."
+                icon="mail"
+              />
+              <div className="px-4 py-4">
+                {pendingInvitations.length === 0 ? (
                   <Empty className="border border-dashed py-8">
                     <EmptyHeader>
                       <EmptyMedia variant="icon">
-                        <AppIcon name="member" className="size-5" />
+                        <AppIcon name="mail" className="size-5" />
                       </EmptyMedia>
-                      <EmptyTitle>Invite your first member</EmptyTitle>
+                      <EmptyTitle>{invitationsEmpty().empty.title}</EmptyTitle>
                       <EmptyDescription>
-                        {pendingInvitations.length > 0
-                          ? `${pendingInvitations.length} pending ${pendingInvitations.length === 1 ? "invitation is" : "invitations are"} awaiting acceptance.`
-                          : "Paste a few emails to share projects and environments with your team."}
+                        {invitationsEmpty().empty.description}
                       </EmptyDescription>
                     </EmptyHeader>
-                  </Empty>
-                </div>
-              ) : (
-                <div className="min-w-0 space-y-3 overflow-x-auto px-4 py-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Input
-                      type="search"
-                      aria-label="Search members"
-                      placeholder="Search by name, email or role"
-                      value={memberQuery}
-                      onChange={(e) => setMemberQuery(e.target.value)}
-                      className="max-w-xs"
-                    />
-                    <span className="text-muted-foreground text-xs">
-                      {members.length}{" "}
-                      {members.length === 1 ? "member" : "members"}
-                    </span>
-                  </div>
-                  <OrganizationMembersTable
-                    members={members.filter((m) => {
-                      const q = memberQuery.trim().toLowerCase();
-                      if (!q) return true;
-                      return [m.user.name, m.user.email, m.role]
-                        .filter(Boolean)
-                        .some((v) => String(v).toLowerCase().includes(q));
-                    })}
-                    roleSelectItems={ROLE_SELECT_ITEMS}
-                    isOwner={isOwner}
-                    rolePendingId={rolePendingId}
-                    currentUserId={currentUserId}
-                    removalPendingId={memberRemovalPendingId}
-                    onRemove={requestMemberRemoval}
-                    onRoleChange={(memberId, role) => {
-                      const member = members.find((m) => m.id === memberId);
-                      requestRoleChange(
-                        memberId,
-                        role,
-                        member?.user.email ?? "member",
-                      );
-                    }}
-                    empty={membersTableEmpty()}
-                  />
-                </div>
-              )}
-            </SettingsPanel>
-
-            {mode !== "members" ? (
-              <SettingsPanel>
-                <SettingsSectionHeader
-                  title="Invitations"
-                  description="Pending email invites."
-                  icon="mail"
-                />
-                <div className="px-4 py-4">
-                  {pendingInvitations.length === 0 ? (
-                    <Empty className="border border-dashed py-8">
-                      <EmptyHeader>
-                        <EmptyMedia variant="icon">
-                          <AppIcon name="mail" className="size-5" />
-                        </EmptyMedia>
-                        <EmptyTitle>
-                          {invitationsEmpty().empty.title}
-                        </EmptyTitle>
-                        <EmptyDescription>
-                          {invitationsEmpty().empty.description}
-                        </EmptyDescription>
-                      </EmptyHeader>
-                      <EmptyContent>
-                        {canInvite ? (
-                          <Button
-                            type="button"
-                            size="sm"
-                            className="gap-2"
-                            onClick={() => setInviteOpen(true)}
-                          >
-                            <AppIcon name="invite" className="text-current" />
-                            Invite member
-                          </Button>
-                        ) : null}
-                      </EmptyContent>
-                    </Empty>
-                  ) : (
-                    <OrganizationInvitationsTable
-                      invitations={pendingInvitations}
-                      empty={invitationsEmpty(
-                        canInvite ? (
-                          <Button
-                            type="button"
-                            size="sm"
-                            className="gap-2"
-                            onClick={() => setInviteOpen(true)}
-                          >
-                            <AppIcon name="invite" className="text-current" />
-                            Invite member
-                          </Button>
-                        ) : undefined,
-                      )}
-                      revokingId={revokingId}
-                      resendingId={resendingId}
-                      onRevoke={(id) => void revokeInvitation(id)}
-                      onResend={(invite) => void resendInvitation(invite)}
-                    />
-                  )}
-                </div>
-              </SettingsPanel>
-            ) : null}
-          </SettingsTabsPanel>
-        )}
-
-        {(mode === "legacy-tabs" ||
-          mode === "danger" ||
-          showSettingsHubTabs) && (
-          <SettingsTabsPanel value="danger" className="min-w-0">
-            <SettingsPanel className="border-destructive/32 bg-destructive/4">
-              <SettingsSectionHeader
-                title="Danger zone"
-                description="Irreversible organization actions."
-                icon="danger"
-              />
-              {isOwner ? (
-                isPersonal ? (
-                  <SettingsRow
-                    label="Personal workspace"
-                    description="Your personal workspace cannot be deleted."
-                  >
-                    <span className="text-muted-foreground text-xs">—</span>
-                  </SettingsRow>
-                ) : (
-                  <SettingsRow
-                    label="Delete organization"
-                    description="Removes members and invitations. Projects must be removed or moved first."
-                  >
-                    <div className="flex flex-col items-end gap-1">
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        className="w-fit"
-                        disabled={orgs.length <= 1 || deletePending}
-                        onClick={() => {
-                          setDeleteOpen(true);
-                        }}
-                      >
-                        Delete organization
-                      </Button>
-                      {orgs.length <= 1 ? (
-                        <p className="max-w-[14rem] text-end text-muted-foreground text-xs">
-                          Create another organization before deleting this one.
-                        </p>
+                    <EmptyContent>
+                      {canInvite ? (
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="gap-2"
+                          onClick={() => setInviteOpen(true)}
+                        >
+                          <AppIcon name="invite" className="text-current" />
+                          Invite member
+                        </Button>
                       ) : null}
-                    </div>
-                  </SettingsRow>
-                )
+                    </EmptyContent>
+                  </Empty>
+                ) : (
+                  <OrganizationInvitationsTable
+                    invitations={pendingInvitations}
+                    empty={invitationsEmpty(
+                      canInvite ? (
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="gap-2"
+                          onClick={() => setInviteOpen(true)}
+                        >
+                          <AppIcon name="invite" className="text-current" />
+                          Invite member
+                        </Button>
+                      ) : undefined,
+                    )}
+                    revokingId={revokingId}
+                    resendingId={resendingId}
+                    onRevoke={(id) => void revokeInvitation(id)}
+                    onResend={(invite) => void resendInvitation(invite)}
+                  />
+                )}
+              </div>
+            </SettingsPanel>
+          ) : null}
+        </OrganizationSettingsPanel>
+      )}
+
+      {(mode === "danger" || mode === "settings-hub") && (
+        <OrganizationSettingsPanel title="Danger zone" className="min-w-0">
+          <SettingsPanel className="border-destructive/32 bg-destructive/4">
+            <SettingsSectionHeader
+              title="Danger zone"
+              description="Irreversible organization actions."
+              icon="danger"
+            />
+            {isOwner ? (
+              isPersonal ? (
+                <SettingsRow
+                  label="Personal workspace"
+                  description="Your personal workspace cannot be deleted."
+                >
+                  <span className="text-muted-foreground text-xs">—</span>
+                </SettingsRow>
               ) : (
                 <SettingsRow
-                  label="Leave organization"
-                  description="You will lose access to its projects."
+                  label="Delete organization"
+                  description="Removes members and invitations. Projects must be removed or moved first."
                 >
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="w-fit"
-                    disabled={leavePending}
-                    onClick={() => setLeaveConfirmOpen(true)}
-                  >
-                    {leavePending ? (
-                      <>
-                        <Spinner className="me-2" />
-                        Leaving…
-                      </>
-                    ) : (
-                      "Leave organization"
-                    )}
-                  </Button>
+                  <div className="flex flex-col items-end gap-1">
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="w-fit"
+                      disabled={orgs.length <= 1 || deletePending}
+                      onClick={() => {
+                        setDeleteOpen(true);
+                      }}
+                    >
+                      Delete organization
+                    </Button>
+                    {orgs.length <= 1 ? (
+                      <p className="max-w-[14rem] text-end text-muted-foreground text-xs">
+                        Create another organization before deleting this one.
+                      </p>
+                    ) : null}
+                  </div>
                 </SettingsRow>
-              )}
-            </SettingsPanel>
-          </SettingsTabsPanel>
-        )}
-      </SettingsTabs>
+              )
+            ) : (
+              <SettingsRow
+                label="Leave organization"
+                description="You will lose access to its projects."
+              >
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  disabled={leavePending}
+                  onClick={() => setLeaveConfirmOpen(true)}
+                >
+                  {leavePending ? (
+                    <>
+                      <Spinner className="me-2" />
+                      Leaving…
+                    </>
+                  ) : (
+                    "Leave organization"
+                  )}
+                </Button>
+              </SettingsRow>
+            )}
+          </SettingsPanel>
+        </OrganizationSettingsPanel>
+      )}
 
       <FormSheet
         open={editOrgOpen}

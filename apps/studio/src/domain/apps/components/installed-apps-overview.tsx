@@ -11,13 +11,7 @@ import { AppGlyph } from "./app-glyph";
 import { AppGridSkeleton } from "./project-apps-directory";
 
 /** Project overview body: the project's installed apps. */
-export function InstalledAppsOverview({
-  slug,
-  summaries,
-}: {
-  slug: string;
-  summaries?: Record<string, string>;
-}) {
+export function InstalledAppsOverview({ slug }: { slug: string }) {
   const org = useOrgSlug();
   const { installed, isLoading, isError, refetch } = useProjectApps(slug);
   if (isLoading) return <AppGridSkeleton count={1} />;
@@ -62,11 +56,6 @@ export function InstalledAppsOverview({
             <p className="line-clamp-2 flex-1 text-muted-foreground text-xs">
               {app.description}
             </p>
-            {summaries?.[app.id] ? (
-              <p className="text-muted-foreground text-xs tabular-nums">
-                {summaries[app.id]}
-              </p>
-            ) : null}
           </Link>
         ))}
       </div>

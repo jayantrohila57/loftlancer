@@ -25,23 +25,13 @@ export async function hydrateProjectDetailQueries(
   const measure = async <T>(name: string, fn: () => Promise<T>) =>
     timing ? timing.measure(name, fn) : fn();
 
-  const projectRes = await measure("project+stats", async () => {
-    const [projectPayload] = await Promise.all([
-      prefetchWithCaller(
-        queryClient,
-        trpcQueryOptions.projects.getBySlug.queryOptions({ slug }),
-        () => caller.projects.getBySlug({ slug }),
-      ),
-      prefetchWithCaller(
-        queryClient,
-        trpcQueryOptions.dashboard.getProjectDetailStats.queryOptions({
-          slug,
-        }),
-        () => caller.dashboard.getProjectDetailStats({ slug }),
-      ).catch(() => undefined),
-    ]);
-    return projectPayload;
-  });
+  const projectRes = await measure("project", () =>
+    prefetchWithCaller(
+      queryClient,
+      trpcQueryOptions.projects.getBySlug.queryOptions({ slug }),
+      () => caller.projects.getBySlug({ slug }),
+    ),
+  );
 
   const firstEnvironmentId = projectRes.data.environments[0]?.id;
   if (firstEnvironmentId) {

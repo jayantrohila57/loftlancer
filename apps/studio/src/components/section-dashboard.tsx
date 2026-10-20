@@ -14,18 +14,12 @@ import { cn } from "@/lib/utils";
 interface SectionProps extends PageHeaderTabsProps {
   title?: string;
   description?: string;
-  titleAccessory?: ReactNode;
   action?: ReactNode;
   actionLabel?: string;
   actionHref?: string;
   /** @deprecated use actionLabel */
   actionUrl?: string;
   children: React.ReactNode;
-  /** Meta row under the title (badges, links, key/value). */
-  metadata?: ReactNode;
-  meta?: ReactNode;
-  /** Rendered under metadata (e.g. stat cards). */
-  stats?: ReactNode;
   /** `auto` is route-aware (no back on dashboard list routes); `false` hides; string sets parent href */
   back?: PageHeaderBackProp;
 }
@@ -33,15 +27,11 @@ interface SectionProps extends PageHeaderTabsProps {
 export default function DashboardSection({
   title,
   description,
-  titleAccessory,
   action,
   actionLabel,
   actionHref,
   actionUrl,
   children,
-  metadata,
-  meta,
-  stats,
   back = "auto",
   tabs,
   hideTabs,
@@ -68,10 +58,8 @@ export default function DashboardSection({
       {title ? (
         <PageHeader
           title={title}
-          titleAccessory={titleAccessory}
           description={description}
           action={trailingAction}
-          meta={meta ?? metadata}
           back={back}
           tabs={tabs}
           hideTabs={hideTabs}
@@ -80,7 +68,6 @@ export default function DashboardSection({
           tabsEnd={tabsEnd}
         />
       ) : null}
-      {stats ? <div className="min-w-0">{stats}</div> : null}
       {children ? <div className="min-w-0">{children}</div> : null}
     </PageStack>
   );

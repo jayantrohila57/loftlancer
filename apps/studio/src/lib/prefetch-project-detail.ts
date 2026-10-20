@@ -12,10 +12,6 @@ export function prefetchProjectDetail(queryClient: QueryClient, slug: string) {
     ...trpc.projects.getBySlug.queryOptions({ slug }),
     staleTime: PROJECT_DETAIL_STALE_MS,
   });
-  void queryClient.prefetchQuery({
-    ...trpc.dashboard.getProjectDetailStats.queryOptions({ slug }),
-    staleTime: PROJECT_DETAIL_STALE_MS,
-  });
 }
 
 export const projectDetailQueryStaleTime = PROJECT_DETAIL_STALE_MS;

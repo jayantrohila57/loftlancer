@@ -66,7 +66,7 @@ function ProjectDetailPageContent({ slug }: ProjectDetailPageProps) {
           <ProjectActions project={project} onEdit={() => setEditOpen(true)} />
         }
       >
-        <ProjectOverviewSections slug={slug} project={project} />
+        <ProjectOverviewSections slug={slug} />
       </DashboardSection>
       <EditProjectSheet
         project={project}
