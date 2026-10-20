@@ -1,8 +1,7 @@
 "use client";
 
-import { Check, Copy } from "lucide-react";
 import type React from "react";
-import { type ReactNode, useState } from "react";
+import type { ReactNode } from "react";
 import { formatDate } from "../lib/format-date";
 import {
   pageHeaderTabActiveClass,
@@ -18,12 +17,7 @@ import {
   PageHeaderTabsRow,
 } from "./page-header";
 
-/**
- * Settings page frame: blends ReUI form-5 (centered container, back link,
- * identity row, line tabs, sticky right rail) with profile-2 (H2 + description
- * sections of hairline-separated label/control rows). Rebuilt from our own
- * shadcn primitives; no ReUI source is used.
- */
+/** Shared resource navigation frame: back, identity/title, description, and sibling navigation. */
 
 type LinkLike = React.ElementType<{
   href: string;
@@ -79,18 +73,11 @@ export function SettingsTabs({
   tabs: SettingsTab[];
   LinkComponent?: LinkLike | "a";
 }) {
+  if (tabs.length === 0) return null;
   const L = LinkComponent as React.ElementType;
   return (
     <div className={pageHeaderTabsRowClass} data-slot="page-header-tabs">
       <nav aria-label="Sections" className={pageHeaderTabsListClass}>
-        {tabs.length === 0 ? (
-          <span
-            aria-current="page"
-            className={cn(pageHeaderTabClass, pageHeaderTabActiveClass)}
-          >
-            All
-          </span>
-        ) : null}
         {tabs.map((tab) =>
           tab.disabled ? (
             <span
@@ -125,63 +112,24 @@ export function SettingsTabs({
 
 export type SettingsFrameProps = {
   back?: { href: string; label: string };
-  avatar?: { src?: string | null; name?: string | null };
   title: ReactNode;
-  subtitle?: ReactNode;
-  /** Owner name shown in the meta row next to the avatar. */
-  identity?: ReactNode;
   description?: ReactNode;
-  /** Meta row content (badges, links); defaults to `subtitle`. */
-  meta?: ReactNode;
-  actions?: ReactNode;
   tabs?: SettingsTab[];
   /** Hide section navigation when the current resource is navigated elsewhere. */
   hideTabs?: boolean;
   LinkComponent?: LinkLike | "a";
-  /** Full-width block under the tabs (e.g. activity heatmap). */
-  top?: ReactNode;
-  /** Sticky right rail (audit rail, health). */
-  aside?: ReactNode;
   children: ReactNode;
 };
 
 export function SettingsFrame({
   back,
-  avatar,
   title,
-  subtitle,
-  identity,
   description,
-  meta,
-  actions,
   tabs,
   hideTabs = false,
   LinkComponent = "a",
-  top,
-  aside,
   children,
 }: SettingsFrameProps) {
-  const metaContent =
-    meta ??
-    (avatar || identity || subtitle ? (
-      <span className="flex min-w-0 items-center gap-1.5">
-        {avatar ? (
-          <SettingsAvatar
-            src={avatar.src}
-            name={avatar.name}
-            className="size-5 text-[9px]"
-          />
-        ) : null}
-        {identity ? (
-          <span className="truncate font-medium text-foreground">
-            {identity}
-          </span>
-        ) : null}
-        {subtitle ? (
-          <span className="truncate font-mono">{subtitle}</span>
-        ) : null}
-      </span>
-    ) : null);
   return (
     <div data-testid="settings-frame" className="w-full min-w-0 space-y-6">
       <PageHeaderLayout
@@ -190,10 +138,8 @@ export function SettingsFrame({
         }
         title={title}
         description={description}
-        actions={actions}
-        meta={metaContent}
         tabs={
-          hideTabs ? null : (
+          hideTabs || !tabs?.length ? null : (
             <PageHeaderTabsRow
               LinkComponent={LinkComponent}
               tabs={(tabs ?? []).map((t) => ({
@@ -212,17 +158,7 @@ export function SettingsFrame({
           )
         }
       />
-      {top}
-      {aside ? (
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_18rem]">
-          <div className="min-w-0 space-y-8">{children}</div>
-          <aside className="space-y-4 xl:sticky xl:top-6 xl:self-start">
-            {aside}
-          </aside>
-        </div>
-      ) : (
-        <div className="min-w-0 space-y-8">{children}</div>
-      )}
+      <div className="min-w-0 space-y-8">{children}</div>
     </div>
   );
 }
@@ -283,60 +219,6 @@ export function SettingsRow({
         ) : null}
       </div>
       <div className="min-w-0 flex-1">{children}</div>
-    </div>
-  );
-}
-
-function CopyButton({ value }: { value: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      type="button"
-      aria-label="Copy"
-      className="inline-flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
-      onClick={() => {
-        void navigator.clipboard?.writeText(value).then(() => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1500);
-        });
-      }}
-    >
-      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-    </button>
-  );
-}
-
-/** `copy` applies to string values only (ids, slugs). */
-export type RailItem = { label: string; value: ReactNode; copy?: boolean };
-
-export function SettingsRailCard({
-  title,
-  items,
-  children,
-}: {
-  title: string;
-  items?: RailItem[];
-  children?: ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border bg-card p-4 text-card-foreground">
-      <div className="mb-3 font-medium text-sm">{title}</div>
-      {items?.length ? (
-        <dl className="space-y-3">
-          {items.map((item) => (
-            <div key={item.label} className="min-w-0">
-              <dt className="text-muted-foreground text-xs">{item.label}</dt>
-              <dd className="flex items-center gap-1">
-                <span className="truncate font-mono text-xs">{item.value}</span>
-                {item.copy && typeof item.value === "string" ? (
-                  <CopyButton value={item.value} />
-                ) : null}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      ) : null}
-      {children}
     </div>
   );
 }

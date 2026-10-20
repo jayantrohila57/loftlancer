@@ -4,10 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
+import DashboardSection from "@/components/section-dashboard";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 import { useOrgSlug } from "@/utils/use-route-scope";
 import { EditProjectSheet } from "./edit-project-sheet";
+import { ProjectActions } from "./project-actions";
 import {
   ProjectOverviewSections,
   ProjectOverviewSectionsSkeleton,
@@ -56,7 +58,16 @@ function ProjectDetailPageContent({ slug }: ProjectDetailPageProps) {
 
   return (
     <>
-      <ProjectOverviewSections slug={slug} project={project} />
+      <DashboardSection
+        title="Overview"
+        back={false}
+        hideTabs
+        action={
+          <ProjectActions project={project} onEdit={() => setEditOpen(true)} />
+        }
+      >
+        <ProjectOverviewSections slug={slug} project={project} />
+      </DashboardSection>
       <EditProjectSheet
         project={project}
         open={editOpen}

@@ -72,11 +72,8 @@ function OrganizationFrame({
         href: isOrgHome ? routes.home() : isTeamDetail ? teamsHref : orgHome,
         label: isOrgHome ? "Organizations" : isTeamDetail ? "Teams" : name,
       }}
-      avatar={{ src: organization?.logo, name }}
       title={name}
       description="Organization workspace and administration."
-      identity={name}
-      subtitle={`/${slug}`}
       tabs={tabs.map((tab) => ({
         href: tab.href ?? "#",
         label: tab.label,
