@@ -144,6 +144,7 @@ export function AccountSettingsClient({
   const connectedQuery = useQuery(
     trpc.account.listConnectedAccounts.queryOptions(),
   );
+  const sidebarContext = useQuery(trpc.sidebar.navigator.queryOptions());
   const deleteBlockersQuery = useQuery(
     trpc.account.getDeleteBlockers.queryOptions(),
   );
@@ -261,6 +262,7 @@ export function AccountSettingsClient({
   ];
 
   const orgLinkEnabled = isOrganizationsEnabledOnClient();
+  const organizationSlug = sidebarContext.data?.organizationSlug;
 
   if (isPending) {
     return <AccountSettingsSkeleton />;
@@ -411,11 +413,6 @@ export function AccountSettingsClient({
 
             <SettingsTabsPanel value="profile" className="min-w-0">
               <SettingsPanel>
-                <SettingsSectionHeader
-                  title="Profile"
-                  description="Your name and avatar shown across the app."
-                  icon="user"
-                />
                 <SettingsField label="Avatar" description="Image URL (HTTPS).">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                     <Avatar className="size-12 shrink-0">
@@ -486,11 +483,17 @@ export function AccountSettingsClient({
                       className="w-fit gap-2"
                       render={
                         <a
-                          href={studioDashboardPath(routes.home())}
+                          href={studioDashboardPath(
+                            organizationSlug
+                              ? routes.orgSection(organizationSlug, "settings")
+                              : routes.home(),
+                          )}
                           rel="noopener noreferrer"
                         >
                           <AppIcon name="settings" className="text-current" />
-                          Organization settings
+                          {organizationSlug
+                            ? "Organization settings"
+                            : "Choose an organization"}
                         </a>
                       }
                     />
@@ -502,11 +505,6 @@ export function AccountSettingsClient({
             <SettingsTabsPanel value="sessions" className="min-w-0">
               <PermissionGate action={accountSettingsActions.sessions}>
                 <SettingsPanel>
-                  <SettingsSectionHeader
-                    title="Sessions"
-                    description="Devices signed in to your account."
-                    icon="lock"
-                  />
                   <SettingsRow
                     label="Revoke others"
                     description="Sign out every device except this one."
@@ -546,11 +544,6 @@ export function AccountSettingsClient({
             <SettingsTabsPanel value="accounts" className="min-w-0">
               <PermissionGate action={accountSettingsActions.accounts}>
                 <SettingsPanel>
-                  <SettingsSectionHeader
-                    title="Connected accounts"
-                    description="OAuth providers linked to your login."
-                    icon="github"
-                  />
                   {connectedQuery.isError ? (
                     <div className="px-4 py-4">
                       <ErrorState
@@ -756,11 +749,6 @@ export function AccountSettingsClient({
             <SettingsTabsPanel value="timeline" className="min-w-0">
               <PermissionGate action={accountSettingsActions.timeline}>
                 <SettingsPanel>
-                  <SettingsSectionHeader
-                    title="Activity"
-                    description="Your personal audit history."
-                    icon="activity"
-                  />
                   <div className="min-w-0 px-4 py-4">
                     {isActionsAuditEnabledOnClient() ? (
                       <TimelinePageClient scope="self" />

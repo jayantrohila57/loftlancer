@@ -1,6 +1,7 @@
 "use client";
 
 import { ActivityOverview } from "./activity-overview";
+import { OrganizationPeopleNavigation } from "./organization-people-navigation";
 
 type OrganizationSectionPageProps = {
   slug: string;
@@ -9,18 +10,22 @@ type OrganizationSectionPageProps = {
   children: React.ReactNode;
   action?: React.ReactNode;
   activity?: boolean;
+  peopleNavigation?: boolean;
 };
 
 /** Route-specific content heading. Organization identity and tabs live in the layout. */
 export function OrganizationSectionPage({
+  slug,
   title,
   description,
   children,
   action,
   activity = false,
+  peopleNavigation = false,
 }: OrganizationSectionPageProps) {
   return (
     <section className="min-w-0 space-y-4">
+      {peopleNavigation ? <OrganizationPeopleNavigation slug={slug} /> : null}
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 className="font-semibold text-xl tracking-tight">{title}</h2>

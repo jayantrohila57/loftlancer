@@ -36,7 +36,7 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
       <SettingsPanel className="border-destructive/32 bg-destructive/4">
         <SettingsSectionHeader
           title="Danger zone"
-          description="Archive or permanently delete this project and all of its environments."
+          description="Archive the project, or permanently delete it and its environments."
           icon="danger"
         />
         {project.isArchived ? (

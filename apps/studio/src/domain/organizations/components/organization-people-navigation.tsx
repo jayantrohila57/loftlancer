@@ -1,0 +1,67 @@
+"use client";
+
+import { PageHeaderTabsRow } from "@loftlancer/ui/patterns/page-header";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
+import { routes } from "@/utils/navigation";
+
+/** People subpages stay together while each route owns its own page content. */
+export function OrganizationPeopleNavigation({ slug }: { slug: string }) {
+  const pathname = usePathname() ?? "";
+  const canViewMembers = useCan("member.list").allowed;
+  const canInvite = useCan("member.invite").allowed;
+  const canViewTeams = useCan("organization.hub.view").allowed;
+  const canViewRoles = useCan("organization.settings.view").allowed;
+  const tabs = [
+    ...(canViewMembers
+      ? [
+          {
+            value: "members",
+            label: "Members",
+            href: routes.orgSection(slug, "members"),
+          },
+        ]
+      : []),
+    ...(canInvite
+      ? [
+          {
+            value: "invitations",
+            label: "Invitations",
+            href: routes.orgSection(slug, "invitations"),
+          },
+        ]
+      : []),
+    ...(canViewTeams
+      ? [
+          {
+            value: "teams",
+            label: "Teams",
+            href: routes.orgSection(slug, "teams"),
+          },
+        ]
+      : []),
+    ...(canViewRoles
+      ? [
+          {
+            value: "roles",
+            label: "Roles & access",
+            href: routes.orgSection(slug, "roles"),
+          },
+        ]
+      : []),
+  ];
+  const activeTab = tabs.find(
+    (tab) => pathname === tab.href || pathname.startsWith(`${tab.href}/`),
+  )?.value;
+
+  if (tabs.length < 2) return null;
+
+  return (
+    <PageHeaderTabsRow
+      LinkComponent={Link as never}
+      tabs={tabs}
+      activeTab={activeTab}
+    />
+  );
+}

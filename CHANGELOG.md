@@ -16,6 +16,28 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.14.1] - 2026-10-20
+
+### Changed
+
+- Studio navigation groups organization destinations, teams, projects, and project apps by scope, with one canonical selected location (#492).
+- Organization navigation groups Members, Invitations, Teams, and Roles under People; team access changes explain their project permission effects and require confirmation (#495).
+- Project overview summaries no longer repeat navigation links already present in the project frame; the Apps destination remains the single route into app management (#496).
+- Project manager removal and team unlinking now explain which project permissions change before confirmation (#496).
+- Project app screens now distinguish load failures from uninstalled apps, provide retry and empty states, and avoid duplicate app names or navigation actions (#497).
+- Task and invitation notifications now open the correct scoped destinations, unresolvable notices have no self-link, and activity destinations name their personal or organization scope (#498).
+- Notifications filters and mark-read actions now live in the page content instead of the navigation header (#498).
+- Support now has persistent Tickets/Help navigation with route-aware Back links; Account headings and settings labels clarify their scope (#499).
+- The route matrix now records page-owned actions, scoped settings labels, and route-aware Support parents alongside the remaining live QA requirements (#500).
+
+### Fixed
+
+- Project Back links now follow tested route parents through Apps, Environments, Tasks, and app settings; page sections keep a single Back control (#493).
+- Resource navigation frames now keep module actions and account diagnostics in their owning page content instead of repeating them across tabs (#494).
+- Pages without sibling navigation no longer show an “All” tab; project overview and account profile also drop duplicate controls and headings (#494).
+- Organization member, team, and invitation pages now surface load failures with retry and avoid repeating invite actions in empty states (#495).
+- Project access and settings now show retry states for failed requests instead of empty data or a misleading missing-page result (#496).
+
 ## [1.14.0] - 2026-10-20
 
 ### Added
@@ -577,7 +599,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.1...HEAD
+[1.14.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.3...v1.14.0
 [1.13.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.2...v1.13.3
 [1.13.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.13.1...v1.13.2

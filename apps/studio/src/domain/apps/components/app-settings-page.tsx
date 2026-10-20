@@ -8,13 +8,12 @@ import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
 import { FieldSelect } from "@/domain/tasks/components/field-select";
 import { actionToast } from "@/lib/action-toast";
 import { LayoutGrid } from "@/lib/icons";
-import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { useOrgSlug } from "@/utils/use-route-scope";
 import { useProjectApps } from "../hooks/use-project-apps";
 import { AppGlyph } from "./app-glyph";
 
@@ -29,16 +28,17 @@ export function AppSettingsPage({
   slug: string;
   appId: string;
 }) {
-  const org = useOrgSlug();
   const queryClient = useQueryClient();
   const {
     project,
     projectId,
     apps,
     isLoading,
+    isError,
     canManage,
     uninstall,
     isMutating,
+    refetch,
   } = useProjectApps(slug);
   const app = apps.find((a) => a.id === appId);
   const [draft, setDraft] = useState<Record<string, string>>({});
@@ -64,6 +64,17 @@ export function AppSettingsPage({
       </DashboardSection>
     );
   }
+  if (isError) {
+    return (
+      <DashboardSection title="App settings" back={false} hideTabs>
+        <ErrorState
+          title="App settings unavailable"
+          description="We couldn't load this app for the project."
+          onRetry={() => void refetch()}
+        />
+      </DashboardSection>
+    );
+  }
   if (app?.status !== "active") {
     return (
       <DashboardSection title={app?.name ?? "App"} back={false} hideTabs>
@@ -73,13 +84,9 @@ export function AppSettingsPage({
           description={
             app
               ? canManage
-                ? "Install it from the Apps page to configure it."
+                ? "Use Apps in the project navigation to install it before configuring it."
                 : "Ask a project manager to install this app."
               : "This app doesn't exist."
-          }
-          actionLabel={canManage ? "Go to Apps" : undefined}
-          actionHref={
-            canManage ? routes.projectSection(org, slug, "apps") : undefined
           }
         />
       </DashboardSection>
@@ -110,7 +117,6 @@ export function AppSettingsPage({
             <AppGlyph icon={app.icon} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <h2 className="font-medium text-sm">{app.name}</h2>
                 <Badge variant="success" size="sm">
                   Installed
                 </Badge>

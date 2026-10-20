@@ -37,7 +37,7 @@ export default function NewSupportTicketPage() {
     <DashboardSection
       title="New ticket"
       description="Describe your issue and we will follow up by email in production."
-      back={routes.supportTickets()}
+      back={false}
     >
       <form
         className="mx-auto max-w-xl space-y-4"

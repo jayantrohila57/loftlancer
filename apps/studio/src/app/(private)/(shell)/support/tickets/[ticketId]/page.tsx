@@ -52,7 +52,7 @@ export default function SupportTicketDetailPage() {
   return (
     <DashboardSection
       title={`#${ticket.ticketNumber} ${ticket.subject}`}
-      back={routes.supportTickets()}
+      back={false}
     >
       <div className="space-y-6">
         <div className="flex flex-wrap gap-2">

@@ -91,6 +91,10 @@ Do not copy `px-4`, `gap-4`, or `pt-4` into feature files unless you are extendi
 | `DashboardSection` | `components/section-dashboard.tsx` | Wraps `PageStack` + `PageTitleRow` |
 | `FormSection` | `components/layout/form-section.tsx` | Form blocks (`gap-2`) |
 
+### Resource navigation frame
+
+`SettingsFrame` is the persistent navigation frame for an organization, project, team, or account. It contains the parent/back link, resource title, optional short description, and links to sibling pages. Keep page actions, filters, summary metadata, and forms in the selected page below the navigation. Do not add a third identity/metadata row or resource action menu to this frame. Omit tabs when the frame has no sibling destinations; do not show a lone `All` tab.
+
 `Shell.Main` `variant="dashboard"` uses `layoutContentClass`. The private layout `PageHeaderBar` aligns with the sidebar org switcher row.
 
 Card, Frame, Table, and Dialog **internals** keep coss defaults (`p-6` on `CardHeader`, etc.); only **between** sections and **app chrome** use the sidebar scale.

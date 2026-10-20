@@ -19,12 +19,15 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
+import { ErrorState } from "@/components/patterns/error-state";
 import {
   SettingsPanel,
   SettingsRow,
   SettingsSectionHeader,
 } from "@/components/patterns/settings-layout";
 import { Can } from "@/domain/permissions/components/can";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
+import { useConfirm } from "@/hooks/use-confirm";
 import { formatActionLabel } from "@/lib/format-action-label";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
@@ -35,11 +38,19 @@ type ProjectAccessSectionProps = {
 
 export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
   const queryClient = useQueryClient();
+  const { confirm, ConfirmDialog } = useConfirm();
   const { activeOrganizationId } = useActiveOrganization();
   const [managerUserId, setManagerUserId] = useState("");
   const [teamId, setTeamId] = useState("");
   const [grantUserId, setGrantUserId] = useState("");
   const [grantSelection, setGrantSelection] = useState<string[]>([]);
+  const canAssignManager = useCan("project.assign_manager");
+  const canAssignTeam = useCan("project.assign_team", {
+    projectId: project.id,
+  });
+  const canManageGrants = useCan("project.permission.grant", {
+    projectId: project.id,
+  });
 
   const summaryQuery = useQuery(
     trpc.projectAccess.getSummary.queryOptions({ projectId: project.id }),
@@ -47,11 +58,13 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
 
   const teamsQuery = useQuery({
     ...trpc.teams.list.queryOptions(),
-    enabled: Boolean(activeOrganizationId),
+    enabled: Boolean(activeOrganizationId) && canAssignTeam.allowed,
   });
   const membersQuery = useQuery({
     ...trpc.organizations.listMembers.queryOptions(),
-    enabled: Boolean(activeOrganizationId),
+    enabled:
+      Boolean(activeOrganizationId) &&
+      (canAssignManager.allowed || canManageGrants.allowed),
   });
 
   const orgMembers = useMemo(
@@ -133,8 +146,37 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
     setGrantSelection(row?.grants ?? []);
   };
 
-  if (summaryQuery.isLoading) {
+  if (
+    summaryQuery.isPending ||
+    canAssignManager.isLoading ||
+    canAssignTeam.isLoading ||
+    canManageGrants.isLoading ||
+    (canAssignTeam.allowed && teamsQuery.isLoading) ||
+    ((canAssignManager.allowed || canManageGrants.allowed) &&
+      membersQuery.isLoading)
+  ) {
     return <SettingsPanelSkeleton rows={4} />;
+  }
+
+  if (
+    summaryQuery.isError ||
+    (canAssignTeam.allowed && teamsQuery.isError) ||
+    ((canAssignManager.allowed || canManageGrants.allowed) &&
+      membersQuery.isError)
+  ) {
+    return (
+      <ErrorState
+        title="Could not load project access"
+        description="Try loading the project’s access settings again."
+        onRetry={() => {
+          void summaryQuery.refetch();
+          if (canAssignTeam.allowed) void teamsQuery.refetch();
+          if (canAssignManager.allowed || canManageGrants.allowed) {
+            void membersQuery.refetch();
+          }
+        }}
+      />
+    );
   }
 
   return (
@@ -200,9 +242,18 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                         size="sm"
                         disabled={removeManager.isPending}
                         onClick={() =>
-                          removeManager.mutate({
-                            projectId: project.id,
-                            userId: row.userId,
+                          confirm({
+                            title: `Remove ${row.name ?? row.email ?? "this manager"}?`,
+                            description:
+                              "They will lose project manager permissions. Their organization role and any direct member grants stay in place.",
+                            confirmLabel: "Remove manager",
+                            variant: "destructive",
+                            onConfirm: async () => {
+                              await removeManager.mutateAsync({
+                                projectId: project.id,
+                                userId: row.userId,
+                              });
+                            },
                           })
                         }
                       >
@@ -283,9 +334,18 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                         size="sm"
                         disabled={removeTeam.isPending}
                         onClick={() =>
-                          removeTeam.mutate({
-                            projectId: project.id,
-                            teamId: row.teamId,
+                          confirm({
+                            title: `Unlink ${row.teamName}?`,
+                            description:
+                              "Team members will lose the default project access granted through this link. Direct member grants and project manager access stay in place.",
+                            confirmLabel: "Unlink team",
+                            variant: "destructive",
+                            onConfirm: async () => {
+                              await removeTeam.mutateAsync({
+                                projectId: project.id,
+                                teamId: row.teamId,
+                              });
+                            },
                           })
                         }
                       >
@@ -448,6 +508,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
           ) : null}
         </SettingsPanel>
       </Can>
+      {ConfirmDialog}
     </div>
   );
 }

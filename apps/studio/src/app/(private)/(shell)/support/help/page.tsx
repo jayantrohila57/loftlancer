@@ -36,6 +36,7 @@ export default function SupportHelpPage() {
     <DashboardSection
       title="Help center"
       description="Search frequently asked questions or open a ticket if you need more help."
+      back={false}
       action={
         <Link
           href={routes.supportNewTicket()}
@@ -75,7 +76,16 @@ export default function SupportHelpPage() {
           </section>
         ))}
         {faq.isSuccess && (faq.data?.items.length ?? 0) === 0 ? (
-          <p className="text-muted-foreground text-sm">No articles found.</p>
+          <p className="text-muted-foreground text-sm">
+            No articles found. You can{" "}
+            <Link
+              href={routes.supportNewTicket()}
+              className="text-primary underline"
+            >
+              open a support ticket
+            </Link>{" "}
+            if you need help.
+          </p>
         ) : null}
       </div>
     </DashboardSection>

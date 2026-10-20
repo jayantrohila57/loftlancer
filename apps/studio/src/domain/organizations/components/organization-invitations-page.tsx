@@ -3,7 +3,6 @@
 import { Button } from "@loftlancer/ui/button";
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
@@ -16,6 +15,7 @@ import { useCallback, useState } from "react";
 import { invitationsEmpty } from "@/components/data-table/data-table-empty-presets";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { AppIcon } from "@/components/patterns/app-icon";
+import { ErrorState } from "@/components/patterns/error-state";
 import { useSession } from "@/domain/auth/lib/auth-actions";
 import { useNotificationMutations } from "@/domain/notifications/hooks/use-notifications";
 import { Can } from "@/domain/permissions/components/can";
@@ -47,7 +47,12 @@ type InvitationStatusFilter = (typeof STATUS_OPTIONS)[number]["value"];
 
 export function OrganizationInvitationsPage({ slug }: { slug: string }) {
   const queryClient = useQueryClient();
-  const { organization, status: orgStatus } = useOrganizationBySlug(slug);
+  const {
+    organization,
+    status: orgStatus,
+    error,
+    reload,
+  } = useOrganizationBySlug(slug);
   const { data: session } = useSession();
   const { syncInvitationReceived } = useNotificationMutations();
   const currentUserId = session?.user?.id;
@@ -153,12 +158,25 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
       title="Invitations"
       description="Pending and recent email invitations for this workspace."
       action={<Can action="member.invite">{inviteAction}</Can>}
+      peopleNavigation
     >
-      {orgStatus === "loading" || !organization ? (
+      {orgStatus === "error" ? (
+        <ErrorState
+          title="Could not load organization"
+          description={error?.message ?? "Try loading the organization again."}
+          onRetry={() => void reload()}
+        />
+      ) : orgStatus === "loading" || !organization ? (
         <Skeleton className="h-48 w-full rounded-xl" />
+      ) : listQuery.isError ? (
+        <ErrorState
+          title="Could not load invitations"
+          description="Try loading the invitations again."
+          onRetry={() => void listQuery.refetch()}
+        />
       ) : (
         <div className="flex flex-col gap-3">
-          <div className="flex h-8 items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             <SearchableCombobox
               value={status}
               onChange={(v) => {
@@ -209,12 +227,11 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
                   {invitationsEmpty().empty.description}
                 </EmptyDescription>
               </EmptyHeader>
-              <EmptyContent>{inviteAction}</EmptyContent>
             </Empty>
           ) : (
             <OrganizationInvitationsTable
               invitations={sorted}
-              empty={invitationsEmpty(inviteAction)}
+              empty={invitationsEmpty()}
               revokingId={revokingId}
               resendingId={resendingId}
               onRevoke={(id) => void revokeInvitation(id)}

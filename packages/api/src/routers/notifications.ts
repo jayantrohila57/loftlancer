@@ -1,6 +1,7 @@
 import { activeNotificationWhere, db } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
 import { notification } from "@loftlancer/db/schema/notifications";
+import { organization } from "@loftlancer/db/schema/organization";
 import {
   isNotificationsEnabled,
   resolveNotificationPresentation,
@@ -128,10 +129,18 @@ export const notificationsRouter = router({
           readAt: notification.readAt,
           createdAt: notification.createdAt,
           actorUserId: notification.actorUserId,
+          organizationSlug: organization.slug,
           actorName: user.name,
           actorImage: user.image,
         })
         .from(notification)
+        .leftJoin(
+          organization,
+          and(
+            eq(notification.organizationId, organization.id),
+            isNull(organization.deletedAt),
+          ),
+        )
         .leftJoin(user, eq(notification.actorUserId, user.id))
         .where(
           recipientNotificationConditions(userId, {
@@ -151,6 +160,10 @@ export const notificationsRouter = router({
           row.type,
           row.data,
           { title: row.title, body: row.body },
+          {
+            actorName: row.actorName,
+            organizationSlug: row.organizationSlug,
+          },
         );
         return {
           id: row.id,

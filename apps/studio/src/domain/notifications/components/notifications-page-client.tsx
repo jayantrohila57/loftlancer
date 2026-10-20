@@ -93,28 +93,39 @@ export function NotificationsPageClient() {
       title="Notifications"
       description="Updates about invitations, your organization, and workspace activity."
       back={routes.home()}
-      activeTab={tab}
-      onTabChange={(value) => setTab(value as "all" | "unread")}
-      tabs={[
-        { value: "all", label: "All" },
-        {
-          value: "unread",
-          label: (
-            <>
-              Unread
-              <span className="min-w-[3ch] rounded-full border px-1.5 text-center text-[10px] tabular-nums">
-                {unreadQuery.data
-                  ? unreadCount > 99
-                    ? "99+"
-                    : unreadCount
-                  : "—"}
-              </span>
-            </>
-          ),
-        },
-      ]}
-      action={
-        // Always rendered (disabled at 0) so the header never reflows.
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div
+          role="group"
+          aria-label="Filter notifications"
+          className="flex items-center gap-1"
+        >
+          <Button
+            type="button"
+            variant={tab === "all" ? "secondary" : "ghost"}
+            size="sm"
+            aria-pressed={tab === "all"}
+            onClick={() => setTab("all")}
+          >
+            All
+          </Button>
+          <Button
+            type="button"
+            variant={tab === "unread" ? "secondary" : "ghost"}
+            size="sm"
+            aria-pressed={tab === "unread"}
+            onClick={() => setTab("unread")}
+          >
+            Unread
+            <span className="ms-1 min-w-[3ch] rounded-full border px-1.5 text-center text-[10px] tabular-nums">
+              {unreadQuery.data
+                ? unreadCount > 99
+                  ? "99+"
+                  : unreadCount
+                : "—"}
+            </span>
+          </Button>
+        </div>
         <LoadingButton
           type="button"
           variant="outline"
@@ -129,8 +140,7 @@ export function NotificationsPageClient() {
           <AppIcon name="markAllRead" className="text-current" />
           Mark all read
         </LoadingButton>
-      }
-    >
+      </div>
       <div
         className={cn(
           "relative rounded-xl border border-border/60",
