@@ -2,6 +2,7 @@ import {
   type ActionName,
   getActionDefinition,
   isActionsAuditEnabled,
+  isAlwaysAuditedAction,
 } from "@loftlancer/actions";
 import { db } from "@loftlancer/db";
 import { auditEvent } from "@loftlancer/db/schema/audit-event";
@@ -26,7 +27,7 @@ export type WriteAuthAuditEventInput = {
 };
 
 export async function writeAuthAuditEvent(input: WriteAuthAuditEventInput) {
-  if (!isActionsAuditEnabled()) {
+  if (!isActionsAuditEnabled() && !isAlwaysAuditedAction(input.action)) {
     return null;
   }
 

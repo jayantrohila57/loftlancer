@@ -63,6 +63,7 @@ const rows: MatrixRow[] = [
     scope: "platform",
     description: "Set platform user role",
     entityType: "user",
+    severity: "security",
   },
   {
     name: "platform.user.impersonate",
@@ -312,6 +313,7 @@ const rows: MatrixRow[] = [
     description: "Delete team",
     manager: true,
     entityType: "team",
+    severity: "security",
   },
   {
     name: "team.restore",
@@ -326,6 +328,7 @@ const rows: MatrixRow[] = [
     description: "Add member to team",
     manager: true,
     entityType: "team",
+    severity: "security",
   },
   {
     name: "team.member.remove",
@@ -333,6 +336,7 @@ const rows: MatrixRow[] = [
     description: "Remove member from team",
     manager: true,
     entityType: "team",
+    severity: "security",
   },
   {
     name: "project.create",
@@ -365,6 +369,7 @@ const rows: MatrixRow[] = [
     description: "Delete project",
     owner: true,
     entityType: "project",
+    severity: "critical",
   },
   {
     name: "project.restore",
@@ -488,6 +493,7 @@ const rows: MatrixRow[] = [
     description: "Assign project manager",
     owner: true,
     entityType: "project",
+    severity: "security",
   },
   {
     name: "project.assign_team",
@@ -495,6 +501,7 @@ const rows: MatrixRow[] = [
     description: "Assign team to project",
     manager: "grant",
     entityType: "project",
+    severity: "security",
     projectGrantKey: "project.assign_team",
   },
   {
@@ -503,6 +510,7 @@ const rows: MatrixRow[] = [
     description: "Grant project permissions to member",
     manager: "grant",
     entityType: "project",
+    severity: "security",
     projectGrantKey: "project.permission.grant",
   },
   {
@@ -538,6 +546,7 @@ const rows: MatrixRow[] = [
     description: "Delete environment",
     manager: "grant",
     entityType: "environment",
+    severity: "security",
     projectGrantKey: "environment.delete",
   },
   {
@@ -582,6 +591,7 @@ const rows: MatrixRow[] = [
     manager: "grant",
     member: "grant",
     entityType: "variable",
+    severity: "security",
     projectGrantKey: "variable.delete",
   },
   {
@@ -609,6 +619,7 @@ const rows: MatrixRow[] = [
     manager: "grant",
     member: "grant",
     entityType: "variable",
+    severity: "security",
     projectGrantKey: "variable.export",
   },
   {
@@ -737,6 +748,7 @@ const rows: MatrixRow[] = [
     description: "Link OAuth account",
     selfOnly: true,
     entityType: "account",
+    severity: "security",
   },
   {
     name: "account.unlink",
@@ -752,6 +764,7 @@ const rows: MatrixRow[] = [
     description: "Export user data",
     selfOnly: true,
     entityType: "user",
+    severity: "security",
   },
   {
     name: "account.delete",
