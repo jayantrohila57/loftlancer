@@ -59,19 +59,25 @@ export const notificationDataSchemas: Record<NotificationType, z.ZodTypeAny> = {
 
 export type NotificationRenderContext = {
   actorName?: string | null;
+  /** Resolved from the notification's organization when older payloads omit it. */
+  organizationSlug?: string | null;
 };
 
 export type NotificationRenderResult = {
   title: string;
   body: string;
   icon: NotificationIconName;
-  href: string;
+  href: string | null;
 };
 
 /** Studio-relative task link; old rows without an org fall back to the inbox. */
-function taskHref(data: z.infer<typeof taskData>): string {
-  if (!data.organizationSlug) return "/notifications";
-  return `/${encodeURIComponent(data.organizationSlug)}/${encodeURIComponent(data.projectSlug)}/tasks/${data.taskNumber}`;
+function taskHref(
+  data: z.infer<typeof taskData>,
+  context: NotificationRenderContext,
+): string | null {
+  const organizationSlug = data.organizationSlug ?? context.organizationSlug;
+  if (!organizationSlug) return null;
+  return `/${encodeURIComponent(organizationSlug)}/${encodeURIComponent(data.projectSlug)}/tasks/${data.taskNumber}`;
 }
 
 export const notificationRenderers: Record<
@@ -87,15 +93,16 @@ export const notificationRenderers: Record<
       href: `/invite/${encodeURIComponent(data.invitationId)}`,
     };
   },
-  "invitation.accepted": (raw) => {
+  "invitation.accepted": (raw, context) => {
     const data = invitationAcceptedData.parse(raw);
+    const organizationSlug = data.organizationSlug ?? context.organizationSlug;
     return {
       title: "Invitation accepted",
       body: `${data.memberName} joined ${data.organizationName}.`,
       icon: "member",
-      href: data.organizationSlug
-        ? `/${encodeURIComponent(data.organizationSlug)}`
-        : "/",
+      href: organizationSlug
+        ? `/${encodeURIComponent(organizationSlug)}/members`
+        : null,
     };
   },
   "support.ticket.reply": (raw) => {
@@ -113,7 +120,7 @@ export const notificationRenderers: Record<
       title: `Assigned: ${data.title}`,
       body: `${ctx.actorName ?? "Someone"} assigned you task #${data.taskNumber} in ${data.projectName}.`,
       icon: "member",
-      href: taskHref(data),
+      href: taskHref(data, ctx),
     };
   },
   "task.mentioned": (raw, ctx) => {
@@ -122,7 +129,7 @@ export const notificationRenderers: Record<
       title: `Mentioned on #${data.taskNumber}`,
       body: `${ctx.actorName ?? "Someone"} mentioned you on "${data.title}" in ${data.projectName}.`,
       icon: "member",
-      href: taskHref(data),
+      href: taskHref(data, ctx),
     };
   },
 };

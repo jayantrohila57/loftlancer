@@ -250,7 +250,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       }
                     >
                       <ActivityIcon />
-                      <span>Activity</span>
+                      <span>Organization activity</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}

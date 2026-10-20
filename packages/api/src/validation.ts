@@ -308,7 +308,7 @@ export const notificationListItemOutput = z.object({
   body: z.string(),
   readAt: z.date().nullable(),
   createdAt: z.date(),
-  href: z.string(),
+  href: z.string().nullable(),
   icon: z.string(),
   actorUser: notificationActorOutput.nullable(),
 });
