@@ -84,7 +84,7 @@ Do not copy `px-4`, `gap-4`, or `pt-4` into feature files unless you are extendi
 | `PageStack` | same | Vertical sections (`gap-2`) |
 | `PageHeaderBar` / `PageHeaderRow` | same | Sticky inset header; **same `p-2` + `h-12` row as `SidebarHeader` + team switcher** |
 | `PageHeader` | `components/layout/page-header.tsx` | In-page title row with optional inline back (`back="auto"` via `lib/page-back.ts`) |
-| `AccordionSection` | `components/patterns/accordion-section.tsx` | Consistent disclosure pattern for page subsections |
+| `AccordionSection` | `@loftlancer/ui/patterns/accordion-section` | Shared disclosure pattern for subsections across Studio and Auth |
 | `PageTitleRow` | same | In-page title + action (`text-sm` title) |
 | `PageToolbar` | same | Filters / search above tables |
 | `FormSheet*` | `components/patterns/form-sheet.tsx` | Full-height inset sheets; header/footer/body share coss `px-6` |

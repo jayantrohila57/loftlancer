@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@loftlancer/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardPanel,
-  CardTitle,
-} from "@loftlancer/ui/card";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { routes } from "@loftlancer/ui/studio-routes";
 import { studioDashboardPath } from "@/lib/studio-url";
 
@@ -15,15 +9,12 @@ export function NotificationPreferencesPanel() {
   const studioNotifications = studioDashboardPath(routes.notifications());
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Notification preferences</CardTitle>
-        <CardDescription>
+    <AccordionSection title="Notification preferences">
+      <div className="space-y-3">
+        <p className="text-muted-foreground text-sm">
           In-app notifications are managed in Studio. Open your inbox to mark
           items read or review recent activity.
-        </CardDescription>
-      </CardHeader>
-      <CardPanel>
+        </p>
         <Button
           type="button"
           size="sm"
@@ -36,7 +27,7 @@ export function NotificationPreferencesPanel() {
         >
           Open Studio notifications
         </Button>
-      </CardPanel>
-    </Card>
+      </div>
+    </AccordionSection>
   );
 }

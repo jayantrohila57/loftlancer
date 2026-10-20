@@ -2,6 +2,7 @@
 
 import { Button } from "@loftlancer/ui/button";
 import { localDayKey, localDayLabel } from "@loftlancer/ui/local-day";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
 import { Skeleton } from "@loftlancer/ui/skeleton";
@@ -117,13 +118,6 @@ export function NotificationsPageClient() {
             onClick={() => setTab("unread")}
           >
             Unread
-            <span className="ms-1 min-w-[3ch] rounded-full border px-1.5 text-center text-[10px] tabular-nums">
-              {unreadQuery.data
-                ? unreadCount > 99
-                  ? "99+"
-                  : unreadCount
-                : "—"}
-            </span>
           </Button>
         </div>
         <LoadingButton
@@ -142,27 +136,39 @@ export function NotificationsPageClient() {
         </LoadingButton>
       </div>
       <div
-        className={cn(
-          "relative rounded-xl border border-border/60",
-          LIST_MIN_H,
-        )}
+        className={cn("relative", LIST_MIN_H)}
         aria-busy={firstLoad || refetching || undefined}
         data-testid="notifications-list"
       >
         {firstLoad ? (
-          <div className="p-1">
-            <span className="sr-only">Loading…</span>
-            <Skeleton className="mx-3 my-2 h-3 w-16" />
-            {["w-2/3", "w-1/2", "w-3/5", "w-2/5", "w-1/2", "w-3/5"].map(
-              (w, i) => (
-                <NotificationRowSkeleton key={`${w}-${String(i)}`} width={w} />
-              ),
-            )}
+          <div className="flex flex-col gap-2">
+            <AccordionSection
+              title={
+                <>
+                  <span className="sr-only">Loading notifications</span>
+                  <Skeleton aria-hidden="true" className="h-3 w-20" />
+                </>
+              }
+            >
+              <div
+                className="flex flex-col divide-y divide-border/60"
+                aria-hidden="true"
+              >
+                {["w-2/3", "w-1/2", "w-3/5", "w-2/5", "w-1/2", "w-3/5"].map(
+                  (w, i) => (
+                    <NotificationRowSkeleton
+                      key={`${w}-${String(i)}`}
+                      width={w}
+                    />
+                  ),
+                )}
+              </div>
+            </AccordionSection>
           </div>
         ) : listQuery.isError ? (
           <div
             className={cn(
-              "flex flex-col items-center justify-center gap-3 p-6 text-center",
+              "flex flex-col items-center justify-center gap-3 rounded-xl border bg-card p-6 text-center",
               LIST_MIN_H,
             )}
           >
@@ -186,7 +192,7 @@ export function NotificationsPageClient() {
         ) : items.length === 0 ? (
           <EmptyState
             bare
-            className={LIST_MIN_H}
+            className={cn("rounded-xl border bg-card", LIST_MIN_H)}
             data-testid="notifications-empty"
             icon={unreadOnly ? appIcons.markAllRead : appIcons.bell}
             title={unreadOnly ? "You're all caught up" : "No notifications yet"}
@@ -221,18 +227,16 @@ export function NotificationsPageClient() {
         ) : (
           <div
             className={cn(
-              "transition-opacity motion-reduce:transition-none",
+              "flex flex-col gap-2 transition-opacity motion-reduce:transition-none",
               refetching && "opacity-60",
             )}
           >
             {groups.map((g) => (
-              <section key={g.key} aria-label={g.label}>
-                <h3 className="sticky top-0 z-10 border-border/60 border-b bg-background/95 px-3 py-1.5 font-medium text-muted-foreground text-xs backdrop-blur">
-                  {g.label}
-                </h3>
+              <AccordionSection key={g.key} title={g.label}>
                 <div
                   role="list"
-                  className="flex flex-col divide-y divide-border/60 p-1"
+                  aria-label={g.label}
+                  className="flex flex-col divide-y divide-border/60"
                 >
                   {g.items.map((item) => (
                     <NotificationListItem
@@ -250,7 +254,7 @@ export function NotificationsPageClient() {
                     />
                   ))}
                 </div>
-              </section>
+              </AccordionSection>
             ))}
           </div>
         )}
