@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Account notification settings now render the shared interactive accordion without a server error (#520).
+
 ## [1.14.4] - 2026-10-20
 
 ### Changed
