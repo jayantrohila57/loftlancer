@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
 import { isPersonalOrganization } from "@/lib/org-personal";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
-import { OrganizationDetailStats } from "./organization-detail-stats";
 import {
   OrganizationOverviewSections,
   OrganizationOverviewSectionsSkeleton,
@@ -42,7 +41,6 @@ export default function OrganizationDetailPage({ slug }: { slug: string }) {
           </p>
         </div>
       </header>
-      <OrganizationDetailStats slug={slug} />
       {status === "loading" ? (
         <OrganizationOverviewSectionsSkeleton />
       ) : (

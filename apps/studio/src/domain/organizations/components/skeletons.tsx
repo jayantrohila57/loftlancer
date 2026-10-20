@@ -7,7 +7,6 @@ import { Skeleton } from "@loftlancer/ui/skeleton";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import { ListToolbarSkeleton } from "@/components/layout/list-toolbar-skeleton";
 import type { OrgListItem } from "@/components/org/active-organization-context";
-import { StatCardRowSkeleton } from "@/components/patterns/stat-card";
 import DashboardSection from "@/components/section-dashboard";
 import { cn } from "@/lib/utils";
 import { OrganizationOverviewSectionsSkeleton } from "./organization-overview-sections";
@@ -70,7 +69,6 @@ export function OrganizationsListSkeleton() {
 export function OrganizationDetailPageSkeleton() {
   return (
     <div className="min-w-0 space-y-4" role="status" aria-busy="true">
-      <StatCardRowSkeleton count={4} compact />
       <OrganizationOverviewSectionsSkeleton />
     </div>
   );

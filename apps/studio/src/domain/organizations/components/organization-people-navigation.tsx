@@ -1,8 +1,8 @@
 "use client";
 
-import { PageHeaderTabsRow } from "@loftlancer/ui/patterns/page-header";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AccordionSection } from "@/components/patterns/accordion-section";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { routes } from "@/utils/navigation";
 
@@ -55,13 +55,28 @@ export function OrganizationPeopleNavigation({ slug }: { slug: string }) {
     (tab) => pathname === tab.href || pathname.startsWith(`${tab.href}/`),
   )?.value;
 
-  if (tabs.length < 2) return null;
+  if (tabs.length === 0) return null;
 
   return (
-    <PageHeaderTabsRow
-      LinkComponent={Link as never}
-      tabs={tabs}
-      activeTab={activeTab}
-    />
+    <AccordionSection title="People" className="mb-4">
+      <nav
+        aria-label="Organization people pages"
+        className="flex flex-wrap gap-2"
+      >
+        {tabs.map((tab) => {
+          const active = tab.value === activeTab;
+          return (
+            <Link
+              key={tab.value}
+              href={tab.href}
+              aria-current={active ? "page" : undefined}
+              className={`rounded-md px-3 py-2 text-sm ${active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+            >
+              {tab.label}
+            </Link>
+          );
+        })}
+      </nav>
+    </AccordionSection>
   );
 }

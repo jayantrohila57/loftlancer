@@ -10,16 +10,12 @@ import {
 } from "@loftlancer/ui/card";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
-import { layoutGapClass } from "@loftlancer/ui/layout-spacing";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import type { ReactNode } from "react";
 import { PageStack } from "@/components/layout/app-layout";
 import { AppIcon } from "@/components/patterns/app-icon";
-import { iconMutedClassName } from "@/lib/icons";
-import { cn } from "@/lib/utils";
 import { isVariablesV2EnabledOnClient } from "@/lib/variables-v2-enabled";
-import { EnvironmentTabCountBadge } from "./environment-tab-count-badge";
 import {
   VARIABLES_SEARCH_PLACEHOLDER,
   variableColumnClassNames,
@@ -96,7 +92,6 @@ export function VariablesSkeleton() {
 }
 
 /** Environment tab labels in the skeleton rail (e.g. development, staging). */
-const ENV_TAB_PLACEHOLDERS = ["w-[5.5rem]", "w-14"];
 
 const loadedVariableColumns = (variablesV2: boolean) => [
   variableColumnHelper.display({
@@ -176,9 +171,7 @@ export function VariablesTableSkeleton() {
 }
 
 /**
- * Mirrors ProjectDetail 1:1 (#326): the environment tab rail (underline tabs
- * with count badges + actions button) above the variables table. No card,
- * no extra columns.
+ * Mirrors the environment accordion list and selected variable table.
  */
 export function ProjectEnvironmentsSkeleton() {
   return (
@@ -189,30 +182,23 @@ export function ProjectEnvironmentsSkeleton() {
         aria-live="polite"
       >
         <span className="sr-only">Loading environments…</span>
-        <div className={cn("flex min-w-0 flex-col", layoutGapClass)}>
-          <div className="flex min-w-0 flex-col gap-2">
-            <div className="min-w-0 overflow-hidden" aria-hidden>
-              <div className="flex w-max min-w-full items-end gap-1 border-border border-b">
-                <div className="flex h-9 min-h-9 w-fit shrink-0 items-center">
-                  {ENV_TAB_PLACEHOLDERS.map((w) => (
-                    <span
-                      key={w}
-                      className="flex h-9 shrink-0 items-center gap-1.5 px-2.5"
-                    >
-                      <AppIcon
-                        name="environment"
-                        className={cn(iconMutedClassName, "size-4")}
-                      />
-                      <Skeleton className={cn("h-3", w)} />
-                      <EnvironmentTabCountBadge />
-                    </span>
-                  ))}
-                </div>
-                <Skeleton className="size-8 shrink-0 rounded-md" />
-              </div>
+        <div className="flex min-w-0 flex-col gap-3">
+          <div className="rounded-xl border bg-card">
+            <div className="flex min-h-12 items-center justify-between px-4 py-3">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="size-4 rounded" />
             </div>
-            <div className="min-w-0">
+            <div className="border-t px-4 py-4">
+              <div className="mb-3 flex justify-end">
+                <Skeleton className="size-8 rounded-md" />
+              </div>
               <VariablesTableSkeleton />
+            </div>
+          </div>
+          <div className="rounded-xl border bg-card">
+            <div className="flex min-h-12 items-center justify-between px-4 py-3">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="size-4 rounded" />
             </div>
           </div>
         </div>

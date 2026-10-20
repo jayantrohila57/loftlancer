@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import DashboardSection from "@/components/section-dashboard";
-import { ActivitySummaryStats } from "@/domain/audit/components/activity-summary-stats";
 import AuditLogs from "@/domain/audit/components/audit-logs";
 import { TimelinePageClient } from "@/domain/timeline/components/timeline-page-client";
 import { isActionsAuditEnabledOnServer } from "@/lib/actions-audit-enabled";
@@ -20,7 +19,6 @@ export default async function ActivityPage() {
         title="My activity"
         description="Activity from your projects across organizations."
         back={false}
-        stats={<ActivitySummaryStats />}
       >
         <AuditLogs />
       </DashboardSection>
