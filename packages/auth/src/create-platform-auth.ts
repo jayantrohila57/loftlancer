@@ -26,6 +26,7 @@ import {
   getPlatformProductionOrigins,
   trimTrailingSlash,
 } from "./platform-urls";
+import { upstashRateLimitStorage } from "./rate-limit-storage";
 
 function buildMcpPlugins(): BetterAuthPlugin[] {
   if (process.env.PLATFORM_AUTH_ENABLE_MCP !== "1") {
@@ -90,6 +91,15 @@ export function createPlatformAuth() {
     session: sharedSessionConfig(),
     ...passwordDisabled,
     database: platformDatabaseConfig(),
+    rateLimit: {
+      enabled: env.NODE_ENV === "production",
+      window: 10,
+      max: 100,
+      customRules: {
+        "/sign-in/magic-link": { window: 60, max: 5 },
+      },
+      customStorage: upstashRateLimitStorage,
+    },
     trustedOrigins,
     socialProviders: socialProviders(),
     plugins: withNextCookies([

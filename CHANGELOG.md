@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- Auth rate limits, including magic-link requests, now use shared Upstash Redis across serverless instances and fail open when Redis is unavailable (#381).
+
 ## [1.14.6] - 2026-10-20
 
 ### Changed
