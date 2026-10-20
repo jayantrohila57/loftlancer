@@ -12,6 +12,7 @@ export function useProjectApps(slug: string) {
     project,
     projectId,
     isLoading: projectLoading,
+    status: projectStatus,
   } = useEnvironments(slug);
   const queryClient = useQueryClient();
   const listOptions = trpc.projectApps.list.queryOptions({
@@ -53,7 +54,8 @@ export function useProjectApps(slug: string) {
     apps,
     installed: apps.filter((a) => a.status === "active"),
     isLoading: projectLoading || (Boolean(projectId) && list.isPending),
-    isError: list.isError,
+    isError: projectStatus === "error" || list.isError,
+    refetch: () => list.refetch(),
     canManage: canInstall.allowed,
     install: (appId: string, name: string) =>
       actionToast(

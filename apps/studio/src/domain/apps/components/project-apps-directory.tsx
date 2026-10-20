@@ -1,8 +1,10 @@
 "use client";
 
+import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
+import { LayoutGrid } from "@/lib/icons";
 import { useProjectApps } from "../hooks/use-project-apps";
 import { AppCard } from "./app-card";
 
@@ -33,6 +35,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
     install,
     uninstall,
     isMutating,
+    refetch,
   } = useProjectApps(slug);
   return (
     <DashboardSection
@@ -47,7 +50,13 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
         <ErrorState
           title="Apps unavailable"
           description="We couldn't load apps for this project."
-          onRetry={() => window.location.reload()}
+          onRetry={() => void refetch()}
+        />
+      ) : apps.length === 0 ? (
+        <EmptyState
+          icon={LayoutGrid}
+          title="No apps available"
+          description="There are no apps available to add to this project."
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

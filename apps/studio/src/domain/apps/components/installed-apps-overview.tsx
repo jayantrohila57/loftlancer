@@ -19,7 +19,7 @@ export function InstalledAppsOverview({
   summaries?: Record<string, string>;
 }) {
   const org = useOrgSlug();
-  const { installed, isLoading, isError } = useProjectApps(slug);
+  const { installed, isLoading, isError, refetch } = useProjectApps(slug);
   if (isLoading) return <AppGridSkeleton count={1} />;
 
   if (isError) {
@@ -27,7 +27,7 @@ export function InstalledAppsOverview({
       <ErrorState
         title="Apps unavailable"
         description="We couldn't load the apps for this project."
-        onRetry={() => window.location.reload()}
+        onRetry={() => void refetch()}
       />
     );
   }
