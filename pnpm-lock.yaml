@@ -739,6 +739,9 @@ importers:
       '@loftlancer/env':
         specifier: workspace:*
         version: link:../env
+      '@loftlancer/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@loftlancer/notifications':
         specifier: workspace:*
         version: link:../notifications

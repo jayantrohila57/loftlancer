@@ -14,6 +14,7 @@ import {
   DEFAULT_AUTH_URL,
   getPlatformProductionOrigins,
 } from "./platform-urls";
+import { upstashRateLimitStorage } from "./rate-limit-storage";
 
 export type CreateSiblingAuthOptions = {
   /** Public origin of this app (`BETTER_AUTH_URL` for studio/account). */
@@ -49,6 +50,12 @@ export function createSiblingAuth(options: CreateSiblingAuthOptions) {
     session: sharedSessionConfig(),
     ...passwordDisabled,
     database: sharedDatabaseConfig(),
+    rateLimit: {
+      enabled: env.NODE_ENV === "production",
+      window: 10,
+      max: 100,
+      customStorage: upstashRateLimitStorage,
+    },
     trustedOrigins,
     plugins: withNextCookies([
       ...coreAuthPlugins(),

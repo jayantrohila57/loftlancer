@@ -16,6 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.14.7] - 2026-10-20
+
+### Added
+
+- Auth rate limits, including magic-link requests, now use shared Upstash Redis across serverless instances and fail open when Redis is unavailable (#381).
+
 ## [1.14.6] - 2026-10-20
 
 ### Changed
@@ -634,7 +640,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.6...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.7...HEAD
+[1.14.7]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.6...v1.14.7
 [1.14.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.5...v1.14.6
 [1.14.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.4...v1.14.5
 [1.14.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.3...v1.14.4
