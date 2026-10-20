@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Account notification settings now render the shared interactive accordion without a server error (#520).
+
 ### Changed
 
 - Notification date groups and account preferences now use the shared accordion; notification filters no longer show a summary count (#516).
