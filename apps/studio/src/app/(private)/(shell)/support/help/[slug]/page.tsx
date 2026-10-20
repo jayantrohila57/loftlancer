@@ -3,7 +3,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import DashboardSection from "@/components/section-dashboard";
-import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 
 export default function SupportHelpArticlePage() {
@@ -17,7 +16,7 @@ export default function SupportHelpArticlePage() {
   }
   if (article.isError || !article.data) {
     return (
-      <DashboardSection title="Article not found" back={routes.supportHelp()}>
+      <DashboardSection title="Article not found" back={false}>
         <p className="text-destructive text-sm">
           This article could not be loaded.
         </p>
@@ -29,7 +28,7 @@ export default function SupportHelpArticlePage() {
     <DashboardSection
       title={article.data.title}
       description={article.data.category}
-      back={routes.supportHelp()}
+      back={false}
     >
       <div className="whitespace-pre-wrap text-sm leading-relaxed">
         {article.data.body}

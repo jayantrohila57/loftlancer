@@ -64,6 +64,7 @@ export default function SupportTicketsPage() {
     <DashboardSection
       title="My tickets"
       description="Create and track support requests."
+      back={false}
       action={
         <Button render={<Link href={routes.supportNewTicket()} />}>
           New ticket

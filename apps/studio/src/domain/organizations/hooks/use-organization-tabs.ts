@@ -61,7 +61,7 @@ export function useOrganizationTabs(slug: string) {
       ? [
           {
             value: `${base}/settings`,
-            label: "Settings",
+            label: "Organization settings",
             href: `${base}/settings`,
           },
         ]
