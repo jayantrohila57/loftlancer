@@ -6,6 +6,14 @@ Use this workflow when applying the combined platform migration (`0007`) to **pr
 
 **Never run `db:reset-seed` against the production Neon default branch until you intend to wipe prod data.** Always validate on a Neon branch first.
 
+For local development, run `pnpm db:reset-seed` only against a disposable local
+database. The command requires both `RESET_CONFIRM=yes` and
+`KEEP_USER_EMAIL=<owner-email>`, verifies that the owner exists before purge,
+and preserves that user's account and login rows. This command does not detect
+schema changes automatically; run it deliberately after schema changes when a
+reset is appropriate. Never point it at production unless the separate
+backup, migration, and owner approval procedure below explicitly calls for it.
+
 ## Prerequisites
 
 - `RESET_CONFIRM=yes` and `KEEP_USER_EMAIL` set to the owner account that must keep Better Auth `user`, `account`, `session`, and `verification` rows.

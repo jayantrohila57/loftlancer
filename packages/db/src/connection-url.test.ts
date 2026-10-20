@@ -4,6 +4,7 @@ import { describe, it } from "node:test";
 import {
   normalizeDatabaseSslModeInUrl,
   resolveDatabaseConnectionString,
+  warnOnWeakDatabaseSslMode,
 } from "./connection-url";
 
 describe("normalizeDatabaseSslModeInUrl", () => {
@@ -59,5 +60,50 @@ describe("resolveDatabaseConnectionString", () => {
         process.env.DATABASE_URL_POOLED = previous;
       }
     }
+  });
+});
+
+describe("warnOnWeakDatabaseSslMode", () => {
+  it("warns for production Neon URLs without verify-full and omits credentials", () => {
+    const messages: Array<[string, Record<string, string>]> = [];
+    const warned = warnOnWeakDatabaseSslMode(
+      "postgresql://secret:password@ep-test.neon.tech/db",
+      "production",
+      (message, attrs) => messages.push([message, attrs]),
+    );
+    assert.equal(warned, true);
+    assert.deepEqual(messages[0]?.[1], {
+      host: "ep-test.neon.tech",
+      sslmode: "missing",
+    });
+    assert.equal(JSON.stringify(messages).includes("password"), false);
+  });
+
+  it("ignores local, non-Neon, and verify-full URLs", () => {
+    const warn = () => assert.fail("unexpected warning");
+    assert.equal(
+      warnOnWeakDatabaseSslMode(
+        "postgresql://localhost/db",
+        "production",
+        warn,
+      ),
+      false,
+    );
+    assert.equal(
+      warnOnWeakDatabaseSslMode(
+        "postgresql://ep-test.neon.tech/db?sslmode=verify-full",
+        "production",
+        warn,
+      ),
+      false,
+    );
+    assert.equal(
+      warnOnWeakDatabaseSslMode(
+        "postgresql://ep-test.neon.tech/db",
+        "development",
+        warn,
+      ),
+      false,
+    );
   });
 });

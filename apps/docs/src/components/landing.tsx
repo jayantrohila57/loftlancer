@@ -4,9 +4,9 @@ import { appRegistry } from "@loftlancer/actions/apps";
 import { buttonVariants } from "@loftlancer/ui/button";
 import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
 import { SignInOptions } from "@loftlancer/ui/patterns/sign-in-options";
-
 import { ModeToggle } from "@/components/mode-toggle";
 import { SiteFooter } from "@/components/site-footer";
+import { trackEvent } from "@/lib/analytics";
 
 export function Landing() {
   return (
@@ -23,7 +23,14 @@ export function Landing() {
         footer={<SiteFooter className="pt-2" />}
       >
         {/* Passwordless only (#373): GitHub, Google and an email magic link. */}
-        <SignInOptions />
+        <SignInOptions
+          onProviderClick={(provider) =>
+            trackEvent("sign_in_click", { method: provider })
+          }
+          onMagicLinkSubmit={() =>
+            trackEvent("sign_in_click", { method: "email" })
+          }
+        />
         <ul className="mt-4 flex flex-col divide-y divide-border/60 rounded-xl text-left ring-1 ring-border/60">
           {appRegistry.map((app) => (
             <li key={app.id} className="flex flex-col gap-0.5 px-3 py-2">

@@ -4,6 +4,12 @@
 
 Production was bootstrapped with **`drizzle-kit push`**, not `drizzle-kit migrate`. The `drizzle.__drizzle_migrations` table may be empty even when the live schema is current.
 
+The production DB client warns when a Neon `DATABASE_URL` does not explicitly
+use `sslmode=verify-full`. The runtime still normalizes legacy `require`,
+`prefer`, and `verify-ca` values to `verify-full`; use the explicit mode in
+deployment settings to keep configuration and driver behavior aligned. The
+warning logs only the database hostname and mode, never credentials.
+
 **Owner sign-off:** Jayant approved this path for production (manual `db:push` / reviewed SQL, no migrate on Vercel build). See [docs/PRODUCTION_DEPLOY.md](../../docs/PRODUCTION_DEPLOY.md#database-production-schema-path).
 
 **Do not add `db:migrate` to the deploy pipeline.** After pulling schema changes:

@@ -3,7 +3,10 @@ import { logger } from "@loftlancer/logger";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
-import { resolveDatabaseConnectionString } from "./connection-url";
+import {
+  resolveDatabaseConnectionString,
+  warnOnWeakDatabaseSslMode,
+} from "./connection-url";
 import * as schema from "./schema";
 
 /**
@@ -20,6 +23,9 @@ type DbGlobal = typeof globalThis & { __loftlancerPgPool?: Pool };
 const g = globalThis as DbGlobal;
 
 function createPool(): Pool {
+  warnOnWeakDatabaseSslMode(env.DATABASE_URL, env.NODE_ENV, (message, attrs) =>
+    logger.warn(message, attrs),
+  );
   const connectionString = resolveDatabaseConnectionString(
     env.DATABASE_URL,
     env.DATABASE_URL_POOLED,
