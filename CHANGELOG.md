@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Resource navigation frames now keep module actions and account diagnostics in their owning page content instead of repeating them across tabs (#494).
+
 ## [1.14.0] - 2026-10-20
 
 ### Added

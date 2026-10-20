@@ -14,7 +14,6 @@ import { useUnsavedChangesGuard } from "@loftlancer/ui/hooks/use-unsaved-changes
 import { Input } from "@loftlancer/ui/input";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { DiscardChangesDialog } from "@loftlancer/ui/patterns/discard-changes-dialog";
-import { PageHeaderActionsPortal } from "@loftlancer/ui/patterns/page-header";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
@@ -669,7 +668,7 @@ export function OrganizationSettingsForm({
           mode === "general" ||
           mode === "settings-hub") && (
           <SettingsTabsPanel value="general" className="min-w-0">
-            <PageHeaderActionsPortal>
+            <div className="mb-4 flex justify-end">
               <Button
                 type="button"
                 size="sm"
@@ -686,7 +685,7 @@ export function OrganizationSettingsForm({
                 <AppIcon name="edit" className="text-current" />
                 Edit organization
               </Button>
-            </PageHeaderActionsPortal>
+            </div>
             <SettingsPanel>
               <SettingsSectionHeader
                 title="Profile"
@@ -712,8 +711,8 @@ export function OrganizationSettingsForm({
         {(mode === "legacy-tabs" || mode === "members") && (
           <SettingsTabsPanel value="members" className="min-w-0 space-y-2">
             {mode === "members" && canInvite ? (
-              <PageHeaderActionsPortal>
-                <div className="flex items-center gap-2">
+              <div className="flex justify-end">
+                <div className="flex flex-wrap items-center gap-2">
                   {isOwner ? (
                     <Button
                       type="button"
@@ -736,7 +735,7 @@ export function OrganizationSettingsForm({
                     Invite member
                   </Button>
                 </div>
-              </PageHeaderActionsPortal>
+              </div>
             ) : null}
             <SettingsPanel>
               {mode !== "members" ? (

@@ -8,7 +8,6 @@ import { notFound, usePathname } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { useOrganizationIdentity } from "./organization-identity-context";
 
 export function TeamLayoutShell({
   slug,
@@ -20,7 +19,6 @@ export function TeamLayoutShell({
   children: React.ReactNode;
 }) {
   const teamsQuery = useQuery(trpc.teams.list.queryOptions());
-  const organization = useOrganizationIdentity();
   const team = teamsQuery.data?.items.find((item) => item.id === teamId);
   const pathname = usePathname() ?? "";
   const root = routes.team(slug, teamId);
@@ -42,11 +40,6 @@ export function TeamLayoutShell({
       back={{ href: routes.orgSection(slug, "teams"), label: "Teams" }}
       title={team.name}
       description="Team members and project access."
-      meta={
-        <span className="text-muted-foreground text-sm">
-          Team in {organization?.name ?? slug}
-        </span>
-      }
       tabs={[
         { href: root, label: "Overview", active: pathname === root },
         {

@@ -26,11 +26,16 @@ import { ProjectActionDialog } from "./project-action-dialog";
 interface ProjectActionsProps {
   project: ProjectOutput;
   onUpdate?: () => void;
+  onEdit?: () => void;
 }
 
 const menuIconClass = "me-2 text-foreground";
 
-export function ProjectActions({ project, onUpdate }: ProjectActionsProps) {
+export function ProjectActions({
+  project,
+  onUpdate,
+  onEdit,
+}: ProjectActionsProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -92,7 +97,8 @@ export function ProjectActions({ project, onUpdate }: ProjectActionsProps) {
             <MenuItem
               onClick={() => {
                 setMenuOpen(false);
-                setEditOpen(true);
+                if (onEdit) onEdit();
+                else setEditOpen(true);
               }}
             >
               <AppIcon name="edit" className={menuIconClass} />
@@ -212,12 +218,14 @@ export function ProjectActions({ project, onUpdate }: ProjectActionsProps) {
         </MenuPopup>
       </Menu>
 
-      <EditProjectSheet
-        project={project}
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        onSuccess={onUpdate}
-      />
+      {onEdit ? null : (
+        <EditProjectSheet
+          project={project}
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          onSuccess={onUpdate}
+        />
+      )}
 
       <ProjectActionDialog
         open={deleteDialogOpen}
