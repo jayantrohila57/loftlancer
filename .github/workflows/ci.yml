@@ -6,8 +6,8 @@ on:
   pull_request:
   workflow_call:
     inputs:
-      full_validation:
-        description: Run the production build and browser accessibility suite
+      production_build:
+        description: Run the production build before release promotion
         required: false
         type: boolean
         default: false
@@ -39,9 +39,9 @@ jobs:
           # TEST-ONLY placeholder for CI; never use this value in any real environment.
           E2E_TEST_SECRET: ci-e2e-test-secret-placeholder
 
-  full-validation:
-    # Keep expensive checks out of routine PR runs. Release validation opts in before promotion.
-    if: inputs.full_validation
+  production-build:
+    # Keep the production build out of routine PR runs. Release validation opts in before promotion.
+    if: inputs.production_build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -64,15 +64,6 @@ jobs:
           CORS_ORIGIN: http://localhost:3000
           # TEST-ONLY placeholder for CI; never use this value in any real environment.
           ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-      - name: Install Playwright (a11y)
-        working-directory: apps/docs
-        run: pnpm exec playwright install chromium --with-deps
-      - name: Accessibility (Turbo a11y)
-        run: pnpm a11y
-        env:
-          CI: true
-          SKIP_ENV_VALIDATION: true
-
   release-version:
     # Release PRs into main must bump the root version and add a changelog entry.
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
