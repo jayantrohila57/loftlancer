@@ -1,14 +1,23 @@
 "use client";
 
+import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
-import { ProjectDetailSkeleton } from "@/domain/environments/components/skeletons";
-import { ProjectDetailStats } from "@/domain/projects/components/project-detail-stats";
 import { ProjectSettingsSection } from "@/domain/projects/components/project-settings-section";
 import { trpc } from "@/utils/trpc";
+
+function ProjectSettingsSkeleton() {
+  return (
+    <div className="flex min-w-0 flex-col gap-4" role="status" aria-busy="true">
+      <SettingsPanelSkeleton rows={5} />
+      <SettingsPanelSkeleton rows={1} />
+      <SettingsPanelSkeleton rows={2} />
+    </div>
+  );
+}
 
 const EditProject = dynamic(
   () =>
@@ -16,7 +25,7 @@ const EditProject = dynamic(
       (mod) => mod.EditProject,
     ),
   {
-    loading: () => <ProjectDetailSkeleton />,
+    loading: () => <ProjectSettingsSkeleton />,
   },
 );
 
@@ -43,9 +52,8 @@ export default function EditProjectClient({ slug }: EditProjectClientProps) {
         description="Update project information and settings."
         back={false}
         hideTabs
-        stats={<ProjectDetailStats slug={slug} />}
       >
-        <ProjectDetailSkeleton />
+        <ProjectSettingsSkeleton />
       </DashboardSection>
     );
   }
@@ -77,7 +85,6 @@ export default function EditProjectClient({ slug }: EditProjectClientProps) {
       description="Update project information and settings."
       back={false}
       hideTabs
-      stats={<ProjectDetailStats slug={slug} />}
     >
       <div className="flex flex-col gap-4">
         <EditProject project={project} embedded />

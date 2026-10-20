@@ -114,11 +114,8 @@ export function PageHeaderTabs({
 
 export function PageHeader({
   title,
-  titleAccessory,
   description,
   action,
-  metadata,
-  meta,
   back = "auto",
   tabs,
   activeTab,
@@ -127,42 +124,37 @@ export function PageHeader({
   hideTabs,
 }: {
   title: string;
-  titleAccessory?: ReactNode;
   description?: string;
   action?: ReactNode;
-  /** @deprecated use `meta` */
-  metadata?: ReactNode;
-  /** Badges, links, key/value data under the title row. Height is fixed. */
-  meta?: ReactNode;
   back?: PageHeaderBackProp;
 } & PageHeaderTabsProps) {
   const pathname = usePathname() ?? "";
   const resolved = resolveBack(back, pathname);
   return (
-    <PageHeaderLayout
-      back={
-        <PageBackButton
-          href={resolved.href}
-          fallbackHref={resolved.fallbackHref}
-          useHistory={resolved.useHistory}
-        />
-      }
-      title={title}
-      titleAccessory={titleAccessory}
-      description={description}
-      actions={action}
-      meta={meta ?? metadata}
-      tabs={
-        hideTabs || !tabs?.length ? null : (
-          <PageHeaderTabs
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={onTabChange}
-            tabsEnd={tabsEnd}
+    <>
+      <PageHeaderLayout
+        back={
+          <PageBackButton
+            href={resolved.href}
+            fallbackHref={resolved.fallbackHref}
+            useHistory={resolved.useHistory}
           />
-        )
-      }
-    />
+        }
+        title={title}
+        description={description}
+        tabs={
+          hideTabs || !tabs?.length ? null : (
+            <PageHeaderTabs
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={onTabChange}
+              tabsEnd={tabsEnd}
+            />
+          )
+        }
+      />
+      {action ? <div className="flex justify-end">{action}</div> : null}
+    </>
   );
 }
 

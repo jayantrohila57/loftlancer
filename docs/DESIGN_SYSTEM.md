@@ -84,7 +84,7 @@ Do not copy `px-4`, `gap-4`, or `pt-4` into feature files unless you are extendi
 | `PageStack` | same | Vertical sections (`gap-2`) |
 | `PageHeaderBar` / `PageHeaderRow` | same | Sticky inset header; **same `p-2` + `h-12` row as `SidebarHeader` + team switcher** |
 | `PageHeader` | `components/layout/page-header.tsx` | In-page title row with optional inline back (`back="auto"` via `lib/page-back.ts`) |
-| `StatCard` / `StatCardRow` | `components/patterns/stat-card.tsx` | Compact metrics under page headers (`grid-cols-2 lg:grid-cols-4`, `gap-2`) |
+| `AccordionSection` | `components/patterns/accordion-section.tsx` | Consistent disclosure pattern for page subsections |
 | `PageTitleRow` | same | In-page title + action (`text-sm` title) |
 | `PageToolbar` | same | Filters / search above tables |
 | `FormSheet*` | `components/patterns/form-sheet.tsx` | Full-height inset sheets; header/footer/body share coss `px-6` |
@@ -93,7 +93,7 @@ Do not copy `px-4`, `gap-4`, or `pt-4` into feature files unless you are extendi
 
 ### Resource navigation frame
 
-`SettingsFrame` is the persistent navigation frame for an organization, project, team, or account. It contains the parent/back link, resource title, optional short description, and links to sibling pages. Keep page actions, filters, summary metadata, and forms in the selected page below the navigation. Do not add a third identity/metadata row or resource action menu to this frame. Omit tabs when the frame has no sibling destinations; do not show a lone `All` tab.
+`SettingsFrame` is the persistent navigation frame for an organization, project, team, or account. It contains the parent/back link, resource title, optional short description, and links to sibling pages. Keep the page title and short description in the page header, with page actions directly below its navigation. Keep page content and filters in the selected page. Do not add a third identity/metadata row or resource action menu to this frame. Omit tabs when the frame has no sibling destinations; do not show a lone `All` tab. Use `AccordionSection` for page subsections; do not add a second tab row inside a resource page. Dashboard pages do not show summary-stat cards.
 
 `Shell.Main` `variant="dashboard"` uses `layoutContentClass`. The private layout `PageHeaderBar` aligns with the sidebar org switcher row.
 
