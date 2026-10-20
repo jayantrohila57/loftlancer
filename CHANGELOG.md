@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Security
+
+- Sensitive authentication, permission, deletion, and secret actions always write audit events, even when optional audit logging is disabled (#357).
+
 ## [1.14.9] - 2026-10-20
 
 ### Fixed
