@@ -67,6 +67,7 @@ This matrix records the current route contract for the dashboard hierarchy work 
 - Organization routes are URL-scoped; the org layout guards membership and synchronizes the active org. The shell hides project links until org context is resolved.
 - Team shortcuts use `/teams/:teamId`; the legacy `?team=` form redirects to the team detail URL.
 - Breadcrumbs represent the scope chain. Back controls are omitted when they repeat a sibling/tab action; project-level and app-level parents are resolved by `ProjectLayoutShell`.
+- The project frame resolves its Back target through `getProjectFrameBackTarget`; tests cover project root, Apps, Environment/Task list and detail routes, app settings, project access, and the legacy Tasks URL. Account settings breadcrumbs start at the neutral Account settings index, and section Back returns there.
 - Notification destinations are event-specific: task events open task detail when the organization slug exists, invitations open acceptance or the owning organization, and ticket replies open ticket detail. Old task events without an org slug fall back to the notification inbox because their destination cannot be reconstructed safely.
 
 ## Data-flow findings and verification
