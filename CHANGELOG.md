@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Release validation no longer installs Playwright or runs browser accessibility tests; lint, route checks, typechecks, tests, and production builds remain (#512).
+
 ## [1.14.1] - 2026-10-20
 
 ### Changed

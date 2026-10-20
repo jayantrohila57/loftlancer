@@ -149,5 +149,5 @@ cd apps/web
 rg -n 'radix-ui|@radix-ui' --glob '!node_modules'   # expect no matches
 rg -n '\b(gap-6|md:p-6)\b' src/domain src/app --glob '!**/ui/**'   # expect no matches (use layout-spacing)
 pnpm build
-pnpm a11y   # from repo root: Turbo `a11y` in apps/docs (axe on docs landing)
+pnpm test
 ```
