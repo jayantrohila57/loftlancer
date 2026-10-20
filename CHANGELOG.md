@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Project Back links now follow tested route parents through Apps, Environments, Tasks, and app settings; page sections keep a single Back control (#493).
+
 ### Changed
 
 - Studio navigation groups organization destinations, teams, projects, and project apps by scope, with one canonical selected location (#492).
