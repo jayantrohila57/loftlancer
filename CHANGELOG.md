@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.15.0] - 2026-10-21
+
 ### Changed
 
 - Defined the management resource and access contracts and redirect legacy Environment and Task paths into canonical project Apps routes (#543, #544).
@@ -691,7 +693,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.11...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.0...HEAD
+[1.15.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.11...v1.15.0
 [1.14.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.10...v1.14.11
 [1.14.10]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.9...v1.14.10
 [1.14.9]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.8...v1.14.9
