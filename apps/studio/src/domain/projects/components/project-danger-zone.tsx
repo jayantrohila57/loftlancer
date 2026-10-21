@@ -3,12 +3,12 @@
 import type { ProjectOutput } from "@loftlancer/api/types";
 import { Button } from "@loftlancer/ui/button";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { SettingsRow } from "@/components/patterns/settings-layout";
 import { Can } from "@/domain/permissions/components/can";
 import { useProjectActions } from "../hooks/use-project-actions";
-import { ProjectActionDialog } from "./project-action-dialog";
 
 interface ProjectDangerZoneProps {
   project: ProjectOutput;
@@ -96,34 +96,34 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
         </SettingsRow>
       </AccordionSection>
 
-      <ProjectActionDialog
+      <ConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title="Delete project"
         description={`Are you sure you want to delete "${project.name}"? This action cannot be undone and will permanently delete all environments and variables associated with this project.`}
-        actionText="Delete project"
+        confirmLabel="Delete project"
         variant="destructive"
         onConfirm={deleteProject}
         confirmText={project.name}
         isPending={isDeleting}
       />
 
-      <ProjectActionDialog
+      <ConfirmDialog
         open={archiveDialogOpen}
         onOpenChange={setArchiveDialogOpen}
         title="Archive project"
         description={`Are you sure you want to archive "${project.name}"? Archived projects are hidden from the main view but can be restored later.`}
-        actionText="Archive project"
+        confirmLabel="Archive project"
         onConfirm={archiveProject}
         isPending={isArchiving}
       />
 
-      <ProjectActionDialog
+      <ConfirmDialog
         open={unarchiveDialogOpen}
         onOpenChange={setUnarchiveDialogOpen}
         title="Unarchive project"
         description={`Are you sure you want to unarchive "${project.name}"? This will make it visible in the main project view.`}
-        actionText="Unarchive project"
+        confirmLabel="Unarchive project"
         onConfirm={unarchiveProject}
         isPending={isUnarchiving}
       />
