@@ -24,6 +24,7 @@ export type OrgListItem = {
   id: string;
   name: string;
   slug: string;
+  logo?: string | null;
   metadata?: string | Record<string, unknown> | null;
   archivedAt?: Date | string | null;
 };

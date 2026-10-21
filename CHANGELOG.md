@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Added
 
 - Added a typed organization profile, owner-only private details, safe archive/restore lifecycle, and archived-write enforcement across tRPC, MCP, and Better Auth (#575).
+- Added owner-managed HTTPS organization logos and consistent logo previews in organization cards, lists, and switcher (#576).
 
 ## [1.16.0] - 2026-10-21
 

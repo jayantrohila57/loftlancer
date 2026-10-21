@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Card, CardHeader, CardPanel } from "@loftlancer/ui/card";
 import Link from "next/link";
 import type { OrgListItem } from "@/components/org/active-organization-context";
@@ -31,6 +31,7 @@ export function OrganizationCard({
       <CardHeader className="gap-2 p-4 pb-2">
         <div className="flex items-start gap-3">
           <Avatar className="size-9 shrink-0">
+            <AvatarImage src={org.logo ?? undefined} alt="" />
             <AvatarFallback className="bg-muted font-medium text-xs">
               {initialsFromLabel(org.name, "OR")}
             </AvatarFallback>
