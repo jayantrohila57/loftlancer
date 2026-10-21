@@ -1,3 +1,7 @@
+import * as React from "react";
+
+void React;
+
 import {
   Body,
   Container,
@@ -9,6 +13,9 @@ import {
   Text,
 } from "@react-email/components";
 import type { ReactNode } from "react";
+
+// Keep React available for test runners that use the classic JSX transform.
+void React;
 
 export const brand = {
   fg: "#0a0a0a",

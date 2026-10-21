@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Organization invitation emails now default to the verified `mail.loftlancer.com` sender and report skipped or failed delivery instead of silently succeeding (#358).
+
 ## [1.14.10] - 2026-10-20
 
 ### Security
