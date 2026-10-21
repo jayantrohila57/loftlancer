@@ -9,8 +9,9 @@ import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetClose, SheetDescription } from "@loftlancer/ui/sheet";
 import { Switch } from "@loftlancer/ui/switch";
 import { Textarea } from "@loftlancer/ui/textarea";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod/v3";
 import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
@@ -25,6 +26,7 @@ import {
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
 
 import { routes } from "@/utils/navigation";
+import { trpc } from "@/utils/trpc";
 import { useProjects } from "../hooks/use-projects";
 
 interface CreateProjectSheetProps {
@@ -40,6 +42,7 @@ export function CreateProjectSheet({
   const org = useCurrentOrgSlug() ?? "";
   const closeWithoutPromptRef = useRef<(() => void) | null>(null);
   const { createProject, isCreating } = useProjects();
+  const orgSettings = useQuery(trpc.organizations.getSettings.queryOptions());
 
   const form = useForm({
     resolver: zodResolver(createProjectInput),
@@ -54,6 +57,16 @@ export function CreateProjectSheet({
   });
 
   const descriptionLength = form.watch("description")?.length ?? 0;
+
+  useEffect(() => {
+    if (open && !form.formState.isDirty && orgSettings.data) {
+      form.setValue(
+        "isPublic",
+        orgSettings.data.defaultProjectVisibility === "public",
+        { shouldDirty: false },
+      );
+    }
+  }, [form, form.formState.isDirty, open, orgSettings.data]);
 
   const onSubmit = async (data: z.infer<typeof createProjectInput>) => {
     try {
