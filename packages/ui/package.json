@@ -24,6 +24,7 @@
       "default": "./src/components/ui/card.tsx"
     },
     "./layout-spacing": "./src/lib/layout-spacing.ts",
+    "./settings-tabs": "./src/lib/settings-tabs.ts",
     "./platform-urls": {
       "default": "./src/lib/platform-urls.ts"
     },
@@ -112,7 +113,7 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "node --import tsx --test src/lib/auth-links.test.ts src/lib/platform-urls.test.ts src/lib/page-header-grid-classes.test.ts src/lib/local-day.test.ts src/lib/format-date.test.ts src/lib/page-header-classes.test.ts src/patterns/activity-timeline.test.ts src/lib/page-header-description-measure.test.ts src/lib/studio-routes.test.ts"
+    "test": "node --import tsx --test src/lib/auth-links.test.ts src/lib/platform-urls.test.ts src/lib/page-header-grid-classes.test.ts src/lib/local-day.test.ts src/lib/format-date.test.ts src/lib/page-header-classes.test.ts src/patterns/activity-timeline.test.ts src/lib/page-header-description-measure.test.ts src/lib/studio-routes.test.ts src/lib/settings-tabs.test.ts"
   },
   "peerDependencies": {
     "next": "catalog:",

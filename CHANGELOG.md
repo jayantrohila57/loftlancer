@@ -27,6 +27,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Fixed
 
 - Studio navigation now highlights the active project through nested pages and keeps active favorites selected (#546).
+- Resource frames now resolve one active tab consistently, and project status changes use a form control rather than navigation tabs (#547).
 
 ## [1.14.11] - 2026-10-21
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import type React from "react";
 import type { ReactNode } from "react";
 import { formatDate } from "../lib/format-date";
@@ -10,6 +11,7 @@ import {
   pageHeaderTabsListClass,
   pageHeaderTabsRowClass,
 } from "../lib/page-header-classes";
+import { resolveSettingsTabHref } from "../lib/settings-tabs";
 import { cn } from "../lib/utils";
 import {
   PageHeaderBackLink,
@@ -130,6 +132,8 @@ export function SettingsFrame({
   LinkComponent = "a",
   children,
 }: SettingsFrameProps) {
+  const pathname = usePathname() ?? "";
+  const activeTabHref = resolveSettingsTabHref(pathname, tabs ?? []);
   return (
     <div data-testid="settings-frame" className="w-full min-w-0 space-y-6">
       <PageHeaderLayout
@@ -153,7 +157,7 @@ export function SettingsFrame({
                 ),
                 disabled: t.disabled,
               }))}
-              activeTab={tabs?.find((t) => t.active)?.href}
+              activeTab={activeTabHref}
             />
           )
         }
