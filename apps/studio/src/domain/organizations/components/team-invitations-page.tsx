@@ -47,6 +47,7 @@ export function TeamInvitationsPage({
     }),
     enabled: Boolean(organization?.id),
   });
+  const members = useQuery(trpc.organizations.listMembers.queryOptions());
   const refresh = () =>
     queryClient.invalidateQueries({
       queryKey: trpc.organizations.listInvitations.pathKey(),
@@ -59,8 +60,9 @@ export function TeamInvitationsPage({
         <div>
           <h2 className="font-semibold text-xl tracking-tight">Invitations</h2>
           <p className="mt-1 text-muted-foreground text-sm">
-            Invite people into this team. Accepting also joins them to the
-            organization as members.
+            Invite someone to join this organization and team. They join as a
+            team member and receive access through the team’s current project
+            links. Add existing organization members from the Members tab.
           </p>
         </div>
         <Can action="member.invite">
@@ -141,6 +143,7 @@ export function TeamInvitationsPage({
           pendingEmails={pendingOrganizationInvitations(invitations).map(
             (invite) => invite.email,
           )}
+          memberEmails={members.data?.items.map((member) => member.email) ?? []}
           onInvited={() => void refresh()}
         />
       ) : null}

@@ -7,6 +7,7 @@ import {
   member,
   organization,
 } from "@loftlancer/db/schema/organization";
+import { projectTeam } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
 import { team } from "@loftlancer/db/schema/team";
 import { TRPCError } from "@trpc/server";
@@ -57,6 +58,7 @@ export const organizationsRouter = router({
     .query(async ({ input }) => {
       const [row] = await db
         .select({
+          organizationId: invitation.organizationId,
           status: invitation.status,
           role: invitation.role,
           expiresAt: invitation.expiresAt,
@@ -69,24 +71,57 @@ export const organizationsRouter = router({
           projectName: project.name,
           projectSlug: project.slug,
           projectDeletedAt: project.deletedAt,
+          teamId: invitation.teamId,
+          teamName: team.name,
+          teamDeletedAt: team.deletedAt,
         })
         .from(invitation)
         .innerJoin(organization, eq(invitation.organizationId, organization.id))
         .leftJoin(user, eq(invitation.inviterId, user.id))
-        .leftJoin(project, eq(invitation.projectId, project.id))
+        .leftJoin(
+          project,
+          and(
+            eq(invitation.projectId, project.id),
+            eq(invitation.organizationId, project.organizationId),
+          ),
+        )
+        .leftJoin(
+          team,
+          and(
+            eq(invitation.teamId, team.id),
+            eq(invitation.organizationId, team.organizationId),
+          ),
+        )
         .where(eq(invitation.id, input.invitationId))
         .limit(1);
 
       if (!row) return { status: "not_found" as const };
+      const linkedProjects = row.teamId
+        ? await db
+            .select({ name: project.name, slug: project.slug })
+            .from(projectTeam)
+            .innerJoin(project, eq(projectTeam.projectId, project.id))
+            .where(
+              and(
+                eq(projectTeam.teamId, row.teamId),
+                eq(projectTeam.organizationId, row.organizationId),
+                isNull(projectTeam.deletedAt),
+                isNull(project.deletedAt),
+              ),
+            )
+            .orderBy(project.name)
+        : [];
       return {
         status:
-          row.projectId && row.projectDeletedAt
+          (row.projectId && row.projectDeletedAt) ||
+          (row.teamId && !row.teamName)
             ? ("unavailable" as const)
             : getPublicInvitationStatus({
                 status: row.status,
                 expiresAt: row.expiresAt,
                 deletedAt: row.invitationDeletedAt,
                 organizationDeletedAt: row.organizationDeletedAt,
+                teamDeletedAt: row.teamDeletedAt,
               }),
         organizationName: row.organizationName,
         organizationSlug: row.organizationSlug,
@@ -95,7 +130,34 @@ export const organizationsRouter = router({
         projectId: row.projectId,
         projectName: row.projectName,
         projectSlug: row.projectSlug,
+        teamId: row.teamId,
+        teamName: row.teamName,
+        invitedTeamRole: row.teamId ? ("member" as const) : null,
+        linkedProjects,
       };
+    }),
+
+  acceptTeamInvitation: protectedProcedure
+    .input(z.object({ invitationId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session.user.emailVerified) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Verify your email before accepting this invitation.",
+        });
+      }
+      const [row] = await db
+        .select({ teamId: invitation.teamId })
+        .from(invitation)
+        .where(eq(invitation.id, input.invitationId))
+        .limit(1);
+      if (!row?.teamId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Team invitation not found",
+        });
+      }
+      return mcpInvitationAccept(ctx.session.user.id, input.invitationId);
     }),
 
   acceptProjectInvitation: protectedProcedure
@@ -516,6 +578,7 @@ export const organizationsRouter = router({
             id: invitation.id,
             email: invitation.email,
             role: invitation.role,
+            teamName: team.name,
             status: invitation.status,
             createdAt: invitation.createdAt,
             expiresAt: invitation.expiresAt,
@@ -523,6 +586,7 @@ export const organizationsRouter = router({
           })
           .from(invitation)
           .leftJoin(user, eq(invitation.inviterId, user.id))
+          .leftJoin(team, eq(invitation.teamId, team.id))
           .where(where)
           .orderBy(desc(invitation.expiresAt))
           .limit(input.limit)
@@ -547,6 +611,29 @@ export const organizationsRouter = router({
         rejected: 0,
         canceled: 0,
       };
-      return { rows, counts: c, total: c[input.status] ?? 0 };
+      const linkedProjects = input.teamId
+        ? await db
+            .select({ name: project.name })
+            .from(projectTeam)
+            .innerJoin(project, eq(projectTeam.projectId, project.id))
+            .where(
+              and(
+                eq(projectTeam.teamId, input.teamId),
+                eq(projectTeam.organizationId, input.organizationId),
+                isNull(projectTeam.deletedAt),
+                isNull(project.deletedAt),
+              ),
+            )
+            .orderBy(project.name)
+        : [];
+      return {
+        rows: rows.map((row) => ({
+          ...row,
+          invitedTeamRole: input.teamId ? ("member" as const) : null,
+          linkedProjects: linkedProjects.map(({ name }) => name),
+        })),
+        counts: c,
+        total: c[input.status] ?? 0,
+      };
     }),
 });

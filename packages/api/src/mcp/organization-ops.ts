@@ -864,7 +864,7 @@ export async function mcpInvitationAccept(
         ),
       )
       .limit(1);
-    if (existingMember && !invite.projectId)
+    if (existingMember && !invite.projectId && !invite.teamId)
       throw new Error("organization_membership_already_exists");
 
     const memberId = existingMember?.id ?? crypto.randomUUID();
@@ -906,6 +906,7 @@ export async function mcpInvitationAccept(
           id: crypto.randomUUID(),
           teamId: invite.teamId,
           userId,
+          role: "member",
         });
         await tx
           .update(team)
@@ -1239,28 +1240,55 @@ export async function mcpTeamDelete(
   teamId: string,
 ) {
   await requireAction("team.delete", { userId, organizationId });
-  const [existing] = await db
-    .select({ id: team.id })
-    .from(team)
-    .where(
-      and(
-        eq(team.id, teamId),
-        eq(team.organizationId, organizationId),
-        isNull(team.deletedAt),
-      ),
-    )
-    .limit(1);
-  if (!existing) throw new Error("team_not_found");
-  if (isSoftDeletesEnabled()) {
-    await db
-      .update(team)
-      .set(softDeleteSet(userId))
-      .where(and(eq(team.id, teamId), eq(team.organizationId, organizationId)));
-  } else {
-    await db
-      .delete(team)
-      .where(and(eq(team.id, teamId), eq(team.organizationId, organizationId)));
-  }
+  await db.transaction(async (tx) => {
+    const [activeOrganization] = await tx
+      .select({ id: organization.id })
+      .from(organization)
+      .where(
+        and(
+          eq(organization.id, organizationId),
+          isNull(organization.deletedAt),
+        ),
+      )
+      .for("update");
+    if (!activeOrganization) throw new Error("organization_not_found");
+    const [existing] = await tx
+      .select({ id: team.id })
+      .from(team)
+      .where(
+        and(
+          eq(team.id, teamId),
+          eq(team.organizationId, organizationId),
+          isNull(team.deletedAt),
+        ),
+      )
+      .for("update");
+    if (!existing) throw new Error("team_not_found");
+    await tx
+      .update(invitation)
+      .set({ status: "canceled" })
+      .where(
+        and(
+          eq(invitation.organizationId, organizationId),
+          eq(invitation.teamId, teamId),
+          eq(invitation.status, "pending"),
+        ),
+      );
+    if (isSoftDeletesEnabled()) {
+      await tx
+        .update(team)
+        .set(softDeleteSet(userId))
+        .where(
+          and(eq(team.id, teamId), eq(team.organizationId, organizationId)),
+        );
+    } else {
+      await tx
+        .delete(team)
+        .where(
+          and(eq(team.id, teamId), eq(team.organizationId, organizationId)),
+        );
+    }
+  });
   await writeAuthAuditEvent({
     action: "team.delete",
     result: "success",
