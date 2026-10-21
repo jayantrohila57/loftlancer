@@ -1,6 +1,6 @@
-import { isActionsAuditEnabled, normalizeOrgRole } from "@loftlancer/actions";
 import { randomBytes, randomUUID } from "node:crypto";
 import { resolveTxt } from "node:dns/promises";
+import { isActionsAuditEnabled, normalizeOrgRole } from "@loftlancer/actions";
 import { sendOrganizationInvitationEmail } from "@loftlancer/auth/organization-invitation-email";
 import { activeMemberWhere, db } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
@@ -8,8 +8,8 @@ import {
   invitation,
   member,
   organization,
-  organizationProfile,
   organizationDomain,
+  organizationProfile,
   organizationSettings,
 } from "@loftlancer/db/schema/organization";
 import { projectTeam } from "@loftlancer/db/schema/project-access";
@@ -34,15 +34,36 @@ import {
   mcpMembersList,
 } from "../mcp/organization-ops";
 import { organizationBrandingLogoSchema } from "../organization-branding-validation";
+import {
+  domainChallengeMatches,
+  hashDomainChallenge,
+  normalizeOrganizationEmailDomain,
+} from "../organization-domain-verification";
 import { transferOrganizationOwnership } from "../organization-ownership";
 import { organizationProfilePatchSchema } from "../organization-profile-validation";
-import { domainChallengeMatches, hashDomainChallenge, normalizeOrganizationEmailDomain } from "../organization-domain-verification";
-
-async function requireOrganizationOwner(userId: string, organizationId: string) {
-  const [membership] = await db.select({ role: member.role }).from(member).where(and(eq(member.organizationId, organizationId), eq(member.userId, userId), isNull(member.deletedAt))).limit(1);
-  if (normalizeOrgRole(membership?.role) !== "owner") throw new TRPCError({ code: "FORBIDDEN", message: "Only organization owners can manage domains." });
-}
 import { organizationSettingsPatchSchema } from "../organization-settings-validation";
+
+async function requireOrganizationOwner(
+  userId: string,
+  organizationId: string,
+) {
+  const [membership] = await db
+    .select({ role: member.role })
+    .from(member)
+    .where(
+      and(
+        eq(member.organizationId, organizationId),
+        eq(member.userId, userId),
+        isNull(member.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (normalizeOrgRole(membership?.role) !== "owner")
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Only organization owners can manage domains.",
+    });
+}
 
 export const organizationsRouter = router({
   transferOwnership: orgProcedure
@@ -486,7 +507,6 @@ export const organizationsRouter = router({
         .innerJoin(member, eq(member.organizationId, organization.id))
         .leftJoin(
           organizationProfile,
-  organizationDomain,
           eq(organizationProfile.organizationId, organization.id),
         )
         .where(
@@ -568,7 +588,6 @@ export const organizationsRouter = router({
         .from(organization)
         .leftJoin(
           organizationProfile,
-  organizationDomain,
           eq(organizationProfile.organizationId, organization.id),
         )
         .where(
