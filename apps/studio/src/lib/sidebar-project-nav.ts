@@ -1,4 +1,5 @@
 import type { ProjectOutput } from "@loftlancer/api/types";
+import { routes } from "@loftlancer/ui/studio-routes";
 
 /** Slugs that must never appear as sidebar project shortcuts (route collisions). */
 export const SIDEBAR_PROJECT_SLUG_BLOCKLIST = new Set([
@@ -14,6 +15,19 @@ export function isSidebarProjectNavItem(project: ProjectOutput): boolean {
   const slug = project.slug?.trim().toLowerCase();
   if (!slug) return false;
   return !SIDEBAR_PROJECT_SLUG_BLOCKLIST.has(slug);
+}
+
+export function isSidebarProjectRouteActive(
+  pathname: string,
+  organizationSlug: string,
+  projectSlug: string,
+): boolean {
+  const href = routes.project(organizationSlug, projectSlug);
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+export function isSidebarRouteActive(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 export function sortProjectsByUpdated(projects: ProjectOutput[]) {

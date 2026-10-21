@@ -26,7 +26,10 @@ import { AppIcon } from "@/components/patterns/app-icon";
 import { SidebarProjectApps } from "@/components/sidebar-project-apps";
 import { initialsFromLabel } from "@/lib/initials";
 import { prefetchProjectDetail } from "@/lib/prefetch-project-detail";
-import { selectSidebarProjects } from "@/lib/sidebar-project-nav";
+import {
+  isSidebarProjectRouteActive,
+  selectSidebarProjects,
+} from "@/lib/sidebar-project-nav";
 import { cn } from "@/lib/utils";
 import { routes } from "@/utils/navigation";
 
@@ -42,11 +45,6 @@ function readStoredBoolean(key: string, defaultValue: boolean) {
   if (raw === "0") return false;
   if (raw === "1") return true;
   return defaultValue;
-}
-
-function projectPathActive(pathname: string, org: string, slug: string) {
-  const href = routes.project(org, slug);
-  return pathname === href;
 }
 
 export function SidebarProjectsGroup({
@@ -108,6 +106,12 @@ export function SidebarProjectsGroup({
       window.localStorage.setItem(PROJECTS_LIST_EXPANDED_KEY, open ? "1" : "0");
     }
   };
+
+  useEffect(() => {
+    if (!activeSlug) return;
+    setGroupOpen(true);
+    window.localStorage.setItem(PROJECTS_GROUP_OPEN_KEY, "1");
+  }, [activeSlug]);
 
   if (!org) return null;
 
@@ -184,7 +188,7 @@ export function SidebarProjectsGroup({
                   <Fragment key={project.id}>
                     <SidebarMenuItem>
                       <SidebarMenuButton
-                        isActive={projectPathActive(
+                        isActive={isSidebarProjectRouteActive(
                           pathname,
                           org,
                           project.slug,

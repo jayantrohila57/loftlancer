@@ -24,6 +24,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 - Permission checks and client snapshots now reject inactive organizations and cross-organization project IDs consistently (#545).
 
+### Fixed
+
+- Studio navigation now highlights the active project through nested pages and keeps active favorites selected (#546).
+
 ## [1.14.11] - 2026-10-21
 
 ### Fixed

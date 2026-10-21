@@ -52,6 +52,7 @@ import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { withBasePath } from "@/lib/base-path";
 import { isNotificationsEnabledOnClient } from "@/lib/notifications-enabled";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
+import { isSidebarRouteActive } from "@/lib/sidebar-project-nav";
 import { platformNavHref, routes } from "@/utils/navigation";
 import { useRouteScope } from "@/utils/use-route-scope";
 
@@ -262,7 +263,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {orgSlug ? (
           <SidebarFavorites
             items={nav.favorites}
-            isActive={() => false}
+            isActive={(href) => isSidebarRouteActive(pathname, href)}
             LinkComponent={({ href, className, children }) => (
               <Link href={href as Route} className={className}>
                 {children}

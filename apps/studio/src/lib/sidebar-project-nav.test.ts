@@ -5,6 +5,8 @@ import type { ProjectOutput } from "@loftlancer/api/types";
 
 import {
   isSidebarProjectNavItem,
+  isSidebarProjectRouteActive,
+  isSidebarRouteActive,
   SIDEBAR_PROJECT_SLUG_BLOCKLIST,
   selectSidebarProjects,
 } from "./sidebar-project-nav";
@@ -41,6 +43,34 @@ describe("isSidebarProjectNavItem", () => {
         false,
       );
     }
+  });
+});
+
+describe("sidebar route active state", () => {
+  it("keeps the parent project selected on its management and app pages", () => {
+    assert.equal(
+      isSidebarProjectRouteActive(
+        "/acme/website/apps/env/staging",
+        "acme",
+        "website",
+      ),
+      true,
+    );
+    assert.equal(
+      isSidebarProjectRouteActive("/acme/websites", "acme", "website"),
+      false,
+    );
+  });
+
+  it("keeps a favorite selected on nested project routes only", () => {
+    assert.equal(
+      isSidebarRouteActive("/acme/website/settings", "/acme/website"),
+      true,
+    );
+    assert.equal(
+      isSidebarRouteActive("/acme/websites", "/acme/website"),
+      false,
+    );
   });
 });
 
