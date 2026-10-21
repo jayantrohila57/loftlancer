@@ -7,6 +7,7 @@ import { OrganizationLifecycleSection } from "./organization-lifecycle-section";
 import { OrganizationPreferencesEditor } from "./organization-preferences-editor";
 import { OrganizationProfileEditor } from "./organization-profile-editor";
 import { OrganizationSectionPage } from "./organization-section-page";
+import { OrganizationSecurityDomains } from "./organization-security-domains";
 import { OrganizationSettingsForm } from "./organization-settings-form";
 
 export function OrganizationSettingsPage({ slug }: { slug: string }) {
@@ -35,6 +36,7 @@ export function OrganizationSettingsPage({ slug }: { slug: string }) {
             <OrganizationBrandingEditor />
             <OrganizationProfileEditor />
             <OrganizationPreferencesEditor />
+            <OrganizationSecurityDomains />
             <OrganizationLifecycleSection />
           </>
         )}

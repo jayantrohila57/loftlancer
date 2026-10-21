@@ -148,6 +148,48 @@ export const organizationEntitlement = pgTable(
   ],
 );
 
+export const organizationDomain = pgTable(
+  "organization_domain",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    hostname: text("hostname").notNull(),
+    purpose: text("purpose").notNull().default("email"),
+    state: text("state").notNull().default("pending"),
+    verificationTokenHash: text("verification_token_hash").notNull(),
+    challengeExpiresAt: timestamp("challenge_expires_at", {
+      withTimezone: true,
+    }).notNull(),
+    verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdBy: text("created_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("organization_domain_org_idx").on(
+      table.organizationId,
+      table.createdAt,
+    ),
+    uniqueIndex("organization_domain_active_hostname_uidx")
+      .on(table.hostname, table.purpose)
+      .where(sql`${table.state} IN ('pending', 'verified', 'active')`),
+    check(
+      "organization_domain_purpose_check",
+      sql`${table.purpose} IN ('email', 'workspace')`,
+    ),
+    check(
+      "organization_domain_state_check",
+      sql`${table.state} IN ('pending', 'verified', 'active', 'failed', 'revoked')`,
+    ),
+  ],
+);
+
 export const member = pgTable(
   "member",
   {
