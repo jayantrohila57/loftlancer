@@ -1,1 +1,1 @@
-export { default, generateMetadata } from "../../../env/[envSlug]/page";
+export { default, metadata } from "../page";

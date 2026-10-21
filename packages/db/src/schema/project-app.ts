@@ -25,7 +25,7 @@ export const projectApp = pgTable(
       .references(() => project.id, { onDelete: "cascade" }),
     appId: text("app_id").notNull(),
     appVersion: integer("app_version").notNull().default(1),
-    /** active | uninstalled */
+    /** active | uninstalled | purged */
     status: text("status").notNull().default("active"),
     settings: jsonb("settings").notNull().default(sql`'{}'::jsonb`),
     installedBy: text("installed_by").references(() => user.id, {

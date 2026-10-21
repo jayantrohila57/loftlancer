@@ -2,10 +2,11 @@
 
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
@@ -16,9 +17,6 @@ import { LayoutGrid } from "@/lib/icons";
 import { trpc } from "@/utils/trpc";
 import { useProjectApps } from "../hooks/use-project-apps";
 import { AppGlyph } from "./app-glyph";
-
-const cardClass =
-  "flex flex-col gap-3 rounded-xl bg-card p-4 ring-1 ring-border/60";
 
 /** /[org]/[project]/[app]/settings — details, real manifest settings, uninstall (#258). */
 export function AppSettingsPage({
@@ -58,8 +56,9 @@ export function AppSettingsPage({
     return (
       <DashboardSection title="App settings" back={false} hideTabs>
         <div className="flex flex-col gap-4" role="status" aria-busy="true">
-          <Skeleton className="h-32 rounded-xl" />
-          <Skeleton className="h-40 rounded-xl" />
+          <AccordionSectionSkeleton rows={3} />
+          <AccordionSectionSkeleton rows={3} />
+          <AccordionSectionSkeleton rows={2} />
         </div>
       </DashboardSection>
     );
@@ -112,7 +111,10 @@ export function AppSettingsPage({
       hideTabs
     >
       <div className="flex max-w-3xl flex-col gap-4">
-        <section className={cardClass}>
+        <AccordionSection
+          title="App access and data"
+          description="Review what this app can do and what it stores in this project."
+        >
           <div className="flex items-center gap-3">
             <AppGlyph icon={app.icon} />
             <div className="min-w-0 flex-1">
@@ -151,10 +153,12 @@ export function AppSettingsPage({
               </ul>
             </div>
           </div>
-        </section>
+        </AccordionSection>
 
-        <section className={cardClass}>
-          <h2 className="font-medium text-sm">Settings</h2>
+        <AccordionSection
+          title="App settings"
+          description="Configure how this app works in this project."
+        >
           {app.settingsSchema.length === 0 ? (
             <p className="text-muted-foreground text-xs">
               {app.name} has no settings.
@@ -230,10 +234,13 @@ export function AppSettingsPage({
               )}
             </>
           )}
-        </section>
+        </AccordionSection>
 
         {canManage ? (
-          <section className={`${cardClass} ring-destructive/30`}>
+          <AccordionSection
+            title={`Uninstall ${app.name}`}
+            description="Remove the app from this project and review its data retention."
+          >
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="font-medium text-sm">Uninstall {app.name}</h2>
@@ -251,7 +258,7 @@ export function AppSettingsPage({
                 Uninstall
               </Button>
             </div>
-          </section>
+          </AccordionSection>
         ) : null}
       </div>
       <ConfirmDialog
