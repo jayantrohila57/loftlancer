@@ -214,10 +214,19 @@ export const member = pgTable(
       onDelete: "set null",
     }),
     suspensionReason: text("suspension_reason"),
+    removalReason: text("removal_reason"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+    updatedBy: text("updated_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
     ...softDeleteColumns,
   },
   (table) => [
+    check(
+      "member_removal_reason_length_check",
+      sql`${table.removalReason} IS NULL OR length(${table.removalReason}) <= 250`,
+    ),
     check(
       "member_suspension_reason_length_check",
       sql`${table.suspensionReason} IS NULL OR length(${table.suspensionReason}) <= 250`,

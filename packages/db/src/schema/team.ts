@@ -16,18 +16,34 @@ export const team = pgTable(
   {
     id: text("id").primaryKey(),
     name: text("name").notNull(),
+    description: text("description"),
+    purpose: text("purpose"),
     memberCount: integer("member_count").default(0).notNull(),
     organizationId: text("organization_id")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    createdBy: text("created_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
     updatedAt: timestamp("updated_at"),
+    updatedBy: text("updated_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
     deletedBy: text("deleted_by").references(() => user.id, {
       onDelete: "set null",
     }),
   },
   (table) => [
+    check(
+      "team_description_length_check",
+      sql`${table.description} IS NULL OR length(${table.description}) <= 500`,
+    ),
+    check(
+      "team_purpose_length_check",
+      sql`${table.purpose} IS NULL OR length(${table.purpose}) <= 250`,
+    ),
     index("team_organization_id_idx").on(table.organizationId),
     uniqueIndex("team_id_organization_id_uidx").on(
       table.id,
@@ -49,6 +65,13 @@ export const teamMember = pgTable(
     membershipKey: text("membership_key").unique(),
     role: text("role").default("member").notNull(),
     createdAt: timestamp("created_at").defaultNow(),
+    addedBy: text("added_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+    updatedBy: text("updated_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
   },
   (table) => [
     check("team_member_role_check", sql`${table.role} in ('lead', 'member')`),
