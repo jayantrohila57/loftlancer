@@ -52,6 +52,27 @@ organization membership; a role is a named capability set; a grant is an
 explicit resource capability; a team link is a relationship that may provide
 project access. These terms must not be used interchangeably.
 
+### Organization identity and profile
+
+`organization` remains the Better Auth identity source for `id`, `name`,
+`slug`, `logo`, and existing metadata markers. It also owns lifecycle dates and
+creator/updater attribution. Lifecycle is derived from timestamps: active has
+no `archived_at` or `deleted_at`; archived has `archived_at`; deleted remains
+the existing soft-delete state. Archive is reversible and preserves members,
+projects, teams, apps, and their data. Archived organizations stay visible to
+their members; owners can restore them. Shared server action evaluation and
+Better Auth hooks deny writes while archived, with restoration as the allowed
+recovery operation.
+
+Optional company and contact values live in the one-to-one `organization_profile`
+table. Public identity is limited to description, website, industry, and size.
+Legal name, contact channels, and postal address are owner-only in settings and
+are excluded from public/profile read models. Omitted patch keys preserve data;
+explicit `null` clears a value. Country codes use two-letter uppercase ISO
+codes, size values use `1-10`, `11-50`, `51-200`, `201-1000`, or `1001+`, and
+URLs allow only HTTP(S). Name, slug, and logo are not duplicated in this table.
+Existing organizations need no profile row or mandatory field values.
+
 ## Effective access policy (current behavior)
 
 The complete per-action registry scope, eligible org roles, required grant, and

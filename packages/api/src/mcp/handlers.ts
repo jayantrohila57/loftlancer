@@ -1,6 +1,10 @@
 import type { ActionName } from "@loftlancer/actions";
 import { z } from "zod/v3";
 import {
+  organizationProfileFieldsSchema,
+  safeHttpUrlSchema,
+} from "../organization-profile-validation";
+import {
   bulkImportVariablesInput,
   changeProjectStatusInput,
   createEnvironmentInput,
@@ -121,7 +125,7 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
   "organization.update": {
     schema: orgFields.extend({
       name: z.string().min(1).optional(),
-      logo: z.string().nullable().optional(),
+      logo: safeHttpUrlSchema.nullable().optional(),
     }),
     run: async (input, ctx) => {
       const organizationId = await resolveOrgFromInput(
@@ -182,31 +186,70 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
       withOrgCaller(
         ctx.userId,
         input as { organizationId?: string; organizationSlug?: string },
-        (caller) => caller.dashboard.getOrgSettingsStats(),
+        (caller) => caller.organizations.getProfile(),
       ),
   },
   "organization.settings.update": {
     schema: orgFields.extend({
       name: z.string().min(1).optional(),
-      logo: z.string().nullable().optional(),
+      logo: safeHttpUrlSchema.nullable().optional(),
+      ...organizationProfileFieldsSchema.shape,
     }),
     run: async (input, ctx) => {
-      const organizationId = await resolveOrgFromInput(
+      const { name, logo, ...profile } = input as Record<string, unknown> & {
+        name?: string;
+        logo?: string | null;
+        organizationId?: string;
+        organizationSlug?: string;
+      };
+      const result = await withOrgCaller(
         ctx.userId,
-        input as {
-          organizationId?: string;
-          organizationSlug?: string;
+        input as { organizationId?: string; organizationSlug?: string },
+        async (caller, organizationId) => {
+          if (name !== undefined || logo !== undefined) {
+            await mcpOrganizationUpdate(
+              ctx.userId,
+              organizationId,
+              { name, logo },
+              "organization.settings.update",
+            );
+          }
+          const patch = Object.fromEntries(
+            Object.entries(profile).filter(
+              ([key]) => key !== "organizationId" && key !== "organizationSlug",
+            ),
+          );
+          if (Object.keys(patch).length)
+            await caller.organizations.updateProfile(patch as never);
+          if (
+            name === undefined &&
+            logo === undefined &&
+            !Object.keys(patch).length
+          )
+            throw new Error("organization_profile_patch_required");
+          return { success: true };
         },
       );
-      if (!organizationId) throw new Error("organization_required");
-      const { name, logo } = input as { name?: string; logo?: string | null };
-      return mcpOrganizationUpdate(
-        ctx.userId,
-        organizationId,
-        { name, logo },
-        "organization.settings.update",
-      );
+      return result;
     },
+  },
+  "organization.archive": {
+    schema: orgRef,
+    run: async (input, ctx) =>
+      withOrgCaller(
+        ctx.userId,
+        input as { organizationId?: string; organizationSlug?: string },
+        (caller) => caller.organizations.archive(),
+      ),
+  },
+  "organization.unarchive": {
+    schema: orgRef,
+    run: async (input, ctx) =>
+      withOrgCaller(
+        ctx.userId,
+        input as { organizationId?: string; organizationSlug?: string },
+        (caller) => caller.organizations.unarchive(),
+      ),
   },
   "member.list": {
     schema: orgRef,

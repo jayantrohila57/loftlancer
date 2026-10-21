@@ -56,7 +56,11 @@ export function createOrganizationsTableColumns(
       id: "status",
       header: "Status",
       cell: ({ row }) =>
-        row.original.id === activeOrganizationId ? "Active" : "—",
+        row.original.archivedAt
+          ? "Archived"
+          : row.original.id === activeOrganizationId
+            ? "Active"
+            : "—",
     }),
     columnHelper.display({
       id: "actions",

@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- Added a typed organization profile, owner-only private details, safe archive/restore lifecycle, and archived-write enforcement across tRPC, MCP, and Better Auth (#575).
+
 ## [1.16.0] - 2026-10-21
 
 ### Added

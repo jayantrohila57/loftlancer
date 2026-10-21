@@ -162,6 +162,38 @@ function assertOrgSlugAllowed(slug: string | undefined) {
   }
 }
 
+async function assertOrganizationNotArchived(organizationId: string) {
+  const [row] = await db
+    .select({ archivedAt: organizationSchema.organization.archivedAt })
+    .from(organizationSchema.organization)
+    .where(eq(organizationSchema.organization.id, organizationId))
+    .limit(1);
+  if (row?.archivedAt) {
+    throw new APIError("FORBIDDEN", {
+      message:
+        "This organization is archived. Restore it before making changes.",
+    });
+  }
+}
+
+function assertOrganizationLogoUrl(logo: unknown) {
+  if (logo === undefined || logo === null) return;
+  let parsed: URL;
+  try {
+    if (typeof logo !== "string" || logo.length > 2048) throw new Error();
+    parsed = new URL(logo);
+  } catch {
+    throw new APIError("BAD_REQUEST", {
+      message: "Use a valid HTTP or HTTPS organization logo URL.",
+    });
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+    throw new APIError("BAD_REQUEST", {
+      message: "Use a valid HTTP or HTTPS organization logo URL.",
+    });
+  }
+}
+
 export function organizationPlugin() {
   if (!isOrganizationsEnabled()) {
     return [];
@@ -190,6 +222,7 @@ export function organizationPlugin() {
       },
       organizationHooks: {
         beforeAcceptInvitation: async ({ invitation: invite }) => {
+          await assertOrganizationNotArchived(invite.organizationId);
           const [scope] = await db
             .select({
               projectId: organizationSchema.invitation.projectId,
@@ -209,15 +242,52 @@ export function organizationPlugin() {
         beforeCreateOrganization: async ({ organization: org }) => {
           assertOrgSlugAllowed(org.slug);
         },
-        beforeUpdateOrganization: async ({ organization: updates }) => {
+        beforeUpdateOrganization: async ({ organization: updates, member }) => {
+          await assertOrganizationNotArchived(member.organizationId);
+          assertOrganizationLogoUrl(updates.logo);
           if (typeof updates.slug === "string") {
             assertOrgSlugAllowed(updates.slug);
           }
+        },
+        beforeAddMember: async ({ member: membership }) => {
+          await assertOrganizationNotArchived(membership.organizationId);
+        },
+        beforeRemoveMember: async ({ member: membership }) => {
+          await assertOrganizationNotArchived(membership.organizationId);
+        },
+        beforeUpdateMemberRole: async ({ member: membership }) => {
+          await assertOrganizationNotArchived(membership.organizationId);
+        },
+        beforeCreateInvitation: async ({ invitation: invite }) => {
+          await assertOrganizationNotArchived(invite.organizationId);
+        },
+        beforeCreateTeam: async ({ team }) => {
+          await assertOrganizationNotArchived(team.organizationId);
+        },
+        beforeUpdateTeam: async ({ organization: org }) => {
+          await assertOrganizationNotArchived(org.id);
+        },
+        beforeDeleteTeam: async ({ organization: org }) => {
+          await assertOrganizationNotArchived(org.id);
+        },
+        beforeAddTeamMember: async ({ organization: org }) => {
+          await assertOrganizationNotArchived(org.id);
+        },
+        beforeRemoveTeamMember: async ({ organization: org }) => {
+          await assertOrganizationNotArchived(org.id);
         },
         beforeDeleteOrganization: async ({ organization: org, user }) => {
           await assertOrganizationCanBeDeleted(org, user.id);
         },
         afterCreateOrganization: async ({ organization: org, user }) => {
+          await db
+            .update(organizationSchema.organization)
+            .set({
+              createdBy: user.id,
+              updatedBy: user.id,
+              updatedAt: new Date(),
+            })
+            .where(eq(organizationSchema.organization.id, org.id));
           await writeAuthAuditEvent({
             action: "organization.create",
             result: "success",
@@ -230,6 +300,10 @@ export function organizationPlugin() {
         },
         afterUpdateOrganization: async ({ organization: org, user }) => {
           if (!org) return;
+          await db
+            .update(organizationSchema.organization)
+            .set({ updatedBy: user.id, updatedAt: new Date() })
+            .where(eq(organizationSchema.organization.id, org.id));
           await writeAuthAuditEvent({
             action: "organization.update",
             result: "success",

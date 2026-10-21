@@ -125,6 +125,9 @@ describe("roleCapability", () => {
       roleCapability("organization.settings.update", "member"),
       "no",
     );
+    assert.equal(roleCapability("organization.archive", "owner"), "yes");
+    assert.equal(roleCapability("organization.archive", "manager"), "no");
+    assert.equal(roleCapability("organization.unarchive", "owner"), "yes");
     assert.equal(roleCapability("member.invite", "manager"), "yes");
     assert.equal(roleCapability("variable.reveal", "owner"), "yes");
     assert.notEqual(roleCapability("variable.reveal", "member"), "yes");
