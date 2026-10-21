@@ -26,6 +26,24 @@ const projectDescriptionSchema = z
   .string()
   .max(500, "Description must be 500 characters or fewer")
   .optional();
+const projectPurposeSchema = z.string().trim().max(500).optional();
+const projectDocumentationUrlSchema = z
+  .string()
+  .url("Enter a valid documentation URL")
+  .max(2048)
+  .optional()
+  .or(z.literal(""));
+const projectDateSchema = z
+  .string()
+  .refine((value) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const parsed = new Date(`${value}T00:00:00.000Z`);
+    return (
+      !Number.isNaN(parsed.getTime()) &&
+      parsed.toISOString().slice(0, 10) === value
+    );
+  }, "Enter a valid date")
+  .optional();
 
 // Project schemas
 export const createProjectInput = z.object({
@@ -35,6 +53,10 @@ export const createProjectInput = z.object({
     .min(1, "Project name is required")
     .max(100, "Project name must be 100 characters or fewer"),
   description: projectDescriptionSchema,
+  purpose: projectPurposeSchema,
+  documentationUrl: projectDocumentationUrlSchema,
+  startDate: projectDateSchema,
+  targetDate: projectDateSchema,
   repositoryUrl: z.string().url().optional().or(z.literal("")),
   websiteUrl: z.string().url().optional().or(z.literal("")),
   isPublic: z.boolean().default(false),
@@ -49,6 +71,10 @@ export const updateProjectInput = z.object({
     .max(100, "Project name must be 100 characters or fewer")
     .optional(),
   description: projectDescriptionSchema,
+  purpose: projectPurposeSchema.nullable(),
+  documentationUrl: projectDocumentationUrlSchema.nullable(),
+  startDate: projectDateSchema.nullable(),
+  targetDate: projectDateSchema.nullable(),
   repositoryUrl: z.string().url().optional().or(z.literal("")),
   websiteUrl: z.string().url().optional().or(z.literal("")),
   isPublic: z.boolean().optional(),
@@ -76,6 +102,11 @@ export const projectOutput = z.object({
   name: z.string(),
   slug: z.string(),
   description: z.string().nullable(),
+  purpose: z.string().nullable(),
+  documentationUrl: z.string().nullable(),
+  startDate: z.string().nullable(),
+  targetDate: z.string().nullable(),
+  updatedBy: z.string().nullable(),
   isArchived: z.boolean(),
   isPublic: z.boolean(),
   repositoryUrl: z.string().nullable(),

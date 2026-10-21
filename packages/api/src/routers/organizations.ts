@@ -35,6 +35,7 @@ import { getPublicInvitationStatus } from "../invitation-preview";
 import {
   mcpInvitationAccept,
   mcpMemberInvite,
+  mcpMemberRemove,
   mcpMembersList,
 } from "../mcp/organization-ops";
 import { organizationBrandingLogoSchema } from "../organization-branding-validation";
@@ -104,6 +105,8 @@ export const organizationsRouter = router({
         .set({
           jobTitle: input.jobTitle || null,
           department: input.department || null,
+          updatedAt: new Date(),
+          updatedBy: ctx.session.user.id,
         })
         .where(
           and(
@@ -181,8 +184,16 @@ export const organizationsRouter = router({
                 suspendedAt: new Date(),
                 suspendedBy: ctx.session.user.id,
                 suspensionReason: input.reason || null,
+                updatedAt: new Date(),
+                updatedBy: ctx.session.user.id,
               }
-            : { suspendedAt: null, suspendedBy: null, suspensionReason: null },
+            : {
+                suspendedAt: null,
+                suspendedBy: null,
+                suspensionReason: null,
+                updatedAt: new Date(),
+                updatedBy: ctx.session.user.id,
+              },
         )
         .where(
           and(
@@ -1714,6 +1725,34 @@ export const organizationsRouter = router({
         return { items: [] };
       }
       return mcpMembersList(ctx.session.user.id, organizationId);
+    }),
+
+  removeMember: orgProcedure
+    .input(
+      z.object({
+        userId: z.string().min(1),
+        reason: z.string().trim().max(250).optional(),
+      }),
+    )
+    .use(
+      actionGuard("member.remove", (input) => ({
+        targetUserId: (input as { userId: string }).userId,
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      return mcpMemberRemove(
+        ctx.session.user.id,
+        organizationId,
+        input.userId,
+        input.reason,
+      );
     }),
 
   /** Server-side paginated invitations with status filter (#261). Better

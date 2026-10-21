@@ -46,6 +46,10 @@ export function EditProjectSheet({
       id: project.id,
       name: project.name,
       description: project.description || "",
+      purpose: project.purpose || "",
+      documentationUrl: project.documentationUrl || "",
+      startDate: project.startDate || "",
+      targetDate: project.targetDate || "",
       repositoryUrl: project.repositoryUrl || "",
       websiteUrl: project.websiteUrl || "",
       isPublic: project.isPublic,
@@ -61,6 +65,10 @@ export function EditProjectSheet({
         id: project.id,
         name: project.name,
         description: project.description || "",
+        purpose: project.purpose || "",
+        documentationUrl: project.documentationUrl || "",
+        startDate: project.startDate || "",
+        targetDate: project.targetDate || "",
         repositoryUrl: project.repositoryUrl || "",
         websiteUrl: project.websiteUrl || "",
         isPublic: project.isPublic,
@@ -69,11 +77,22 @@ export function EditProjectSheet({
   }, [open, project, form]);
 
   const onSubmit = async (data: z.infer<typeof updateProjectInput>) => {
+    if (data.startDate && data.targetDate && data.targetDate < data.startDate) {
+      form.setError("targetDate", {
+        type: "validate",
+        message: "Target date must be on or after the start date.",
+      });
+      return;
+    }
     try {
       await updateProject({
         id: data.id,
         name: data.name?.trim(),
         description: data.description?.trim() || undefined,
+        purpose: data.purpose?.trim() || null,
+        documentationUrl: data.documentationUrl?.trim() || null,
+        startDate: data.startDate || null,
+        targetDate: data.targetDate || null,
         repositoryUrl: data.repositoryUrl?.trim() || undefined,
         websiteUrl: data.websiteUrl?.trim() || undefined,
         isPublic: data.isPublic,
@@ -96,6 +115,10 @@ export function EditProjectSheet({
           id: project.id,
           name: project.name,
           description: project.description || "",
+          purpose: project.purpose || "",
+          documentationUrl: project.documentationUrl || "",
+          startDate: project.startDate || "",
+          targetDate: project.targetDate || "",
           repositoryUrl: project.repositoryUrl || "",
           websiteUrl: project.websiteUrl || "",
           isPublic: project.isPublic,
@@ -174,6 +197,74 @@ export function EditProjectSheet({
                 </div>
               )}
             />
+            <div className="space-y-2">
+              <Label htmlFor="edit-project-purpose">Purpose (optional)</Label>
+              <Textarea
+                id="edit-project-purpose"
+                maxLength={500}
+                rows={3}
+                placeholder="What is this project for?"
+                disabled={isUpdating}
+                {...form.register("purpose")}
+              />
+              {form.formState.errors.purpose ? (
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.purpose.message}
+                </p>
+              ) : null}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-project-documentation-url">
+                Documentation URL (optional)
+              </Label>
+              <Input
+                id="edit-project-documentation-url"
+                type="url"
+                placeholder="https://docs.example.com"
+                disabled={isUpdating}
+                aria-invalid={Boolean(form.formState.errors.documentationUrl)}
+                {...form.register("documentationUrl")}
+              />
+              {form.formState.errors.documentationUrl ? (
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.documentationUrl.message}
+                </p>
+              ) : null}
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="edit-project-start-date">
+                  Start date (optional)
+                </Label>
+                <Input
+                  id="edit-project-start-date"
+                  type="date"
+                  disabled={isUpdating}
+                  {...form.register("startDate")}
+                />
+                {form.formState.errors.startDate ? (
+                  <p className="text-destructive text-sm">
+                    {form.formState.errors.startDate.message}
+                  </p>
+                ) : null}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-project-target-date">
+                  Target date (optional)
+                </Label>
+                <Input
+                  id="edit-project-target-date"
+                  type="date"
+                  disabled={isUpdating}
+                  {...form.register("targetDate")}
+                />
+                {form.formState.errors.targetDate ? (
+                  <p className="text-destructive text-sm">
+                    {form.formState.errors.targetDate.message}
+                  </p>
+                ) : null}
+              </div>
+            </div>
             <Controller
               name="isPublic"
               control={form.control}

@@ -390,24 +390,10 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
     },
   },
   "team.create": {
-    schema: orgFields.extend({ name: z.string().min(1) }),
-    run: async (input, ctx) => {
-      const organizationId = await resolveOrgFromInput(
-        ctx.userId,
-        input as {
-          organizationId?: string;
-          organizationSlug?: string;
-        },
-      );
-      if (!organizationId) throw new Error("organization_required");
-      const { name } = input as { name: string };
-      return mcpTeamCreate(ctx.userId, organizationId, name);
-    },
-  },
-  "team.update": {
     schema: orgFields.extend({
-      teamId: z.string().min(1),
       name: z.string().min(1),
+      description: z.string().max(500).nullable().optional(),
+      purpose: z.string().max(250).nullable().optional(),
     }),
     run: async (input, ctx) => {
       const organizationId = await resolveOrgFromInput(
@@ -418,8 +404,43 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
         },
       );
       if (!organizationId) throw new Error("organization_required");
-      const { teamId, name } = input as { teamId: string; name: string };
-      return mcpTeamUpdate(ctx.userId, organizationId, teamId, name);
+      const { name, description, purpose } = input as {
+        name: string;
+        description?: string | null;
+        purpose?: string | null;
+      };
+      return mcpTeamCreate(ctx.userId, organizationId, name, {
+        description,
+        purpose,
+      });
+    },
+  },
+  "team.update": {
+    schema: orgFields.extend({
+      teamId: z.string().min(1),
+      name: z.string().min(1),
+      description: z.string().max(500).nullable().optional(),
+      purpose: z.string().max(250).nullable().optional(),
+    }),
+    run: async (input, ctx) => {
+      const organizationId = await resolveOrgFromInput(
+        ctx.userId,
+        input as {
+          organizationId?: string;
+          organizationSlug?: string;
+        },
+      );
+      if (!organizationId) throw new Error("organization_required");
+      const { teamId, name, description, purpose } = input as {
+        teamId: string;
+        name: string;
+        description?: string | null;
+        purpose?: string | null;
+      };
+      return mcpTeamUpdate(ctx.userId, organizationId, teamId, name, {
+        description,
+        purpose,
+      });
     },
   },
   "team.delete": {

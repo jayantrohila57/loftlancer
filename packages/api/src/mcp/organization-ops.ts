@@ -344,6 +344,7 @@ export async function mcpOrganizationTransferOwnership(
 export async function mcpMembersList(userId: string, organizationId: string) {
   await requireAction("member.list", { userId, organizationId });
   const inviter = alias(user, "member_inviter");
+  const updater = alias(user, "member_updater");
   const [rows, roleAssignments, rolePermissions] = await Promise.all([
     db
       .select({
@@ -358,6 +359,8 @@ export async function mcpMembersList(userId: string, organizationId: string) {
         invitedBy: member.invitedBy,
         invitedByName: inviter.name,
         invitedByEmail: inviter.email,
+        updatedAt: member.updatedAt,
+        updatedByName: updater.name,
         name: user.name,
         email: user.email,
         createdAt: member.createdAt,
@@ -365,6 +368,7 @@ export async function mcpMembersList(userId: string, organizationId: string) {
       .from(member)
       .innerJoin(user, eq(member.userId, user.id))
       .leftJoin(inviter, eq(member.invitedBy, inviter.id))
+      .leftJoin(updater, eq(member.updatedBy, updater.id))
       .where(
         and(
           eq(member.organizationId, organizationId),
@@ -466,8 +470,16 @@ export async function mcpMemberSetSuspended(
               suspendedAt: new Date(),
               suspendedBy: userId,
               suspensionReason: reason?.trim() || null,
+              updatedAt: new Date(),
+              updatedBy: userId,
             }
-          : { suspendedAt: null, suspendedBy: null, suspensionReason: null },
+          : {
+              suspendedAt: null,
+              suspendedBy: null,
+              suspensionReason: null,
+              updatedAt: new Date(),
+              updatedBy: userId,
+            },
       )
       .where(
         and(
@@ -698,6 +710,7 @@ export async function mcpMemberRemove(
   userId: string,
   organizationId: string,
   targetUserId: string,
+  reason?: string,
 ) {
   await requireAction("member.remove", {
     userId,
@@ -799,7 +812,12 @@ export async function mcpMemberRemove(
     if (isSoftDeletesEnabled()) {
       await tx
         .update(member)
-        .set(softDeleteSet(userId))
+        .set({
+          ...softDeleteSet(userId),
+          removalReason: reason?.trim().slice(0, 250) || null,
+          updatedAt: new Date(),
+          updatedBy: userId,
+        })
         .where(eq(member.id, target.id));
     } else {
       await tx.delete(member).where(eq(member.id, target.id));
@@ -813,6 +831,9 @@ export async function mcpMemberRemove(
     organizationId,
     entityId: removed.memberId,
     targetUserId,
+    payload: reason?.trim()
+      ? { removalReason: reason.trim().slice(0, 250) }
+      : undefined,
   });
   return { success: true, userId: targetUserId };
 }
@@ -871,7 +892,7 @@ export async function mcpMemberUpdateRole(
     }
     const [updated] = await tx
       .update(member)
-      .set({ role })
+      .set({ role, updatedAt: new Date(), updatedBy: userId })
       .where(eq(member.id, target.id))
       .returning({ id: member.id, userId: member.userId, role: member.role });
     if (!updated) throw new Error("member_not_found");
@@ -1070,6 +1091,9 @@ export async function mcpInvitationAccept(
           teamId: invite.teamId,
           userId,
           role: "member",
+          addedBy: invite.inviterId,
+          updatedAt: new Date(),
+          updatedBy: invite.inviterId,
         });
         await tx
           .update(team)
@@ -1274,12 +1298,18 @@ export async function teamMembersList(
   if (!row) {
     throw new Error("Team not found");
   }
+  const addedBy = alias(user, "team_member_added_by");
+  const updatedBy = alias(user, "team_member_updated_by");
   const rows = await db
     .select({
       id: teamMember.id,
       userId: teamMember.userId,
       teamId: teamMember.teamId,
       role: teamMember.role,
+      createdAt: teamMember.createdAt,
+      addedByName: addedBy.name,
+      updatedAt: teamMember.updatedAt,
+      updatedByName: updatedBy.name,
       name: user.name,
       email: user.email,
     })
@@ -1293,6 +1323,8 @@ export async function teamMembersList(
       ),
     )
     .innerJoin(user, eq(user.id, teamMember.userId))
+    .leftJoin(addedBy, eq(addedBy.id, teamMember.addedBy))
+    .leftJoin(updatedBy, eq(updatedBy.id, teamMember.updatedBy))
     .where(eq(teamMember.teamId, teamId));
   return { items: rows };
 }
@@ -1343,6 +1375,7 @@ export async function mcpTeamCreate(
   userId: string,
   organizationId: string,
   name: string,
+  details: { description?: string | null; purpose?: string | null } = {},
 ) {
   await requireAction("team.create", { userId, organizationId });
   const normalizedName = name.trim();
@@ -1352,14 +1385,22 @@ export async function mcpTeamCreate(
     await tx.insert(team).values({
       id: teamId,
       name: normalizedName,
+      description: details.description?.trim() || null,
+      purpose: details.purpose?.trim() || null,
       organizationId,
       memberCount: 1,
+      createdBy: userId,
+      updatedAt: new Date(),
+      updatedBy: userId,
     });
     await tx.insert(teamMember).values({
       id: crypto.randomUUID(),
       teamId,
       userId,
       role: "lead",
+      addedBy: userId,
+      updatedAt: new Date(),
+      updatedBy: userId,
     });
   });
   await writeAuthAuditEvent({
@@ -1378,13 +1419,25 @@ export async function mcpTeamUpdate(
   organizationId: string,
   teamId: string,
   name: string,
+  details: { description?: string | null; purpose?: string | null } = {},
 ) {
   await requireAction("team.update", { userId, organizationId });
   const normalizedName = name.trim();
   if (!normalizedName) throw new Error("invalid_team_name");
+  const values: {
+    name: string;
+    updatedAt: Date;
+    updatedBy: string;
+    description?: string | null;
+    purpose?: string | null;
+  } = { name: normalizedName, updatedAt: new Date(), updatedBy: userId };
+  if (details.description !== undefined)
+    values.description = details.description?.trim() || null;
+  if (details.purpose !== undefined)
+    values.purpose = details.purpose?.trim() || null;
   const [row] = await db
     .update(team)
-    .set({ name: normalizedName, updatedAt: new Date() })
+    .set(values)
     .where(
       and(
         eq(team.id, teamId),
@@ -1392,7 +1445,14 @@ export async function mcpTeamUpdate(
         isNull(team.deletedAt),
       ),
     )
-    .returning({ id: team.id, name: team.name });
+    .returning({
+      id: team.id,
+      name: team.name,
+      description: team.description,
+      purpose: team.purpose,
+      updatedAt: team.updatedAt,
+      updatedBy: team.updatedBy,
+    });
   if (!row) {
     throw new Error("team_not_found");
   }
@@ -1550,6 +1610,9 @@ export async function mcpTeamAddMember(
         id: crypto.randomUUID(),
         teamId,
         userId: targetUserId,
+        addedBy: userId,
+        updatedAt: new Date(),
+        updatedBy: userId,
       });
     }
     await applyTeamProjectDefaults(tx, {
@@ -1697,7 +1760,7 @@ export async function mcpTeamChangeMemberRole(
     }
     await tx
       .update(teamMember)
-      .set({ role })
+      .set({ role, updatedAt: new Date(), updatedBy: userId })
       .where(eq(teamMember.id, row.membershipId));
   });
   await writeAuthAuditEvent({
