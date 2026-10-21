@@ -113,6 +113,18 @@ export function OrganizationMemberProfiles({
                               ? ` · Invited by ${member.invitedByName || member.invitedByEmail}`
                               : ""}
                           </p>
+                          {member.updatedAt ? (
+                            <p className="text-muted-foreground text-xs">
+                              Updated{" "}
+                              <LocalDateTime
+                                value={String(member.updatedAt)}
+                                options={LOCAL_DATE_TIME_FORMAT}
+                              />
+                              {member.updatedByName
+                                ? ` by ${member.updatedByName}`
+                                : ""}
+                            </p>
+                          ) : null}
                         </div>
                         {!owner ? (
                           <Can action="member.suspend">

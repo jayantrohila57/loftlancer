@@ -4,6 +4,10 @@ import { Button } from "@loftlancer/ui/button";
 import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
+import {
+  LOCAL_DATE_TIME_FORMAT,
+  LocalDateTime,
+} from "@loftlancer/ui/patterns/local-date-time";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -82,6 +86,10 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
     name: row.name || row.email || row.userId,
     email: row.email ?? "",
     role: row.role,
+    createdAt: row.createdAt,
+    addedByName: row.addedByName,
+    updatedAt: row.updatedAt,
+    updatedByName: row.updatedByName,
   }));
   const columns: DataTableColumnDef<(typeof memberRows)[number]>[] = [
     {
@@ -97,6 +105,18 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
           <span className="block truncate text-muted-foreground text-xs">
             {row.original.email}
           </span>
+          {row.original.createdAt ? (
+            <span className="block truncate text-muted-foreground text-xs">
+              Joined{" "}
+              <LocalDateTime
+                value={String(row.original.createdAt)}
+                options={LOCAL_DATE_TIME_FORMAT}
+              />
+              {row.original.addedByName
+                ? ` · Added by ${row.original.addedByName}`
+                : ""}
+            </span>
+          ) : null}
         </div>
       ),
     },

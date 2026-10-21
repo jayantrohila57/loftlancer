@@ -24,6 +24,7 @@ export interface ConfirmDialogProps {
   onOpenChangeComplete?: (open: boolean) => void;
   title: string;
   description: ReactNode;
+  content?: ReactNode;
   confirmLabel: string;
   cancelLabel?: string;
   variant?: "default" | "destructive";
@@ -39,6 +40,7 @@ export function ConfirmDialog({
   onOpenChangeComplete,
   title,
   description,
+  content,
   confirmLabel,
   cancelLabel = "Cancel",
   variant = "default",
@@ -85,36 +87,39 @@ export function ConfirmDialog({
             {description}
           </DialogDescription>
         </DialogHeader>
-        {needsTyping ? (
+        {content || needsTyping ? (
           <DialogPanel className="px-4 pt-0 pb-4">
-            <form
-              className="flex flex-col gap-1.5"
-              onSubmit={(e) => {
-                e.preventDefault();
-                void handleConfirm();
-              }}
-            >
-              <label
-                htmlFor={inputId}
-                className="text-muted-foreground text-xs"
+            {content}
+            {needsTyping ? (
+              <form
+                className="mt-3 flex flex-col gap-1.5"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void handleConfirm();
+                }}
               >
-                Type{" "}
-                <span className="font-medium font-mono text-foreground">
-                  {confirmText}
-                </span>{" "}
-                to confirm
-              </label>
-              <Input
-                id={inputId}
-                size="sm"
-                value={typed}
-                autoComplete="off"
-                spellCheck={false}
-                disabled={busy}
-                placeholder={confirmText}
-                onChange={(e) => setTyped(e.target.value)}
-              />
-            </form>
+                <label
+                  htmlFor={inputId}
+                  className="text-muted-foreground text-xs"
+                >
+                  Type{" "}
+                  <span className="font-medium font-mono text-foreground">
+                    {confirmText}
+                  </span>{" "}
+                  to confirm
+                </label>
+                <Input
+                  id={inputId}
+                  size="sm"
+                  value={typed}
+                  autoComplete="off"
+                  spellCheck={false}
+                  disabled={busy}
+                  placeholder={confirmText}
+                  onChange={(e) => setTyped(e.target.value)}
+                />
+              </form>
+            ) : null}
           </DialogPanel>
         ) : null}
         <DialogFooter className="gap-1.5 px-4 py-3">

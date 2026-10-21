@@ -10,6 +10,7 @@ import {
 } from "@loftlancer/ui/dialog";
 import { Input } from "@loftlancer/ui/input";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
+import { Textarea } from "@loftlancer/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,6 +40,8 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
   const closeWithoutPromptRef = useRef<(() => void) | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [teamName, setTeamName] = useState("");
+  const [teamDescription, setTeamDescription] = useState("");
+  const [teamPurpose, setTeamPurpose] = useState("");
   const teamsQuery = useQuery({
     ...trpc.teams.list.queryOptions(),
     enabled: Boolean(organization?.id),
@@ -48,6 +51,8 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
       onSuccess: (team) => {
         toast.success("Team created");
         setTeamName("");
+        setTeamDescription("");
+        setTeamPurpose("");
         closeWithoutPromptRef.current?.();
         setCreateOpen(false);
         void queryClient.invalidateQueries({
@@ -115,12 +120,19 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
               accessorKey: "name",
               header: "Team",
               cell: ({ row }) => (
-                <Link
-                  href={routes.team(slug, row.original.id)}
-                  className="font-medium hover:underline"
-                >
-                  {row.original.name}
-                </Link>
+                <div className="min-w-0">
+                  <Link
+                    href={routes.team(slug, row.original.id)}
+                    className="font-medium hover:underline"
+                  >
+                    {row.original.name}
+                  </Link>
+                  <span className="mt-1 block max-w-md truncate text-muted-foreground text-xs">
+                    {row.original.purpose ||
+                      row.original.description ||
+                      "No team description"}
+                  </span>
+                </div>
               ),
             },
             {
@@ -147,8 +159,12 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
       <GuardedDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
-        isDirty={isTeamCreateFormDirty(teamName)}
-        onDiscard={() => setTeamName("")}
+        isDirty={isTeamCreateFormDirty(teamName, teamDescription, teamPurpose)}
+        onDiscard={() => {
+          setTeamName("");
+          setTeamDescription("");
+          setTeamPurpose("");
+        }}
         closeWithoutPromptRef={closeWithoutPromptRef}
       >
         <DialogContent>
@@ -163,6 +179,25 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
               placeholder="Platform"
             />
           </FormField>
+          <FormField id="team-purpose" label="Purpose">
+            <Input
+              id="team-purpose"
+              value={teamPurpose}
+              maxLength={250}
+              onChange={(event) => setTeamPurpose(event.target.value)}
+              placeholder="What work does this team own?"
+            />
+          </FormField>
+          <FormField id="team-description" label="Description">
+            <Textarea
+              id="team-description"
+              value={teamDescription}
+              maxLength={500}
+              rows={3}
+              onChange={(event) => setTeamDescription(event.target.value)}
+              placeholder="A short description of this team"
+            />
+          </FormField>
           <DialogFooter>
             <Button
               type="button"
@@ -174,7 +209,13 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
             <Button
               type="button"
               disabled={create.isPending || !teamName.trim()}
-              onClick={() => create.mutate({ name: teamName.trim() })}
+              onClick={() =>
+                create.mutate({
+                  name: teamName.trim(),
+                  purpose: teamPurpose.trim() || undefined,
+                  description: teamDescription.trim() || undefined,
+                })
+              }
             >
               Create team
             </Button>

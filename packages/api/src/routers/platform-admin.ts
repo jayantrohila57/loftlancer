@@ -515,6 +515,8 @@ export const platformAdminEndpoints = {
       z.object({
         organizationId: z.string().min(1),
         name: z.string().trim().min(1),
+        description: z.string().trim().max(500).optional(),
+        purpose: z.string().trim().max(250).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -523,6 +525,7 @@ export const platformAdminEndpoints = {
         ctx.session.user.id,
         input.organizationId,
         input.name,
+        { description: input.description, purpose: input.purpose },
       );
     }),
 
@@ -532,6 +535,8 @@ export const platformAdminEndpoints = {
         organizationId: z.string().min(1),
         teamId: z.string().min(1),
         name: z.string().trim().min(1),
+        description: z.string().trim().max(500).nullable().optional(),
+        purpose: z.string().trim().max(250).nullable().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -542,6 +547,7 @@ export const platformAdminEndpoints = {
           input.organizationId,
           input.teamId,
           input.name,
+          { description: input.description, purpose: input.purpose },
         );
       } catch (error) {
         rethrowNotFound(error, "Team not found");

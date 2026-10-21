@@ -19,6 +19,7 @@ import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox"
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetDescription } from "@loftlancer/ui/sheet";
 import { Spinner } from "@loftlancer/ui/spinner";
+import { Textarea } from "@loftlancer/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
@@ -217,6 +218,7 @@ export function OrganizationSettingsForm({
   const [roleConfirmOpen, setRoleConfirmOpen] = useState(false);
   const [memberRemovalConfirmOpen, setMemberRemovalConfirmOpen] =
     useState(false);
+  const [memberRemovalReason, setMemberRemovalReason] = useState("");
   const [memberRemovalPendingId, setMemberRemovalPendingId] = useState<
     string | null
   >(null);
@@ -299,6 +301,10 @@ export function OrganizationSettingsForm({
       setInvitations((inviteData.rows ?? []) as OrganizationInvitationRow[]);
     },
     [queryClient],
+  );
+
+  const removeMemberMutation = useMutation(
+    trpc.organizations.removeMember.mutationOptions(),
   );
 
   const transferOwnershipMutation = useMutation(
@@ -458,21 +464,19 @@ export function OrganizationSettingsForm({
 
   const handleMemberRemoval = async () => {
     const member = pendingMemberRemoval;
-    const memberIdOrEmail = member?.user.id ?? member?.user.email;
-    if (!member || !memberIdOrEmail) return;
+    const targetUserId = member?.user.id;
+    if (!member || !targetUserId) return;
 
     setMemberRemovalPendingId(member.id);
     try {
-      const result = await authClient.organization.removeMember({
-        memberIdOrEmail,
-        organizationId,
+      await removeMemberMutation.mutateAsync({
+        userId: targetUserId,
+        reason: memberRemovalReason.trim() || undefined,
       });
-      if (result.error) {
-        throw new Error(result.error.message ?? "Could not remove member");
-      }
       toast.success(`Removed ${member.user.name || member.user.email}`);
       setMemberRemovalConfirmOpen(false);
       setPendingMemberRemoval(null);
+      setMemberRemovalReason("");
       await loadOrganization(organizationId);
       void invalidateAfterOrganizationChange(queryClient);
       await refreshOrganizations();
@@ -1101,6 +1105,7 @@ export function OrganizationSettingsForm({
           setMemberRemovalConfirmOpen(open);
           if (!open && memberRemovalPendingId === null) {
             setPendingMemberRemoval(null);
+            setMemberRemovalReason("");
           }
         }}
         title="Remove organization member"
@@ -1111,6 +1116,19 @@ export function OrganizationSettingsForm({
         }
         confirmLabel="Remove member"
         variant="destructive"
+        content={
+          <FormField id="member-removal-reason" label="Reason (optional)">
+            <Textarea
+              id="member-removal-reason"
+              value={memberRemovalReason}
+              maxLength={250}
+              rows={3}
+              disabled={memberRemovalPendingId !== null}
+              placeholder="Add a short note for the membership history"
+              onChange={(event) => setMemberRemovalReason(event.target.value)}
+            />
+          </FormField>
+        }
         onConfirm={handleMemberRemoval}
         isPending={memberRemovalPendingId !== null}
       />

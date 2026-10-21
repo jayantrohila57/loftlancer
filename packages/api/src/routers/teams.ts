@@ -1,9 +1,11 @@
 import { db } from "@loftlancer/db";
+import { user } from "@loftlancer/db/schema/auth";
 import { projectTeam } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
 import { team } from "@loftlancer/db/schema/team";
 import { TRPCError } from "@trpc/server";
 import { and, eq, isNull } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { z } from "zod/v3";
 import { actionGuard } from "../actions/action-guard";
 import { requireAction } from "../actions/require-action";
@@ -55,13 +57,25 @@ export const teamsRouter = router({
     .query(async ({ ctx, input }) => {
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId) return { team: null };
+      const creator = alias(user, "team_creator");
+      const updater = alias(user, "team_updater");
       const [row] = await db
         .select({
           id: team.id,
           name: team.name,
+          description: team.description,
+          purpose: team.purpose,
           organizationId: team.organizationId,
+          createdAt: team.createdAt,
+          createdBy: team.createdBy,
+          createdByName: creator.name,
+          updatedAt: team.updatedAt,
+          updatedBy: team.updatedBy,
+          updatedByName: updater.name,
         })
         .from(team)
+        .leftJoin(creator, eq(team.createdBy, creator.id))
+        .leftJoin(updater, eq(team.updatedBy, updater.id))
         .where(
           and(
             eq(team.id, input.teamId),
@@ -212,22 +226,34 @@ export const teamsRouter = router({
     }),
 
   create: orgProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(
+      z.object({
+        name: z.string().trim().min(1).max(100),
+        description: z.string().trim().max(500).optional(),
+        purpose: z.string().trim().max(250).optional(),
+      }),
+    )
     .use(actionGuard("team.create"))
     .mutation(async ({ ctx, input }) => {
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId) {
         throw new Error("No active org");
       }
-      return mcpTeamCreate(
-        ctx.session.user.id,
-        organizationId,
-        input.name.trim(),
-      );
+      return mcpTeamCreate(ctx.session.user.id, organizationId, input.name, {
+        description: input.description,
+        purpose: input.purpose,
+      });
     }),
 
   update: orgProcedure
-    .input(z.object({ teamId: z.string().min(1), name: z.string().min(1) }))
+    .input(
+      z.object({
+        teamId: z.string().min(1),
+        name: z.string().trim().min(1).max(100),
+        description: z.string().trim().max(500).nullable().optional(),
+        purpose: z.string().trim().max(250).nullable().optional(),
+      }),
+    )
     .use(actionGuard("team.update"))
     .mutation(async ({ ctx, input }) => {
       const organizationId = ctx.activeOrganizationId;
@@ -238,7 +264,8 @@ export const teamsRouter = router({
         ctx.session.user.id,
         organizationId,
         input.teamId,
-        input.name.trim(),
+        input.name,
+        { description: input.description, purpose: input.purpose },
       );
     }),
 
