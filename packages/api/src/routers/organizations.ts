@@ -29,6 +29,7 @@ import {
   mcpMemberInvite,
   mcpMembersList,
 } from "../mcp/organization-ops";
+import { organizationBrandingLogoSchema } from "../organization-branding-validation";
 import { transferOrganizationOwnership } from "../organization-ownership";
 import { organizationProfilePatchSchema } from "../organization-profile-validation";
 
@@ -571,9 +572,10 @@ export const organizationsRouter = router({
         });
       }
       return canManageProfile
-        ? row
+        ? { ...row, canManageBranding: true }
         : {
             ...row,
+            canManageBranding: false,
             legalName: null,
             foundedYear: null,
             contactEmail: null,
@@ -586,6 +588,60 @@ export const organizationsRouter = router({
             addressLine1: null,
             addressLine2: null,
           };
+    }),
+
+  updateBrandingLogo: orgProcedure
+    .input(z.object({ logo: organizationBrandingLogoSchema }))
+    .use(
+      actionGuard("organization.settings.update", () => ({
+        payload: { surface: "organization_branding", changedFields: ["logo"] },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [membership] = await db
+        .select({ role: member.role })
+        .from(member)
+        .where(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, ctx.session.user.id),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (normalizeOrgRole(membership?.role) !== "owner") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only organization owners can change branding.",
+        });
+      }
+      const [updated] = await db
+        .update(organization)
+        .set({
+          logo: input.logo,
+          updatedAt: new Date(),
+          updatedBy: ctx.session.user.id,
+        })
+        .where(
+          and(
+            eq(organization.id, organizationId),
+            isNull(organization.deletedAt),
+          ),
+        )
+        .returning({ id: organization.id });
+      if (!updated)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found.",
+        });
+      return { success: true };
     }),
 
   updateProfile: orgProcedure

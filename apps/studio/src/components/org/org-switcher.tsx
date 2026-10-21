@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import {
   SidebarMenu,
@@ -78,6 +78,7 @@ export function OrgSwitcher() {
   ) : (
     <>
       <Avatar className="size-8 shrink-0 rounded-lg">
+        <AvatarImage src={active?.logo ?? undefined} alt="" />
         <AvatarFallback className="rounded-lg text-xs">
           {active?.name ? initialsFromLabel(active.name, "OR") : "OR"}
         </AvatarFallback>

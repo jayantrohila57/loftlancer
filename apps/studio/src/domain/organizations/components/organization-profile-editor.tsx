@@ -58,7 +58,7 @@ const groups: readonly {
   },
 ];
 
-type Profile = Record<string, string | number | Date | null>;
+type Profile = Record<string, string | number | Date | boolean | null>;
 
 export function OrganizationProfileEditor() {
   const canEdit = useCan("organization.settings.update").allowed;
