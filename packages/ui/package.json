@@ -112,7 +112,7 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "node --import tsx --test src/lib/auth-links.test.ts src/lib/platform-urls.test.ts src/lib/page-header-grid-classes.test.ts src/lib/local-day.test.ts src/lib/format-date.test.ts src/lib/page-header-classes.test.ts src/patterns/activity-timeline.test.ts src/lib/page-header-description-measure.test.ts"
+    "test": "node --import tsx --test src/lib/auth-links.test.ts src/lib/platform-urls.test.ts src/lib/page-header-grid-classes.test.ts src/lib/local-day.test.ts src/lib/format-date.test.ts src/lib/page-header-classes.test.ts src/patterns/activity-timeline.test.ts src/lib/page-header-description-measure.test.ts src/lib/studio-routes.test.ts"
   },
   "peerDependencies": {
     "next": "catalog:",

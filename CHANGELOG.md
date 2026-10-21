@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Defined the management resource and access contracts and redirect legacy Environment and Task paths into canonical project Apps routes (#543, #544).
+
 ## [1.14.11] - 2026-10-21
 
 ### Fixed
