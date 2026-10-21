@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  check,
   index,
   integer,
   jsonb,
@@ -27,6 +28,8 @@ export const projectApp = pgTable(
     appVersion: integer("app_version").notNull().default(1),
     /** active | uninstalled | purged */
     status: text("status").notNull().default("active"),
+    /** inherit keeps current project access; restricted requires an app grant. */
+    accessMode: text("access_mode").notNull().default("inherited"),
     settings: jsonb("settings").notNull().default(sql`'{}'::jsonb`),
     installedBy: text("installed_by").references(() => user.id, {
       onDelete: "set null",
@@ -46,6 +49,10 @@ export const projectApp = pgTable(
   (t) => [
     uniqueIndex("project_app_project_app_uq").on(t.projectId, t.appId),
     index("project_app_project_status_idx").on(t.projectId, t.status),
+    check(
+      "project_app_access_mode_check",
+      sql`${t.accessMode} in ('inherited', 'restricted')`,
+    ),
   ],
 );
 
