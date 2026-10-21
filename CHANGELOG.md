@@ -16,6 +16,9 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+
 ## [1.15.0] - 2026-10-21
 
 ### Changed
@@ -39,6 +42,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Team overview no longer shows member/project counts; team settings now use matching accordion sections and explain how team deletion affects project access (#557).
 - Teams now persist lead/member roles: leads can manage their own roster, while organization owners/managers retain role, project-link, and settings control (#558).
 - Team invitations now show their team and linked project access, use the scoped acceptance flow, and are canceled when the team is deleted (#559).
+- Project Apps now separate installed, available, and retained app data; canonical Tasks and Environments routes render behind install checks instead of redirecting back to themselves (#560).
 - Project access context now exits safely when a nullable project-to-organization relationship is absent (#558).
 - Removed redundant project overview wrapper markup flagged by the repository lint gate (#554).
 - Legacy Environment and Task redirects now satisfy Next.js typed-route checks during production builds (#566).
