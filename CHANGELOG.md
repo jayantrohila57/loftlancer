@@ -41,6 +41,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Team invitations now show their team and linked project access, use the scoped acceptance flow, and are canceled when the team is deleted (#559).
 - Project access context now exits safely when a nullable project-to-organization relationship is absent (#558).
 - Removed redundant project overview wrapper markup flagged by the repository lint gate (#554).
+- Legacy Environment and Task redirects now satisfy Next.js typed-route checks during production builds (#566).
 - Standardized project and organization overview/access/settings sections on accordions and aligned their loading skeletons (#548).
 - Team member/project lists and project access lists now use the shared searchable, sortable, paginated table and consistent row actions (#549).
 - Project lifecycle confirmations now use the shared confirmation component directly across overview and settings actions (#550).
