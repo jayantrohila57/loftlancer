@@ -1,5 +1,5 @@
 import { routes } from "@loftlancer/ui/studio-routes";
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import { redirect } from "next/navigation";
 
 interface ProjectEnvironmentsPageProps {
@@ -17,5 +17,5 @@ export default async function ProjectEnvironmentsRoute({
   params,
 }: ProjectEnvironmentsPageProps) {
   const { org, project, envSlug } = await params;
-  redirect(routes.env(org, project, envSlug));
+  redirect(routes.env(org, project, envSlug) as Route);
 }
