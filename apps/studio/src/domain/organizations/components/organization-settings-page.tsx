@@ -4,6 +4,7 @@ import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-sect
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { OrganizationBrandingEditor } from "./organization-branding-editor";
 import { OrganizationLifecycleSection } from "./organization-lifecycle-section";
+import { OrganizationPreferencesEditor } from "./organization-preferences-editor";
 import { OrganizationProfileEditor } from "./organization-profile-editor";
 import { OrganizationSectionPage } from "./organization-section-page";
 import { OrganizationSettingsForm } from "./organization-settings-form";
@@ -33,6 +34,7 @@ export function OrganizationSettingsPage({ slug }: { slug: string }) {
             />
             <OrganizationBrandingEditor />
             <OrganizationProfileEditor />
+            <OrganizationPreferencesEditor />
             <OrganizationLifecycleSection />
           </>
         )}

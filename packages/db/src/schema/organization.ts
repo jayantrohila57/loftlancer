@@ -1,8 +1,10 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   index,
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -92,6 +94,56 @@ export const organizationProfile = pgTable(
     check(
       "organization_profile_founded_year_check",
       sql`${table.foundedYear} IS NULL OR ${table.foundedYear} BETWEEN 1000 AND 9999`,
+    ),
+  ],
+);
+
+export const organizationSettings = pgTable("organization_settings", {
+  organizationId: text("organization_id")
+    .primaryKey()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  timeZone: text("time_zone").notNull().default("UTC"),
+  locale: text("locale").notNull().default("en"),
+  dateFormat: text("date_format").notNull().default("medium"),
+  timeFormat: text("time_format").notNull().default("12h"),
+  weekStart: integer("week_start").notNull().default(1),
+  displayCurrency: text("display_currency").notNull().default("USD"),
+  defaultProjectVisibility: text("default_project_visibility")
+    .notNull()
+    .default("private"),
+  notificationDefaults: jsonb("notification_defaults")
+    .$type<{ email: boolean; inApp: boolean; version: 1 }>()
+    .notNull()
+    .default({ email: true, inApp: true, version: 1 }),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedBy: text("updated_by").references(() => user.id, {
+    onDelete: "set null",
+  }),
+});
+
+/** Entitlements are written by trusted billing/admin services, never org owners. */
+export const organizationEntitlement = pgTable(
+  "organization_entitlement",
+  {
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    featureKey: text("feature_key").notNull(),
+    enabled: boolean("enabled").notNull().default(true),
+    limit: integer("limit"),
+    source: text("source").notNull().default("product_default"),
+    reference: text("reference"),
+    effectiveAt: timestamp("effective_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex("organization_entitlement_feature_uidx").on(
+      table.organizationId,
+      table.featureKey,
     ),
   ],
 );

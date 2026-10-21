@@ -7,6 +7,7 @@ import {
   member,
   organization,
   organizationProfile,
+  organizationSettings,
 } from "@loftlancer/db/schema/organization";
 import { projectTeam } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
@@ -32,6 +33,7 @@ import {
 import { organizationBrandingLogoSchema } from "../organization-branding-validation";
 import { transferOrganizationOwnership } from "../organization-ownership";
 import { organizationProfilePatchSchema } from "../organization-profile-validation";
+import { organizationSettingsPatchSchema } from "../organization-settings-validation";
 
 export const organizationsRouter = router({
   transferOwnership: orgProcedure
@@ -687,6 +689,103 @@ export const organizationsRouter = router({
           .set({ updatedAt: new Date(), updatedBy: ctx.session.user.id })
           .where(eq(organization.id, organizationId));
       });
+      return { success: true };
+    }),
+
+  getSettings: orgProcedure
+    .use(actionGuard("organization.settings.view"))
+    .query(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [row] = await db
+        .select()
+        .from(organizationSettings)
+        .where(eq(organizationSettings.organizationId, organizationId))
+        .limit(1);
+      const [membership] = await db
+        .select({ role: member.role })
+        .from(member)
+        .where(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, ctx.session.user.id),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      return {
+        timeZone: row?.timeZone ?? "UTC",
+        locale: row?.locale ?? "en",
+        dateFormat: row?.dateFormat ?? "medium",
+        timeFormat: row?.timeFormat ?? "12h",
+        weekStart: row?.weekStart ?? 1,
+        displayCurrency: row?.displayCurrency ?? "USD",
+        defaultProjectVisibility: row?.defaultProjectVisibility ?? "private",
+        notificationDefaults: row?.notificationDefaults ?? {
+          email: true,
+          inApp: true,
+          version: 1 as const,
+        },
+        canEdit: normalizeOrgRole(membership?.role) === "owner",
+      };
+    }),
+
+  updateSettings: orgProcedure
+    .input(organizationSettingsPatchSchema)
+    .use(
+      actionGuard("organization.settings.update", (input) => ({
+        payload: {
+          surface: "organization_settings",
+          changedFields: Object.keys(input as Record<string, unknown>).sort(),
+        },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [membership] = await db
+        .select({ role: member.role })
+        .from(member)
+        .where(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, ctx.session.user.id),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (normalizeOrgRole(membership?.role) !== "owner") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only organization owners can update workspace defaults.",
+        });
+      }
+      await db
+        .insert(organizationSettings)
+        .values({
+          organizationId,
+          ...input,
+          updatedAt: new Date(),
+          updatedBy: ctx.session.user.id,
+        })
+        .onConflictDoUpdate({
+          target: organizationSettings.organizationId,
+          set: {
+            ...input,
+            updatedAt: new Date(),
+            updatedBy: ctx.session.user.id,
+          },
+        });
       return { success: true };
     }),
 
