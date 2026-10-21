@@ -12,9 +12,9 @@ import {
 } from "@loftlancer/ui/empty";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetDescription } from "@loftlancer/ui/sheet";
 import { Spinner } from "@loftlancer/ui/spinner";
@@ -563,7 +563,26 @@ export function OrganizationSettingsForm({
   };
 
   if (loading) {
-    return <SettingsPanelSkeleton rows={3} />;
+    const sections =
+      mode === "settings-hub"
+        ? [
+            { key: "general", rows: 2 },
+            { key: "members", rows: 4 },
+            { key: "danger", rows: 2 },
+          ]
+        : [
+            {
+              key: mode,
+              rows: mode === "members" ? 4 : 2,
+            },
+          ];
+    return (
+      <div className="flex min-w-0 flex-col gap-2">
+        {sections.map(({ key, rows }) => (
+          <AccordionSectionSkeleton key={key} rows={rows} />
+        ))}
+      </div>
+    );
   }
 
   if (error) {

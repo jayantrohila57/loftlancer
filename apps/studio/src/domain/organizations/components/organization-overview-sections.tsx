@@ -2,7 +2,8 @@
 
 import type { ProjectOutput } from "@loftlancer/api/types";
 import { Button } from "@loftlancer/ui/button";
-import { Skeleton } from "@loftlancer/ui/skeleton";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { ErrorState } from "@/components/patterns/error-state";
@@ -15,23 +16,7 @@ import { trpc } from "@/utils/trpc";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 
 export function OrganizationOverviewSectionsSkeleton() {
-  return (
-    <section className="min-w-0 space-y-4" role="status" aria-busy="true">
-      <div className="flex items-center justify-between gap-3">
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-36" />
-          <Skeleton className="h-4 w-56" />
-        </div>
-        <Skeleton className="h-8 w-24" />
-      </div>
-      <ProjectsTableView
-        projects={[]}
-        isLoading
-        searchable={false}
-        limitRows={5}
-      />
-    </section>
-  );
+  return <AccordionSectionSkeleton rows={3} />;
 }
 
 export function OrganizationOverviewSections({ slug }: { slug: string }) {
@@ -76,16 +61,10 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
     .slice(0, 5);
 
   return (
-    <section className="min-w-0 space-y-4">
-      <header className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="font-semibold text-lg tracking-tight">
-            Recent projects
-          </h2>
-          <p className="mt-1 text-muted-foreground text-sm">
-            Recently updated projects in this workspace.
-          </p>
-        </div>
+    <AccordionSection
+      title="Recent projects"
+      description="Recently updated projects in this workspace."
+      actions={
         <Button
           variant="outline"
           size="sm"
@@ -93,7 +72,8 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
         >
           View all
         </Button>
-      </header>
+      }
+    >
       <ProjectsTableView
         projects={recentProjects}
         isLoading={projectsQuery.isPending}
@@ -102,6 +82,6 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
         caption="Recently updated projects"
         captionSrOnly
       />
-    </section>
+    </AccordionSection>
   );
 }

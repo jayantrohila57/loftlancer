@@ -2,13 +2,10 @@
 
 import type { ProjectOutput } from "@loftlancer/api/types";
 import { Button } from "@loftlancer/ui/button";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
-import {
-  SettingsPanel,
-  SettingsRow,
-  SettingsSectionHeader,
-} from "@/components/patterns/settings-layout";
+import { SettingsRow } from "@/components/patterns/settings-layout";
 import { Can } from "@/domain/permissions/components/can";
 import { useProjectActions } from "../hooks/use-project-actions";
 import { ProjectActionDialog } from "./project-action-dialog";
@@ -33,12 +30,11 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
 
   return (
     <>
-      <SettingsPanel className="border-destructive/32 bg-destructive/4">
-        <SettingsSectionHeader
-          title="Danger zone"
-          description="Archive the project, or permanently delete it and its environments."
-          icon="danger"
-        />
+      <AccordionSection
+        title="Danger zone"
+        description="Archive the project, or permanently delete it and its environments."
+        className="border-destructive/32 bg-destructive/4"
+      >
         {project.isArchived ? (
           <Can
             action="project.unarchive"
@@ -98,7 +94,7 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
             Delete project
           </Button>
         </SettingsRow>
-      </SettingsPanel>
+      </AccordionSection>
 
       <ProjectActionDialog
         open={deleteDialogOpen}

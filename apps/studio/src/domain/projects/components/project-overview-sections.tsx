@@ -1,23 +1,22 @@
 "use client";
 
-import { Skeleton } from "@loftlancer/ui/skeleton";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { InstalledAppsOverview } from "@/domain/apps/components/installed-apps-overview";
 
 export function ProjectOverviewSectionsSkeleton() {
-  return (
-    <div className="flex flex-col gap-3" role="status" aria-busy="true">
-      <Skeleton className="h-4 w-10" />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Skeleton className="h-28 rounded-xl" />
-      </div>
-    </div>
-  );
+  return <AccordionSectionSkeleton rows={1} />;
 }
 
 export function ProjectOverviewSections({ slug }: { slug: string }) {
   return (
-    <div className="flex flex-col gap-6">
-      <InstalledAppsOverview slug={slug} />
+    <div className="flex min-w-0 flex-col gap-2">
+      <AccordionSection
+        title="Installed apps"
+        description="Applications connected to this project."
+      >
+        <InstalledAppsOverview slug={slug} />
+      </AccordionSection>
     </div>
   );
 }

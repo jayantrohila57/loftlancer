@@ -5,9 +5,10 @@ import type { ProjectOutput } from "@loftlancer/api/types";
 import { Button } from "@loftlancer/ui/button";
 import { Checkbox } from "@loftlancer/ui/checkbox";
 import { Label } from "@loftlancer/ui/label";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import {
   Table,
   TableBody,
@@ -20,11 +21,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { ErrorState } from "@/components/patterns/error-state";
-import {
-  SettingsPanel,
-  SettingsRow,
-  SettingsSectionHeader,
-} from "@/components/patterns/settings-layout";
+import { SettingsRow } from "@/components/patterns/settings-layout";
 import { Can } from "@/domain/permissions/components/can";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useConfirm } from "@/hooks/use-confirm";
@@ -155,7 +152,13 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
     ((canAssignManager.allowed || canManageGrants.allowed) &&
       membersQuery.isLoading)
   ) {
-    return <SettingsPanelSkeleton rows={4} />;
+    return (
+      <div className="flex min-w-0 flex-col gap-4">
+        <AccordionSectionSkeleton rows={3} />
+        <AccordionSectionSkeleton rows={2} />
+        <AccordionSectionSkeleton rows={2} />
+      </div>
+    );
   }
 
   if (
@@ -182,12 +185,10 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
   return (
     <div className="flex flex-col gap-4">
       <Can action="project.assign_manager">
-        <SettingsPanel>
-          <SettingsSectionHeader
-            title="Project managers"
-            description="Managers assigned to this project can manage resources and member grants."
-            icon="member"
-          />
+        <AccordionSection
+          title="Project managers"
+          description="Managers assigned to this project can manage resources and member grants."
+        >
           {summary?.managers.length ? (
             <Table>
               <TableHeader>
@@ -270,16 +271,14 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
               </LoadingButton>
             </div>
           </SettingsRow>
-        </SettingsPanel>
+        </AccordionSection>
       </Can>
 
       <Can action="project.assign_team" projectId={project.id}>
-        <SettingsPanel>
-          <SettingsSectionHeader
-            title="Teams on project"
-            description="Team members receive default project grants when linked. Direct member grants can add or change specific capabilities."
-            icon="member"
-          />
+        <AccordionSection
+          title="Teams on project"
+          description="Team members receive default project grants when linked. Direct member grants can add or change specific capabilities."
+        >
           {summary?.teams.length ? (
             <Table>
               <TableHeader>
@@ -360,16 +359,14 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
               </LoadingButton>
             </div>
           </SettingsRow>
-        </SettingsPanel>
+        </AccordionSection>
       </Can>
 
       <Can action="project.permission.grant" projectId={project.id}>
-        <SettingsPanel>
-          <SettingsSectionHeader
-            title="Member grants"
-            description="Per-member create/read/update/delete access on this project."
-            icon="lock"
-          />
+        <AccordionSection
+          title="Member grants"
+          description="Per-member create/read/update/delete access on this project."
+        >
           {summary?.memberGrants.length ? (
             <Table>
               <TableHeader>
@@ -471,7 +468,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
               </LoadingButton>
             </div>
           ) : null}
-        </SettingsPanel>
+        </AccordionSection>
       </Can>
       {ConfirmDialog}
     </div>

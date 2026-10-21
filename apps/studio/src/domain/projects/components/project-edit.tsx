@@ -7,6 +7,7 @@ import { Button } from "@loftlancer/ui/button";
 import { Card, CardPanel } from "@loftlancer/ui/card";
 import { Input } from "@loftlancer/ui/input";
 import { Label } from "@loftlancer/ui/label";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { UnsavedChangesPageGuard } from "@loftlancer/ui/patterns/unsaved-changes-page-guard";
 import { Switch } from "@loftlancer/ui/switch";
@@ -15,9 +16,7 @@ import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod/v3";
 import {
   SettingsField,
-  SettingsPanel,
   SettingsRow,
-  SettingsSectionHeader,
   settingsControlWidthClass,
 } from "@/components/patterns/settings-layout";
 import { cn } from "@/lib/utils";
@@ -405,11 +404,10 @@ export function EditProject({
         onDiscard={revertForm}
       >
         {({ guardNavigation, allowNextNavigationWithoutPrompt }) => (
-          <SettingsPanel>
-            <SettingsSectionHeader
-              title="Project details"
-              description="Name, links, and visibility."
-            />
+          <AccordionSection
+            title="Project details"
+            description="Name, links, and visibility."
+          >
             <form
               onSubmit={form.handleSubmit((data) =>
                 onSubmit(data, allowNextNavigationWithoutPrompt),
@@ -417,7 +415,7 @@ export function EditProject({
             >
               {formBody(guardNavigation)}
             </form>
-          </SettingsPanel>
+          </AccordionSection>
         )}
       </UnsavedChangesPageGuard>
     );

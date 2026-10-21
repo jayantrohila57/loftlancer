@@ -1,6 +1,6 @@
 "use client";
 
-import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { ErrorState } from "@/components/patterns/error-state";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { OrganizationSectionPage } from "./organization-section-page";
@@ -23,7 +23,7 @@ export function OrganizationMembersPage({ slug }: { slug: string }) {
           onRetry={() => void reload()}
         />
       ) : status === "loading" || !organization ? (
-        <SettingsPanelSkeleton rows={4} />
+        <AccordionSectionSkeleton rows={4} />
       ) : (
         <OrganizationSettingsForm
           key={organization.id}
