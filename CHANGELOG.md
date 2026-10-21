@@ -34,6 +34,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Project identity and lifecycle edits now live in the Project settings sections; the overview no longer duplicates its actions and edit sheet (#554).
 - Project Access now lists each active member with their effective project capabilities and the organization role, team, creator, manager, or grant sources that provide them (#555).
 - Project invitations now use the shared guarded bulk-invite dialog, with project-scoped duplicate checks, feedback, and acceptance details (#556).
+- Team overview no longer shows member/project counts; team settings now use matching accordion sections and explain how team deletion affects project access (#557).
 - Standardized project and organization overview/access/settings sections on accordions and aligned their loading skeletons (#548).
 - Team member/project lists and project access lists now use the shared searchable, sortable, paginated table and consistent row actions (#549).
 - Project lifecycle confirmations now use the shared confirmation component directly across overview and settings actions (#550).

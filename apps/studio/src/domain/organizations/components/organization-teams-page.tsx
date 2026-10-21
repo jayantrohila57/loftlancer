@@ -124,11 +124,6 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
               ),
             },
             {
-              accessorKey: "memberCount",
-              header: "Members",
-              cell: ({ row }) => row.original.memberCount ?? 0,
-            },
-            {
               id: "projects",
               header: "Project access",
               cell: ({ row }) => (
