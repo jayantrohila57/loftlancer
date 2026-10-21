@@ -191,14 +191,17 @@ export function organizationPlugin() {
       organizationHooks: {
         beforeAcceptInvitation: async ({ invitation: invite }) => {
           const [scope] = await db
-            .select({ projectId: organizationSchema.invitation.projectId })
+            .select({
+              projectId: organizationSchema.invitation.projectId,
+              teamId: organizationSchema.invitation.teamId,
+            })
             .from(organizationSchema.invitation)
             .where(eq(organizationSchema.invitation.id, invite.id))
             .limit(1);
-          if (scope?.projectId) {
+          if (scope?.projectId || scope?.teamId) {
             throw new APIError("BAD_REQUEST", {
               message:
-                "Accept this project invitation from its Studio invitation page.",
+                "Accept this scoped invitation from its Loftlancer invitation page.",
             });
           }
         },

@@ -127,7 +127,8 @@ export function TeamSettingsPage({
         >
           <p className="text-muted-foreground text-sm">
             Organization members remain members. Project grants stay saved but
-            need another linked team to remain effective.
+            need another linked team to remain effective. Pending team
+            invitations are canceled.
           </p>
           <Button
             type="button"
@@ -139,7 +140,7 @@ export function TeamSettingsPage({
               confirm({
                 title: `Delete ${team.name}?`,
                 description:
-                  "Members stay in the organization. Existing project grants stay saved but become ineffective unless another linked team gives them access. This cannot be undone.",
+                  "Members stay in the organization. Existing project grants stay saved but become ineffective unless another linked team gives them access. Pending team invitations are canceled. This cannot be undone.",
                 confirmLabel: "Delete team",
                 variant: "destructive",
                 onConfirm: async () => {

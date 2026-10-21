@@ -199,7 +199,7 @@ export function BulkInviteDialog({
               {fixedProjectId
                 ? "Invite people to this project. Accepting adds them to the organization and grants project read access. Paste emails separated by commas, spaces or new lines."
                 : fixedTeamId
-                  ? "Invite people into this team and organization. Paste emails separated by commas, spaces or new lines."
+                  ? "Invite people to join the organization and this team as members. Their project access follows the team’s current project links. Add existing organization members from the Team Members page."
                   : "Paste emails separated by commas, spaces or new lines."}
             </DialogDescription>
           </DialogHeader>
@@ -270,14 +270,14 @@ export function BulkInviteDialog({
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor="bulk-invite-role" className="text-sm">
-                    Role
+                    {fixedTeamId ? "Organization role" : "Role"}
                   </Label>
                   <SearchableCombobox
                     id="bulk-invite-role"
                     value={role}
                     onChange={(value) => setRole(value as OrgInviteRole)}
                     disabled={pending || roles.length === 0}
-                    ariaLabel="Role"
+                    ariaLabel={fixedTeamId ? "Organization role" : "Role"}
                     className="capitalize"
                     options={roles.map((r) => ({
                       value: r,
