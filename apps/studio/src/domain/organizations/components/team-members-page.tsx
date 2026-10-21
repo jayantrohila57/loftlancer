@@ -1,12 +1,17 @@
 "use client";
 
 import { Button } from "@loftlancer/ui/button";
+import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
+import { DataTable } from "@loftlancer/ui/data-table/data-table";
+import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { ErrorState } from "@/components/patterns/error-state";
 import { Can } from "@/domain/permissions/components/can";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
@@ -16,7 +21,12 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
   const { confirm, ConfirmDialog } = useConfirm();
   const [userId, setUserId] = useState("");
   const members = useQuery(trpc.teams.members.queryOptions({ teamId }));
-  const orgMembers = useQuery(trpc.organizations.listMembers.queryOptions());
+  const canAddMembers = useCan("team.member.add", { teamId });
+  const canChangeRoles = useCan("team.member.role.change", { teamId });
+  const availableMembers = useQuery({
+    ...trpc.teams.availableMembers.queryOptions({ teamId }),
+    enabled: canAddMembers.allowed,
+  });
   const refresh = () => {
     void queryClient.invalidateQueries({
       queryKey: trpc.teams.members.queryKey({ teamId }),
@@ -26,6 +36,15 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
     });
     void queryClient.invalidateQueries({
       queryKey: trpc.permissions.snapshot.queryKey({}),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: trpc.permissions.snapshot.queryKey({ teamId }),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: trpc.projectAccess.getSummary.pathKey(),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: trpc.teams.availableMembers.queryKey({ teamId }),
     });
   };
   const add = useMutation(
@@ -47,36 +66,137 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
       onError: (error) => toast.error(error.message),
     }),
   );
-  const teamUserIds = new Set(
-    members.data?.items.map((row) => row.userId) ?? [],
+  const changeRole = useMutation(
+    trpc.teams.updateMemberRole.mutationOptions({
+      onSuccess: () => {
+        toast.success("Team role updated");
+        refresh();
+      },
+      onError: (error) => toast.error(error.message),
+    }),
   );
-  const allMembers = orgMembers.data?.items ?? [];
-  const addable = allMembers.filter((row) => !teamUserIds.has(row.userId));
-  const memberById = new Map(allMembers.map((row) => [row.userId, row]));
+  const addable = availableMembers.data?.items ?? [];
+  const memberRows = (members.data?.items ?? []).map((row) => ({
+    id: row.id,
+    userId: row.userId,
+    name: row.name || row.email || row.userId,
+    email: row.email ?? "",
+    role: row.role,
+  }));
+  const columns: DataTableColumnDef<(typeof memberRows)[number]>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Member" />
+      ),
+      cell: ({ row }) => (
+        <div className="min-w-0">
+          <span className="block truncate font-medium">
+            {row.original.name}
+          </span>
+          <span className="block truncate text-muted-foreground text-xs">
+            {row.original.email}
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "role",
+      header: "Team role",
+      cell: ({ row }) => (row.original.role === "lead" ? "Lead" : "Member"),
+    },
+    {
+      id: "actions",
+      meta: { role: "actions" },
+      header: () => <DataTableActionsColumnHeader />,
+      cell: ({ row }) => (
+        <Can action="team.member.remove" teamId={teamId} fallback={null}>
+          <DataTableRowActions
+            label={`Actions for ${row.original.name}`}
+            actions={[
+              ...(canChangeRoles.allowed
+                ? [
+                    {
+                      label:
+                        row.original.role === "lead"
+                          ? "Make team member"
+                          : "Make team lead",
+                      disabled: changeRole.isPending,
+                      onSelect: () =>
+                        confirm({
+                          title:
+                            row.original.role === "lead"
+                              ? `Remove lead role from ${row.original.name}?`
+                              : `Make ${row.original.name} a team lead?`,
+                          description:
+                            "Team leads can add and remove members in this team. They cannot change organization settings, project grants, or team roles.",
+                          confirmLabel:
+                            row.original.role === "lead"
+                              ? "Make team member"
+                              : "Make team lead",
+                          onConfirm: async () => {
+                            await changeRole.mutateAsync({
+                              teamId,
+                              userId: row.original.userId,
+                              role:
+                                row.original.role === "lead"
+                                  ? "member"
+                                  : "lead",
+                            });
+                          },
+                        }),
+                    },
+                  ]
+                : []),
+              {
+                label: "Remove from team",
+                destructive: true,
+                disabled: remove.isPending,
+                onSelect: () =>
+                  confirm({
+                    title: `Remove ${row.original.name} from the team?`,
+                    description:
+                      "They will remain in the organization, but may lose access from this team. Direct grants stay saved, but may need another linked team to remain effective.",
+                    confirmLabel: "Remove from team",
+                    variant: "destructive",
+                    onConfirm: async () => {
+                      await remove.mutateAsync({
+                        teamId,
+                        userId: row.original.userId,
+                      });
+                    },
+                  }),
+              },
+            ]}
+          />
+        </Can>
+      ),
+    },
+  ];
 
   return (
     <section className="space-y-4">
       <div>
         <h2 className="font-semibold text-xl tracking-tight">Members</h2>
         <p className="mt-1 text-muted-foreground text-sm">
-          Add existing organization members here. Use Team invitations to invite
-          someone who has not joined the organization yet.
+          Add existing organization members here. Members gain access to
+          projects assigned to this team based on each project’s access rules.
+          Use Team invitations for people who have not joined the organization
+          yet.
         </p>
       </div>
-      {members.isPending || orgMembers.isPending ? (
-        <Skeleton className="h-48 rounded-xl" />
-      ) : members.isError || orgMembers.isError ? (
+      {members.isError || availableMembers.isError ? (
         <ErrorState
           title="Could not load team members"
           description="Try loading members again."
           onRetry={() => {
             void members.refetch();
-            void orgMembers.refetch();
+            void availableMembers.refetch();
           }}
         />
       ) : (
         <>
-          <Can action="team.member.add">
+          <Can action="team.member.add" teamId={teamId} fallback={null}>
             {addable.length > 0 ? (
               <div className="flex flex-wrap items-end gap-2 rounded-xl border bg-card p-4">
                 <SearchableCombobox
@@ -103,57 +223,23 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
               </div>
             ) : null}
           </Can>
-          {members.data.items.length === 0 ? (
-            <p className="rounded-xl border bg-card p-4 text-muted-foreground text-sm">
-              This team has no members yet.
-            </p>
-          ) : (
-            <ul className="divide-y rounded-xl border bg-card">
-              {members.data.items.map((row) => {
-                const person = memberById.get(row.userId);
-                return (
-                  <li
-                    key={row.id}
-                    className="flex items-center justify-between gap-3 p-4"
-                  >
-                    <div className="min-w-0">
-                      <p className="font-medium text-sm">
-                        {person?.name || person?.email || row.userId}
-                      </p>
-                      <p className="truncate text-muted-foreground text-xs">
-                        {person?.email}
-                      </p>
-                    </div>
-                    <Can action="team.member.remove">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        disabled={remove.isPending}
-                        onClick={() =>
-                          confirm({
-                            title: `Remove ${person?.name || person?.email || "this member"} from the team?`,
-                            description:
-                              "They will remain in the organization, but may lose project access they get through this team. Direct project access stays in place.",
-                            confirmLabel: "Remove from team",
-                            variant: "destructive",
-                            onConfirm: async () => {
-                              await remove.mutateAsync({
-                                teamId,
-                                userId: row.userId,
-                              });
-                            },
-                          })
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </Can>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          <DataTable
+            columns={columns}
+            data={memberRows}
+            isLoading={
+              members.isPending ||
+              (canAddMembers.allowed && availableMembers.isPending)
+            }
+            searchable
+            enablePagination
+            pageSize={10}
+            framed
+            compactLayout
+            caption="Team members"
+            captionSrOnly
+            searchPlaceholder="Search members…"
+            emptyMessage="This team has no members yet."
+          />
         </>
       )}
       {ConfirmDialog}

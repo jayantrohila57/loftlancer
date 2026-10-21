@@ -1,20 +1,8 @@
 "use client";
 
-import { Skeleton } from "@loftlancer/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import { routes } from "@/utils/navigation";
-import { trpc } from "@/utils/trpc";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 
-export function TeamOverviewPage({
-  slug,
-  teamId,
-}: {
-  slug: string;
-  teamId: string;
-}) {
-  const members = useQuery(trpc.teams.members.queryOptions({ teamId }));
-  const projects = useQuery(trpc.teams.projects.queryOptions({ teamId }));
+export function TeamOverviewPage() {
   return (
     <section className="space-y-4">
       <div>
@@ -24,38 +12,17 @@ export function TeamOverviewPage({
           Review each member's grants in project Access.
         </p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Link
-          href={routes.teamSection(slug, teamId, "members")}
-          className="rounded-xl border bg-card p-4 hover:bg-muted/40"
-        >
-          <span className="font-medium">Members</span>
-          <span className="mt-1 block text-muted-foreground text-sm">
-            {members.isPending ? (
-              <Skeleton className="h-4 w-20" />
-            ) : members.isError ? (
-              "Unavailable"
-            ) : (
-              `${members.data.items.length} members`
-            )}
-          </span>
-        </Link>
-        <Link
-          href={routes.teamSection(slug, teamId, "projects")}
-          className="rounded-xl border bg-card p-4 hover:bg-muted/40"
-        >
-          <span className="font-medium">Linked projects</span>
-          <span className="mt-1 block text-muted-foreground text-sm">
-            {projects.isPending ? (
-              <Skeleton className="h-4 w-20" />
-            ) : projects.isError ? (
-              "Unavailable"
-            ) : (
-              `${projects.data.items.length} visible projects`
-            )}
-          </span>
-        </Link>
-      </div>
+      <AccordionSection
+        title="How team access works"
+        description="Teams connect organization membership to project access."
+      >
+        <p className="max-w-3xl text-muted-foreground text-sm">
+          Add organization members in Members, then link this team to projects
+          in Projects. Team members receive the project capabilities granted by
+          each link. Project Access shows each person’s effective access and any
+          other source that keeps their access active.
+        </p>
+      </AccordionSection>
     </section>
   );
 }

@@ -16,6 +16,36 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.15.0] - 2026-10-21
+
+### Changed
+
+- Defined the management resource and access contracts and redirect legacy Environment and Task paths into canonical project Apps routes (#543, #544).
+
+### Security
+
+- Permission checks and client snapshots now reject inactive organizations and cross-organization project IDs consistently (#545).
+
+### Fixed
+
+- Studio navigation now highlights the active project through nested pages and keeps active favorites selected (#546).
+- Resource frames now resolve one active tab consistently, and project status changes use a form control rather than navigation tabs (#547).
+- Organization list actions no longer duplicate in empty states, and settings loading placeholders now match the accordion sections they load (#551).
+- Organization member, invitation, team, and role routes now use one top-level navigation row; role access details use accordions without action-count metrics (#552).
+- Organization, team, and project invitation lists now share the same status filter and pagination controls and label each row with its access scope (#553).
+- Project identity and lifecycle edits now live in the Project settings sections; the overview no longer duplicates its actions and edit sheet (#554).
+- Project Access now lists each active member with their effective project capabilities and the organization role, team, creator, manager, or grant sources that provide them (#555).
+- Project invitations now use the shared guarded bulk-invite dialog, with project-scoped duplicate checks, feedback, and acceptance details (#556).
+- Team overview no longer shows member/project counts; team settings now use matching accordion sections and explain how team deletion affects project access (#557).
+- Teams now persist lead/member roles: leads can manage their own roster, while organization owners/managers retain role, project-link, and settings control (#558).
+- Team invitations now show their team and linked project access, use the scoped acceptance flow, and are canceled when the team is deleted (#559).
+- Project access context now exits safely when a nullable project-to-organization relationship is absent (#558).
+- Removed redundant project overview wrapper markup flagged by the repository lint gate (#554).
+- Legacy Environment and Task redirects now satisfy Next.js typed-route checks during production builds (#566).
+- Standardized project and organization overview/access/settings sections on accordions and aligned their loading skeletons (#548).
+- Team member/project lists and project access lists now use the shared searchable, sortable, paginated table and consistent row actions (#549).
+- Project lifecycle confirmations now use the shared confirmation component directly across overview and settings actions (#550).
+
 ## [1.14.11] - 2026-10-21
 
 ### Fixed
@@ -664,7 +694,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.11...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.0...HEAD
+[1.15.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.11...v1.15.0
 [1.14.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.10...v1.14.11
 [1.14.10]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.9...v1.14.10
 [1.14.9]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.8...v1.14.9

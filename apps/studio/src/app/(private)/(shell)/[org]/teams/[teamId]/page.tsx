@@ -11,6 +11,6 @@ export default async function OrganizationTeamRoute({
 }: {
   params: Promise<{ org: string; teamId: string }>;
 }) {
-  const { org, teamId } = await params;
-  return <TeamOverviewPage slug={org} teamId={teamId} />;
+  await params;
+  return <TeamOverviewPage />;
 }

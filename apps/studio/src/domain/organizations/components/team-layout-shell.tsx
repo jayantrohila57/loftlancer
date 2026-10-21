@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 
@@ -18,8 +19,9 @@ export function TeamLayoutShell({
   teamId: string;
   children: React.ReactNode;
 }) {
-  const teamsQuery = useQuery(trpc.teams.list.queryOptions());
-  const team = teamsQuery.data?.items.find((item) => item.id === teamId);
+  const teamsQuery = useQuery(trpc.teams.get.queryOptions({ teamId }));
+  const team = teamsQuery.data?.team;
+  const canListInvitations = useCan("member.list");
   const pathname = usePathname() ?? "";
   const root = routes.team(slug, teamId);
   if (teamsQuery.isPending) return <Skeleton className="h-64 rounded-xl" />;
@@ -52,11 +54,15 @@ export function TeamLayoutShell({
           label: "Projects",
           active: pathname.endsWith("/projects"),
         },
-        {
-          href: routes.teamSection(slug, teamId, "invitations"),
-          label: "Invitations",
-          active: pathname.endsWith("/invitations"),
-        },
+        ...(canListInvitations.allowed
+          ? [
+              {
+                href: routes.teamSection(slug, teamId, "invitations"),
+                label: "Invitations",
+                active: pathname.endsWith("/invitations"),
+              },
+            ]
+          : []),
         {
           href: routes.teamSection(slug, teamId, "settings"),
           label: "Team settings",

@@ -54,4 +54,11 @@ describe("getPublicInvitationStatus", () => {
       "unavailable",
     );
   });
+
+  it("does not present team invitations after their team is removed", () => {
+    assert.equal(
+      getPublicInvitationStatus({ ...pending, teamDeletedAt: now }, now),
+      "unavailable",
+    );
+  });
 });

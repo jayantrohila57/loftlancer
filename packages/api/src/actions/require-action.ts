@@ -9,10 +9,10 @@ import {
   normalizeOrgRole,
 } from "@loftlancer/actions";
 import { activeMemberWhere, db } from "@loftlancer/db";
-import { member } from "@loftlancer/db/schema/organization";
+import { member, organization } from "@loftlancer/db/schema/organization";
 import { logger } from "@loftlancer/logger";
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { isAppInstalled } from "../apps/installed";
 import { writeAuditEvent } from "./audit-event-writer";
 import { isActionBlocked } from "./is-action-blocked";
@@ -20,11 +20,13 @@ import {
   loadProjectAccessContext,
   userHasAnyProjectManagerAssignment,
 } from "./project-access";
+import { loadTeamAccessContext } from "./team-access";
 
 export type RequireActionContext = {
   userId: string;
   organizationId?: string | null;
   projectId?: string | null;
+  teamId?: string | null;
   targetUserId?: string | null;
   ipAddress?: string | null;
   userAgent?: string | null;
@@ -66,11 +68,13 @@ export async function requireAction(
         ? db
             .select({ role: member.role })
             .from(member)
+            .innerJoin(organization, eq(member.organizationId, organization.id))
             .where(
               activeMemberWhere(
                 and(
                   eq(member.organizationId, ctx.organizationId),
                   eq(member.userId, ctx.userId),
+                  isNull(organization.deletedAt),
                 ),
               ),
             )
@@ -128,8 +132,30 @@ export async function requireAction(
     const orgRole = normalizeOrgRole(membership?.role);
 
     const projectCtx = ctx.projectId
-      ? await loadProjectAccessContext(ctx.userId, ctx.projectId)
+      ? await loadProjectAccessContext(
+          ctx.userId,
+          ctx.projectId,
+          ctx.organizationId,
+        )
       : null;
+    const teamCtx = ctx.teamId
+      ? await loadTeamAccessContext(ctx.userId, ctx.teamId, ctx.organizationId)
+      : null;
+
+    if (ctx.projectId && !projectCtx?.belongsToOrganization) {
+      denialReason = "project_org_mismatch";
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Project not found.",
+      });
+    }
+    if (ctx.teamId && !teamCtx?.belongsToOrganization) {
+      denialReason = "team_org_mismatch";
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Team not found.",
+      });
+    }
 
     if (
       action === "audit.timeline.view.org" &&
@@ -150,6 +176,7 @@ export async function requireAction(
       action,
       orgRole,
       project: projectCtx,
+      team: teamCtx,
     });
 
     if (!decision.allowed) {

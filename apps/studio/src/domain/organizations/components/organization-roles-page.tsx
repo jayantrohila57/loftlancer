@@ -1,6 +1,6 @@
 "use client";
 
-import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import type { ReactNode } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { ErrorState } from "@/components/patterns/error-state";
@@ -19,7 +19,14 @@ export function OrganizationRolesPage({ slug }: { slug: string }) {
 
   let body: ReactNode;
   if (status === "loading" || !organization) {
-    body = <SettingsPanelSkeleton rows={3} />;
+    body = (
+      <div className="flex flex-col gap-4">
+        <AccordionSectionSkeleton rows={3} />
+        <AccordionSectionSkeleton rows={3} />
+        <AccordionSectionSkeleton rows={3} />
+        <AccordionSectionSkeleton rows={3} />
+      </div>
+    );
   } else if (status === "error") {
     body = (
       <ErrorState
@@ -28,7 +35,14 @@ export function OrganizationRolesPage({ slug }: { slug: string }) {
       />
     );
   } else if (isSwitching || permissionsLoading) {
-    body = <SettingsPanelSkeleton rows={3} />;
+    body = (
+      <div className="flex flex-col gap-4">
+        <AccordionSectionSkeleton rows={3} />
+        <AccordionSectionSkeleton rows={3} />
+        <AccordionSectionSkeleton rows={3} />
+        <AccordionSectionSkeleton rows={3} />
+      </div>
+    );
   } else if (!allowed) {
     body = (
       <ErrorState
@@ -50,7 +64,6 @@ export function OrganizationRolesPage({ slug }: { slug: string }) {
       slug={slug}
       title="Roles & access"
       description="Organization roles and permission policies."
-      peopleNavigation
     >
       {body}
     </OrganizationSectionPage>

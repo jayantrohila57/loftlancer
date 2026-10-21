@@ -29,7 +29,9 @@ export function InvitationLandingPage({
           router.replace(
             preview.projectSlug
               ? routes.project(preview.organizationSlug, preview.projectSlug)
-              : routes.org(preview.organizationSlug),
+              : preview.teamId
+                ? routes.team(preview.organizationSlug, preview.teamId)
+                : routes.org(preview.organizationSlug),
           );
         }
       } else {
@@ -91,6 +93,28 @@ export function InvitationLandingPage({
             </span>
           </p>
         ) : null}
+        {preview.teamName ? (
+          <>
+            <p>
+              Team:{" "}
+              <span className="font-medium text-foreground">
+                {preview.teamName}
+              </span>
+            </p>
+            <p>
+              Team role:{" "}
+              <span className="font-medium text-foreground">Member</span>
+            </p>
+            <p>
+              Team project access:{" "}
+              <span className="font-medium text-foreground">
+                {preview.linkedProjects.length
+                  ? preview.linkedProjects.map((item) => item.name).join(", ")
+                  : "No projects are currently linked"}
+              </span>
+            </p>
+          </>
+        ) : null}
         {preview.inviterName ? <p>Invited by {preview.inviterName}</p> : null}
       </div>
     ) : null;
@@ -115,7 +139,11 @@ export function InvitationLandingPage({
     content = (
       <InvitationState
         title="Invitation unavailable"
-        description="This invitation can no longer be used."
+        description={
+          preview.teamId && preview.status === "unavailable"
+            ? "This team is no longer available, so its invitation cannot be accepted. Ask an organization manager to invite you to an active team."
+            : "This invitation can no longer be used."
+        }
         details={metadata}
       />
     );
@@ -136,12 +164,18 @@ export function InvitationLandingPage({
                           preview.organizationSlug,
                           preview.projectSlug,
                         )
-                      : routes.org(preview.organizationSlug)
+                      : preview.teamId
+                        ? routes.team(preview.organizationSlug, preview.teamId)
+                        : routes.org(preview.organizationSlug)
                   }
                 />
               }
             >
-              {preview.projectSlug ? "Open project" : "Open workspace"}
+              {preview.projectSlug
+                ? "Open project"
+                : preview.teamId
+                  ? "Open team"
+                  : "Open workspace"}
             </Button>
           ) : undefined
         }
@@ -222,9 +256,11 @@ export function InvitationLandingPage({
       <InvitationState
         title="Accept your invitation"
         description={
-          preview.projectName
-            ? `You’re signed in as ${invite.session.user.email}. Accept to access ${preview.projectName} in ${preview.organizationName}.`
-            : `You’re signed in as ${invite.session.user.email}. Accept to join ${preview.organizationName} as a ${preview.role}.`
+          preview.teamName
+            ? `You’re signed in as ${invite.session.user.email}. Accept to join ${preview.organizationName} and ${preview.teamName} as a team member.`
+            : preview.projectName
+              ? `You’re signed in as ${invite.session.user.email}. Accept to access ${preview.projectName} in ${preview.organizationName}.`
+              : `You’re signed in as ${invite.session.user.email}. Accept to join ${preview.organizationName} as a ${preview.role}.`
         }
         details={metadata}
         action={

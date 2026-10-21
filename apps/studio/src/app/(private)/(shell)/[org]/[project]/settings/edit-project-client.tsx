@@ -1,6 +1,6 @@
 "use client";
 
-import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
@@ -12,9 +12,9 @@ import { trpc } from "@/utils/trpc";
 function ProjectSettingsSkeleton() {
   return (
     <div className="flex min-w-0 flex-col gap-4" role="status" aria-busy="true">
-      <SettingsPanelSkeleton rows={5} />
-      <SettingsPanelSkeleton rows={1} />
-      <SettingsPanelSkeleton rows={2} />
+      <AccordionSectionSkeleton rows={5} />
+      <AccordionSectionSkeleton rows={1} />
+      <AccordionSectionSkeleton rows={2} />
     </div>
   );
 }

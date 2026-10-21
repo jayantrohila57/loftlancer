@@ -11,6 +11,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@loftlancer/ui/menu";
+import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import {
   Tooltip,
   TooltipContent,
@@ -21,7 +22,6 @@ import { AppIcon } from "@/components/patterns/app-icon";
 import { Can } from "@/domain/permissions/components/can";
 import { useProjectActions } from "../hooks/use-project-actions";
 import { EditProjectSheet } from "./edit-project-sheet";
-import { ProjectActionDialog } from "./project-action-dialog";
 
 interface ProjectActionsProps {
   project: ProjectOutput;
@@ -227,39 +227,39 @@ export function ProjectActions({
         />
       )}
 
-      <ProjectActionDialog
+      <ConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title="Delete Project"
         description={`Are you sure you want to delete "${project.name}"? This action cannot be undone and will permanently delete all environments and variables associated with this project.`}
-        actionText="Delete Project"
+        confirmLabel="Delete Project"
         variant="destructive"
         onConfirm={deleteProject}
         confirmText={project.name}
         isPending={isDeleting}
       />
 
-      <ProjectActionDialog
+      <ConfirmDialog
         open={archiveDialogOpen}
         onOpenChange={setArchiveDialogOpen}
         title="Archive Project"
         description={`Are you sure you want to archive "${project.name}"? Archived projects are hidden from the main view but can be restored later.`}
-        actionText="Archive Project"
+        confirmLabel="Archive Project"
         onConfirm={archiveProject}
         isPending={isArchiving}
       />
 
-      <ProjectActionDialog
+      <ConfirmDialog
         open={unarchiveDialogOpen}
         onOpenChange={setUnarchiveDialogOpen}
         title="Unarchive Project"
         description={`Are you sure you want to unarchive "${project.name}"? This will make it visible in the main project view.`}
-        actionText="Unarchive Project"
+        confirmLabel="Unarchive Project"
         onConfirm={unarchiveProject}
         isPending={isUnarchiving}
       />
 
-      <ProjectActionDialog
+      <ConfirmDialog
         open={statusDialogOpen}
         onOpenChange={(open) => {
           setStatusDialogOpen(open);
@@ -267,7 +267,7 @@ export function ProjectActions({
         }}
         title="Change project status"
         description={`Mark "${project.name}" as ${statusLabel}? This updates how the project appears across the workspace.`}
-        actionText={`Set ${statusLabel}`}
+        confirmLabel={`Set ${statusLabel}`}
         onConfirm={async () => {
           if (!pendingStatus) return;
           await changeProjectStatus(pendingStatus);
@@ -275,7 +275,7 @@ export function ProjectActions({
         isPending={isChangingStatus}
       />
 
-      <ProjectActionDialog
+      <ConfirmDialog
         open={visibilityDialogOpen}
         onOpenChange={setVisibilityDialogOpen}
         title={
@@ -286,7 +286,7 @@ export function ProjectActions({
             ? `Make "${project.name}" private? Metadata will no longer be exposed publicly.`
             : `Make "${project.name}" public? Project metadata may be visible to others.`
         }
-        actionText={project.isPublic ? "Make private" : "Make public"}
+        confirmLabel={project.isPublic ? "Make private" : "Make public"}
         onConfirm={toggleProjectPublic}
         isPending={isTogglingPublic}
       />

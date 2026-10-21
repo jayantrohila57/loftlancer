@@ -2,11 +2,12 @@ import {
   type ActionName,
   actionNames,
   evaluatePermission,
+  getActionDefinition,
   normalizeOrgRole,
 } from "@loftlancer/actions";
-import { db } from "@loftlancer/db";
-import { member } from "@loftlancer/db/schema/organization";
-import { and, eq } from "drizzle-orm";
+import { activeMemberWhere, db } from "@loftlancer/db";
+import { member, organization } from "@loftlancer/db/schema/organization";
+import { and, eq, isNull } from "drizzle-orm";
 import {
   isActionBlockedInSet,
   loadBlockedActionsForScope,
@@ -15,6 +16,7 @@ import {
   loadProjectAccessContext,
   userHasAnyProjectManagerAssignment,
 } from "./project-access";
+import { loadTeamAccessContext } from "./team-access";
 
 export type PermissionsSnapshot = {
   platformAdmin: false;
@@ -29,6 +31,7 @@ export async function buildPermissionsSnapshot(input: {
   userId: string;
   organizationId: string | null;
   projectId?: string | null;
+  teamId?: string | null;
 }): Promise<PermissionsSnapshot> {
   const blocked: ActionName[] = [];
   const actions: Record<string, boolean> = {};
@@ -38,10 +41,14 @@ export async function buildPermissionsSnapshot(input: {
     const [membership] = await db
       .select({ role: member.role })
       .from(member)
+      .innerJoin(organization, eq(member.organizationId, organization.id))
       .where(
-        and(
-          eq(member.organizationId, input.organizationId),
-          eq(member.userId, input.userId),
+        activeMemberWhere(
+          and(
+            eq(member.organizationId, input.organizationId),
+            eq(member.userId, input.userId),
+            isNull(organization.deletedAt),
+          ),
         ),
       )
       .limit(1);
@@ -49,8 +56,20 @@ export async function buildPermissionsSnapshot(input: {
   }
 
   const projectCtx = input.projectId
-    ? await loadProjectAccessContext(input.userId, input.projectId)
+    ? await loadProjectAccessContext(
+        input.userId,
+        input.projectId,
+        input.organizationId,
+      )
     : null;
+  const teamCtx =
+    input.teamId && input.organizationId
+      ? await loadTeamAccessContext(
+          input.userId,
+          input.teamId,
+          input.organizationId,
+        )
+      : null;
 
   let managerHasTimeline = false;
   let unassignedMember = false;
@@ -81,10 +100,28 @@ export async function buildPermissionsSnapshot(input: {
       continue;
     }
 
+    if (
+      input.projectId &&
+      getActionDefinition(action).scope === "project" &&
+      !projectCtx?.belongsToOrganization
+    ) {
+      actions[name] = false;
+      continue;
+    }
+    if (
+      input.teamId &&
+      getActionDefinition(action).teamRoles?.length &&
+      !teamCtx?.belongsToOrganization
+    ) {
+      actions[name] = false;
+      continue;
+    }
+
     const defScope = evaluatePermission({
       action,
       orgRole,
       project: projectCtx,
+      team: teamCtx,
     });
 
     if (

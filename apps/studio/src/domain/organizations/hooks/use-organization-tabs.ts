@@ -17,31 +17,49 @@ export function useOrganizationTabs(slug: string) {
   const canViewRoles = useCan("organization.settings.view").allowed;
   const canViewSettings = useCan("organization.settings.view").allowed;
   const canViewActivity = useCan("audit.timeline.view.org").allowed;
-  const peopleHref = routes.orgSection(
-    slug,
-    canViewMembers
-      ? "members"
-      : canInvite
-        ? "invitations"
-        : canViewTeams
-          ? "teams"
-          : "roles",
-  );
   const peopleSections: OrgSection[] = [
     "members",
     "invitations",
     "teams",
     "roles",
   ];
-  const onPeopleRoute = peopleSections.some(
-    (section) =>
-      pathname === routes.orgSection(slug, section) ||
-      pathname.startsWith(`${routes.orgSection(slug, section)}/`),
-  );
   const tabs: PageHeaderTab[] = [
     { value: base, label: "Overview", href: base },
-    ...(canViewMembers || canInvite || canViewTeams || canViewRoles
-      ? [{ value: peopleHref, label: "People", href: peopleHref }]
+    ...(canViewMembers
+      ? [
+          {
+            value: routes.orgSection(slug, "members"),
+            label: "Members",
+            href: routes.orgSection(slug, "members"),
+          },
+        ]
+      : []),
+    ...(canInvite
+      ? [
+          {
+            value: routes.orgSection(slug, "invitations"),
+            label: "Invitations",
+            href: routes.orgSection(slug, "invitations"),
+          },
+        ]
+      : []),
+    ...(canViewTeams
+      ? [
+          {
+            value: routes.orgSection(slug, "teams"),
+            label: "Teams",
+            href: routes.orgSection(slug, "teams"),
+          },
+        ]
+      : []),
+    ...(canViewRoles
+      ? [
+          {
+            value: routes.orgSection(slug, "roles"),
+            label: "Roles & access",
+            href: routes.orgSection(slug, "roles"),
+          },
+        ]
       : []),
     {
       value: routes.orgSection(slug, "projects"),
@@ -67,5 +85,14 @@ export function useOrganizationTabs(slug: string) {
         ]
       : []),
   ];
-  return { tabs, activeTab: onPeopleRoute ? peopleHref : pathname };
+  const activeSection = peopleSections.find((section) => {
+    const href = routes.orgSection(slug, section);
+    return pathname === href || pathname.startsWith(`${href}/`);
+  });
+  return {
+    tabs,
+    activeTab: activeSection
+      ? routes.orgSection(slug, activeSection)
+      : pathname,
+  };
 }

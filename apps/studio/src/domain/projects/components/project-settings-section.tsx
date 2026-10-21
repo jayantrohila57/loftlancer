@@ -1,14 +1,17 @@
 "use client";
 
 import type { ProjectOutput } from "@loftlancer/api/types";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { Tabs, TabsList, TabsTab } from "@loftlancer/ui/tabs";
-import { useState } from "react";
 import {
-  SettingsPanel,
-  SettingsRow,
-  SettingsSectionHeader,
-} from "@/components/patterns/settings-layout";
+  Select,
+  SelectItem,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from "@loftlancer/ui/select";
+import { useState } from "react";
+import { SettingsRow } from "@/components/patterns/settings-layout";
 import { StatusBadge } from "@/components/patterns/status-badge";
 import { useProjectActions } from "../hooks/use-project-actions";
 import { ProjectDangerZone } from "./project-danger-zone";
@@ -36,12 +39,10 @@ export function ProjectSettingsSection({
 
   return (
     <div className="flex flex-col gap-4">
-      <SettingsPanel>
-        <SettingsSectionHeader
-          title="Project status"
-          description="Set the operational state of this project."
-          icon="settings"
-        />
+      <AccordionSection
+        title="Project status"
+        description="Set the operational state of this project."
+      >
         <SettingsRow
           label="Status"
           description="Operational state for this project."
@@ -49,7 +50,7 @@ export function ProjectSettingsSection({
         >
           <div className="flex flex-col items-start gap-2 sm:items-end">
             <StatusBadge status={project.status} />
-            <Tabs
+            <Select
               value={project.status}
               onValueChange={(value) => {
                 if (!value || value === project.status) return;
@@ -59,22 +60,24 @@ export function ProjectSettingsSection({
                 setStatusDialogOpen(true);
               }}
             >
-              <TabsList size="sm" className="h-auto w-fit justify-start">
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectPopup>
                 {STATUS_OPTIONS.map((option) => (
-                  <TabsTab
+                  <SelectItem
                     key={option.value}
                     value={option.value}
-                    disabled={isChangingStatus}
                     className="capitalize"
                   >
                     {option.value}
-                  </TabsTab>
+                  </SelectItem>
                 ))}
-              </TabsList>
-            </Tabs>
+              </SelectPopup>
+            </Select>
           </div>
         </SettingsRow>
-      </SettingsPanel>
+      </AccordionSection>
       <ProjectDangerZone project={project} />
 
       <ConfirmDialog

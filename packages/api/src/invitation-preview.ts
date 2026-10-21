@@ -12,6 +12,7 @@ type InvitationPreviewRecord = {
   expiresAt: Date;
   deletedAt: Date | null;
   organizationDeletedAt: Date | null;
+  teamDeletedAt?: Date | null;
 };
 
 export function getPublicInvitationStatus(
@@ -20,6 +21,7 @@ export function getPublicInvitationStatus(
 ): PublicInvitationStatus {
   if (!invite) return "not_found";
   if (invite.organizationDeletedAt) return "unavailable";
+  if (invite.teamDeletedAt) return "unavailable";
   if (invite.deletedAt || invite.status === "canceled") return "revoked";
   if (invite.status === "accepted") return "accepted";
   if (invite.status === "rejected") return "declined";

@@ -77,6 +77,42 @@ describe("evaluatePermission", () => {
       assert.equal(result.reason, "no_team_on_project");
     }
   });
+
+  it("allows a team lead to manage only team-scoped membership", () => {
+    const teamLead = { belongsToOrganization: true, role: "lead" as const };
+    assert.equal(
+      evaluatePermission({
+        action: "team.member.add",
+        orgRole: "member",
+        team: teamLead,
+      }).allowed,
+      true,
+    );
+    assert.equal(
+      evaluatePermission({
+        action: "team.member.remove",
+        orgRole: "member",
+        team: { ...teamLead, belongsToOrganization: false },
+      }).allowed,
+      false,
+    );
+    assert.equal(
+      evaluatePermission({
+        action: "team.member.role.change",
+        orgRole: "member",
+        team: teamLead,
+      }).allowed,
+      false,
+    );
+    assert.equal(
+      evaluatePermission({
+        action: "organization.settings.update",
+        orgRole: "member",
+        team: teamLead,
+      }).allowed,
+      false,
+    );
+  });
 });
 
 describe("roleCapability", () => {

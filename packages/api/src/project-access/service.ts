@@ -14,6 +14,7 @@ import { project } from "@loftlancer/db/schema/projects";
 import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { and, eq, inArray, isNull } from "drizzle-orm";
+import { getEffectiveProjectAccess } from "./effective-access";
 
 export async function applyDefaultGrantsForTeamOnProject(input: {
   organizationId: string;
@@ -87,6 +88,14 @@ export async function applyDefaultGrantsForTeamOnProject(input: {
 }
 
 export async function loadProjectAccessSummary(projectId: string) {
+  const [projectRow] = await db
+    .select({
+      creatorUserId: project.userId,
+      organizationId: project.organizationId,
+    })
+    .from(project)
+    .where(and(eq(project.id, projectId), isNull(project.deletedAt)))
+    .limit(1);
   const managers = await db
     .select({
       id: projectManager.id,
@@ -99,6 +108,7 @@ export async function loadProjectAccessSummary(projectId: string) {
     .where(
       and(
         eq(projectManager.projectId, projectId),
+        eq(projectManager.organizationId, projectRow?.organizationId ?? ""),
         isNull(projectManager.deletedAt),
       ),
     );
@@ -114,6 +124,7 @@ export async function loadProjectAccessSummary(projectId: string) {
     .where(
       and(
         eq(projectTeam.projectId, projectId),
+        eq(projectTeam.organizationId, projectRow?.organizationId ?? ""),
         isNull(projectTeam.deletedAt),
         isNull(team.deletedAt),
       ),
@@ -132,11 +143,87 @@ export async function loadProjectAccessSummary(projectId: string) {
     .where(
       and(
         eq(projectMemberGrant.projectId, projectId),
+        eq(projectMemberGrant.organizationId, projectRow?.organizationId ?? ""),
         isNull(projectMemberGrant.deletedAt),
       ),
     );
 
-  return { managers, teams: teamsOnProject, memberGrants: grants };
+  const organizationMembers = projectRow?.organizationId
+    ? await db
+        .select({
+          userId: member.userId,
+          role: member.role,
+          name: user.name,
+          email: user.email,
+        })
+        .from(member)
+        .innerJoin(user, eq(member.userId, user.id))
+        .where(
+          and(
+            eq(member.organizationId, projectRow.organizationId),
+            isNull(member.deletedAt),
+          ),
+        )
+    : [];
+
+  const linkedTeamIds = teamsOnProject.map((row) => row.teamId);
+  const linkedTeamMembers = linkedTeamIds.length
+    ? await db
+        .select({
+          userId: teamMember.userId,
+          teamId: teamMember.teamId,
+          teamName: team.name,
+        })
+        .from(teamMember)
+        .innerJoin(team, eq(teamMember.teamId, team.id))
+        .where(
+          and(
+            inArray(teamMember.teamId, linkedTeamIds),
+            eq(team.organizationId, projectRow?.organizationId ?? ""),
+            isNull(team.deletedAt),
+          ),
+        )
+    : [];
+
+  const managersByUser = new Set(managers.map((row) => row.userId));
+  const grantsByUser = new Map(grants.map((row) => [row.userId, row.grants]));
+  const teamsByUser = new Map<string, Set<string>>();
+  for (const row of linkedTeamMembers) {
+    const names = teamsByUser.get(row.userId) ?? new Set<string>();
+    names.add(row.teamName);
+    teamsByUser.set(row.userId, names);
+  }
+  const accessPeople = organizationMembers.flatMap((person) => {
+    const linkedTeams = [...(teamsByUser.get(person.userId) ?? [])];
+    const memberGrants = grantsByUser.get(person.userId) ?? [];
+    const access = getEffectiveProjectAccess({
+      role: person.role,
+      isProjectCreator: projectRow?.creatorUserId === person.userId,
+      isProjectManager: managersByUser.has(person.userId),
+      linkedTeams,
+      memberGrants,
+    });
+    return access.effectiveActions.length
+      ? [
+          {
+            userId: person.userId,
+            name: person.name,
+            email: person.email,
+            role: access.role,
+            sources: access.sources,
+            effectiveActions: access.effectiveActions,
+          },
+        ]
+      : [];
+  });
+
+  return {
+    creatorUserId: projectRow?.creatorUserId ?? null,
+    managers,
+    teams: teamsOnProject,
+    memberGrants: grants,
+    accessPeople,
+  };
 }
 
 export async function upsertProjectManagerRow(input: {

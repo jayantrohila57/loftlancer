@@ -2,29 +2,22 @@
 
 import { PROJECT_MEMBER_GRANT_KEYS } from "@loftlancer/actions";
 import type { ProjectOutput } from "@loftlancer/api/types";
-import { Button } from "@loftlancer/ui/button";
 import { Checkbox } from "@loftlancer/ui/checkbox";
+import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
+import { DataTable } from "@loftlancer/ui/data-table/data-table";
+import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
 import { Label } from "@loftlancer/ui/label";
+import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@loftlancer/ui/table";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { ErrorState } from "@/components/patterns/error-state";
-import {
-  SettingsPanel,
-  SettingsRow,
-  SettingsSectionHeader,
-} from "@/components/patterns/settings-layout";
+import { SettingsRow } from "@/components/patterns/settings-layout";
 import { Can } from "@/domain/permissions/components/can";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useConfirm } from "@/hooks/use-confirm";
@@ -80,6 +73,9 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
     });
     void queryClient.invalidateQueries({
       queryKey: trpc.permissions.snapshot.queryKey({}),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: trpc.teams.projects.pathKey(),
     });
   };
 
@@ -139,6 +135,148 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
   const teams = teamsQuery.data?.items ?? [];
   const linkedTeamIds = new Set(summary?.teams.map((row) => row.teamId) ?? []);
   const availableTeams = teams.filter((team) => !linkedTeamIds.has(team.id));
+  const managers = summary?.managers ?? [];
+  const linkedTeams = summary?.teams ?? [];
+  const memberGrants = summary?.memberGrants ?? [];
+  const accessPeople = summary?.accessPeople ?? [];
+  const effectiveAccessColumns: DataTableColumnDef<
+    (typeof accessPeople)[number]
+  >[] = [
+    {
+      accessorKey: "name",
+      header: "Person",
+      cell: ({ row }) =>
+        row.original.name ?? row.original.email ?? row.original.userId,
+    },
+    {
+      accessorKey: "role",
+      header: "Organization role",
+      cell: ({ row }) => row.original.role ?? "No organization role",
+    },
+    {
+      id: "sources",
+      header: "Access through",
+      cell: ({ row }) => row.original.sources.join(", "),
+    },
+    {
+      id: "effectiveActions",
+      header: "Effective project access",
+      cell: ({ row }) =>
+        row.original.effectiveActions.map(formatActionLabel).join(", "),
+    },
+  ];
+  const managerColumns: DataTableColumnDef<(typeof managers)[number]>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Member" />
+      ),
+      cell: ({ row }) =>
+        row.original.name ?? row.original.email ?? row.original.userId,
+    },
+    {
+      id: "actions",
+      meta: { role: "actions" },
+      header: () => <DataTableActionsColumnHeader />,
+      cell: ({ row }) => (
+        <DataTableRowActions
+          label={`Actions for ${row.original.name ?? row.original.email ?? "member"}`}
+          actions={[
+            {
+              label: "Remove manager",
+              destructive: true,
+              disabled: removeManager.isPending,
+              onSelect: () =>
+                confirm({
+                  title: `Remove ${row.original.name ?? row.original.email ?? "this manager"}?`,
+                  description:
+                    "They will lose project manager permissions. Their organization role and any direct member grants stay in place.",
+                  confirmLabel: "Remove manager",
+                  variant: "destructive",
+                  onConfirm: async () => {
+                    await removeManager.mutateAsync({
+                      projectId: project.id,
+                      userId: row.original.userId,
+                    });
+                  },
+                }),
+            },
+          ]}
+        />
+      ),
+    },
+  ];
+  const teamColumns: DataTableColumnDef<(typeof linkedTeams)[number]>[] = [
+    {
+      accessorKey: "teamName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Team" />
+      ),
+    },
+    {
+      id: "actions",
+      meta: { role: "actions" },
+      header: () => <DataTableActionsColumnHeader />,
+      cell: ({ row }) => (
+        <DataTableRowActions
+          label={`Actions for ${row.original.teamName}`}
+          actions={[
+            {
+              label: "Unlink team",
+              destructive: true,
+              disabled: removeTeam.isPending,
+              onSelect: () =>
+                confirm({
+                  title: `Unlink ${row.original.teamName}?`,
+                  description:
+                    "Team members will lose access from this link. Direct grants stay saved, but need another linked team to be effective. Project manager assignments stay in place.",
+                  confirmLabel: "Unlink team",
+                  variant: "destructive",
+                  onConfirm: async () => {
+                    await removeTeam.mutateAsync({
+                      projectId: project.id,
+                      teamId: row.original.teamId,
+                    });
+                  },
+                }),
+            },
+          ]}
+        />
+      ),
+    },
+  ];
+  const grantColumns: DataTableColumnDef<(typeof memberGrants)[number]>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Member" />
+      ),
+      cell: ({ row }) =>
+        row.original.name ?? row.original.email ?? row.original.userId,
+    },
+    {
+      accessorKey: "grants",
+      header: "Capabilities",
+      cell: ({ row }) =>
+        row.original.grants.map(formatActionLabel).join(", ") || "—",
+    },
+    {
+      id: "actions",
+      meta: { role: "actions" },
+      header: () => <DataTableActionsColumnHeader />,
+      cell: ({ row }) => (
+        <DataTableRowActions
+          label={`Access actions for ${row.original.name ?? row.original.email ?? "member"}`}
+          actions={[
+            {
+              label: "Edit grants",
+              onSelect: () => loadGrantsForUser(row.original.userId),
+            },
+          ]}
+        />
+      ),
+    },
+  ];
 
   const loadGrantsForUser = (userId: string) => {
     setGrantUserId(userId);
@@ -155,7 +293,13 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
     ((canAssignManager.allowed || canManageGrants.allowed) &&
       membersQuery.isLoading)
   ) {
-    return <SettingsPanelSkeleton rows={4} />;
+    return (
+      <div className="flex min-w-0 flex-col gap-4">
+        <AccordionSectionSkeleton rows={3} />
+        <AccordionSectionSkeleton rows={2} />
+        <AccordionSectionSkeleton rows={2} />
+      </div>
+    );
   }
 
   if (
@@ -181,59 +325,43 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      <AccordionSection
+        title="Effective access"
+        description="Shows who can access this project and why. Direct member grants are effective only while a team is linked to the project."
+      >
+        <DataTable
+          columns={effectiveAccessColumns}
+          data={accessPeople}
+          searchable
+          enablePagination
+          pageSize={10}
+          framed
+          compactLayout
+          caption="Effective project access"
+          captionSrOnly
+          searchPlaceholder="Search people…"
+          emptyMessage="No organization members currently have project access."
+        />
+      </AccordionSection>
+
       <Can action="project.assign_manager">
-        <SettingsPanel>
-          <SettingsSectionHeader
-            title="Project managers"
-            description="Managers assigned to this project can manage resources and member grants."
-            icon="member"
+        <AccordionSection
+          title="Project managers"
+          description="Managers assigned to this project can manage resources and member grants."
+        >
+          <DataTable
+            columns={managerColumns}
+            data={managers}
+            searchable
+            enablePagination
+            pageSize={10}
+            framed
+            compactLayout
+            caption="Project managers"
+            captionSrOnly
+            searchPlaceholder="Search managers…"
+            emptyMessage="No project managers yet."
           />
-          {summary?.managers.length ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Member</TableHead>
-                  <TableHead className="w-[100px]" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {summary.managers.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell>{row.name ?? row.email ?? row.userId}</TableCell>
-                    <TableCell>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        disabled={removeManager.isPending}
-                        onClick={() =>
-                          confirm({
-                            title: `Remove ${row.name ?? row.email ?? "this manager"}?`,
-                            description:
-                              "They will lose project manager permissions. Their organization role and any direct member grants stay in place.",
-                            confirmLabel: "Remove manager",
-                            variant: "destructive",
-                            onConfirm: async () => {
-                              await removeManager.mutateAsync({
-                                projectId: project.id,
-                                userId: row.userId,
-                              });
-                            },
-                          })
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="px-4 pb-4 text-muted-foreground text-sm">
-              No project managers yet.
-            </p>
-          )}
           <SettingsRow
             label="Add manager"
             description="Assign an organization manager."
@@ -270,62 +398,27 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
               </LoadingButton>
             </div>
           </SettingsRow>
-        </SettingsPanel>
+        </AccordionSection>
       </Can>
 
       <Can action="project.assign_team" projectId={project.id}>
-        <SettingsPanel>
-          <SettingsSectionHeader
-            title="Teams on project"
-            description="Team members receive default project grants when linked. Direct member grants can add or change specific capabilities."
-            icon="member"
+        <AccordionSection
+          title="Teams on project"
+          description="Team members receive default project grants when linked. Direct member grants can add or change specific capabilities."
+        >
+          <DataTable
+            columns={teamColumns}
+            data={linkedTeams}
+            searchable
+            enablePagination
+            pageSize={10}
+            framed
+            compactLayout
+            caption="Teams on this project"
+            captionSrOnly
+            searchPlaceholder="Search teams…"
+            emptyMessage="No teams linked yet."
           />
-          {summary?.teams.length ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Team</TableHead>
-                  <TableHead className="w-[100px]" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {summary.teams.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell>{row.teamName}</TableCell>
-                    <TableCell>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        disabled={removeTeam.isPending}
-                        onClick={() =>
-                          confirm({
-                            title: `Unlink ${row.teamName}?`,
-                            description:
-                              "Team members will lose the default project access granted through this link. Direct member grants and project manager access stay in place.",
-                            confirmLabel: "Unlink team",
-                            variant: "destructive",
-                            onConfirm: async () => {
-                              await removeTeam.mutateAsync({
-                                projectId: project.id,
-                                teamId: row.teamId,
-                              });
-                            },
-                          })
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="px-4 pb-4 text-muted-foreground text-sm">
-              No teams linked yet.
-            </p>
-          )}
           <SettingsRow
             label="Link a team"
             description={
@@ -360,51 +453,27 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
               </LoadingButton>
             </div>
           </SettingsRow>
-        </SettingsPanel>
+        </AccordionSection>
       </Can>
 
       <Can action="project.permission.grant" projectId={project.id}>
-        <SettingsPanel>
-          <SettingsSectionHeader
-            title="Member grants"
-            description="Per-member create/read/update/delete access on this project."
-            icon="lock"
+        <AccordionSection
+          title="Member grants"
+          description="Per-member create/read/update/delete access on this project."
+        >
+          <DataTable
+            columns={grantColumns}
+            data={memberGrants}
+            searchable
+            enablePagination
+            pageSize={10}
+            framed
+            compactLayout
+            caption="Project member grants"
+            captionSrOnly
+            searchPlaceholder="Search members…"
+            emptyMessage="No member grants configured yet."
           />
-          {summary?.memberGrants.length ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Member</TableHead>
-                  <TableHead>Grants</TableHead>
-                  <TableHead className="w-[100px]" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {summary.memberGrants.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell>{row.name ?? row.email ?? row.userId}</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">
-                      {row.grants.map(formatActionLabel).join(", ") || "—"}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => loadGrantsForUser(row.userId)}
-                      >
-                        Edit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="px-4 pb-4 text-muted-foreground text-sm">
-              No member grants configured yet.
-            </p>
-          )}
           <SettingsRow
             label="Member"
             description="Org members receive grants when on a linked team."
@@ -471,7 +540,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
               </LoadingButton>
             </div>
           ) : null}
-        </SettingsPanel>
+        </AccordionSection>
       </Can>
       {ConfirmDialog}
     </div>

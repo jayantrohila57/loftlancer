@@ -73,7 +73,7 @@ export function OrganizationsPageClient({
         {activeTab === "invites" ? (
           <OrganizationsListInvitations />
         ) : (
-          <OrganizationsList onCreateOrganization={openCreate} />
+          <OrganizationsList />
         )}
       </DashboardSection>
       <CreateOrganizationSheet

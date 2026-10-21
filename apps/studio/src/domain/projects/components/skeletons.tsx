@@ -55,7 +55,7 @@ export function ProjectsSkeleton() {
   );
 }
 
-/** Whole projects page while the route loads: same header, stats and body. */
+/** Whole projects page while the route loads: same header and body. */
 export function ProjectsPageSkeleton() {
   return (
     <DashboardSection

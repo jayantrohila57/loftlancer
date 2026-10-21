@@ -35,6 +35,7 @@ export type OrganizationInvitationsTableProps = {
   caption?: string;
   /** Project invitations also require the project grant permission. */
   projectId?: string;
+  scopeLabel?: string;
 };
 
 export function OrganizationInvitationsTable({
@@ -47,8 +48,19 @@ export function OrganizationInvitationsTable({
   clientPagination = true,
   caption = "Organization invitations",
   projectId,
+  scopeLabel = "Organization",
 }: OrganizationInvitationsTableProps) {
   const columns: DataTableColumnDef<OrganizationInvitationRow>[] = [
+    columnHelper.display({
+      id: "scope",
+      header: "Access scope",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {scopeLabel}
+          {row.original.teamName ? `: ${row.original.teamName}` : ""}
+        </span>
+      ),
+    }),
     columnHelper.accessor("email", {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Email" />
@@ -64,10 +76,35 @@ export function OrganizationInvitationsTable({
     }),
     columnHelper.accessor("role", {
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Role" />
+        <DataTableColumnHeader
+          column={column}
+          title={scopeLabel === "Team" ? "Organization role" : "Role"}
+        />
       ),
       cell: ({ getValue }) => <RoleBadge role={String(getValue())} />,
     }),
+    ...(scopeLabel === "Team"
+      ? [
+          columnHelper.display({
+            id: "invitedTeamRole",
+            header: "Invited team role",
+            cell: ({ row }) => (
+              <RoleBadge role={row.original.invitedTeamRole ?? "member"} />
+            ),
+          }),
+          columnHelper.display({
+            id: "linkedProjects",
+            header: "Project access",
+            cell: ({ row }) => (
+              <span className="text-muted-foreground">
+                {row.original.linkedProjects?.length
+                  ? row.original.linkedProjects.join(", ")
+                  : "No projects linked"}
+              </span>
+            ),
+          }),
+        ]
+      : []),
     columnHelper.accessor("status", {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />

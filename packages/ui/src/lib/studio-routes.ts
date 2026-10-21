@@ -16,7 +16,13 @@
  *   /:org/:project/apps/env[/:envSlug]   Environments app
  *   /:org/:project/apps/tasks[/:number]  Tasks app
  *   /:org/:project/apps/:app[/settings]  registered app
- *   Legacy sibling app URLs remain reachable for existing links.
+ *   Legacy /:org/:project/{env,tasks} URLs permanently redirect to apps/*.
+ *
+ * Ownership: organization owns membership, org roles, security and org invites;
+ * project owns configuration, direct access, installed apps and project invites;
+ * team owns its members, team role and linked projects; installed app owns its
+ * configuration and (when enabled) app-scoped access. Account settings are
+ * user-scoped. An app is always nested under its project.
  */
 export type OrgSection =
   | "projects"

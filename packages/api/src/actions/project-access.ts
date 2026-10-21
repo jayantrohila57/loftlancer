@@ -1,4 +1,5 @@
 import { db } from "@loftlancer/db";
+import { organization } from "@loftlancer/db/schema/organization";
 import {
   projectManager,
   projectMemberGrant,
@@ -11,17 +12,43 @@ import { and, eq, inArray, isNull } from "drizzle-orm";
 export async function loadProjectAccessContext(
   userId: string,
   projectId: string,
+  organizationId?: string | null,
 ): Promise<{
   isProjectCreator: boolean;
   isProjectManager: boolean;
   memberGrants: string[];
   hasTeamLink: boolean;
+  belongsToOrganization: boolean;
 }> {
   const [proj] = await db
-    .select({ userId: project.userId })
+    .select({
+      userId: project.userId,
+      organizationId: project.organizationId,
+    })
     .from(project)
-    .where(and(eq(project.id, projectId), isNull(project.deletedAt)))
+    .innerJoin(organization, eq(project.organizationId, organization.id))
+    .where(
+      and(
+        eq(project.id, projectId),
+        isNull(project.deletedAt),
+        isNull(organization.deletedAt),
+      ),
+    )
     .limit(1);
+  const belongsToOrganization = Boolean(
+    proj && projectBelongsToOrganization(proj.organizationId, organizationId),
+  );
+
+  if (!proj?.organizationId || !belongsToOrganization) {
+    return {
+      isProjectCreator: false,
+      isProjectManager: false,
+      memberGrants: [],
+      hasTeamLink: false,
+      belongsToOrganization: false,
+    };
+  }
+  const projectOrganizationId = proj.organizationId;
 
   const [manager] = await db
     .select({ id: projectManager.id })
@@ -29,6 +56,7 @@ export async function loadProjectAccessContext(
     .where(
       and(
         eq(projectManager.projectId, projectId),
+        eq(projectManager.organizationId, projectOrganizationId),
         eq(projectManager.userId, userId),
         isNull(projectManager.deletedAt),
       ),
@@ -41,6 +69,7 @@ export async function loadProjectAccessContext(
     .where(
       and(
         eq(projectMemberGrant.projectId, projectId),
+        eq(projectMemberGrant.organizationId, projectOrganizationId),
         eq(projectMemberGrant.userId, userId),
         isNull(projectMemberGrant.deletedAt),
       ),
@@ -51,7 +80,11 @@ export async function loadProjectAccessContext(
     .select({ teamId: projectTeam.teamId })
     .from(projectTeam)
     .where(
-      and(eq(projectTeam.projectId, projectId), isNull(projectTeam.deletedAt)),
+      and(
+        eq(projectTeam.projectId, projectId),
+        eq(projectTeam.organizationId, projectOrganizationId),
+        isNull(projectTeam.deletedAt),
+      ),
     );
 
   let hasTeamLink = false;
@@ -65,6 +98,7 @@ export async function loadProjectAccessContext(
         and(
           eq(teamMember.userId, userId),
           inArray(teamMember.teamId, teamIds),
+          eq(team.organizationId, projectOrganizationId),
           isNull(team.deletedAt),
         ),
       )
@@ -73,11 +107,22 @@ export async function loadProjectAccessContext(
   }
 
   return {
-    isProjectCreator: proj?.userId === userId,
+    isProjectCreator: proj.userId === userId,
     isProjectManager: Boolean(manager),
     memberGrants: grantRow?.grants ?? [],
     hasTeamLink,
+    belongsToOrganization,
   };
+}
+
+function projectBelongsToOrganization(
+  projectOrganizationId: string | null,
+  activeOrganizationId?: string | null,
+) {
+  return Boolean(
+    projectOrganizationId &&
+      (!activeOrganizationId || projectOrganizationId === activeOrganizationId),
+  );
 }
 
 export async function userHasAnyProjectManagerAssignment(

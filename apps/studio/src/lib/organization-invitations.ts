@@ -6,6 +6,9 @@ export type OrganizationInvitationRow = {
   createdAt?: Date | string;
   expiresAt: Date | string;
   inviterName?: string | null;
+  teamName?: string | null;
+  invitedTeamRole?: "member" | null;
+  linkedProjects?: string[];
 };
 
 export function isPendingInvitationStatus(status: string | undefined): boolean {
