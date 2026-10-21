@@ -20,6 +20,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 - Defined the management resource and access contracts and redirect legacy Environment and Task paths into canonical project Apps routes (#543, #544).
 
+### Security
+
+- Permission checks and client snapshots now reject inactive organizations and cross-organization project IDs consistently (#545).
+
 ## [1.14.11] - 2026-10-21
 
 ### Fixed

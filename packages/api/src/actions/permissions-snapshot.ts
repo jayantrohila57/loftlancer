@@ -2,11 +2,12 @@ import {
   type ActionName,
   actionNames,
   evaluatePermission,
+  getActionDefinition,
   normalizeOrgRole,
 } from "@loftlancer/actions";
-import { db } from "@loftlancer/db";
-import { member } from "@loftlancer/db/schema/organization";
-import { and, eq } from "drizzle-orm";
+import { activeMemberWhere, db } from "@loftlancer/db";
+import { member, organization } from "@loftlancer/db/schema/organization";
+import { and, eq, isNull } from "drizzle-orm";
 import {
   isActionBlockedInSet,
   loadBlockedActionsForScope,
@@ -38,10 +39,14 @@ export async function buildPermissionsSnapshot(input: {
     const [membership] = await db
       .select({ role: member.role })
       .from(member)
+      .innerJoin(organization, eq(member.organizationId, organization.id))
       .where(
-        and(
-          eq(member.organizationId, input.organizationId),
-          eq(member.userId, input.userId),
+        activeMemberWhere(
+          and(
+            eq(member.organizationId, input.organizationId),
+            eq(member.userId, input.userId),
+            isNull(organization.deletedAt),
+          ),
         ),
       )
       .limit(1);
@@ -49,7 +54,11 @@ export async function buildPermissionsSnapshot(input: {
   }
 
   const projectCtx = input.projectId
-    ? await loadProjectAccessContext(input.userId, input.projectId)
+    ? await loadProjectAccessContext(
+        input.userId,
+        input.projectId,
+        input.organizationId,
+      )
     : null;
 
   let managerHasTimeline = false;
@@ -77,6 +86,15 @@ export async function buildPermissionsSnapshot(input: {
     const action = name as ActionName;
     if (isActionBlockedInSet(action, blockedActions)) {
       blocked.push(action);
+      actions[name] = false;
+      continue;
+    }
+
+    if (
+      input.projectId &&
+      getActionDefinition(action).scope === "project" &&
+      !projectCtx?.belongsToOrganization
+    ) {
       actions[name] = false;
       continue;
     }
