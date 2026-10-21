@@ -1,1 +1,1 @@
-export { default, metadata } from "../../../tasks/[taskNumber]/page";
+export { default, metadata } from "../page";

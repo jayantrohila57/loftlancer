@@ -12,6 +12,7 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod/v3";
 import { actionGuard } from "../actions/action-guard";
 import { projectIdFromInput } from "../actions/guard-resolve";
+import { resolveProjectAppStatus } from "../apps/project-app-status";
 import { orgProcedure, router } from "../index";
 
 const appInput = z.object({
@@ -58,10 +59,7 @@ export const projectAppsRouter = router({
           permissions: [...m.permissions],
           dataCreated: [...m.dataCreated],
           nav: m.nav.map((n) => ({ path: n.path, label: n.label })),
-          status: (row?.status ?? "available") as
-            | "active"
-            | "uninstalled"
-            | "available",
+          status: resolveProjectAppStatus(row?.status),
           installedAt: row?.installedAt ?? null,
           purgeAfter: row?.status === "uninstalled" ? row.purgeAfter : null,
           settingsSchema: m.settings.map((d) => ({

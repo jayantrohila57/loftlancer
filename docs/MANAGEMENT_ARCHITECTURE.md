@@ -25,6 +25,12 @@ The canonical path builders are in `packages/ui/src/lib/studio-routes.ts`.
 Environments and Tasks are installed project applications, so their canonical
 routes are nested under `/apps`. Existing sibling `/env`, `/env/:envSlug`,
 `/tasks`, and `/tasks/:number` links redirect to the canonical route.
+The Apps page is the project-scoped catalog: installed apps, available apps,
+and recently uninstalled apps with retained data are shown separately. The
+registry supplies installable apps; users do not create arbitrary app records.
+App pages and settings require an active install. Uninstall retains app data
+for 30 days; reinstall during that window restores it, and expired data is
+purged before the app returns to the available catalog.
 
 ## Operation ownership
 

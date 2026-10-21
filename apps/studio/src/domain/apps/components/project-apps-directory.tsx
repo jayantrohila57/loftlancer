@@ -37,6 +37,11 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
     isMutating,
     refetch,
   } = useProjectApps(slug);
+  const installedApps = apps.filter((app) => app.status === "active");
+  const availableApps = apps.filter((app) => app.status === "available");
+  const recentlyUninstalledApps = apps.filter(
+    (app) => app.status === "uninstalled",
+  );
   return (
     <DashboardSection
       title="Apps"
@@ -59,19 +64,98 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
           description="There are no apps available to add to this project."
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {apps.map((app) => (
-            <AppCard
-              key={app.id}
-              app={app}
-              slug={slug}
-              projectName={project.name}
-              canManage={canManage}
-              busy={isMutating}
-              onInstall={() => install(app.id, app.name)}
-              onUninstall={() => uninstall(app.id, app.name)}
-            />
-          ))}
+        <div className="flex flex-col gap-6">
+          {installedApps.length > 0 ? (
+            <section
+              aria-labelledby="installed-apps-heading"
+              className="space-y-3"
+            >
+              <div>
+                <h2 id="installed-apps-heading" className="font-medium text-sm">
+                  Installed apps
+                </h2>
+                <p className="text-muted-foreground text-xs">
+                  Apps currently available to this project.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {installedApps.map((app) => (
+                  <AppCard
+                    key={app.id}
+                    app={app}
+                    slug={slug}
+                    projectName={project.name}
+                    canManage={canManage}
+                    busy={isMutating}
+                    onInstall={() => install(app.id, app.name)}
+                    onUninstall={() => uninstall(app.id, app.name)}
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
+          {availableApps.length > 0 ? (
+            <section
+              aria-labelledby="available-apps-heading"
+              className="space-y-3"
+            >
+              <div>
+                <h2 id="available-apps-heading" className="font-medium text-sm">
+                  Available apps
+                </h2>
+                <p className="text-muted-foreground text-xs">
+                  Install an app to add its tools to this project.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {availableApps.map((app) => (
+                  <AppCard
+                    key={app.id}
+                    app={app}
+                    slug={slug}
+                    projectName={project.name}
+                    canManage={canManage}
+                    busy={isMutating}
+                    onInstall={() => install(app.id, app.name)}
+                    onUninstall={() => uninstall(app.id, app.name)}
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
+          {recentlyUninstalledApps.length > 0 ? (
+            <section
+              aria-labelledby="uninstalled-apps-heading"
+              className="space-y-3"
+            >
+              <div>
+                <h2
+                  id="uninstalled-apps-heading"
+                  className="font-medium text-sm"
+                >
+                  Recently uninstalled
+                </h2>
+                <p className="text-muted-foreground text-xs">
+                  Reinstall before the retention period ends to restore saved
+                  data.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {recentlyUninstalledApps.map((app) => (
+                  <AppCard
+                    key={app.id}
+                    app={app}
+                    slug={slug}
+                    projectName={project.name}
+                    canManage={canManage}
+                    busy={isMutating}
+                    onInstall={() => install(app.id, app.name)}
+                    onUninstall={() => uninstall(app.id, app.name)}
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
         </div>
       )}
     </DashboardSection>
