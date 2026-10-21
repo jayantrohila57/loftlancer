@@ -15,7 +15,7 @@ import { Label } from "@loftlancer/ui/label";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { Textarea } from "@loftlancer/ui/textarea";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { GuardedDialog } from "@/components/patterns/guarded-dialog";
@@ -32,6 +32,7 @@ import { isNotificationsEnabledOnClient } from "@/lib/notifications-enabled";
 import { captureEvent, STUDIO_EVENTS } from "@/lib/posthog";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
+import { trpc } from "@/utils/trpc";
 
 const STATUS_LABEL: Record<ParsedInviteEmail["status"], string | null> = {
   valid: null,
@@ -51,6 +52,7 @@ type BulkInviteDialogProps = {
   pendingEmails?: string[];
   onInvited?: () => void;
   fixedTeamId?: string;
+  fixedProjectId?: string;
 };
 
 /** Bulk email invite after reui dialog-2: paste emails, pick a role, send N invites. */
@@ -63,6 +65,7 @@ export function BulkInviteDialog({
   pendingEmails,
   onInvited,
   fixedTeamId,
+  fixedProjectId,
 }: BulkInviteDialogProps) {
   const { data: session } = useSession();
   const { syncInvitationReceived } = useNotificationMutations();
@@ -71,6 +74,9 @@ export function BulkInviteDialog({
   const [role, setRole] = useState<OrgInviteRole>("member");
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState<Record<string, string>>({});
+  const inviteToProject = useMutation(
+    trpc.organizations.inviteToProject.mutationOptions(),
+  );
 
   const roleQuery = useQuery({
     queryKey: ["org-active-member-role", organizationId],
@@ -80,7 +86,11 @@ export function BulkInviteDialog({
       });
       return (res.data?.role as string | undefined) ?? null;
     },
-    enabled: open && inviterRole === undefined && Boolean(organizationId),
+    enabled:
+      open &&
+      inviterRole === undefined &&
+      !fixedProjectId &&
+      Boolean(organizationId),
   });
   const effectiveRole =
     inviterRole !== undefined ? inviterRole : (roleQuery.data ?? null);
@@ -106,19 +116,30 @@ export function BulkInviteDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (valid.length === 0 || roles.length === 0) return;
+    if (valid.length === 0 || (!fixedProjectId && roles.length === 0)) return;
     setPending(true);
     const nextFailed: Record<string, string> = {};
     let sent = 0;
     for (const { email } of valid) {
-      const res = await authClient.organization.inviteMember({
-        email,
-        role,
-        organizationId,
-        ...(fixedTeamId ? { teamId: fixedTeamId } : {}),
-      });
-      if (res.error) {
-        nextFailed[email] = res.error.message ?? "Could not invite";
+      try {
+        if (fixedProjectId) {
+          await inviteToProject.mutateAsync({
+            projectId: fixedProjectId,
+            email,
+          });
+        } else {
+          const res = await authClient.organization.inviteMember({
+            email,
+            role,
+            organizationId,
+            ...(fixedTeamId ? { teamId: fixedTeamId } : {}),
+          });
+          if (res.error)
+            throw new Error(res.error.message ?? "Could not invite");
+        }
+      } catch (error) {
+        nextFailed[email] =
+          error instanceof Error ? error.message : "Could not invite";
         continue;
       }
       sent += 1;
@@ -132,6 +153,7 @@ export function BulkInviteDialog({
         count: sent,
         role,
         with_team: Boolean(fixedTeamId),
+        with_project: Boolean(fixedProjectId),
       });
       onInvited?.();
     }
@@ -167,12 +189,18 @@ export function BulkInviteDialog({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-1.5 text-base">
               <AppIcon name="invite" className="size-4" />
-              {fixedTeamId ? "Invite to team" : "Invite members"}
+              {fixedProjectId
+                ? "Invite to project"
+                : fixedTeamId
+                  ? "Invite to team"
+                  : "Invite members"}
             </DialogTitle>
             <DialogDescription className="text-sm">
-              {fixedTeamId
-                ? "Invite people into this team and organization. Paste emails separated by commas, spaces or new lines."
-                : "Paste emails separated by commas, spaces or new lines."}
+              {fixedProjectId
+                ? "Invite people to this project. Accepting adds them to the organization and grants project read access. Paste emails separated by commas, spaces or new lines."
+                : fixedTeamId
+                  ? "Invite people into this team and organization. Paste emails separated by commas, spaces or new lines."
+                  : "Paste emails separated by commas, spaces or new lines."}
             </DialogDescription>
           </DialogHeader>
           <DialogPanel className="flex flex-col gap-4">
@@ -238,26 +266,28 @@ export function BulkInviteDialog({
                 ) : null}
               </p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="bulk-invite-role" className="text-sm">
-                  Role
-                </Label>
-                <SearchableCombobox
-                  id="bulk-invite-role"
-                  value={role}
-                  onChange={(value) => setRole(value as OrgInviteRole)}
-                  disabled={pending || roles.length === 0}
-                  ariaLabel="Role"
-                  className="capitalize"
-                  options={roles.map((r) => ({
-                    value: r,
-                    label: r.charAt(0).toUpperCase() + r.slice(1),
-                  }))}
-                />
+            {!fixedProjectId ? (
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="bulk-invite-role" className="text-sm">
+                    Role
+                  </Label>
+                  <SearchableCombobox
+                    id="bulk-invite-role"
+                    value={role}
+                    onChange={(value) => setRole(value as OrgInviteRole)}
+                    disabled={pending || roles.length === 0}
+                    ariaLabel="Role"
+                    className="capitalize"
+                    options={roles.map((r) => ({
+                      value: r,
+                      label: r.charAt(0).toUpperCase() + r.slice(1),
+                    }))}
+                  />
+                </div>
               </div>
-            </div>
-            {effectiveRole !== null && roles.length === 0 ? (
+            ) : null}
+            {!fixedProjectId && effectiveRole !== null && roles.length === 0 ? (
               <Badge variant="outline" className="w-fit text-xs">
                 Your role can't invite members
               </Badge>
@@ -274,7 +304,9 @@ export function BulkInviteDialog({
             <SubmitButton
               isLoading={pending}
               loadingLabel="Sending invites…"
-              disabled={valid.length === 0 || roles.length === 0}
+              disabled={
+                valid.length === 0 || (!fixedProjectId && roles.length === 0)
+              }
               className="min-w-32 tabular-nums"
             >
               {valid.length > 0

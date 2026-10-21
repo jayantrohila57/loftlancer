@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@loftlancer/ui/button";
-import { Input } from "@loftlancer/ui/input";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useActiveOrganization } from "@/components/org/active-organization-context";
 import {
   INVITATION_PAGE_SIZE,
   InvitationListControls,
@@ -12,13 +12,15 @@ import {
 } from "@/components/org/invitation-list-controls";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { ErrorState } from "@/components/patterns/error-state";
+import { BulkInviteDialog } from "@/domain/organizations/components/bulk-invite-dialog";
 import { Can } from "@/domain/permissions/components/can";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
 
 export function ProjectInvitationsPage({ slug }: { slug: string }) {
   const queryClient = useQueryClient();
-  const [email, setEmail] = useState("");
+  const { activeOrganizationId } = useActiveOrganization();
+  const [inviteOpen, setInviteOpen] = useState(false);
   const [status, setStatus] = useState<InvitationStatusFilter>("pending");
   const [page, setPage] = useState(0);
   const [revokingId, setRevokingId] = useState<string | null>(null);
@@ -34,21 +36,20 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
     }),
     enabled: Boolean(project?.id),
   });
+  const pendingInvitations = useQuery({
+    ...trpc.organizations.listProjectInvitations.queryOptions({
+      projectId: project?.id ?? "",
+      status: "pending",
+      limit: 200,
+      offset: 0,
+    }),
+    enabled: Boolean(project?.id),
+  });
   const refresh = () => {
     void queryClient.invalidateQueries({
       queryKey: trpc.organizations.listProjectInvitations.pathKey(),
     });
   };
-  const invite = useMutation(
-    trpc.organizations.inviteToProject.mutationOptions({
-      onSuccess: () => {
-        setEmail("");
-        toast.success("Project invitation sent");
-        refresh();
-      },
-      onError: (error) => toast.error(error.message),
-    }),
-  );
   const cancel = useMutation(
     trpc.organizations.cancelProjectInvitation.mutationOptions({
       onSuccess: () => {
@@ -83,49 +84,22 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
 
   return (
     <section className="space-y-4">
-      <div>
-        <h2 className="font-semibold text-xl tracking-tight">Invitations</h2>
-        <p className="mt-1 text-muted-foreground text-sm">
-          Invite a person to this project. Acceptance adds them to the
-          organization if needed and gives default project read access.
-        </p>
-      </div>
-      <Can action="member.invite">
-        <Can action="project.permission.grant" projectId={project.id}>
-          <form
-            className="flex flex-wrap items-end gap-2 rounded-xl border bg-card p-4"
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (email.trim()) {
-                invite.mutate({ projectId: project.id, email: email.trim() });
-              }
-            }}
-          >
-            <label
-              htmlFor="project-invite-email"
-              className="w-full font-medium text-sm"
-            >
-              Email address
-            </label>
-            <Input
-              id="project-invite-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="person@example.com"
-              className="max-w-sm"
-              required
-            />
-            <Button
-              type="submit"
-              size="sm"
-              disabled={invite.isPending || !email.trim()}
-            >
-              Send invitation
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-semibold text-xl tracking-tight">Invitations</h2>
+          <p className="mt-1 text-muted-foreground text-sm">
+            Invite a person to this project. Acceptance adds them to the
+            organization if needed and gives default project read access.
+          </p>
+        </div>
+        <Can action="member.invite">
+          <Can action="project.permission.grant" projectId={project.id}>
+            <Button type="button" size="sm" onClick={() => setInviteOpen(true)}>
+              Invite to project
             </Button>
-          </form>
+          </Can>
         </Can>
-      </Can>
+      </div>
       <InvitationListControls
         status={status}
         page={page}
@@ -167,6 +141,18 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
           }}
         />
       )}
+      {activeOrganizationId ? (
+        <BulkInviteDialog
+          organizationId={activeOrganizationId}
+          fixedProjectId={project.id}
+          open={inviteOpen}
+          onOpenChange={setInviteOpen}
+          pendingEmails={
+            pendingInvitations.data?.items.map((row) => row.email) ?? []
+          }
+          onInvited={refresh}
+        />
+      ) : null}
     </section>
   );
 }
