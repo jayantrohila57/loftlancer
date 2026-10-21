@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Added
 
+- Added additive Project, Team, team-member, and organization-member schema fields for profile and change provenance; existing records retain unknown historical actors (#585, #587, #588, #589).
 - Added organization member profiles, scoped custom roles, suspension controls, and invitation lifecycle tracking with shared permission enforcement (#579).
 - Added organization-level presentation defaults and apply saved project visibility to new projects (#577).
 

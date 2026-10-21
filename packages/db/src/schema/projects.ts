@@ -1,6 +1,8 @@
 import { relations, sql } from "drizzle-orm";
 import {
   boolean,
+  check,
+  date,
   index,
   pgTable,
   text,
@@ -19,6 +21,10 @@ export const project = pgTable(
     name: text("name").notNull(),
     slug: varchar("slug", { length: 255 }).notNull(),
     description: text("description"),
+    purpose: text("purpose"),
+    documentationUrl: text("documentation_url"),
+    startDate: date("start_date"),
+    targetDate: date("target_date"),
     isArchived: boolean("is_archived").default(false).notNull(),
     isPublic: boolean("is_public").default(false).notNull(),
     repositoryUrl: text("repository_url"),
@@ -40,12 +46,27 @@ export const project = pgTable(
       .defaultNow()
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
+    updatedBy: text("updated_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
     deletedBy: text("deleted_by").references(() => user.id, {
       onDelete: "set null",
     }),
   },
   (table) => [
+    check(
+      "project_purpose_length_check",
+      sql`${table.purpose} IS NULL OR length(${table.purpose}) <= 500`,
+    ),
+    check(
+      "project_documentation_url_length_check",
+      sql`${table.documentationUrl} IS NULL OR length(${table.documentationUrl}) <= 2048`,
+    ),
+    check(
+      "project_dates_order_check",
+      sql`${table.startDate} IS NULL OR ${table.targetDate} IS NULL OR ${table.targetDate} >= ${table.startDate}`,
+    ),
     // Per-org slugs (#301): URLs are /[org]/[project].
     uniqueIndex("project_org_slug_active_uidx")
       .on(table.organizationId, table.slug)
