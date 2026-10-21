@@ -1,3 +1,5 @@
+import { randomBytes, randomUUID } from "node:crypto";
+import { resolveTxt } from "node:dns/promises";
 import { isActionsAuditEnabled, normalizeOrgRole } from "@loftlancer/actions";
 import { sendOrganizationInvitationEmail } from "@loftlancer/auth/organization-invitation-email";
 import { activeMemberWhere, db } from "@loftlancer/db";
@@ -6,6 +8,7 @@ import {
   invitation,
   member,
   organization,
+  organizationDomain,
   organizationProfile,
   organizationSettings,
 } from "@loftlancer/db/schema/organization";
@@ -31,9 +34,36 @@ import {
   mcpMembersList,
 } from "../mcp/organization-ops";
 import { organizationBrandingLogoSchema } from "../organization-branding-validation";
+import {
+  domainChallengeMatches,
+  hashDomainChallenge,
+  normalizeOrganizationEmailDomain,
+} from "../organization-domain-verification";
 import { transferOrganizationOwnership } from "../organization-ownership";
 import { organizationProfilePatchSchema } from "../organization-profile-validation";
 import { organizationSettingsPatchSchema } from "../organization-settings-validation";
+
+async function requireOrganizationOwner(
+  userId: string,
+  organizationId: string,
+) {
+  const [membership] = await db
+    .select({ role: member.role })
+    .from(member)
+    .where(
+      and(
+        eq(member.organizationId, organizationId),
+        eq(member.userId, userId),
+        isNull(member.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (normalizeOrgRole(membership?.role) !== "owner")
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Only organization owners can manage domains.",
+    });
+}
 
 export const organizationsRouter = router({
   transferOwnership: orgProcedure
@@ -785,6 +815,212 @@ export const organizationsRouter = router({
             updatedAt: new Date(),
             updatedBy: ctx.session.user.id,
           },
+        });
+      return { success: true };
+    }),
+
+  listSecurityDomains: orgProcedure
+    .use(actionGuard("organization.settings.view"))
+    .query(async ({ ctx }) => {
+      if (!ctx.activeOrganizationId) return { items: [] };
+      const items = await db
+        .select({
+          id: organizationDomain.id,
+          hostname: organizationDomain.hostname,
+          purpose: organizationDomain.purpose,
+          state: organizationDomain.state,
+          challengeExpiresAt: organizationDomain.challengeExpiresAt,
+          verifiedAt: organizationDomain.verifiedAt,
+          createdAt: organizationDomain.createdAt,
+        })
+        .from(organizationDomain)
+        .where(eq(organizationDomain.organizationId, ctx.activeOrganizationId))
+        .orderBy(desc(organizationDomain.createdAt));
+      return { items };
+    }),
+
+  createSecurityDomain: orgProcedure
+    .input(z.object({ hostname: z.string().min(1).max(253) }))
+    .use(
+      actionGuard("organization.settings.update", (_input) => ({
+        payload: {
+          surface: "organization_domain",
+          changedFields: ["hostname"],
+        },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      let hostname: string;
+      try {
+        hostname = normalizeOrganizationEmailDomain(input.hostname);
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: error instanceof Error ? error.message : "Invalid domain.",
+        });
+      }
+      const [existing] = await db
+        .select({ id: organizationDomain.id })
+        .from(organizationDomain)
+        .where(
+          and(
+            eq(organizationDomain.organizationId, organizationId),
+            eq(organizationDomain.hostname, hostname),
+            sql`${organizationDomain.state} <> 'revoked'`,
+          ),
+        )
+        .limit(1);
+      if (existing)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This domain is already added.",
+        });
+      const token = randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      const id = randomUUID();
+      try {
+        await db.insert(organizationDomain).values({
+          id,
+          organizationId,
+          hostname,
+          purpose: "email",
+          state: "pending",
+          verificationTokenHash: hashDomainChallenge(token),
+          challengeExpiresAt: expiresAt,
+          createdBy: ctx.session.user.id,
+        });
+      } catch {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This domain is already claimed or pending verification.",
+        });
+      }
+      return {
+        id,
+        hostname,
+        state: "pending" as const,
+        txtRecord: {
+          name: `_loftlancer-verification.${hostname}`,
+          value: token,
+        },
+        expiresAt,
+      };
+    }),
+
+  verifySecurityDomain: orgProcedure
+    .input(z.object({ domainId: z.string().uuid() }))
+    .use(
+      actionGuard("organization.settings.update", () => ({
+        payload: { surface: "organization_domain", changedFields: ["state"] },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      const [row] = await db
+        .select()
+        .from(organizationDomain)
+        .where(
+          and(
+            eq(organizationDomain.id, input.domainId),
+            eq(organizationDomain.organizationId, organizationId),
+          ),
+        )
+        .limit(1);
+      if (row?.state !== "pending")
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Pending domain verification not found.",
+        });
+      if (row.challengeExpiresAt <= new Date())
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message:
+            "The verification record expired. Remove the domain and add it again.",
+        });
+      let records: string[][] = [];
+      try {
+        records = await Promise.race([
+          resolveTxt(`_loftlancer-verification.${row.hostname}`),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("DNS lookup timed out")), 3000),
+          ),
+        ]);
+      } catch {
+        return {
+          verified: false,
+          message:
+            "TXT record was not found yet. DNS changes can take time to appear.",
+        };
+      }
+      if (!domainChallengeMatches(records, row.verificationTokenHash)) {
+        return {
+          verified: false,
+          message:
+            "TXT record does not match the current verification challenge.",
+        };
+      }
+      const [updated] = await db
+        .update(organizationDomain)
+        .set({ state: "verified", verifiedAt: new Date() })
+        .where(
+          and(
+            eq(organizationDomain.id, row.id),
+            eq(organizationDomain.organizationId, organizationId),
+            eq(organizationDomain.state, "pending"),
+          ),
+        )
+        .returning({ id: organizationDomain.id });
+      if (!updated)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Domain status changed. Refresh and try again.",
+        });
+      return { verified: true, message: "Domain ownership verified." };
+    }),
+
+  revokeSecurityDomain: orgProcedure
+    .input(z.object({ domainId: z.string().uuid() }))
+    .use(
+      actionGuard("organization.settings.update", () => ({
+        payload: { surface: "organization_domain", changedFields: ["state"] },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      const [row] = await db
+        .update(organizationDomain)
+        .set({ state: "revoked", revokedAt: new Date() })
+        .where(
+          and(
+            eq(organizationDomain.id, input.domainId),
+            eq(organizationDomain.organizationId, organizationId),
+            sql`${organizationDomain.state} <> 'revoked'`,
+          ),
+        )
+        .returning({ id: organizationDomain.id });
+      if (!row)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Domain not found.",
         });
       return { success: true };
     }),
