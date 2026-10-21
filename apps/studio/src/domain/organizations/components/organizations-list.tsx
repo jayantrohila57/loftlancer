@@ -6,13 +6,7 @@ import { appIcons } from "@/lib/icons";
 import { OrganizationsListContent } from "./organizations-list-content";
 import { OrganizationsListBodySkeleton } from "./skeletons";
 
-type OrganizationsListProps = {
-  onCreateOrganization?: () => void;
-};
-
-export function OrganizationsList({
-  onCreateOrganization,
-}: OrganizationsListProps) {
+export function OrganizationsList() {
   const { orgs, loading, initialLoadDone } = useActiveOrganization();
 
   if (!initialLoadDone || loading) {
@@ -25,8 +19,6 @@ export function OrganizationsList({
         icon={appIcons.organization}
         title="No organizations yet"
         description="Create a workspace to collaborate with your team."
-        actionLabel="New organization"
-        onAction={onCreateOrganization}
       />
     );
   }
