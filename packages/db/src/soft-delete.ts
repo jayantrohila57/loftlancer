@@ -37,7 +37,10 @@ export function activeOrganizationWhere(extra?: SQL): SQL | undefined {
 }
 
 export function activeMemberWhere(extra?: SQL): SQL | undefined {
-  return mergeAnd(extra, notDeleted(member.deletedAt)) ?? extra;
+  return (
+    mergeAnd(extra, notDeleted(member.deletedAt), isNull(member.suspendedAt)) ??
+    extra
+  );
 }
 
 export function activeInvitationWhere(extra?: SQL): SQL | undefined {

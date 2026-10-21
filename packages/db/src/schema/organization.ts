@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   check,
+  foreignKey,
   index,
   integer,
   jsonb,
@@ -13,6 +14,7 @@ import {
 import { user } from "./auth";
 import { project } from "./projects";
 import { softDeleteColumns } from "./soft-delete-columns";
+import { team } from "./team";
 
 export const organization = pgTable(
   "organization",
@@ -201,10 +203,26 @@ export const member = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     role: text("role").default("member").notNull(),
+    jobTitle: text("job_title"),
+    department: text("department"),
+    invitedBy: text("invited_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    joinedAt: timestamp("joined_at", { withTimezone: true }),
+    suspendedAt: timestamp("suspended_at", { withTimezone: true }),
+    suspendedBy: text("suspended_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    suspensionReason: text("suspension_reason"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     ...softDeleteColumns,
   },
   (table) => [
+    check(
+      "member_suspension_reason_length_check",
+      sql`${table.suspensionReason} IS NULL OR length(${table.suspensionReason}) <= 250`,
+    ),
+    uniqueIndex("member_org_id_uidx").on(table.organizationId, table.id),
     uniqueIndex("member_organization_user_active_uidx")
       .on(table.organizationId, table.userId)
       .where(sql`${table.deletedAt} IS NULL`),
@@ -227,17 +245,132 @@ export const invitation = pgTable(
     inviterId: text("inviter_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    teamId: text("team_id"),
+    acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+    acceptedBy: text("accepted_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    rejectedAt: timestamp("rejected_at", { withTimezone: true }),
+    rejectedBy: text("rejected_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    revokedBy: text("revoked_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    lastSentAt: timestamp("last_sent_at", { withTimezone: true }),
+    teamId: text("team_id").references(() => team.id, { onDelete: "set null" }),
     projectId: text("project_id").references(() => project.id, {
       onDelete: "cascade",
     }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
     ...softDeleteColumns,
   },
   (table) => [
     index("invitation_organization_id_idx").on(table.organizationId),
     index("invitation_email_idx").on(table.email),
     index("invitation_project_id_idx").on(table.projectId),
+    foreignKey({
+      columns: [table.teamId, table.organizationId],
+      foreignColumns: [team.id, team.organizationId],
+      name: "invitation_team_same_org_fk",
+    }),
+  ],
+);
+
+export const organizationRole = pgTable(
+  "organization_role",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    createdBy: text("created_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("organization_role_org_name_uidx").on(
+      table.organizationId,
+      table.name,
+    ),
+    uniqueIndex("organization_role_org_id_uidx").on(
+      table.organizationId,
+      table.id,
+    ),
+  ],
+);
+
+export const organizationRolePermission = pgTable(
+  "organization_role_permission",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    roleId: text("role_id")
+      .notNull()
+      .references(() => organizationRole.id, { onDelete: "cascade" }),
+    actionName: text("action_name").notNull(),
+  },
+  (table) => [
+    uniqueIndex("organization_role_permission_role_action_uidx").on(
+      table.roleId,
+      table.actionName,
+    ),
+    foreignKey({
+      columns: [table.organizationId, table.roleId],
+      foreignColumns: [organizationRole.organizationId, organizationRole.id],
+      name: "organization_role_permission_same_org_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const memberOrganizationRole = pgTable(
+  "member_organization_role",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    memberId: text("member_id")
+      .notNull()
+      .references(() => member.id, { onDelete: "cascade" }),
+    roleId: text("role_id")
+      .notNull()
+      .references(() => organizationRole.id, { onDelete: "cascade" }),
+    assignedBy: text("assigned_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    assignedAt: timestamp("assigned_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("member_organization_role_org_member_uidx").on(
+      table.organizationId,
+      table.memberId,
+    ),
+    foreignKey({
+      columns: [table.organizationId, table.memberId],
+      foreignColumns: [member.organizationId, member.id],
+      name: "member_organization_role_same_org_member_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.organizationId, table.roleId],
+      foreignColumns: [organizationRole.organizationId, organizationRole.id],
+      name: "member_organization_role_same_org_role_fk",
+    }).onDelete("cascade"),
   ],
 );
 

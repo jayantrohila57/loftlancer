@@ -21,6 +21,7 @@ import { AppIcon } from "@/components/patterns/app-icon";
 import { GuardedDialog } from "@/components/patterns/guarded-dialog";
 import { useSession } from "@/domain/auth/lib/auth-actions";
 import { useNotificationMutations } from "@/domain/notifications/hooks/use-notifications";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { authClient } from "@/lib/auth-client";
 import {
   assignableInviteRoles,
@@ -74,6 +75,10 @@ export function BulkInviteDialog({
   const [role, setRole] = useState<OrgInviteRole>("member");
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState<Record<string, string>>({});
+  const invitationPermission = useCan("member.invite");
+  const createInvitation = useMutation(
+    trpc.organizations.createInvitation.mutationOptions(),
+  );
   const inviteToProject = useMutation(
     trpc.organizations.inviteToProject.mutationOptions(),
   );
@@ -94,7 +99,13 @@ export function BulkInviteDialog({
   });
   const effectiveRole =
     inviterRole !== undefined ? inviterRole : (roleQuery.data ?? null);
-  const roles = assignableInviteRoles(effectiveRole);
+  const builtInRoles = assignableInviteRoles(effectiveRole);
+  const roles =
+    !fixedProjectId && invitationPermission.allowed
+      ? builtInRoles.length > 0
+        ? builtInRoles
+        : ["member" as const]
+      : builtInRoles;
 
   const parsed = useMemo(
     () => parseInviteEmails(raw, { memberEmails, pendingEmails }),
@@ -128,14 +139,12 @@ export function BulkInviteDialog({
             email,
           });
         } else {
-          const res = await authClient.organization.inviteMember({
+          await createInvitation.mutateAsync({
             email,
             role,
             organizationId,
             ...(fixedTeamId ? { teamId: fixedTeamId } : {}),
           });
-          if (res.error)
-            throw new Error(res.error.message ?? "Could not invite");
         }
       } catch (error) {
         nextFailed[email] =

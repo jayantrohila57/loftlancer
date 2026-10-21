@@ -18,10 +18,15 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Added
 
+- Added organization member profiles, scoped custom roles, suspension controls, and invitation lifecycle tracking with shared permission enforcement (#579).
 - Added organization-level presentation defaults and apply saved project visibility to new projects (#577).
 
 - Added a typed organization profile, owner-only private details, safe archive/restore lifecycle, and archived-write enforcement across tRPC, MCP, and Better Auth (#575).
 - Added owner-managed HTTPS organization logos and consistent logo previews in organization cards, lists, and switcher (#576).
+
+### Security
+
+- Added owner-verified organization email domains with expiring DNS challenges and clear security capability status (#578).
 
 ## [1.16.0] - 2026-10-21
 

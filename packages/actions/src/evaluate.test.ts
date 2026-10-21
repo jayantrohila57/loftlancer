@@ -133,3 +133,35 @@ describe("roleCapability", () => {
     assert.notEqual(roleCapability("variable.reveal", "member"), "yes");
   });
 });
+
+describe("custom organization permissions", () => {
+  it("allows only explicitly delegated organization actions", () => {
+    assert.equal(
+      evaluatePermission({
+        action: "member.invite",
+        orgRole: "member",
+        customOrganizationActions: ["member.invite"],
+      }).allowed,
+      true,
+    );
+    assert.equal(
+      evaluatePermission({
+        action: "member.remove",
+        orgRole: "member",
+        customOrganizationActions: ["member.remove"],
+      }).allowed,
+      false,
+    );
+  });
+
+  it("never substitutes organization roles for project or app authorization", () => {
+    assert.equal(
+      evaluatePermission({
+        action: "variable.read",
+        orgRole: "member",
+        customOrganizationActions: ["member.invite"],
+      }).allowed,
+      false,
+    );
+  });
+});

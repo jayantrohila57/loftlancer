@@ -6,6 +6,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { organization } from "./organization";
@@ -26,7 +27,13 @@ export const team = pgTable(
       onDelete: "set null",
     }),
   },
-  (table) => [index("team_organization_id_idx").on(table.organizationId)],
+  (table) => [
+    index("team_organization_id_idx").on(table.organizationId),
+    uniqueIndex("team_id_organization_id_uidx").on(
+      table.id,
+      table.organizationId,
+    ),
+  ],
 );
 
 export const teamMember = pgTable(
