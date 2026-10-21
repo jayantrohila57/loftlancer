@@ -30,6 +30,7 @@ import {
   mcpInvitationReject,
   mcpMemberInvite,
   mcpMemberRemove,
+  mcpMemberSetSuspended,
   mcpMembersList,
   mcpMemberUpdateRole,
   mcpOrganizationCreate,
@@ -305,6 +306,32 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
       if (!organizationId) throw new Error("organization_required");
       const { userId: targetUserId } = input as { userId: string };
       return mcpMemberRemove(ctx.userId, organizationId, targetUserId);
+    },
+  },
+  "member.suspend": {
+    schema: orgFields.extend({
+      memberId: z.string().min(1),
+      suspended: z.boolean(),
+      reason: z.string().trim().max(250).optional(),
+    }),
+    run: async (input, ctx) => {
+      const organizationId = await resolveOrgFromInput(
+        ctx.userId,
+        input as { organizationId?: string; organizationSlug?: string },
+      );
+      if (!organizationId) throw new Error("organization_required");
+      const { memberId, suspended, reason } = input as {
+        memberId: string;
+        suspended: boolean;
+        reason?: string;
+      };
+      return mcpMemberSetSuspended(
+        ctx.userId,
+        organizationId,
+        memberId,
+        suspended,
+        reason,
+      );
     },
   },
   "member.role.update": {

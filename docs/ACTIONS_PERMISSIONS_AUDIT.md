@@ -94,7 +94,7 @@ Default roles (`statement.mjs`): **owner** (full org), **admin** (no org delete)
 
 Endpoints use internal `hasPermission({ permissions, role })`. Client: `authClient.organization.hasPermission({ permission: { invitation: ['create'] } })`.
 
-**Dynamic access control:** org-scoped custom roles stored in DB (`createOrgRole`, `listOrgRoles`, …) — suitable for **future** per-org customization; v1 should use **static roles** generated from our registry with optional dynamic AC later.
+**Dynamic access control:** Better Auth's own custom role API is not the authority for organization permissions. Loftlancer stores tenant-scoped custom organization roles against canonical `ActionName` entries and evaluates them in the same server permission path as built-in roles; see §4.6.
 
 ### 3.2 Teams
 
@@ -229,6 +229,34 @@ export const actionRegistry: Record<ActionName, ActionDefinition> = { ... };
 - `projectGrantKeys` union  
 - Zod `actionNameSchema` for audit API filters  
 - `ACTION_SIDEBAR_MAP` for nav (§7)
+
+### 4.6 Organization custom roles and suspension
+
+Custom organization roles are stored per tenant in `organization_role` and
+`organization_role_permission`; one optional role can be assigned to an active
+organization Member through `member_organization_role` (one custom role per
+Member). Only organization
+owners can create, edit, delete, or assign these roles. Permission keys must
+exist in the canonical action registry and be organization-scoped. Owner-only
+actions, project grants, and app access are never delegated through custom
+roles. Built-in Owner / Manager / Member remains the authoritative base role.
+Custom organization actions add capabilities only to a Member and never bypass
+project, team, app, or action-block checks. Role deletion removes its member
+assignments immediately.
+
+Assignments are intentionally single-role: there is no implicit union of
+multiple custom roles. Replacing or removing the assignment immediately changes
+the permission snapshot and the next server authorization check. Invitation
+records retain lifecycle timestamps and the most recent send time; resend
+attempt history is not presented as a timeline because the schema does not
+store every attempt. Team-scoped invitations are protected by a same-organization
+foreign key, and the migration fails if existing references need review.
+
+Suspended memberships are excluded by the shared active-member query helper,
+which denies application, MCP, and permission-snapshot access. Better Auth
+organization endpoints also reject requests by suspended users in the target
+organization. Suspension never deletes the user or changes access to other
+organizations; owner memberships cannot be suspended.
 
 ### 4.3 `requireAction` middleware
 

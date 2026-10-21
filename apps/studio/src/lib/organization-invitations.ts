@@ -4,6 +4,11 @@ export type OrganizationInvitationRow = {
   role: string;
   status: string;
   createdAt?: Date | string;
+  updatedAt?: Date | string;
+  lastSentAt?: Date | string | null;
+  acceptedAt?: Date | string | null;
+  rejectedAt?: Date | string | null;
+  revokedAt?: Date | string | null;
   expiresAt: Date | string;
   inviterName?: string | null;
   teamName?: string | null;

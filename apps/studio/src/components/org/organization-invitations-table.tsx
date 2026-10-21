@@ -15,7 +15,7 @@ import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { RoleBadge, StatusBadge } from "@/components/patterns/status-badge";
-import { Can } from "@/domain/permissions/components/can";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import {
   isPendingInvitationStatus,
   type OrganizationInvitationRow,
@@ -50,6 +50,8 @@ export function OrganizationInvitationsTable({
   projectId,
   scopeLabel = "Organization",
 }: OrganizationInvitationsTableProps) {
+  const invitePermission = useCan("member.invite", { projectId });
+  const revokePermission = useCan("invitation.cancel", { projectId });
   const columns: DataTableColumnDef<OrganizationInvitationRow>[] = [
     columnHelper.display({
       id: "scope",
@@ -139,6 +141,39 @@ export function OrganizationInvitationsTable({
         );
       },
     }),
+    columnHelper.display({
+      id: "lifecycle",
+      header: "Activity",
+      cell: ({ row }) => {
+        const invite = row.original;
+        const date =
+          invite.acceptedAt ??
+          invite.rejectedAt ??
+          invite.revokedAt ??
+          invite.lastSentAt ??
+          invite.updatedAt;
+        const label = invite.acceptedAt
+          ? "Accepted"
+          : invite.rejectedAt
+            ? "Declined"
+            : invite.revokedAt
+              ? "Revoked"
+              : invite.lastSentAt
+                ? "Last sent"
+                : "Updated";
+        return date ? (
+          <span className="text-muted-foreground text-xs">
+            {label}:{" "}
+            <LocalDateTime
+              value={String(date)}
+              options={LOCAL_DATE_TIME_FORMAT}
+            />
+          </span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        );
+      },
+    }),
     columnHelper.accessor("expiresAt", {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Expires" />
@@ -161,42 +196,42 @@ export function OrganizationInvitationsTable({
         if (!isPendingInvitationStatus(invite.status)) {
           return <span className="text-muted-foreground text-xs">—</span>;
         }
-        const actions = (
+        const actions = [
+          ...(invitePermission.allowed
+            ? [
+                {
+                  label:
+                    resendingId === invite.id
+                      ? "Resending…"
+                      : "Resend invitation",
+                  onSelect: () => onResend(invite),
+                  disabled:
+                    resendingId === invite.id || revokingId === invite.id,
+                },
+              ]
+            : []),
+          ...(revokePermission.allowed
+            ? [
+                {
+                  label:
+                    revokingId === invite.id
+                      ? "Revoking…"
+                      : "Revoke invitation",
+                  onSelect: () => onRevoke(invite.id),
+                  destructive: true,
+                  disabled:
+                    revokingId === invite.id || resendingId === invite.id,
+                },
+              ]
+            : []),
+        ];
+        return actions.length ? (
           <DataTableRowActions
             label={`Actions for invitation to ${invite.email}`}
-            actions={[
-              {
-                label:
-                  resendingId === invite.id
-                    ? "Resending…"
-                    : "Resend invitation",
-                onSelect: () => onResend(invite),
-                disabled: resendingId === invite.id || revokingId === invite.id,
-              },
-              {
-                label:
-                  revokingId === invite.id ? "Revoking…" : "Revoke invitation",
-                onSelect: () => onRevoke(invite.id),
-                destructive: true,
-                disabled: revokingId === invite.id || resendingId === invite.id,
-              },
-            ]}
+            actions={actions}
           />
-        );
-        return (
-          <Can action="member.invite" fallback={null}>
-            {projectId ? (
-              <Can
-                action="project.permission.grant"
-                projectId={projectId}
-                fallback={null}
-              >
-                {actions}
-              </Can>
-            ) : (
-              actions
-            )}
-          </Can>
+        ) : (
+          <span className="text-muted-foreground text-xs">—</span>
         );
       },
     }),

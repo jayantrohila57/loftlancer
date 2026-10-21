@@ -15,13 +15,13 @@ import {
   isNotificationsEnabled,
   linkPendingNotificationsForUser,
 } from "@loftlancer/notifications";
-import type { BetterAuthOptions } from "better-auth";
+import type { BetterAuthOptions, BetterAuthPlugin } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { organization } from "better-auth/plugins";
 import { admin } from "better-auth/plugins/admin";
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import { writeAuthAuditEvent } from "./audit-event";
 import { resolveDefaultActiveOrganizationId } from "./bootstrap-active-organization";
 import { sendOrganizationInvitationEmail } from "./organization-invitation-email";
@@ -280,6 +280,17 @@ export function organizationPlugin() {
           await assertOrganizationCanBeDeleted(org, user.id);
         },
         afterCreateOrganization: async ({ organization: org, user }) => {
+          const joinedAt = new Date();
+          await db
+            .update(organizationSchema.member)
+            .set({ joinedAt })
+            .where(
+              and(
+                eq(organizationSchema.member.organizationId, org.id),
+                eq(organizationSchema.member.userId, user.id),
+                isNull(organizationSchema.member.deletedAt),
+              ),
+            );
           await db
             .update(organizationSchema.organization)
             .set({
@@ -314,6 +325,10 @@ export function organizationPlugin() {
           });
         },
         afterCreateInvitation: async ({ invitation: invite, inviter }) => {
+          await db
+            .update(organizationSchema.invitation)
+            .set({ lastSentAt: new Date(), updatedAt: new Date() })
+            .where(eq(organizationSchema.invitation.id, invite.id));
           await writeAuthAuditEvent({
             action: "member.invite",
             result: "success",
@@ -327,6 +342,24 @@ export function organizationPlugin() {
           });
         },
         afterAcceptInvitation: async ({ invitation: invite, user }) => {
+          const acceptedAt = new Date();
+          await db
+            .update(organizationSchema.invitation)
+            .set({ acceptedAt, acceptedBy: user.id, updatedAt: acceptedAt })
+            .where(eq(organizationSchema.invitation.id, invite.id));
+          await db
+            .update(organizationSchema.member)
+            .set({ joinedAt: acceptedAt, invitedBy: invite.inviterId })
+            .where(
+              and(
+                eq(
+                  organizationSchema.member.organizationId,
+                  invite.organizationId,
+                ),
+                eq(organizationSchema.member.userId, user.id),
+                isNull(organizationSchema.member.deletedAt),
+              ),
+            );
           await writeAuthAuditEvent({
             action: "invitation.accept",
             result: "success",
@@ -336,7 +369,30 @@ export function organizationPlugin() {
             payload: { invitationId: invite.id },
           });
         },
+        afterRejectInvitation: async ({ invitation: invite, user }) => {
+          const rejectedAt = new Date();
+          await db
+            .update(organizationSchema.invitation)
+            .set({ rejectedAt, rejectedBy: user.id, updatedAt: rejectedAt })
+            .where(eq(organizationSchema.invitation.id, invite.id));
+          await writeAuthAuditEvent({
+            action: "invitation.reject",
+            result: "success",
+            actorUserId: user.id,
+            organizationId: invite.organizationId,
+            entityId: invite.id,
+            payload: { invitationId: invite.id },
+          });
+        },
         afterCancelInvitation: async ({ invitation: invite, cancelledBy }) => {
+          await db
+            .update(organizationSchema.invitation)
+            .set({
+              revokedAt: new Date(),
+              revokedBy: cancelledBy.id,
+              updatedAt: new Date(),
+            })
+            .where(eq(organizationSchema.invitation.id, invite.id));
           await writeAuthAuditEvent({
             action: "invitation.cancel",
             result: "success",
@@ -400,10 +456,68 @@ export function organizationPlugin() {
   ];
 }
 
+function suspendedOrganizationMemberGuardPlugin(): BetterAuthPlugin {
+  return {
+    id: "loftlancer-suspended-organization-member-guard",
+    hooks: {
+      before: [
+        {
+          matcher: (ctx) => ctx.path?.startsWith("/organization/") ?? false,
+          handler: createAuthMiddleware(async (ctx) => {
+            const session = ctx.context.session;
+            if (!session?.user?.id) return;
+            const body = ctx.body as
+              | {
+                  organizationId?: unknown;
+                  invitationId?: unknown;
+                  inviteId?: unknown;
+                }
+              | undefined;
+            const invitationId = body?.invitationId ?? body?.inviteId;
+            let organizationId =
+              typeof body?.organizationId === "string"
+                ? body.organizationId
+                : session.session.activeOrganizationId;
+            if (typeof invitationId === "string") {
+              const [invite] = await db
+                .select({
+                  organizationId: organizationSchema.invitation.organizationId,
+                })
+                .from(organizationSchema.invitation)
+                .where(eq(organizationSchema.invitation.id, invitationId))
+                .limit(1);
+              organizationId = invite?.organizationId;
+            }
+            if (!organizationId) return;
+            const [suspended] = await db
+              .select({ id: organizationSchema.member.id })
+              .from(organizationSchema.member)
+              .where(
+                and(
+                  eq(organizationSchema.member.organizationId, organizationId),
+                  eq(organizationSchema.member.userId, session.user.id),
+                  isNull(organizationSchema.member.deletedAt),
+                  isNotNull(organizationSchema.member.suspendedAt),
+                ),
+              )
+              .limit(1);
+            if (suspended) {
+              throw new APIError("FORBIDDEN", {
+                message: "Your access to this organization is suspended.",
+              });
+            }
+          }),
+        },
+      ],
+    },
+  };
+}
+
 /** Auth plugins excluding Next.js cookie forwarding — append `withNextCookies()` last. */
 export function coreAuthPlugins() {
   return [
     sessionCookieMigrationPlugin(),
+    suspendedOrganizationMemberGuardPlugin(),
     admin({
       defaultRole: "user",
       adminRoles: ["admin"],

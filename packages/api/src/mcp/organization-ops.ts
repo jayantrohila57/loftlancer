@@ -1,4 +1,5 @@
 import {
+  canAssignOrganizationInviteRole,
   DEFAULT_TEAM_PROJECT_GRANTS,
   mergeProjectMemberGrants,
 } from "@loftlancer/actions";
@@ -19,7 +20,10 @@ import { user } from "@loftlancer/db/schema/auth";
 import {
   invitation,
   member,
+  memberOrganizationRole,
   organization,
+  organizationRole,
+  organizationRolePermission,
 } from "@loftlancer/db/schema/organization";
 import {
   projectManager,
@@ -30,6 +34,7 @@ import { project } from "@loftlancer/db/schema/projects";
 import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { and, eq, gt, inArray, isNull, sql } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { requireAction } from "../actions/require-action";
 import { transferOrganizationOwnership } from "../organization-ownership";
 import { safeHttpUrlSchema } from "../organization-profile-validation";
@@ -160,6 +165,7 @@ export async function mcpOrganizationCreate(
       organizationId: orgId,
       userId,
       role: "owner",
+      joinedAt: new Date(),
     });
   });
 
@@ -337,40 +343,175 @@ export async function mcpOrganizationTransferOwnership(
 
 export async function mcpMembersList(userId: string, organizationId: string) {
   await requireAction("member.list", { userId, organizationId });
-  const rows = await db
-    .select({
-      id: member.id,
-      userId: member.userId,
-      role: member.role,
-      name: user.name,
-      email: user.email,
-      createdAt: member.createdAt,
-    })
-    .from(member)
-    .innerJoin(user, eq(member.userId, user.id))
-    .where(
-      activeMemberWhere(
+  const inviter = alias(user, "member_inviter");
+  const [rows, roleAssignments, rolePermissions] = await Promise.all([
+    db
+      .select({
+        id: member.id,
+        userId: member.userId,
+        role: member.role,
+        jobTitle: member.jobTitle,
+        department: member.department,
+        suspendedAt: member.suspendedAt,
+        suspensionReason: member.suspensionReason,
+        joinedAt: member.joinedAt,
+        invitedBy: member.invitedBy,
+        invitedByName: inviter.name,
+        invitedByEmail: inviter.email,
+        name: user.name,
+        email: user.email,
+        createdAt: member.createdAt,
+      })
+      .from(member)
+      .innerJoin(user, eq(member.userId, user.id))
+      .leftJoin(inviter, eq(member.invitedBy, inviter.id))
+      .where(
         and(
           eq(member.organizationId, organizationId),
           isNull(member.deletedAt),
         ),
-      ),
-    )
-    .orderBy(member.createdAt);
-  return { items: rows };
+      )
+      .orderBy(member.createdAt),
+    db
+      .select({
+        memberId: memberOrganizationRole.memberId,
+        roleId: organizationRole.id,
+        roleName: organizationRole.name,
+        roleDescription: organizationRole.description,
+      })
+      .from(memberOrganizationRole)
+      .innerJoin(
+        organizationRole,
+        and(
+          eq(organizationRole.id, memberOrganizationRole.roleId),
+          eq(
+            organizationRole.organizationId,
+            memberOrganizationRole.organizationId,
+          ),
+        ),
+      )
+      .where(eq(memberOrganizationRole.organizationId, organizationId)),
+    db
+      .select({
+        roleId: organizationRolePermission.roleId,
+        actionName: organizationRolePermission.actionName,
+      })
+      .from(organizationRolePermission)
+      .where(eq(organizationRolePermission.organizationId, organizationId)),
+  ]);
+  return {
+    items: rows.map((row) => {
+      const role = roleAssignments.find(
+        (assignment) => assignment.memberId === row.id,
+      );
+      return {
+        ...row,
+        access: {
+          builtInRole: row.role,
+          customRole: role
+            ? {
+                id: role.roleId,
+                name: role.roleName,
+                description: role.roleDescription,
+                actions: rolePermissions
+                  .filter((permission) => permission.roleId === role.roleId)
+                  .map((permission) => permission.actionName),
+              }
+            : null,
+        },
+      };
+    }),
+  };
+}
+
+export async function mcpMemberSetSuspended(
+  userId: string,
+  organizationId: string,
+  memberId: string,
+  suspended: boolean,
+  reason?: string,
+) {
+  await requireAction("member.suspend", {
+    userId,
+    organizationId,
+    entityId: memberId,
+    payload: { suspended },
+  });
+  const result = await db.transaction(async (tx) => {
+    const [target] = await tx
+      .select({
+        id: member.id,
+        role: member.role,
+        suspendedAt: member.suspendedAt,
+      })
+      .from(member)
+      .where(
+        and(
+          eq(member.id, memberId),
+          eq(member.organizationId, organizationId),
+          isNull(member.deletedAt),
+        ),
+      )
+      .limit(1)
+      .for("update");
+    if (!target) throw new Error("member_not_found");
+    if (isOwnerRole(target.role))
+      throw new Error("organization_owner_cannot_be_suspended");
+    if (Boolean(target.suspendedAt) === suspended) return { changed: false };
+    await tx
+      .update(member)
+      .set(
+        suspended
+          ? {
+              suspendedAt: new Date(),
+              suspendedBy: userId,
+              suspensionReason: reason?.trim() || null,
+            }
+          : { suspendedAt: null, suspendedBy: null, suspensionReason: null },
+      )
+      .where(
+        and(
+          eq(member.id, target.id),
+          eq(member.organizationId, organizationId),
+        ),
+      );
+    return { changed: true };
+  });
+  if (result.changed) {
+    await writeAuthAuditEvent({
+      action: "member.suspend",
+      result: "success",
+      actorUserId: userId,
+      organizationId,
+      entityId: memberId,
+      payload: { suspended },
+    });
+  }
+  return { success: true, changed: result.changed };
 }
 
 export async function mcpMemberInvite(
   userId: string,
   organizationId: string,
   input: { email: string; role?: string; teamId?: string; projectId?: string },
+  options?: { alreadyAuthorized?: boolean; audit?: boolean },
 ) {
-  await requireAction("member.invite", { userId, organizationId });
-  if (input.projectId) {
+  if (!options?.alreadyAuthorized) {
+    await requireAction("member.invite", { userId, organizationId });
+  }
+  if (input.projectId && !options?.alreadyAuthorized) {
     await requireAction("project.permission.grant", {
       userId,
       organizationId,
       projectId: input.projectId,
+    });
+  }
+  if (input.teamId) {
+    await requireAction("team.member.add", {
+      userId,
+      organizationId,
+      teamId: input.teamId,
+      audit: false,
     });
   }
   const email = input.email.trim().toLowerCase();
@@ -421,8 +562,12 @@ export async function mcpMemberInvite(
     if (!projectRow) throw new Error("invitation_project_not_found");
     projectName = projectRow.name;
   }
-  const inviterRoles = inviter.role.split(",").map((item) => item.trim());
-  if (role === "owner" && !inviterRoles.includes("owner")) {
+  if (
+    !canAssignOrganizationInviteRole(
+      inviter.role,
+      role as "owner" | "manager" | "member",
+    )
+  ) {
     throw new Error("invitation_role_not_allowed");
   }
 
@@ -501,6 +646,7 @@ export async function mcpMemberInvite(
       status: "pending",
       expiresAt,
       inviterId: userId,
+      lastSentAt: new Date(),
       teamId: input.teamId ?? null,
       projectId: input.projectId ?? null,
     });
@@ -518,21 +664,28 @@ export async function mcpMemberInvite(
   } catch (error) {
     await db
       .update(invitation)
-      .set({ status: "canceled" })
+      .set({
+        status: "canceled",
+        revokedAt: new Date(),
+        revokedBy: userId,
+        updatedAt: new Date(),
+      })
       .where(
         and(eq(invitation.id, inviteId), eq(invitation.status, "pending")),
       );
     throw error;
   }
-  await writeAuthAuditEvent({
-    action: "member.invite",
-    result: "success",
-    actorUserId: userId,
-    organizationId,
-    entityId: inviteId,
-    targetUserId: null,
-    payload: { invitationId: inviteId, email, role },
-  });
+  if (options?.audit !== false) {
+    await writeAuthAuditEvent({
+      action: "member.invite",
+      result: "success",
+      actorUserId: userId,
+      organizationId,
+      entityId: inviteId,
+      targetUserId: null,
+      payload: { invitationId: inviteId, role },
+    });
+  }
   return {
     id: inviteId,
     email,
@@ -837,6 +990,7 @@ export async function mcpInvitationAccept(
         organizationId: invitation.organizationId,
         email: invitation.email,
         role: invitation.role,
+        inviterId: invitation.inviterId,
         teamId: invitation.teamId,
         projectId: invitation.projectId,
       })
@@ -859,18 +1013,18 @@ export async function mcpInvitationAccept(
     }
 
     const [existingMember] = await tx
-      .select({ id: member.id })
+      .select({ id: member.id, suspendedAt: member.suspendedAt })
       .from(member)
       .where(
-        activeMemberWhere(
-          and(
-            eq(member.organizationId, invite.organizationId),
-            eq(member.userId, userId),
-            isNull(member.deletedAt),
-          ),
+        and(
+          eq(member.organizationId, invite.organizationId),
+          eq(member.userId, userId),
+          isNull(member.deletedAt),
         ),
       )
       .limit(1);
+    if (existingMember?.suspendedAt)
+      throw new Error("organization_membership_suspended");
     if (existingMember && !invite.projectId && !invite.teamId)
       throw new Error("organization_membership_already_exists");
 
@@ -881,6 +1035,8 @@ export async function mcpInvitationAccept(
         organizationId: invite.organizationId,
         userId,
         role: invite.role,
+        invitedBy: invite.inviterId,
+        joinedAt: new Date(),
       });
     }
 
@@ -982,7 +1138,12 @@ export async function mcpInvitationAccept(
 
     const [updatedInvite] = await tx
       .update(invitation)
-      .set({ status: "accepted" })
+      .set({
+        status: "accepted",
+        acceptedAt: new Date(),
+        acceptedBy: userId,
+        updatedAt: new Date(),
+      })
       .where(
         and(
           eq(invitation.id, invite.id),
@@ -1051,7 +1212,12 @@ export async function mcpInvitationReject(
 
   const [rejected] = await db
     .update(invitation)
-    .set({ status: "rejected" })
+    .set({
+      status: "rejected",
+      rejectedAt: new Date(),
+      rejectedBy: userId,
+      updatedAt: new Date(),
+    })
     .where(
       activeInvitationWhere(
         and(
@@ -1273,7 +1439,12 @@ export async function mcpTeamDelete(
     if (!existing) throw new Error("team_not_found");
     await tx
       .update(invitation)
-      .set({ status: "canceled" })
+      .set({
+        status: "canceled",
+        revokedAt: new Date(),
+        revokedBy: userId,
+        updatedAt: new Date(),
+      })
       .where(
         and(
           eq(invitation.organizationId, organizationId),

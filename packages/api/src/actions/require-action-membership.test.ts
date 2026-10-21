@@ -16,6 +16,13 @@ const snapshotSource = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), "permissions-snapshot.ts"),
   "utf8",
 );
+const membershipLifecycleSource = readFileSync(
+  join(
+    dirname(fileURLToPath(import.meta.url)),
+    "../../../db/src/soft-delete.ts",
+  ),
+  "utf8",
+);
 
 describe("requireAction org membership lookup", () => {
   it("filters soft-deleted members via activeMemberWhere", () => {
@@ -37,6 +44,10 @@ describe("requireAction org membership lookup", () => {
     );
     assert.match(membershipQuery, /activeMemberWhere\s*\(/);
     assert.match(membershipQuery, /isNull\(organization\.deletedAt\)/);
+  });
+
+  it("removes suspended members from shared active-membership checks", () => {
+    assert.match(membershipLifecycleSource, /isNull\(member\.suspendedAt\)/);
   });
 
   it("rejects project IDs outside the active organization", () => {

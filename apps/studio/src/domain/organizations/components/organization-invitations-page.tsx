@@ -9,7 +9,7 @@ import {
   EmptyTitle,
 } from "@loftlancer/ui/empty";
 import { Skeleton } from "@loftlancer/ui/skeleton";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { invitationsEmpty } from "@/components/data-table/data-table-empty-presets";
 import {
@@ -20,16 +20,10 @@ import {
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { ErrorState } from "@/components/patterns/error-state";
-import { useSession } from "@/domain/auth/lib/auth-actions";
-import { useNotificationMutations } from "@/domain/notifications/hooks/use-notifications";
 import { Can } from "@/domain/permissions/components/can";
-import { authClient } from "@/lib/auth-client";
-import { isNotificationsEnabledOnClient } from "@/lib/notifications-enabled";
 import {
-  cancelOrganizationInvitation,
   type OrganizationInvitationRow,
   pendingOrganizationInvitations,
-  resendOrganizationInvitation,
   sortOrganizationInvitations,
 } from "@/lib/organization-invitations";
 import { toast } from "@/lib/toast";
@@ -46,14 +40,17 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     error,
     reload,
   } = useOrganizationBySlug(slug);
-  const { data: session } = useSession();
-  const { syncInvitationReceived } = useNotificationMutations();
-  const currentUserId = session?.user?.id;
   const [status, setStatus] = useState<InvitationStatusFilter>("pending");
   const [page, setPage] = useState(0);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [resendingId, setResendingId] = useState<string | null>(null);
+  const revoke = useMutation(
+    trpc.organizations.revokeInvitation.mutationOptions(),
+  );
+  const resend = useMutation(
+    trpc.organizations.resendInvitation.mutationOptions(),
+  );
   const listQuery = useQuery({
     ...trpc.organizations.listInvitations.queryOptions({
       organizationId: organization?.id ?? "",
@@ -82,14 +79,11 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     if (!organization?.id) return;
     setRevokingId(invitationId);
     try {
-      await toast.promise(
-        cancelOrganizationInvitation(authClient.organization, invitationId),
-        {
-          loading: "Revoking invitation…",
-          success: "Invitation revoked",
-          error: "Could not revoke invitation",
-        },
-      );
+      await toast.promise(revoke.mutateAsync({ invitationId }), {
+        loading: "Revoking invitation…",
+        success: "Invitation revoked",
+        error: "Could not revoke invitation",
+      });
       await loadInvitations(organization.id);
     } catch (error) {
       if (
@@ -107,25 +101,12 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     if (!organization?.id) return;
     setResendingId(invite.id);
     try {
-      await toast.promise(
-        resendOrganizationInvitation(authClient.organization, {
-          organizationId: organization.id,
-          email: invite.email,
-          role: invite.role,
-        }),
-        {
-          loading: "Resending invitation…",
-          success: "Invitation resent",
-          error: "Could not resend invitation",
-        },
-      );
+      await toast.promise(resend.mutateAsync({ invitationId: invite.id }), {
+        loading: "Resending invitation…",
+        success: "Invitation resent",
+        error: "Could not resend invitation",
+      });
       await loadInvitations(organization.id);
-      if (isNotificationsEnabledOnClient() && currentUserId) {
-        void syncInvitationReceived.mutate({
-          organizationId: organization.id,
-          email: invite.email,
-        });
-      }
     } finally {
       setResendingId(null);
     }

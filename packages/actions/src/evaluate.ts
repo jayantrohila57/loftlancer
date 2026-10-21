@@ -18,6 +18,8 @@ export type TeamAccessContext = {
 export type EvaluatePermissionInput = {
   action: ActionName;
   orgRole: OrgRole | null;
+  /** Delegated organization-scope actions from one active custom member role. */
+  customOrganizationActions?: readonly ActionName[];
   project?: ProjectAccessContext | null;
   team?: TeamAccessContext | null;
 };
@@ -46,6 +48,16 @@ export function evaluatePermission(
   const orgRole = input.orgRole;
   if (!orgRole) {
     return { allowed: false, reason: "no_org_role" };
+  }
+
+  if (
+    orgRole === "member" &&
+    def.scope === "organization" &&
+    def.orgRoles?.length &&
+    def.orgRoles.some((role) => role !== "owner") &&
+    input.customOrganizationActions?.includes(input.action)
+  ) {
+    return { allowed: true };
   }
 
   if (orgRole === "owner") {

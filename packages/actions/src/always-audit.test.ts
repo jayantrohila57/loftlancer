@@ -8,6 +8,8 @@ describe("always-audited actions", () => {
       "account.delete",
       "account.export",
       "member.role.update",
+      "member.suspend",
+      "member.profile.update",
       "organization.delete",
       "platform.user.set_role",
       "project.delete",

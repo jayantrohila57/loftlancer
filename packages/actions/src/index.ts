@@ -3,6 +3,7 @@ export * from "./better-auth-ac";
 export * from "./evaluate";
 export * from "./feature";
 export * from "./format-action-label";
+export * from "./invitation-role-policy";
 export * from "./mcp-scopes";
 export * from "./nav";
 export * from "./org-roles";
