@@ -32,6 +32,7 @@ import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { and, eq, gt, inArray, isNull, sql } from "drizzle-orm";
 import { requireAction } from "../actions/require-action";
 import { transferOrganizationOwnership } from "../organization-ownership";
+import { safeHttpUrlSchema } from "../organization-profile-validation";
 import { resolveOrganizationIdForUser } from "./resolve-organization";
 
 type OrganizationMutationTx = Parameters<
@@ -186,7 +187,13 @@ export async function mcpOrganizationUpdate(
   await requireAction(action, { userId, organizationId });
   const update: Record<string, unknown> = {};
   if (input.name !== undefined) update.name = input.name.trim();
-  if (input.logo !== undefined) update.logo = input.logo;
+  if (input.logo !== undefined) {
+    const parsedLogo = safeHttpUrlSchema.nullable().safeParse(input.logo);
+    if (!parsedLogo.success) throw new Error("invalid_organization_logo_url");
+    update.logo = parsedLogo.data;
+  }
+  update.updatedAt = new Date();
+  update.updatedBy = userId;
 
   const [row] = await db
     .update(organization)

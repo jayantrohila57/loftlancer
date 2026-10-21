@@ -61,8 +61,17 @@ export async function requireAction(
   const def = getActionDefinition(action);
   let result: "success" | "denied" | "failure" = "denied";
   let denialReason: string | undefined;
+  const archivedPromise =
+    def.scope !== "user" && ctx.organizationId
+      ? db
+          .select({ archivedAt: organization.archivedAt })
+          .from(organization)
+          .where(eq(organization.id, ctx.organizationId))
+          .limit(1)
+      : null;
 
   try {
+    archivedPromise?.catch(() => undefined);
     // Block check and membership lookup are independent: run them together.
     const membershipPromise =
       def.scope !== "user" && ctx.organizationId && !isPlatformAdmin()
@@ -91,6 +100,22 @@ export async function requireAction(
     ) {
       denialReason = "blocked";
       throw new TRPCError({ code: "FORBIDDEN", message: "Action blocked" });
+    }
+
+    const [organizationState] = (await archivedPromise) ?? [];
+    if (
+      organizationState?.archivedAt &&
+      !isReadAction(action) &&
+      action !== "organization.unarchive" &&
+      action !== "organization.restore" &&
+      action !== "organization.delete"
+    ) {
+      denialReason = "organization_archived";
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message:
+          "This organization is archived. Restore it before making changes.",
+      });
     }
 
     const appId = appIdForAction(action);

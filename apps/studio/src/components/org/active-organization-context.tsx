@@ -25,6 +25,7 @@ export type OrgListItem = {
   name: string;
   slug: string;
   metadata?: string | Record<string, unknown> | null;
+  archivedAt?: Date | string | null;
 };
 
 type ActiveOrganizationContextValue = {

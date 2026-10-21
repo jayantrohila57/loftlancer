@@ -235,6 +235,21 @@ const rows: MatrixRow[] = [
     entityType: "organization",
   },
   {
+    name: "organization.archive",
+    scope: "organization",
+    description: "Archive organization",
+    owner: true,
+    entityType: "organization",
+    severity: "critical",
+  },
+  {
+    name: "organization.unarchive",
+    scope: "organization",
+    description: "Restore archived organization",
+    owner: true,
+    entityType: "organization",
+  },
+  {
     name: "organization.restore",
     scope: "organization",
     description: "Restore soft-deleted organization",

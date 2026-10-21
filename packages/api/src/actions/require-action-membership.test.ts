@@ -62,4 +62,10 @@ describe("requireAction org membership lookup", () => {
     assert.match(snapshotSource, /isNull\(organization\.deletedAt\)/);
     assert.match(snapshotSource, /!projectCtx\?\.belongsToOrganization/);
   });
+
+  it("blocks writes against archived organizations with an explicit restore exception", () => {
+    assert.match(requireActionSource, /organizationState\?\.archivedAt/);
+    assert.match(requireActionSource, /action !== "organization\.unarchive"/);
+    assert.match(requireActionSource, /organization_archived/);
+  });
 });

@@ -1,4 +1,4 @@
-import { isActionsAuditEnabled } from "@loftlancer/actions";
+import { isActionsAuditEnabled, normalizeOrgRole } from "@loftlancer/actions";
 import { sendOrganizationInvitationEmail } from "@loftlancer/auth/organization-invitation-email";
 import { activeMemberWhere, db } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
@@ -6,6 +6,7 @@ import {
   invitation,
   member,
   organization,
+  organizationProfile,
 } from "@loftlancer/db/schema/organization";
 import { projectTeam } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
@@ -29,6 +30,7 @@ import {
   mcpMembersList,
 } from "../mcp/organization-ops";
 import { transferOrganizationOwnership } from "../organization-ownership";
+import { organizationProfilePatchSchema } from "../organization-profile-validation";
 
 export const organizationsRouter = router({
   transferOwnership: orgProcedure
@@ -439,6 +441,7 @@ export const organizationsRouter = router({
         logo: organization.logo,
         role: member.role,
         createdAt: organization.createdAt,
+        archivedAt: organization.archivedAt,
       })
       .from(member)
       .innerJoin(organization, eq(member.organizationId, organization.id))
@@ -462,9 +465,17 @@ export const organizationsRouter = router({
           slug: organization.slug,
           logo: organization.logo,
           role: member.role,
+          description: organizationProfile.description,
+          websiteUrl: organizationProfile.websiteUrl,
+          industry: organizationProfile.industry,
+          sizeBand: organizationProfile.sizeBand,
         })
         .from(organization)
         .innerJoin(member, eq(member.organizationId, organization.id))
+        .leftJoin(
+          organizationProfile,
+          eq(organizationProfile.organizationId, organization.id),
+        )
         .where(
           activeMemberWhere(
             and(
@@ -492,6 +503,204 @@ export const organizationsRouter = router({
       }
 
       return row;
+    }),
+
+  getProfile: orgProcedure
+    .use(actionGuard("organization.settings.view"))
+    .query(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [membership] = await db
+        .select({ role: member.role })
+        .from(member)
+        .where(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, ctx.session.user.id),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      const canManageProfile = normalizeOrgRole(membership?.role) === "owner";
+      const [row] = await db
+        .select({
+          id: organization.id,
+          name: organization.name,
+          slug: organization.slug,
+          logo: organization.logo,
+          createdAt: organization.createdAt,
+          updatedAt: organization.updatedAt,
+          archivedAt: organization.archivedAt,
+          description: organizationProfile.description,
+          legalName: organizationProfile.legalName,
+          websiteUrl: organizationProfile.websiteUrl,
+          industry: organizationProfile.industry,
+          sizeBand: organizationProfile.sizeBand,
+          foundedYear: organizationProfile.foundedYear,
+          contactEmail: organizationProfile.contactEmail,
+          contactPhone: organizationProfile.contactPhone,
+          supportUrl: organizationProfile.supportUrl,
+          countryCode: organizationProfile.countryCode,
+          region: organizationProfile.region,
+          city: organizationProfile.city,
+          postalCode: organizationProfile.postalCode,
+          addressLine1: organizationProfile.addressLine1,
+          addressLine2: organizationProfile.addressLine2,
+        })
+        .from(organization)
+        .leftJoin(
+          organizationProfile,
+          eq(organizationProfile.organizationId, organization.id),
+        )
+        .where(
+          and(
+            eq(organization.id, organizationId),
+            isNull(organization.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (!row) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found.",
+        });
+      }
+      return canManageProfile
+        ? row
+        : {
+            ...row,
+            legalName: null,
+            foundedYear: null,
+            contactEmail: null,
+            contactPhone: null,
+            supportUrl: null,
+            countryCode: null,
+            region: null,
+            city: null,
+            postalCode: null,
+            addressLine1: null,
+            addressLine2: null,
+          };
+    }),
+
+  updateProfile: orgProcedure
+    .input(organizationProfilePatchSchema)
+    .use(
+      actionGuard("organization.settings.update", (input) => ({
+        payload: {
+          surface: "organization_profile",
+          changedFields: Object.keys(input as Record<string, unknown>).sort(),
+        },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const values = {
+        ...input,
+        countryCode:
+          input.countryCode === undefined
+            ? undefined
+            : (input.countryCode?.toUpperCase() ?? null),
+        updatedAt: new Date(),
+        updatedBy: ctx.session.user.id,
+      };
+      await db.transaction(async (tx) => {
+        await tx
+          .insert(organizationProfile)
+          .values({
+            organizationId,
+            ...values,
+          })
+          .onConflictDoUpdate({
+            target: organizationProfile.organizationId,
+            set: values,
+          });
+        await tx
+          .update(organization)
+          .set({ updatedAt: new Date(), updatedBy: ctx.session.user.id })
+          .where(eq(organization.id, organizationId));
+      });
+      return { success: true };
+    }),
+
+  archive: orgProcedure
+    .use(actionGuard("organization.archive"))
+    .mutation(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const now = new Date();
+      const [row] = await db
+        .update(organization)
+        .set({
+          archivedAt: now,
+          archivedBy: ctx.session.user.id,
+          updatedAt: now,
+          updatedBy: ctx.session.user.id,
+        })
+        .where(
+          and(
+            eq(organization.id, organizationId),
+            isNull(organization.deletedAt),
+            isNull(organization.archivedAt),
+          ),
+        )
+        .returning({ id: organization.id });
+      if (!row)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Organization is already archived or unavailable.",
+        });
+      return { success: true };
+    }),
+
+  unarchive: orgProcedure
+    .use(actionGuard("organization.unarchive"))
+    .mutation(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [row] = await db
+        .update(organization)
+        .set({
+          archivedAt: null,
+          archivedBy: null,
+          updatedAt: new Date(),
+          updatedBy: ctx.session.user.id,
+        })
+        .where(
+          and(
+            eq(organization.id, organizationId),
+            isNull(organization.deletedAt),
+            sql`${organization.archivedAt} IS NOT NULL`,
+          ),
+        )
+        .returning({ id: organization.id });
+      if (!row)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Organization is not archived or is unavailable.",
+        });
+      return { success: true };
     }),
 
   listMembers: orgProcedure
