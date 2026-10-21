@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- Added app-level user and linked-team access controls with server-side enforcement and effective access explanations (#561).
+
 ## [1.15.1] - 2026-10-21
 
 ### Changed

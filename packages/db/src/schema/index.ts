@@ -10,6 +10,7 @@ export * from "./organization";
 export * from "./platform-feature-flag";
 export * from "./project-access";
 export * from "./project-app";
+export * from "./project-app-access";
 export * from "./project-pin";
 export * from "./projects";
 export * from "./rate-limit-bucket";
