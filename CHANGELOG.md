@@ -29,6 +29,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Studio navigation now highlights the active project through nested pages and keeps active favorites selected (#546).
 - Resource frames now resolve one active tab consistently, and project status changes use a form control rather than navigation tabs (#547).
 - Standardized project and organization overview/access/settings sections on accordions and aligned their loading skeletons (#548).
+- Team member/project lists and project access lists now use the shared searchable, sortable, paginated table and consistent row actions (#549).
 
 ## [1.14.11] - 2026-10-21
 

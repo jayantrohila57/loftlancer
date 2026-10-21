@@ -1,10 +1,14 @@
 "use client";
 
 import { Button } from "@loftlancer/ui/button";
+import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
+import { DataTable } from "@loftlancer/ui/data-table/data-table";
+import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { ErrorState } from "@/components/patterns/error-state";
 import { Can } from "@/domain/permissions/components/can";
 import { useConfirm } from "@/hooks/use-confirm";
@@ -53,6 +57,66 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
   const allMembers = orgMembers.data?.items ?? [];
   const addable = allMembers.filter((row) => !teamUserIds.has(row.userId));
   const memberById = new Map(allMembers.map((row) => [row.userId, row]));
+  const memberRows = (members.data?.items ?? []).map((row) => {
+    const person = memberById.get(row.userId);
+    return {
+      id: row.id,
+      userId: row.userId,
+      name: person?.name || person?.email || row.userId,
+      email: person?.email ?? "",
+    };
+  });
+  const columns: DataTableColumnDef<(typeof memberRows)[number]>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Member" />
+      ),
+      cell: ({ row }) => (
+        <div className="min-w-0">
+          <span className="block truncate font-medium">
+            {row.original.name}
+          </span>
+          <span className="block truncate text-muted-foreground text-xs">
+            {row.original.email}
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      meta: { role: "actions" },
+      header: () => <DataTableActionsColumnHeader />,
+      cell: ({ row }) => (
+        <Can action="team.member.remove">
+          <DataTableRowActions
+            label={`Actions for ${row.original.name}`}
+            actions={[
+              {
+                label: "Remove from team",
+                destructive: true,
+                disabled: remove.isPending,
+                onSelect: () =>
+                  confirm({
+                    title: `Remove ${row.original.name} from the team?`,
+                    description:
+                      "They will remain in the organization, but may lose project access they get through this team. Direct project access stays in place.",
+                    confirmLabel: "Remove from team",
+                    variant: "destructive",
+                    onConfirm: async () => {
+                      await remove.mutateAsync({
+                        teamId,
+                        userId: row.original.userId,
+                      });
+                    },
+                  }),
+              },
+            ]}
+          />
+        </Can>
+      ),
+    },
+  ];
 
   return (
     <section className="space-y-4">
@@ -63,9 +127,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
           someone who has not joined the organization yet.
         </p>
       </div>
-      {members.isPending || orgMembers.isPending ? (
-        <Skeleton className="h-48 rounded-xl" />
-      ) : members.isError || orgMembers.isError ? (
+      {members.isError || orgMembers.isError ? (
         <ErrorState
           title="Could not load team members"
           description="Try loading members again."
@@ -103,57 +165,20 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
               </div>
             ) : null}
           </Can>
-          {members.data.items.length === 0 ? (
-            <p className="rounded-xl border bg-card p-4 text-muted-foreground text-sm">
-              This team has no members yet.
-            </p>
-          ) : (
-            <ul className="divide-y rounded-xl border bg-card">
-              {members.data.items.map((row) => {
-                const person = memberById.get(row.userId);
-                return (
-                  <li
-                    key={row.id}
-                    className="flex items-center justify-between gap-3 p-4"
-                  >
-                    <div className="min-w-0">
-                      <p className="font-medium text-sm">
-                        {person?.name || person?.email || row.userId}
-                      </p>
-                      <p className="truncate text-muted-foreground text-xs">
-                        {person?.email}
-                      </p>
-                    </div>
-                    <Can action="team.member.remove">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        disabled={remove.isPending}
-                        onClick={() =>
-                          confirm({
-                            title: `Remove ${person?.name || person?.email || "this member"} from the team?`,
-                            description:
-                              "They will remain in the organization, but may lose project access they get through this team. Direct project access stays in place.",
-                            confirmLabel: "Remove from team",
-                            variant: "destructive",
-                            onConfirm: async () => {
-                              await remove.mutateAsync({
-                                teamId,
-                                userId: row.userId,
-                              });
-                            },
-                          })
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </Can>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          <DataTable
+            columns={columns}
+            data={memberRows}
+            isLoading={members.isPending || orgMembers.isPending}
+            searchable
+            enablePagination
+            pageSize={10}
+            framed
+            compactLayout
+            caption="Team members"
+            captionSrOnly
+            searchPlaceholder="Search members…"
+            emptyMessage="This team has no members yet."
+          />
         </>
       )}
       {ConfirmDialog}
