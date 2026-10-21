@@ -43,8 +43,10 @@ Generated from `@loftlancer/actions` registry at the time of this audit. Update 
 | `team.update` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `action_blocked` |
 | `team.delete` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `action_blocked` |
 | `team.restore` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `action_blocked` |
-| `team.member.add` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `action_blocked` |
-| `team.member.remove` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `action_blocked` |
+| `team.member.list` | organization | owner,manager,team lead | team role or org role | `no_org_role`, `org_role_denied`, `team_org_mismatch`, `action_blocked` |
+| `team.member.add` | organization | owner,manager,team lead | team role or org role | `no_org_role`, `org_role_denied`, `team_org_mismatch`, `action_blocked` |
+| `team.member.remove` | organization | owner,manager,team lead | team role or org role | `no_org_role`, `org_role_denied`, `team_org_mismatch`, `action_blocked` |
+| `team.member.role.change` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `team_org_mismatch`, `action_blocked` |
 | `project.create` | organization | owner | role | `no_org_role`, `org_role_denied`, `action_blocked` |
 | `project.read` | project | owner,manager,member | grant:project.read | `no_org_role`, `org_role_denied`, `project_assignment_required`, `grant_missing`, `action_blocked` |
 | `project.update` | project | owner,manager,member | grant:project.update | `no_org_role`, `org_role_denied`, `project_assignment_required`, `grant_missing`, `action_blocked` |

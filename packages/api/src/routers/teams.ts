@@ -10,12 +10,14 @@ import { requireAction } from "../actions/require-action";
 import { orgProcedure, router } from "../index";
 import {
   mcpTeamAddMember,
+  mcpTeamChangeMemberRole,
   mcpTeamCreate,
   mcpTeamDelete,
   mcpTeamRemoveMember,
   mcpTeamRestore,
   mcpTeamsList,
   mcpTeamUpdate,
+  teamEligibleMembersList,
   teamMembersList,
 } from "../mcp/organization-ops";
 
@@ -30,7 +32,11 @@ export const teamsRouter = router({
 
   members: orgProcedure
     .input(z.object({ teamId: z.string().min(1) }))
-    .use(actionGuard("member.list"))
+    .use(
+      actionGuard("team.member.list", (input) => ({
+        teamId: (input as { teamId: string }).teamId,
+      })),
+    )
     .query(async ({ ctx, input }) => {
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId) {
@@ -39,9 +45,58 @@ export const teamsRouter = router({
       return teamMembersList(ctx.session.user.id, organizationId, input.teamId);
     }),
 
+  get: orgProcedure
+    .input(z.object({ teamId: z.string().min(1) }))
+    .use(
+      actionGuard("team.member.list", (input) => ({
+        teamId: (input as { teamId: string }).teamId,
+      })),
+    )
+    .query(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) return { team: null };
+      const [row] = await db
+        .select({
+          id: team.id,
+          name: team.name,
+          organizationId: team.organizationId,
+        })
+        .from(team)
+        .where(
+          and(
+            eq(team.id, input.teamId),
+            eq(team.organizationId, organizationId),
+            isNull(team.deletedAt),
+          ),
+        )
+        .limit(1);
+      return { team: row ?? null };
+    }),
+
+  availableMembers: orgProcedure
+    .input(z.object({ teamId: z.string().min(1) }))
+    .use(
+      actionGuard("team.member.add", (input) => ({
+        teamId: (input as { teamId: string }).teamId,
+      })),
+    )
+    .query(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) return { items: [] };
+      return teamEligibleMembersList(
+        ctx.session.user.id,
+        organizationId,
+        input.teamId,
+      );
+    }),
+
   projects: orgProcedure
     .input(z.object({ teamId: z.string().min(1) }))
-    .use(actionGuard("member.list"))
+    .use(
+      actionGuard("team.member.list", (input) => ({
+        teamId: (input as { teamId: string }).teamId,
+      })),
+    )
     .query(async ({ ctx, input }) => {
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId) return { items: [] };
@@ -211,7 +266,11 @@ export const teamsRouter = router({
 
   addMember: orgProcedure
     .input(z.object({ teamId: z.string().min(1), userId: z.string().min(1) }))
-    .use(actionGuard("team.member.add"))
+    .use(
+      actionGuard("team.member.add", (input) => ({
+        teamId: (input as { teamId: string }).teamId,
+      })),
+    )
     .mutation(async ({ ctx, input }) => {
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId) {
@@ -227,7 +286,11 @@ export const teamsRouter = router({
 
   removeMember: orgProcedure
     .input(z.object({ teamId: z.string().min(1), userId: z.string().min(1) }))
-    .use(actionGuard("team.member.remove"))
+    .use(
+      actionGuard("team.member.remove", (input) => ({
+        teamId: (input as { teamId: string }).teamId,
+      })),
+    )
     .mutation(async ({ ctx, input }) => {
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId) {
@@ -238,6 +301,31 @@ export const teamsRouter = router({
         organizationId,
         input.teamId,
         input.userId,
+      );
+    }),
+
+  updateMemberRole: orgProcedure
+    .input(
+      z.object({
+        teamId: z.string().min(1),
+        userId: z.string().min(1),
+        role: z.enum(["lead", "member"]),
+      }),
+    )
+    .use(
+      actionGuard("team.member.role.change", (input) => ({
+        teamId: (input as { teamId: string }).teamId,
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) throw new Error("No active org");
+      return mcpTeamChangeMemberRole(
+        ctx.session.user.id,
+        organizationId,
+        input.teamId,
+        input.userId,
+        input.role,
       );
     }),
 });

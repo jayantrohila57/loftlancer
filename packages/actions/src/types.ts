@@ -1,4 +1,5 @@
 export type OrgRole = "owner" | "manager" | "member";
+export type TeamRole = "lead" | "member";
 
 /** Legacy Better Auth org role stored in DB before migration */
 export type StoredMemberRole = OrgRole | "admin";
@@ -18,6 +19,8 @@ export type ActionDefinition = {
   selfOnly?: boolean;
   /** Minimum org roles when scope is organization or project (before grants) */
   orgRoles?: OrgRole[];
+  /** Team-scoped permission paths; still require active organization membership. */
+  teamRoles?: TeamRole[];
   requiresProjectGrant?: boolean;
   projectGrantKey?: string;
   baPermission?: Record<string, string[]>;

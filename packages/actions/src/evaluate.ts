@@ -1,7 +1,7 @@
 import { isOrgRoleAtLeast, normalizeOrgRole } from "./org-roles";
 import { isPlatformAdminFlag } from "./platform-admin-flag";
 import { getActionDefinition } from "./registry";
-import type { ActionName, OrgRole } from "./types";
+import type { ActionName, OrgRole, TeamRole } from "./types";
 
 export type ProjectAccessContext = {
   isProjectCreator?: boolean;
@@ -10,10 +10,16 @@ export type ProjectAccessContext = {
   hasTeamLink?: boolean;
 };
 
+export type TeamAccessContext = {
+  belongsToOrganization: boolean;
+  role: TeamRole | null;
+};
+
 export type EvaluatePermissionInput = {
   action: ActionName;
   orgRole: OrgRole | null;
   project?: ProjectAccessContext | null;
+  team?: TeamAccessContext | null;
 };
 
 export type EvaluatePermissionResult =
@@ -43,6 +49,14 @@ export function evaluatePermission(
   }
 
   if (orgRole === "owner") {
+    return { allowed: true };
+  }
+
+  if (
+    input.team?.belongsToOrganization &&
+    input.team.role &&
+    def.teamRoles?.includes(input.team.role)
+  ) {
     return { allowed: true };
   }
 

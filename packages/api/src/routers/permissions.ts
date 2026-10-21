@@ -11,6 +11,7 @@ export const permissionsRouter = router({
       z
         .object({
           projectId: z.string().optional(),
+          teamId: z.string().optional(),
         })
         .optional(),
     )
@@ -20,6 +21,7 @@ export const permissionsRouter = router({
         userId: ctx.session.user.id,
         organizationId,
         projectId: input?.projectId,
+        teamId: input?.teamId,
       });
     }),
 });

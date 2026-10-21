@@ -11,6 +11,7 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { ErrorState } from "@/components/patterns/error-state";
 import { Can } from "@/domain/permissions/components/can";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
@@ -20,7 +21,12 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
   const { confirm, ConfirmDialog } = useConfirm();
   const [userId, setUserId] = useState("");
   const members = useQuery(trpc.teams.members.queryOptions({ teamId }));
-  const orgMembers = useQuery(trpc.organizations.listMembers.queryOptions());
+  const canAddMembers = useCan("team.member.add", { teamId });
+  const canChangeRoles = useCan("team.member.role.change", { teamId });
+  const availableMembers = useQuery({
+    ...trpc.teams.availableMembers.queryOptions({ teamId }),
+    enabled: canAddMembers.allowed,
+  });
   const refresh = () => {
     void queryClient.invalidateQueries({
       queryKey: trpc.teams.members.queryKey({ teamId }),
@@ -30,6 +36,15 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
     });
     void queryClient.invalidateQueries({
       queryKey: trpc.permissions.snapshot.queryKey({}),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: trpc.permissions.snapshot.queryKey({ teamId }),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: trpc.projectAccess.getSummary.pathKey(),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: trpc.teams.availableMembers.queryKey({ teamId }),
     });
   };
   const add = useMutation(
@@ -51,21 +66,23 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
       onError: (error) => toast.error(error.message),
     }),
   );
-  const teamUserIds = new Set(
-    members.data?.items.map((row) => row.userId) ?? [],
+  const changeRole = useMutation(
+    trpc.teams.updateMemberRole.mutationOptions({
+      onSuccess: () => {
+        toast.success("Team role updated");
+        refresh();
+      },
+      onError: (error) => toast.error(error.message),
+    }),
   );
-  const allMembers = orgMembers.data?.items ?? [];
-  const addable = allMembers.filter((row) => !teamUserIds.has(row.userId));
-  const memberById = new Map(allMembers.map((row) => [row.userId, row]));
-  const memberRows = (members.data?.items ?? []).map((row) => {
-    const person = memberById.get(row.userId);
-    return {
-      id: row.id,
-      userId: row.userId,
-      name: person?.name || person?.email || row.userId,
-      email: person?.email ?? "",
-    };
-  });
+  const addable = availableMembers.data?.items ?? [];
+  const memberRows = (members.data?.items ?? []).map((row) => ({
+    id: row.id,
+    userId: row.userId,
+    name: row.name || row.email || row.userId,
+    email: row.email ?? "",
+    role: row.role,
+  }));
   const columns: DataTableColumnDef<(typeof memberRows)[number]>[] = [
     {
       accessorKey: "name",
@@ -84,14 +101,53 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
       ),
     },
     {
+      accessorKey: "role",
+      header: "Team role",
+      cell: ({ row }) => (row.original.role === "lead" ? "Lead" : "Member"),
+    },
+    {
       id: "actions",
       meta: { role: "actions" },
       header: () => <DataTableActionsColumnHeader />,
       cell: ({ row }) => (
-        <Can action="team.member.remove">
+        <Can action="team.member.remove" teamId={teamId} fallback={null}>
           <DataTableRowActions
             label={`Actions for ${row.original.name}`}
             actions={[
+              ...(canChangeRoles.allowed
+                ? [
+                    {
+                      label:
+                        row.original.role === "lead"
+                          ? "Make team member"
+                          : "Make team lead",
+                      disabled: changeRole.isPending,
+                      onSelect: () =>
+                        confirm({
+                          title:
+                            row.original.role === "lead"
+                              ? `Remove lead role from ${row.original.name}?`
+                              : `Make ${row.original.name} a team lead?`,
+                          description:
+                            "Team leads can add and remove members in this team. They cannot change organization settings, project grants, or team roles.",
+                          confirmLabel:
+                            row.original.role === "lead"
+                              ? "Make team member"
+                              : "Make team lead",
+                          onConfirm: async () => {
+                            await changeRole.mutateAsync({
+                              teamId,
+                              userId: row.original.userId,
+                              role:
+                                row.original.role === "lead"
+                                  ? "member"
+                                  : "lead",
+                            });
+                          },
+                        }),
+                    },
+                  ]
+                : []),
               {
                 label: "Remove from team",
                 destructive: true,
@@ -100,7 +156,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
                   confirm({
                     title: `Remove ${row.original.name} from the team?`,
                     description:
-                      "They will remain in the organization, but may lose project access they get through this team. Direct project access stays in place.",
+                      "They will remain in the organization, but may lose access from this team. Direct grants stay saved, but may need another linked team to remain effective.",
                     confirmLabel: "Remove from team",
                     variant: "destructive",
                     onConfirm: async () => {
@@ -123,22 +179,24 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
       <div>
         <h2 className="font-semibold text-xl tracking-tight">Members</h2>
         <p className="mt-1 text-muted-foreground text-sm">
-          Add existing organization members here. Use Team invitations to invite
-          someone who has not joined the organization yet.
+          Add existing organization members here. Members gain access to
+          projects assigned to this team based on each project’s access rules.
+          Use Team invitations for people who have not joined the organization
+          yet.
         </p>
       </div>
-      {members.isError || orgMembers.isError ? (
+      {members.isError || availableMembers.isError ? (
         <ErrorState
           title="Could not load team members"
           description="Try loading members again."
           onRetry={() => {
             void members.refetch();
-            void orgMembers.refetch();
+            void availableMembers.refetch();
           }}
         />
       ) : (
         <>
-          <Can action="team.member.add">
+          <Can action="team.member.add" teamId={teamId} fallback={null}>
             {addable.length > 0 ? (
               <div className="flex flex-wrap items-end gap-2 rounded-xl border bg-card p-4">
                 <SearchableCombobox
@@ -168,7 +226,10 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
           <DataTable
             columns={columns}
             data={memberRows}
-            isLoading={members.isPending || orgMembers.isPending}
+            isLoading={
+              members.isPending ||
+              (canAddMembers.allowed && availableMembers.isPending)
+            }
             searchable
             enablePagination
             pageSize={10}
