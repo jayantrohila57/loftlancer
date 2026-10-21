@@ -35,11 +35,9 @@ function ProjectDetailPageContent({ slug }: ProjectDetailPageProps) {
   }
 
   return (
-    <>
-      <DashboardSection title="Overview" back={false} hideTabs>
-        <ProjectOverviewSections slug={slug} />
-      </DashboardSection>
-    </>
+    <DashboardSection title="Overview" back={false} hideTabs>
+      <ProjectOverviewSections slug={slug} />
+    </DashboardSection>
   );
 }
 

@@ -6,8 +6,11 @@ import { trpc } from "@/utils/trpc";
 
 const POLL_MS = 60_000;
 
-export function usePermissionsSnapshot(projectId?: string) {
-  const input = projectId ? { projectId } : {};
+export function usePermissionsSnapshot(projectId?: string, teamId?: string) {
+  const input = {
+    ...(projectId ? { projectId } : {}),
+    ...(teamId ? { teamId } : {}),
+  };
   return useQuery({
     ...trpc.permissions.snapshot.queryOptions(input),
     staleTime: POLL_MS,
@@ -16,8 +19,14 @@ export function usePermissionsSnapshot(projectId?: string) {
   });
 }
 
-export function useCan(action: ActionName, options?: { projectId?: string }) {
-  const { data, isPending } = usePermissionsSnapshot(options?.projectId);
+export function useCan(
+  action: ActionName,
+  options?: { projectId?: string; teamId?: string },
+) {
+  const { data, isPending } = usePermissionsSnapshot(
+    options?.projectId,
+    options?.teamId,
+  );
   const allowed = data?.actions?.[action] === true;
   const reason = allowed ? undefined : "denied";
   const isLoading = isPending && data === undefined;

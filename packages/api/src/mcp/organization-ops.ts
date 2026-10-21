@@ -1085,7 +1085,7 @@ export async function teamMembersList(
   organizationId: string,
   teamId: string,
 ) {
-  await requireAction("member.list", { userId, organizationId });
+  await requireAction("team.member.list", { userId, organizationId, teamId });
   const [row] = await db
     .select({ id: team.id })
     .from(team)
@@ -1105,6 +1105,9 @@ export async function teamMembersList(
       id: teamMember.id,
       userId: teamMember.userId,
       teamId: teamMember.teamId,
+      role: teamMember.role,
+      name: user.name,
+      email: user.email,
     })
     .from(teamMember)
     .innerJoin(
@@ -1115,7 +1118,50 @@ export async function teamMembersList(
         isNull(member.deletedAt),
       ),
     )
+    .innerJoin(user, eq(user.id, teamMember.userId))
     .where(eq(teamMember.teamId, teamId));
+  return { items: rows };
+}
+
+export async function teamEligibleMembersList(
+  userId: string,
+  organizationId: string,
+  teamId: string,
+) {
+  await requireAction("team.member.add", {
+    userId,
+    organizationId,
+    teamId,
+    audit: false,
+  });
+  const [teamRow] = await db
+    .select({ id: team.id })
+    .from(team)
+    .where(
+      and(
+        eq(team.id, teamId),
+        eq(team.organizationId, organizationId),
+        isNull(team.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (!teamRow) throw new Error("Team not found");
+  const rows = await db
+    .select({ userId: member.userId, name: user.name, email: user.email })
+    .from(member)
+    .innerJoin(user, eq(user.id, member.userId))
+    .leftJoin(
+      teamMember,
+      and(eq(teamMember.teamId, teamId), eq(teamMember.userId, member.userId)),
+    )
+    .where(
+      and(
+        eq(member.organizationId, organizationId),
+        isNull(member.deletedAt),
+        isNull(teamMember.id),
+      ),
+    )
+    .orderBy(user.name);
   return { items: rows };
 }
 
@@ -1139,6 +1185,7 @@ export async function mcpTeamCreate(
       id: crypto.randomUUID(),
       teamId,
       userId,
+      role: "lead",
     });
   });
   await writeAuthAuditEvent({
@@ -1257,7 +1304,7 @@ export async function mcpTeamAddMember(
   teamId: string,
   targetUserId: string,
 ) {
-  await requireAction("team.member.add", { userId, organizationId });
+  await requireAction("team.member.add", { userId, organizationId, teamId });
   await db.transaction(async (tx) => {
     const [activeMember] = await tx
       .select({ id: member.id, role: member.role })
@@ -1332,7 +1379,7 @@ export async function mcpTeamRemoveMember(
   teamId: string,
   targetUserId: string,
 ) {
-  await requireAction("team.member.remove", { userId, organizationId });
+  await requireAction("team.member.remove", { userId, organizationId, teamId });
   await db.transaction(async (tx) => {
     const [teamRow] = await tx
       .select({ id: team.id })
@@ -1346,6 +1393,22 @@ export async function mcpTeamRemoveMember(
       )
       .for("update");
     if (!teamRow) throw new Error("team_not_found");
+    const [target] = await tx
+      .select({ role: teamMember.role })
+      .from(teamMember)
+      .where(
+        and(eq(teamMember.teamId, teamId), eq(teamMember.userId, targetUserId)),
+      )
+      .limit(1);
+    if (target?.role === "lead") {
+      const [leadCount] = await tx
+        .select({ count: sql<number>`count(*)::int` })
+        .from(teamMember)
+        .where(and(eq(teamMember.teamId, teamId), eq(teamMember.role, "lead")));
+      if ((leadCount?.count ?? 0) <= 1) {
+        throw new Error("team_requires_lead");
+      }
+    }
     await tx
       .delete(teamMember)
       .where(
@@ -1369,6 +1432,78 @@ export async function mcpTeamRemoveMember(
     targetUserId,
   });
   return { teamId, userId: targetUserId };
+}
+
+export async function mcpTeamChangeMemberRole(
+  userId: string,
+  organizationId: string,
+  teamId: string,
+  targetUserId: string,
+  role: "lead" | "member",
+) {
+  await requireAction("team.member.role.change", {
+    userId,
+    organizationId,
+    teamId,
+  });
+  await db.transaction(async (tx) => {
+    const [teamRow] = await tx
+      .select({ id: team.id })
+      .from(team)
+      .where(
+        and(
+          eq(team.id, teamId),
+          eq(team.organizationId, organizationId),
+          isNull(team.deletedAt),
+        ),
+      )
+      .for("update");
+    if (!teamRow) throw new Error("team_not_found");
+    const [targetMember] = await tx
+      .select({ id: member.id })
+      .from(member)
+      .where(
+        activeMemberWhere(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, targetUserId),
+          ),
+        ),
+      )
+      .limit(1);
+    if (!targetMember) throw new Error("organization_member_not_found");
+    const [row] = await tx
+      .select({ membershipId: teamMember.id, role: teamMember.role })
+      .from(teamMember)
+      .where(
+        and(eq(teamMember.teamId, teamId), eq(teamMember.userId, targetUserId)),
+      )
+      .limit(1);
+    if (!row) throw new Error("team_member_not_found");
+    if (row.role === "lead" && role === "member") {
+      const [leadCount] = await tx
+        .select({ count: sql<number>`count(*)::int` })
+        .from(teamMember)
+        .where(and(eq(teamMember.teamId, teamId), eq(teamMember.role, "lead")));
+      if ((leadCount?.count ?? 0) <= 1) {
+        throw new Error("team_requires_lead");
+      }
+    }
+    await tx
+      .update(teamMember)
+      .set({ role })
+      .where(eq(teamMember.id, row.membershipId));
+  });
+  await writeAuthAuditEvent({
+    action: "team.member.role.change",
+    result: "success",
+    actorUserId: userId,
+    organizationId,
+    entityId: teamId,
+    targetUserId,
+    payload: { role },
+  });
+  return { teamId, userId: targetUserId, role };
 }
 
 export async function resolveOrgFromInput(

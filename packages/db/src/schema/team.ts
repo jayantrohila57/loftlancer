@@ -1,5 +1,12 @@
-import { relations } from "drizzle-orm";
-import { index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
+import {
+  check,
+  index,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { organization } from "./organization";
 
@@ -33,9 +40,11 @@ export const teamMember = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     membershipKey: text("membership_key").unique(),
+    role: text("role").default("member").notNull(),
     createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => [
+    check("team_member_role_check", sql`${table.role} in ('lead', 'member')`),
     index("team_member_team_id_idx").on(table.teamId),
     index("team_member_user_id_idx").on(table.userId),
   ],

@@ -35,6 +35,9 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Project Access now lists each active member with their effective project capabilities and the organization role, team, creator, manager, or grant sources that provide them (#555).
 - Project invitations now use the shared guarded bulk-invite dialog, with project-scoped duplicate checks, feedback, and acceptance details (#556).
 - Team overview no longer shows member/project counts; team settings now use matching accordion sections and explain how team deletion affects project access (#557).
+- Teams now persist lead/member roles: leads can manage their own roster, while organization owners/managers retain role, project-link, and settings control (#558).
+- Project access context now exits safely when a nullable project-to-organization relationship is absent (#558).
+- Removed redundant project overview wrapper markup flagged by the repository lint gate (#554).
 - Standardized project and organization overview/access/settings sections on accordions and aligned their loading skeletons (#548).
 - Team member/project lists and project access lists now use the shared searchable, sortable, paginated table and consistent row actions (#549).
 - Project lifecycle confirmations now use the shared confirmation component directly across overview and settings actions (#550).

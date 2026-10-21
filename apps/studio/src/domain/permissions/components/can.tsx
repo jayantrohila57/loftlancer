@@ -7,12 +7,19 @@ import { useCan } from "../hooks/use-permissions";
 type CanProps = {
   action: ActionName;
   projectId?: string;
+  teamId?: string;
   fallback?: React.ReactNode;
   children: React.ReactNode;
 };
 
-export function Can({ action, projectId, fallback, children }: CanProps) {
-  const { allowed, isLoading } = useCan(action, { projectId });
+export function Can({
+  action,
+  projectId,
+  teamId,
+  fallback,
+  children,
+}: CanProps) {
+  const { allowed, isLoading } = useCan(action, { projectId, teamId });
   if (isLoading) {
     if (fallback === null) {
       return null;

@@ -39,7 +39,7 @@ export async function loadProjectAccessContext(
     proj && projectBelongsToOrganization(proj.organizationId, organizationId),
   );
 
-  if (!proj || !belongsToOrganization) {
+  if (!proj?.organizationId || !belongsToOrganization) {
     return {
       isProjectCreator: false,
       isProjectManager: false,
@@ -48,6 +48,7 @@ export async function loadProjectAccessContext(
       belongsToOrganization: false,
     };
   }
+  const projectOrganizationId = proj.organizationId;
 
   const [manager] = await db
     .select({ id: projectManager.id })
@@ -55,7 +56,7 @@ export async function loadProjectAccessContext(
     .where(
       and(
         eq(projectManager.projectId, projectId),
-        eq(projectManager.organizationId, proj.organizationId!),
+        eq(projectManager.organizationId, projectOrganizationId),
         eq(projectManager.userId, userId),
         isNull(projectManager.deletedAt),
       ),
@@ -68,7 +69,7 @@ export async function loadProjectAccessContext(
     .where(
       and(
         eq(projectMemberGrant.projectId, projectId),
-        eq(projectMemberGrant.organizationId, proj.organizationId!),
+        eq(projectMemberGrant.organizationId, projectOrganizationId),
         eq(projectMemberGrant.userId, userId),
         isNull(projectMemberGrant.deletedAt),
       ),
@@ -81,7 +82,7 @@ export async function loadProjectAccessContext(
     .where(
       and(
         eq(projectTeam.projectId, projectId),
-        eq(projectTeam.organizationId, proj.organizationId!),
+        eq(projectTeam.organizationId, projectOrganizationId),
         isNull(projectTeam.deletedAt),
       ),
     );
@@ -97,7 +98,7 @@ export async function loadProjectAccessContext(
         and(
           eq(teamMember.userId, userId),
           inArray(teamMember.teamId, teamIds),
-          eq(team.organizationId, proj.organizationId!),
+          eq(team.organizationId, projectOrganizationId),
           isNull(team.deletedAt),
         ),
       )
@@ -106,7 +107,7 @@ export async function loadProjectAccessContext(
   }
 
   return {
-    isProjectCreator: proj?.userId === userId,
+    isProjectCreator: proj.userId === userId,
     isProjectManager: Boolean(manager),
     memberGrants: grantRow?.grants ?? [],
     hasTeamLink,

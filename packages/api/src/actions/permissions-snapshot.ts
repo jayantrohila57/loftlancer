@@ -16,6 +16,7 @@ import {
   loadProjectAccessContext,
   userHasAnyProjectManagerAssignment,
 } from "./project-access";
+import { loadTeamAccessContext } from "./team-access";
 
 export type PermissionsSnapshot = {
   platformAdmin: false;
@@ -30,6 +31,7 @@ export async function buildPermissionsSnapshot(input: {
   userId: string;
   organizationId: string | null;
   projectId?: string | null;
+  teamId?: string | null;
 }): Promise<PermissionsSnapshot> {
   const blocked: ActionName[] = [];
   const actions: Record<string, boolean> = {};
@@ -60,6 +62,14 @@ export async function buildPermissionsSnapshot(input: {
         input.organizationId,
       )
     : null;
+  const teamCtx =
+    input.teamId && input.organizationId
+      ? await loadTeamAccessContext(
+          input.userId,
+          input.teamId,
+          input.organizationId,
+        )
+      : null;
 
   let managerHasTimeline = false;
   let unassignedMember = false;
@@ -98,11 +108,20 @@ export async function buildPermissionsSnapshot(input: {
       actions[name] = false;
       continue;
     }
+    if (
+      input.teamId &&
+      getActionDefinition(action).teamRoles?.length &&
+      !teamCtx?.belongsToOrganization
+    ) {
+      actions[name] = false;
+      continue;
+    }
 
     const defScope = evaluatePermission({
       action,
       orgRole,
       project: projectCtx,
+      team: teamCtx,
     });
 
     if (

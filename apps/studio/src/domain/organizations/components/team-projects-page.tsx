@@ -13,6 +13,7 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { ErrorState } from "@/components/patterns/error-state";
 import { Can } from "@/domain/permissions/components/can";
+import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
 import { routes } from "@/utils/navigation";
@@ -28,10 +29,12 @@ export function TeamProjectsPage({
   const queryClient = useQueryClient();
   const { confirm, ConfirmDialog } = useConfirm();
   const [projectId, setProjectId] = useState("");
+  const canManageProjectLinks = useCan("member.list");
   const linked = useQuery(trpc.teams.projects.queryOptions({ teamId }));
-  const linkable = useQuery(
-    trpc.teams.linkableProjects.queryOptions({ teamId }),
-  );
+  const linkable = useQuery({
+    ...trpc.teams.linkableProjects.queryOptions({ teamId }),
+    enabled: canManageProjectLinks.allowed,
+  });
   const invalidate = () => {
     void queryClient.invalidateQueries({
       queryKey: trpc.teams.projects.queryKey({ teamId }),
@@ -143,7 +146,7 @@ export function TeamProjectsPage({
           description="Try loading the projects again."
           onRetry={() => void linkable.refetch()}
         />
-      ) : linkable.isPending ? (
+      ) : canManageProjectLinks.allowed && linkable.isPending ? (
         <Skeleton className="h-16 rounded-xl" />
       ) : available.length > 0 ? (
         <div className="flex flex-wrap items-end gap-2 rounded-xl border bg-card p-4">

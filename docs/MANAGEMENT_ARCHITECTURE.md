@@ -1,8 +1,8 @@
 # Management architecture contract
 
 This document defines the resource boundaries used by the Studio UI, route builder,
-and API. It reflects the existing schema and policy; it does not imply that
-application-scoped membership or team roles are already implemented.
+and API. Application-scoped membership is not implemented. Teams use scoped
+`lead` and `member` roles for team roster operations.
 
 ## Resource tree and canonical routes
 
@@ -55,6 +55,7 @@ denial reasons are listed in [`MANAGEMENT_ACTION_MATRIX.md`](./MANAGEMENT_ACTION
 | Organization owner | Allowed | Allowed | Organization ownership |
 | Organization manager | Role-gated | Allowed only when project manager or creator | Organization role plus project assignment |
 | Organization member | Role-gated | Requires linked team **and** matching project member grant | Active org membership, team-to-project link and explicit grant |
+| Team lead | May view and manage membership for their team | Same as their organization role and project grants | Team role grants no project or organization settings access |
 | Non-member / cross-org identity | Denied | Denied | No organization membership |
 | Any actor against a blocked action | Denied | Denied | Action block takes precedence in server guard |
 
@@ -65,7 +66,7 @@ denial reasons are listed in [`MANAGEMENT_ACTION_MATRIX.md`](./MANAGEMENT_ACTION
 | Owner | Organization accountability and complete access; ownership transfer must leave one active owner. |
 | Organization membership | Establishes tenant membership only; it does not imply access to every project. |
 | Manager role | Organization operations plus project actions only for an explicit manager assignment or creator attribution, as the registry specifies. |
-| Team lead / team member | A team-scoped role applies only within that team. The role itself does not grant project access unless that team is linked to the project. |
+| Team lead / team member | A team lead can view, add and remove members of that team. Only organization owners/managers can change team roles, team settings, invitations or project links. The team role itself does not grant project access. |
 | Direct project grant | A capability grant; under the current policy it is effective only with a linked-team path. Direct grant alone is explicitly denied (`no_team_on_project`). |
 | Application access | Must be independently assignable and enforced at app scope. Until an app membership/grant schema and server guard exist, installed applications inherit the existing project gate; the UI must not imply a narrower app ACL. |
 | Action block | Explicit deny wins over every role, ownership, team, project, or app grant. Revoking a membership or relationship removes that access path immediately; other valid paths may continue to grant access. |
@@ -83,8 +84,8 @@ Direct `project_member_grant` rows alone do **not** confer member access under
 the current evaluator: the actor must also have a team linked to that project.
 This preserves the currently enforced access boundary until an explicit policy
 and migration review changes it. Team member/lead role and app-level grant rows
-are not currently represented in the data model; do not display them as
-effective capabilities before they are persisted and checked on the server.
+are not project capabilities. Team roles are persisted and checked by server
+actions and permission snapshots. App-level grant rows are not implemented.
 
 ## Navigation and page interaction contract
 

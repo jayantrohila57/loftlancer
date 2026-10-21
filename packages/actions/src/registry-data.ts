@@ -1,4 +1,4 @@
-import type { ActionDefinition, OrgRole } from "./types";
+import type { ActionDefinition, OrgRole, TeamRole } from "./types";
 
 type MatrixRow = {
   name: string;
@@ -8,6 +8,7 @@ type MatrixRow = {
   manager?: boolean | "grant";
   member?: boolean | "grant";
   orgOnly?: OrgRole[];
+  teamRoles?: TeamRole[];
   selfOnly?: boolean;
   requiresProjectGrant?: boolean;
   projectGrantKey?: string;
@@ -38,6 +39,7 @@ function def(row: MatrixRow): ActionDefinition {
     description: row.description,
     selfOnly: row.selfOnly,
     orgRoles,
+    teamRoles: row.teamRoles,
     requiresProjectGrant:
       row.requiresProjectGrant ??
       (row.manager === "grant" || row.member === "grant"),
@@ -323,10 +325,19 @@ const rows: MatrixRow[] = [
     entityType: "team",
   },
   {
+    name: "team.member.list",
+    scope: "organization",
+    description: "View members of a team",
+    manager: true,
+    teamRoles: ["lead"],
+    entityType: "team",
+  },
+  {
     name: "team.member.add",
     scope: "organization",
     description: "Add member to team",
     manager: true,
+    teamRoles: ["lead"],
     entityType: "team",
     severity: "security",
   },
@@ -334,6 +345,15 @@ const rows: MatrixRow[] = [
     name: "team.member.remove",
     scope: "organization",
     description: "Remove member from team",
+    manager: true,
+    teamRoles: ["lead"],
+    entityType: "team",
+    severity: "security",
+  },
+  {
+    name: "team.member.role.change",
+    scope: "organization",
+    description: "Change a team member role",
     manager: true,
     entityType: "team",
     severity: "security",

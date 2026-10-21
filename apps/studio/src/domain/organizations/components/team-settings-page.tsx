@@ -4,7 +4,6 @@ import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -38,6 +37,9 @@ export function TeamSettingsPage({
         toast.success("Team renamed");
         void queryClient.invalidateQueries({
           queryKey: trpc.teams.list.queryKey(),
+        });
+        void queryClient.invalidateQueries({
+          queryKey: trpc.teams.get.queryKey({ teamId }),
         });
       },
       onError: (error) => toast.error(error.message),

@@ -20,11 +20,13 @@ import {
   loadProjectAccessContext,
   userHasAnyProjectManagerAssignment,
 } from "./project-access";
+import { loadTeamAccessContext } from "./team-access";
 
 export type RequireActionContext = {
   userId: string;
   organizationId?: string | null;
   projectId?: string | null;
+  teamId?: string | null;
   targetUserId?: string | null;
   ipAddress?: string | null;
   userAgent?: string | null;
@@ -136,12 +138,22 @@ export async function requireAction(
           ctx.organizationId,
         )
       : null;
+    const teamCtx = ctx.teamId
+      ? await loadTeamAccessContext(ctx.userId, ctx.teamId, ctx.organizationId)
+      : null;
 
     if (ctx.projectId && !projectCtx?.belongsToOrganization) {
       denialReason = "project_org_mismatch";
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "Project not found.",
+      });
+    }
+    if (ctx.teamId && !teamCtx?.belongsToOrganization) {
+      denialReason = "team_org_mismatch";
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Team not found.",
       });
     }
 
@@ -164,6 +176,7 @@ export async function requireAction(
       action,
       orgRole,
       project: projectCtx,
+      team: teamCtx,
     });
 
     if (!decision.allowed) {
