@@ -45,11 +45,15 @@ describe("requireAction org membership lookup", () => {
     assert.match(projectAccessSource, /projectBelongsToOrganization\(/);
     assert.match(
       projectAccessSource,
-      /eq\(projectManager\.organizationId, proj\.organizationId!/,
+      /if \(!proj\?\.organizationId \|\| !belongsToOrganization\)/,
     );
     assert.match(
       projectAccessSource,
-      /eq\(projectTeam\.organizationId, proj\.organizationId!/,
+      /eq\(projectManager\.organizationId, projectOrganizationId\)/,
+    );
+    assert.match(
+      projectAccessSource,
+      /eq\(projectTeam\.organizationId, projectOrganizationId\)/,
     );
   });
 
