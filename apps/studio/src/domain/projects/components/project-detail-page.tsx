@@ -1,15 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
-import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { useOrgSlug } from "@/utils/use-route-scope";
-import { EditProjectSheet } from "./edit-project-sheet";
-import { ProjectActions } from "./project-actions";
 import {
   ProjectOverviewSections,
   ProjectOverviewSectionsSkeleton,
@@ -20,27 +15,10 @@ interface ProjectDetailPageProps {
 }
 
 function ProjectDetailPageContent({ slug }: ProjectDetailPageProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const org = useOrgSlug();
-  const [editOpen, setEditOpen] = useState(false);
   const { data, isPending, isError } = useQuery(
     trpc.projects.getBySlug.queryOptions({ slug }),
   );
   const project = data?.data?.project;
-
-  useEffect(() => {
-    if (searchParams.get("edit") === "1" && !isPending && project) {
-      setEditOpen(true);
-    }
-  }, [searchParams, isPending, project]);
-
-  const handleEditOpenChange = (open: boolean) => {
-    setEditOpen(open);
-    if (!open && searchParams.get("edit") === "1") {
-      router.replace(routes.project(org, slug));
-    }
-  };
 
   if (isPending && !project) {
     return <ProjectOverviewSectionsSkeleton />;
@@ -58,21 +36,9 @@ function ProjectDetailPageContent({ slug }: ProjectDetailPageProps) {
 
   return (
     <>
-      <DashboardSection
-        title="Overview"
-        back={false}
-        hideTabs
-        action={
-          <ProjectActions project={project} onEdit={() => setEditOpen(true)} />
-        }
-      >
+      <DashboardSection title="Overview" back={false} hideTabs>
         <ProjectOverviewSections slug={slug} />
       </DashboardSection>
-      <EditProjectSheet
-        project={project}
-        open={editOpen}
-        onOpenChange={handleEditOpenChange}
-      />
     </>
   );
 }
