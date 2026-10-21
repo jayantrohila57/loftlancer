@@ -35,6 +35,7 @@ export type OrganizationInvitationsTableProps = {
   caption?: string;
   /** Project invitations also require the project grant permission. */
   projectId?: string;
+  scopeLabel?: string;
 };
 
 export function OrganizationInvitationsTable({
@@ -47,8 +48,14 @@ export function OrganizationInvitationsTable({
   clientPagination = true,
   caption = "Organization invitations",
   projectId,
+  scopeLabel = "Organization",
 }: OrganizationInvitationsTableProps) {
   const columns: DataTableColumnDef<OrganizationInvitationRow>[] = [
+    columnHelper.display({
+      id: "scope",
+      header: "Access scope",
+      cell: () => <span className="text-muted-foreground">{scopeLabel}</span>,
+    }),
     columnHelper.accessor("email", {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Email" />

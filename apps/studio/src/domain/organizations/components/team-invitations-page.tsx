@@ -1,10 +1,14 @@
 "use client";
 
 import { Button } from "@loftlancer/ui/button";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import {
+  INVITATION_PAGE_SIZE,
+  InvitationListControls,
+  type InvitationStatusFilter,
+} from "@/components/org/invitation-list-controls";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { ErrorState } from "@/components/patterns/error-state";
 import { Can } from "@/domain/permissions/components/can";
@@ -19,17 +23,6 @@ import { trpc } from "@/utils/trpc";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { BulkInviteDialog } from "./bulk-invite-dialog";
 
-const PAGE_SIZE = 50;
-const STATUSES = [
-  "pending",
-  "expired",
-  "accepted",
-  "rejected",
-  "canceled",
-  "all",
-] as const;
-type Status = (typeof STATUSES)[number];
-
 export function TeamInvitationsPage({
   slug,
   teamId,
@@ -42,15 +35,15 @@ export function TeamInvitationsPage({
   const [open, setOpen] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [resendingId, setResendingId] = useState<string | null>(null);
-  const [status, setStatus] = useState<Status>("pending");
+  const [status, setStatus] = useState<InvitationStatusFilter>("pending");
   const [page, setPage] = useState(0);
   const query = useQuery({
     ...trpc.organizations.listInvitations.queryOptions({
       organizationId: organization?.id ?? "",
       teamId,
       status,
-      limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
+      limit: INVITATION_PAGE_SIZE,
+      offset: page * INVITATION_PAGE_SIZE,
     }),
     enabled: Boolean(organization?.id),
   });
@@ -76,43 +69,16 @@ export function TeamInvitationsPage({
           </Button>
         </Can>
       </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <SearchableCombobox
-          value={status}
-          onChange={(value) => {
-            setStatus(value as Status);
-            setPage(0);
-          }}
-          ariaLabel="Filter invitations by status"
-          className="w-40"
-          options={STATUSES.map((value) => ({
-            value,
-            label: value.charAt(0).toUpperCase() + value.slice(1),
-          }))}
-        />
-        <span className="ms-auto text-muted-foreground text-xs">
-          {query.data?.total ?? 0}{" "}
-          {query.data?.total === 1 ? "invitation" : "invitations"}
-        </span>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={page === 0}
-          onClick={() => setPage((current) => current - 1)}
-        >
-          Previous
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={(page + 1) * PAGE_SIZE >= (query.data?.total ?? 0)}
-          onClick={() => setPage((current) => current + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      <InvitationListControls
+        status={status}
+        page={page}
+        total={query.data?.total ?? 0}
+        onStatusChange={(next) => {
+          setStatus(next);
+          setPage(0);
+        }}
+        onPageChange={setPage}
+      />
       {query.isPending ? (
         <Skeleton className="h-36 rounded-xl" />
       ) : query.isError ? (
@@ -129,6 +95,7 @@ export function TeamInvitationsPage({
         <OrganizationInvitationsTable
           invitations={invitations}
           caption="Team invitations"
+          scopeLabel="Team"
           revokingId={revokingId}
           resendingId={resendingId}
           onRevoke={(id) => {

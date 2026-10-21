@@ -8,11 +8,15 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@loftlancer/ui/empty";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { invitationsEmpty } from "@/components/data-table/data-table-empty-presets";
+import {
+  INVITATION_PAGE_SIZE,
+  InvitationListControls,
+  type InvitationStatusFilter,
+} from "@/components/org/invitation-list-controls";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { ErrorState } from "@/components/patterns/error-state";
@@ -34,17 +38,6 @@ import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { BulkInviteDialog } from "./bulk-invite-dialog";
 import { OrganizationSectionPage } from "./organization-section-page";
 
-const PAGE_SIZE = 50;
-const STATUS_OPTIONS = [
-  { value: "pending", label: "Pending" },
-  { value: "expired", label: "Expired" },
-  { value: "accepted", label: "Accepted" },
-  { value: "rejected", label: "Rejected" },
-  { value: "canceled", label: "Canceled" },
-  { value: "all", label: "All" },
-] as const;
-type InvitationStatusFilter = (typeof STATUS_OPTIONS)[number]["value"];
-
 export function OrganizationInvitationsPage({ slug }: { slug: string }) {
   const queryClient = useQueryClient();
   const {
@@ -65,8 +58,8 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     ...trpc.organizations.listInvitations.queryOptions({
       organizationId: organization?.id ?? "",
       status,
-      limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
+      limit: INVITATION_PAGE_SIZE,
+      offset: page * INVITATION_PAGE_SIZE,
     }),
     enabled: Boolean(organization?.id),
     placeholderData: (prev) => prev,
@@ -175,44 +168,16 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
         />
       ) : (
         <div className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <SearchableCombobox
-              value={status}
-              onChange={(v) => {
-                setStatus(v as InvitationStatusFilter);
-                setPage(0);
-              }}
-              ariaLabel="Filter by status"
-              className="w-44"
-              options={STATUS_OPTIONS.map((o) => ({
-                value: o.value,
-                label: `${o.label}${counts ? ` (${counts[o.value]})` : ""}`,
-              }))}
-            />
-            <span className="ms-auto text-muted-foreground text-xs tabular-nums">
-              {listQuery.data
-                ? total === 0
-                  ? "0 invitations"
-                  : `${page * PAGE_SIZE + 1}–${Math.min(total, (page + 1) * PAGE_SIZE)} of ${total}`
-                : "\u00a0"}
-            </span>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page === 0}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={(page + 1) * PAGE_SIZE >= total}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </Button>
-          </div>
+          <InvitationListControls
+            status={status}
+            page={page}
+            total={total}
+            onStatusChange={(next) => {
+              setStatus(next);
+              setPage(0);
+            }}
+            onPageChange={setPage}
+          />
           {loading ? (
             <Skeleton className="h-32 w-full rounded-xl" />
           ) : sorted.length === 0 && counts?.all === 0 ? (
