@@ -1,6 +1,7 @@
 import {
   type ActionName,
   actionNames,
+  appIdForAction,
   evaluatePermission,
   getActionDefinition,
   normalizeOrgRole,
@@ -8,6 +9,7 @@ import {
 import { activeMemberWhere, db } from "@loftlancer/db";
 import { member, organization } from "@loftlancer/db/schema/organization";
 import { and, eq, isNull } from "drizzle-orm";
+import { hasProjectAppAccess } from "../apps/project-app-access";
 import {
   isActionBlockedInSet,
   loadBlockedActionsForScope,
@@ -92,8 +94,35 @@ export async function buildPermissionsSnapshot(input: {
     projectId: input.projectId,
   });
 
+  const appAccess = new Map<string, boolean>();
+  if (input.projectId && input.organizationId) {
+    for (const name of actionNames) {
+      const appId = appIdForAction(name);
+      if (!appId || appAccess.has(appId)) continue;
+      appAccess.set(
+        appId,
+        await hasProjectAppAccess({
+          userId: input.userId,
+          organizationId: input.organizationId,
+          projectId: input.projectId,
+          appId,
+          bypassRestriction:
+            orgRole === "owner" ||
+            orgRole === "manager" ||
+            projectCtx?.isProjectCreator === true ||
+            projectCtx?.isProjectManager === true,
+        }),
+      );
+    }
+  }
+
   for (const name of actionNames) {
     const action = name as ActionName;
+    const appId = appIdForAction(action);
+    if (appId && input.projectId && !appAccess.get(appId)) {
+      actions[name] = false;
+      continue;
+    }
     if (isActionBlockedInSet(action, blockedActions)) {
       blocked.push(action);
       actions[name] = false;

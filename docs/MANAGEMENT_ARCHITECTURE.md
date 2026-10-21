@@ -1,8 +1,9 @@
 # Management architecture contract
 
 This document defines the resource boundaries used by the Studio UI, route builder,
-and API. Application-scoped membership is not implemented. Teams use scoped
-`lead` and `member` roles for team roster operations.
+and API. Applications support inherited project access or restricted direct-user
+and linked-team assignments. Teams use scoped `lead` and `member` roles for team
+roster operations.
 
 ## Resource tree and canonical routes
 
@@ -43,7 +44,7 @@ purged before the app returns to the available catalog.
 | Team create, team profile, team lifecycle, team role and membership | Organization (create/list), Team (after creation) | One team in its organization |
 | Team-to-project assignment | Team initiates; Project authorizes and stores the link | Both resource IDs must share an organization |
 | Application install/uninstall, configuration and lifecycle | Project owns install; Application owns its settings | One installed app in a project |
-| Application member/role assignment | Application | Not available until app-scoped schema and server enforcement ship |
+| Application member/team assignment and access mode | Application | One installed app, within project permissions |
 | Account profile, sessions, connected accounts, account deletion | Account | Current user only |
 
 An owner is the accountable organization principal; a member is a person with
@@ -74,24 +75,28 @@ denial reasons are listed in [`MANAGEMENT_ACTION_MATRIX.md`](./MANAGEMENT_ACTION
 | Manager role | Organization operations plus project actions only for an explicit manager assignment or creator attribution, as the registry specifies. |
 | Team lead / team member | A team lead can view, add and remove members of that team. Only organization owners/managers can change team roles, team settings, invitations or project links. The team role itself does not grant project access. |
 | Direct project grant | A capability grant; under the current policy it is effective only with a linked-team path. Direct grant alone is explicitly denied (`no_team_on_project`). |
-| Application access | Must be independently assignable and enforced at app scope. Until an app membership/grant schema and server guard exist, installed applications inherit the existing project gate; the UI must not imply a narrower app ACL. |
+| Application access | Existing installs default to inherited project access. Restricted mode allows only project-authorized users with a direct app grant or membership in an assigned team linked to the same project. Organization owners/managers and project creators/managers retain access. App grants never add project capabilities. |
 | Action block | Explicit deny wins over every role, ownership, team, project, or app grant. Revoking a membership or relationship removes that access path immediately; other valid paths may continue to grant access. |
 
 Ownership transfer is already transactional: it locks the active organization and
 members, validates the target, promotes the target and demotes the prior owner.
 Member/team/project grant revocation must invalidate permission snapshots and
-deny subsequent server requests. For a future schema migration, preserve current
-effective access by backfilling equivalent grants before enabling the new gate;
-rollback disables the new gate before reverting the schema, and must not delete
-pre-existing membership or access rows. App-level grants should default to no
-additional access until explicitly assigned.
+deny subsequent server requests. Application installs retain inherited access by
+default; switching an app to restricted mode is explicit and warns that unassigned
+users lose access. A user or team assignment is evaluated only after the same
+project action permission succeeds. Removing project access or a team-to-project
+link removes effective app access immediately. To roll back the app-access
+migration, restore restricted apps to inherited mode first and retain assignment
+rows until the rollback is accepted.
 
 Direct `project_member_grant` rows alone do **not** confer member access under
 the current evaluator: the actor must also have a team linked to that project.
-This preserves the currently enforced access boundary until an explicit policy
-and migration review changes it. Team member/lead role and app-level grant rows
-are not project capabilities. Team roles are persisted and checked by server
-actions and permission snapshots. App-level grant rows are not implemented.
+This preserves the currently enforced access boundary. Team member/lead role and
+app-level grant rows are not project capabilities. Team roles are persisted and
+checked by server actions and permission snapshots. App-specific assignments are
+stored in `project_app_access`; `project_app.access_mode` records whether that
+app inherits project access or restricts it to selected assignments. Server
+guards and permission snapshots use the same effective app-access rule.
 
 ## Navigation and page interaction contract
 
@@ -106,8 +111,22 @@ patterns and server authorization remains authoritative.
 ## Compatibility and migration
 
 Keep deep links working with redirects to canonical app routes. URL generators,
-sidebar links, email links and app manifests should use the route builder. New
-access models require schema migration, server guards, snapshot parity, visible
-source-of-access explanations, revoke behavior and a rollback plan before UI
-exposure. Preserve existing grants during migration; never infer app membership
-from project membership once app-scoped access is introduced.
+sidebar links, email links and app manifests should use the route builder. App
+access changes use a reviewed schema migration, server guards, permission snapshot
+parity, visible source-of-access explanations, immediate revoke behavior and a
+rollback plan. Existing app access remains inherited until a manager explicitly
+restricts it; a direct or team assignment never bypasses project permissions.
+
+
+## Release verification matrix
+
+| Area | Canonical route family | Verify as owner/manager | Verify as project member | Verify after access removal |
+| --- | --- | --- | --- | --- |
+| Organization | `/studio/:org/{members,invitations,roles,settings}` | Manage org membership, invitations, roles, and settings | View only allowed org data; denied mutations stay denied | Removed member loses org routes and API access |
+| Project | `/studio/:org/:project/{access,invitations,activity,settings}` | Create/configure, assign access, invite, and archive/restore | Only assigned project data and permitted actions appear | Revoke project paths and confirm server denial |
+| Team | `/studio/:org/teams/:teamId/{members,invitations,settings}` | Manage roster, roles, links, and settings | Team lead can manage own roster; member cannot change team settings | Removed team membership cannot grant linked project or app access |
+| Application | `/studio/:org/:project/apps/{env,tasks}` and `/studio/:org/:project/apps/:app/settings` | Install/configure/restrict and assign users or linked teams | App access remains within project permissions | Revoke direct/team/project path and confirm app actions are denied |
+
+For every route, check the shared shell header and breadcrumb, one resource subheader/navigation row, page-owned actions below navigation, section-based content, matching loading skeleton, empty/error/denied state, table search and pagination, keyboard focus and labels, and narrow viewport layout. Do not use nested tabs or dashboard statistics. Exercise create, edit, view, delete/archive, restore, invitation, grant, and revoke flows where supported.
+
+Authorization regressions are covered by API unit tests and CI; UI route and responsive checks require a signed-in human review on each release. A successful CI build does not substitute for that visual review.

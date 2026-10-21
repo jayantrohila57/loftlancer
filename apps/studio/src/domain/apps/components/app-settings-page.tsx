@@ -16,6 +16,7 @@ import { actionToast } from "@/lib/action-toast";
 import { LayoutGrid } from "@/lib/icons";
 import { trpc } from "@/utils/trpc";
 import { useProjectApps } from "../hooks/use-project-apps";
+import { AppAccessSection } from "./app-access-section";
 import { AppGlyph } from "./app-glyph";
 
 /** /[org]/[project]/[app]/settings — details, real manifest settings, uninstall (#258). */
@@ -87,6 +88,17 @@ export function AppSettingsPage({
                 : "Ask a project manager to install this app."
               : "This app doesn't exist."
           }
+        />
+      </DashboardSection>
+    );
+  }
+  if (!app.canAccess) {
+    return (
+      <DashboardSection title={`${app.name} access`} back={false} hideTabs>
+        <EmptyState
+          icon={LayoutGrid}
+          title="You don't have access to this app"
+          description="Ask a project manager to add you or one of your teams."
         />
       </DashboardSection>
     );
@@ -179,14 +191,14 @@ export function AppSettingsPage({
                   <FieldSelect
                     ariaLabel={d.label}
                     className="w-40"
-                    disabled={!canManage}
+                    disabled={!app.canManageAccess}
                     value={draft[d.key] ?? d.default}
                     onChange={(v) => setDraft((s) => ({ ...s, [d.key]: v }))}
                     options={d.options}
                   />
                 </div>
               ))}
-              {canManage ? (
+              {app.canManageAccess ? (
                 <div className="flex justify-end gap-1.5">
                   <Button
                     size="sm"
@@ -236,7 +248,15 @@ export function AppSettingsPage({
           )}
         </AccordionSection>
 
-        {canManage ? (
+        {app.canManageAccess && projectId ? (
+          <AppAccessSection
+            projectId={projectId}
+            appId={app.id}
+            appName={app.name}
+          />
+        ) : null}
+
+        {app.canManageAccess ? (
           <AccordionSection
             title={`Uninstall ${app.name}`}
             description="Remove the app from this project and review its data retention."

@@ -33,7 +33,20 @@ export function AppGate({
     );
   }
   const app = apps.find((a) => a.id === appId);
-  if (app?.status === "active") return <>{children}</>;
+  if (app?.status === "active" && app.canAccess) {
+    return <>{children}</>;
+  }
+  if (app?.status === "active") {
+    return (
+      <DashboardSection title={`${app.name} access`} back={false} hideTabs>
+        <EmptyState
+          icon={LayoutGrid}
+          title="You don't have access to this app"
+          description="Ask a project manager to add you or one of your teams."
+        />
+      </DashboardSection>
+    );
+  }
   return (
     <DashboardSection title={app?.name ?? "App"} back={false} hideTabs>
       <EmptyState

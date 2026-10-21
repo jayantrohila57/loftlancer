@@ -14,6 +14,7 @@ import { logger } from "@loftlancer/logger";
 import { TRPCError } from "@trpc/server";
 import { and, eq, isNull } from "drizzle-orm";
 import { isAppInstalled } from "../apps/installed";
+import { hasProjectAppAccess } from "../apps/project-app-access";
 import { writeAuditEvent } from "./audit-event-writer";
 import { isActionBlocked } from "./is-action-blocked";
 import {
@@ -182,6 +183,27 @@ export async function requireAction(
     if (!decision.allowed) {
       denialReason = decision.reason;
       throw new TRPCError({ code: "FORBIDDEN", message: "Not allowed" });
+    }
+
+    if (appId && ctx.projectId && ctx.organizationId) {
+      const hasAppAccess = await hasProjectAppAccess({
+        userId: ctx.userId,
+        organizationId: ctx.organizationId,
+        projectId: ctx.projectId,
+        appId,
+        bypassRestriction:
+          orgRole === "owner" ||
+          orgRole === "manager" ||
+          projectCtx?.isProjectCreator === true ||
+          projectCtx?.isProjectManager === true,
+      });
+      if (!hasAppAccess) {
+        denialReason = "app_access_denied";
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You don't have access to this app.",
+        });
+      }
     }
 
     if (

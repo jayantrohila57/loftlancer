@@ -16,6 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.16.0] - 2026-10-21
+
+### Added
+
+- Added app-level user and linked-team access controls with server-side enforcement and effective access explanations (#561).
+
 ## [1.15.1] - 2026-10-21
 
 ### Changed
@@ -700,7 +706,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.1...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.0...HEAD
+[1.16.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.1...v1.16.0
 [1.15.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.0...v1.15.1
 [1.15.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.11...v1.15.0
 [1.14.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.10...v1.14.11

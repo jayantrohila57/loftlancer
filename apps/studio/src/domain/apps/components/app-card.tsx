@@ -71,7 +71,7 @@ export function AppCard({
         {app.description}
       </p>
       <div className="flex items-center gap-1.5">
-        {active ? (
+        {active && app.canAccess ? (
           <Button size="sm" variant="outline" render={<Link href={href} />}>
             Open
           </Button>
@@ -85,7 +85,7 @@ export function AppCard({
             {retained !== null ? "Reinstall" : "Install"}
           </Button>
         ) : null}
-        {active ? (
+        {active && app.canAccess ? (
           <Button
             size="sm"
             variant="ghost"
@@ -93,6 +93,11 @@ export function AppCard({
           >
             Settings
           </Button>
+        ) : null}
+        {active && !app.canAccess ? (
+          <span className="text-muted-foreground text-xs">
+            Ask a project manager for app access
+          </span>
         ) : null}
         {canManage && active ? (
           <Button
