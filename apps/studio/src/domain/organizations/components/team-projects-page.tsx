@@ -37,6 +37,9 @@ export function TeamProjectsPage({
       queryKey: trpc.teams.projects.queryKey({ teamId }),
     });
     void queryClient.invalidateQueries({
+      queryKey: trpc.teams.linkableProjects.queryKey({ teamId }),
+    });
+    void queryClient.invalidateQueries({
       queryKey: trpc.projectAccess.getSummary.pathKey(),
     });
     void queryClient.invalidateQueries({
@@ -105,7 +108,7 @@ export function TeamProjectsPage({
                   confirm({
                     title: `Unlink ${row.original.name}?`,
                     description:
-                      "Team members will lose access granted through this team. Direct project grants and project manager access stay in place.",
+                      "Team members will lose access from this link. Direct grants stay saved, but need another linked team to be effective. Project manager assignments stay in place.",
                     confirmLabel: "Unlink project",
                     variant: "destructive",
                     onConfirm: async () => {
@@ -129,8 +132,9 @@ export function TeamProjectsPage({
         <h2 className="font-semibold text-xl tracking-tight">Projects</h2>
         <p className="mt-1 text-muted-foreground text-sm">
           Linking this team gives its members the default project read grants.
-          Unlinking removes the team association. Existing member grants stay
-          until you change them in project Access.
+          Unlinking removes this team as an access source. Direct grants stay
+          saved, but a member needs another linked team for those grants to be
+          effective.
         </p>
       </div>
       {linkable.isError ? (

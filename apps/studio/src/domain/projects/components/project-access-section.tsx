@@ -74,6 +74,9 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
     void queryClient.invalidateQueries({
       queryKey: trpc.permissions.snapshot.queryKey({}),
     });
+    void queryClient.invalidateQueries({
+      queryKey: trpc.teams.projects.pathKey(),
+    });
   };
 
   const assignManager = useMutation(
@@ -135,6 +138,33 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
   const managers = summary?.managers ?? [];
   const linkedTeams = summary?.teams ?? [];
   const memberGrants = summary?.memberGrants ?? [];
+  const accessPeople = summary?.accessPeople ?? [];
+  const effectiveAccessColumns: DataTableColumnDef<
+    (typeof accessPeople)[number]
+  >[] = [
+    {
+      accessorKey: "name",
+      header: "Person",
+      cell: ({ row }) =>
+        row.original.name ?? row.original.email ?? row.original.userId,
+    },
+    {
+      accessorKey: "role",
+      header: "Organization role",
+      cell: ({ row }) => row.original.role ?? "No organization role",
+    },
+    {
+      id: "sources",
+      header: "Access through",
+      cell: ({ row }) => row.original.sources.join(", "),
+    },
+    {
+      id: "effectiveActions",
+      header: "Effective project access",
+      cell: ({ row }) =>
+        row.original.effectiveActions.map(formatActionLabel).join(", "),
+    },
+  ];
   const managerColumns: DataTableColumnDef<(typeof managers)[number]>[] = [
     {
       accessorKey: "name",
@@ -199,7 +229,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                 confirm({
                   title: `Unlink ${row.original.teamName}?`,
                   description:
-                    "Team members will lose the default project access granted through this link. Direct member grants and project manager access stay in place.",
+                    "Team members will lose access from this link. Direct grants stay saved, but need another linked team to be effective. Project manager assignments stay in place.",
                   confirmLabel: "Unlink team",
                   variant: "destructive",
                   onConfirm: async () => {
@@ -295,6 +325,25 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      <AccordionSection
+        title="Effective access"
+        description="Shows who can access this project and why. Direct member grants are effective only while a team is linked to the project."
+      >
+        <DataTable
+          columns={effectiveAccessColumns}
+          data={accessPeople}
+          searchable
+          enablePagination
+          pageSize={10}
+          framed
+          compactLayout
+          caption="Effective project access"
+          captionSrOnly
+          searchPlaceholder="Search people…"
+          emptyMessage="No organization members currently have project access."
+        />
+      </AccordionSection>
+
       <Can action="project.assign_manager">
         <AccordionSection
           title="Project managers"
