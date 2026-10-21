@@ -920,7 +920,7 @@ export const organizationsRouter = router({
           ),
         )
         .limit(1);
-      if (!row || row.state !== "pending")
+      if (row?.state !== "pending")
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Pending domain verification not found.",
