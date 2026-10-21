@@ -17,7 +17,8 @@ export type SendEmailResult =
   | { status: "skipped"; reason: "not-configured" }
   | { status: "failed"; error: string };
 
-const DEFAULT_FROM = "Loftlancer <noreply@loftlancer.com>";
+// Resend has verified mail.loftlancer.com; keep the fallback on that domain.
+const DEFAULT_FROM = "Loftlancer <noreply@mail.loftlancer.com>";
 
 let client: Resend | null = null;
 

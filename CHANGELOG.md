@@ -16,6 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.14.11] - 2026-10-21
+
+### Fixed
+
+- Organization invitation emails now default to the verified `mail.loftlancer.com` sender and report skipped or failed delivery instead of silently succeeding (#358).
+
 ## [1.14.10] - 2026-10-20
 
 ### Security
@@ -658,7 +664,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.10...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.11...HEAD
+[1.14.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.10...v1.14.11
 [1.14.10]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.9...v1.14.10
 [1.14.9]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.8...v1.14.9
 [1.14.8]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.7...v1.14.8

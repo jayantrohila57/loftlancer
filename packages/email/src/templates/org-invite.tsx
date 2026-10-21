@@ -1,5 +1,9 @@
 import { Button, Heading, Text } from "@react-email/components";
+import * as React from "react";
 import { brand, EmailLayout } from "./layout";
+
+// Keep React available for test runners that use the classic JSX transform.
+void React;
 
 export type OrgInviteEmailProps = {
   organizationName: string;
