@@ -14,7 +14,6 @@ export function OrganizationMembersPage({ slug }: { slug: string }) {
       slug={slug}
       title="Members"
       description="Invite teammates and manage organization roles."
-      peopleNavigation
     >
       {status === "error" ? (
         <ErrorState

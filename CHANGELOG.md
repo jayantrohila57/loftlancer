@@ -29,6 +29,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Studio navigation now highlights the active project through nested pages and keeps active favorites selected (#546).
 - Resource frames now resolve one active tab consistently, and project status changes use a form control rather than navigation tabs (#547).
 - Organization list actions no longer duplicate in empty states, and settings loading placeholders now match the accordion sections they load (#551).
+- Organization member, invitation, team, and role routes now use one top-level navigation row; role access details use accordions without action-count metrics (#552).
 - Standardized project and organization overview/access/settings sections on accordions and aligned their loading skeletons (#548).
 - Team member/project lists and project access lists now use the shared searchable, sortable, paginated table and consistent row actions (#549).
 - Project lifecycle confirmations now use the shared confirmation component directly across overview and settings actions (#550).

@@ -158,7 +158,6 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
       title="Invitations"
       description="Pending and recent email invitations for this workspace."
       action={<Can action="member.invite">{inviteAction}</Can>}
-      peopleNavigation
     >
       {orgStatus === "error" ? (
         <ErrorState

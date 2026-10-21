@@ -65,7 +65,6 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
       slug={slug}
       title="Teams"
       description="Group organization members and connect teams to projects."
-      peopleNavigation
       action={
         organization ? (
           <Can action="team.create" fallback={null}>
