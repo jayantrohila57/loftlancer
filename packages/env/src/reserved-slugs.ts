@@ -20,6 +20,7 @@ export const RESERVED_ORG_SLUGS = [
   "sign-out",
   "forbidden",
   "dashboard",
+  "organizations",
   "p",
   "apps",
   "help",

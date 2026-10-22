@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { routes } from "./studio-routes";
+import { isReservedOrgSlug, routes } from "./studio-routes";
 
 test("resource routes keep applications nested under projects", () => {
   assert.equal(routes.org("acme"), "/acme");
+  assert.equal(routes.organizations(), "/organizations");
+  assert.equal(isReservedOrgSlug("organizations"), true);
   assert.equal(routes.team("acme", "design"), "/acme/teams/design");
   assert.equal(routes.project("acme", "website"), "/acme/website");
   assert.equal(

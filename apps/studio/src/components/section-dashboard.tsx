@@ -15,6 +15,8 @@ interface SectionProps extends PageHeaderTabsProps {
   title?: string;
   description?: string;
   action?: ReactNode;
+  actionPlacement?: "header" | "below-tabs";
+  descriptionGapClassName?: string;
   actionLabel?: string;
   actionHref?: string;
   /** @deprecated use actionLabel */
@@ -28,6 +30,7 @@ export default function DashboardSection({
   title,
   description,
   action,
+  actionPlacement,
   actionLabel,
   actionHref,
   actionUrl,
@@ -38,6 +41,8 @@ export default function DashboardSection({
   activeTab,
   onTabChange,
   tabsEnd,
+  descriptionGapClassName,
+  tabsViewportClassName,
 }: SectionProps) {
   const resolvedActionHref = actionHref ?? actionUrl;
   const trailingAction =
@@ -60,12 +65,15 @@ export default function DashboardSection({
           title={title}
           description={description}
           action={trailingAction}
+          actionPlacement={actionPlacement}
           back={back}
           tabs={tabs}
           hideTabs={hideTabs}
           activeTab={activeTab}
           onTabChange={onTabChange}
           tabsEnd={tabsEnd}
+          descriptionGapClassName={descriptionGapClassName}
+          tabsViewportClassName={tabsViewportClassName}
         />
       ) : null}
       {children ? <div className="min-w-0">{children}</div> : null}

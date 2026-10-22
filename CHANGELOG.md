@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Added a dedicated `/organizations` directory with responsive organization cards and moved its create action into the header (#610).
+
 ## [1.16.2] - 2026-10-22
 
 ### Changed

@@ -12,8 +12,8 @@ import { OrganizationsList } from "./organizations-list";
 import { OrganizationsListInvitations } from "./organizations-list-invitations";
 
 /**
- * Studio home (#299): the org list. `/new` renders the same page with the
- * create sheet open; closing it returns to `/`.
+ * Organization directory. `/new` opens the creation sheet; closing it returns
+ * to the directory route.
  */
 export function OrganizationsPageClient({
   createRoute = false,
@@ -27,7 +27,7 @@ export function OrganizationsPageClient({
   const closeCreate = useCallback(() => {
     setCreateOpen(false);
     if (createRoute) {
-      router.replace(routes.home(), { scroll: false });
+      router.replace(routes.organizations(), { scroll: false });
     }
   }, [createRoute, router]);
 
@@ -42,7 +42,9 @@ export function OrganizationsPageClient({
       else params.delete("tab");
       const query = params.toString();
       router.replace(
-        (query ? `${routes.home()}?${query}` : routes.home()) as Route,
+        (query
+          ? `${routes.organizations()}?${query}`
+          : routes.organizations()) as Route,
         { scroll: false },
       );
     },
@@ -55,6 +57,9 @@ export function OrganizationsPageClient({
         title="Organizations"
         description="Workspaces you belong to, with members, teams, and access settings."
         back={false}
+        actionPlacement="header"
+        descriptionGapClassName="gap-y-1"
+        tabsViewportClassName="py-1"
         action={
           <Can action="organization.create">
             <PageHeaderActionButton

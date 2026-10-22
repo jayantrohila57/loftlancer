@@ -14,6 +14,7 @@ import { cn } from "../lib/utils";
 interface HorizontalScrollRailProps {
   children: ReactNode;
   className?: string;
+  viewportClassName?: string;
   /** Use `size-8` scroll controls (tab strips) instead of touch-sized `size-11`. */
   compactControls?: boolean;
 }
@@ -21,6 +22,7 @@ interface HorizontalScrollRailProps {
 export function HorizontalScrollRail({
   children,
   className,
+  viewportClassName,
   compactControls = false,
 }: HorizontalScrollRailProps) {
   const controlSizeClass = compactControls ? "size-8" : "size-11";
@@ -98,7 +100,10 @@ export function HorizontalScrollRail({
         <div
           ref={ref}
           onScroll={updateScrollState}
-          className="min-w-0 overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:thin]"
+          className={cn(
+            "min-w-0 overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:thin]",
+            viewportClassName,
+          )}
         >
           {children}
         </div>

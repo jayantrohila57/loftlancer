@@ -68,6 +68,6 @@ export const pageHeaderTabsEndClass =
 
 /** Grid shell for title + description + actions (primary action stays on the title row). */
 export const pageHeaderDescriptionGridClass = cn(
-  "grid w-full min-w-0 py-0.5",
+  "grid w-full min-w-0 gap-y-2 py-0.5",
   layoutGapClass,
 );

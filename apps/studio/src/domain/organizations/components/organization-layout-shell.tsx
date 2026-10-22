@@ -69,7 +69,11 @@ function OrganizationFrame({
     <SettingsFrame
       LinkComponent={Link as never}
       back={{
-        href: isOrgHome ? routes.home() : isTeamDetail ? teamsHref : orgHome,
+        href: isOrgHome
+          ? routes.organizations()
+          : isTeamDetail
+            ? teamsHref
+            : orgHome,
         label: isOrgHome ? "Organizations" : isTeamDetail ? "Teams" : name,
       }}
       title={name}

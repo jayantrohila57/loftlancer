@@ -3,7 +3,8 @@
  * (`/studio`); Next `Link`/`router` add the basePath. Use `studioUrl()` for
  * absolute links from other apps (auth, docs, notifications, emails).
  *
- *   /                                    org list (pre-org home)
+ *   /                                    Studio landing page
+ *   /organizations                       organization directory
  *   /new                                 create organization
  *   /notifications /activity
  *   /support /support/tickets[/new|/:id] /support/help[/:slug]
@@ -46,6 +47,7 @@ const seg = (value: string | number) => encodeURIComponent(String(value));
 
 export const routes = {
   home: () => "/",
+  organizations: () => "/organizations",
   newOrganization: () => "/new",
   notifications: () => "/notifications",
   invitation: (id: string) => `/invite/${seg(id)}`,
@@ -100,7 +102,7 @@ export function platformNavHref(
 ): string | null {
   switch (key) {
     case "organizations":
-      return routes.home();
+      return routes.organizations();
     case "projects":
       return org ? routes.projects(org) : null;
     case "activity":

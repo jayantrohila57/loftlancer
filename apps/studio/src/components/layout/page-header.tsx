@@ -55,6 +55,8 @@ export type PageHeaderTabsProps = {
   onTabChange?: (value: string) => void;
   /** Right side of the tabs row (filters, view toggles…). */
   tabsEnd?: ReactNode;
+  /** Add vertical room inside the horizontal tab scroller for focus rings. */
+  tabsViewportClassName?: string;
 };
 
 type ResolvedBack = {
@@ -99,6 +101,7 @@ export function PageHeaderTabs({
   activeTab,
   onTabChange,
   tabsEnd,
+  tabsViewportClassName,
 }: PageHeaderTabsProps) {
   if (!tabs?.length) return null;
   return (
@@ -107,6 +110,7 @@ export function PageHeaderTabs({
       activeTab={activeTab}
       onTabChange={onTabChange}
       end={tabsEnd}
+      viewportClassName={tabsViewportClassName}
       LinkComponent={Link as never}
     />
   );
@@ -122,10 +126,16 @@ export function PageHeader({
   onTabChange,
   tabsEnd,
   hideTabs,
+  actionPlacement = "below-tabs",
+  descriptionGapClassName,
+  tabsViewportClassName,
 }: {
   title: string;
   description?: string;
   action?: ReactNode;
+  actionPlacement?: "header" | "below-tabs";
+  descriptionGapClassName?: string;
+  tabsViewportClassName?: string;
   back?: PageHeaderBackProp;
 } & PageHeaderTabsProps) {
   const pathname = usePathname() ?? "";
@@ -142,6 +152,8 @@ export function PageHeader({
         }
         title={title}
         description={description}
+        actions={actionPlacement === "header" ? action : undefined}
+        descriptionGapClassName={descriptionGapClassName}
         tabs={
           hideTabs || !tabs?.length ? null : (
             <PageHeaderTabs
@@ -149,11 +161,14 @@ export function PageHeader({
               activeTab={activeTab}
               onTabChange={onTabChange}
               tabsEnd={tabsEnd}
+              tabsViewportClassName={tabsViewportClassName}
             />
           )
         }
       />
-      {action ? <div className="flex justify-end">{action}</div> : null}
+      {actionPlacement === "below-tabs" && action ? (
+        <div className="flex justify-end">{action}</div>
+      ) : null}
     </>
   );
 }
