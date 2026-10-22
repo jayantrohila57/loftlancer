@@ -165,9 +165,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     });
 
   const pathMatchesNavItem = (href: string) => {
-    if (pathname === href) return true;
-    if (href === routes.home()) return pathname === href;
-    return pathname.startsWith(`${href}/`);
+    const hrefPathname = href.split("?", 1)[0] ?? href;
+    if (pathname === hrefPathname) return true;
+    if (hrefPathname === routes.home()) return pathname === hrefPathname;
+    return pathname.startsWith(`${hrefPathname}/`);
   };
 
   const isActive = (href: string) => {

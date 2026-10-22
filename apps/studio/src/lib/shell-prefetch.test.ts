@@ -12,6 +12,14 @@ describe("orgSlugFromRequestPath", () => {
     assert.equal(orgSlugFromRequestPath("/notifications"), null);
     assert.equal(orgSlugFromRequestPath("/"), null);
   });
+
+  it("does not treat the organizations directory query as an org scope", () => {
+    assert.equal(
+      orgSlugFromRequestPath("/organizations", "?directory=1"),
+      null,
+    );
+    assert.equal(orgSlugFromRequestPath("/organizations"), "organizations");
+  });
 });
 
 describe("sidebar navigator shell prefetch", () => {
