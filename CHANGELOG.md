@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Marked authenticated auth settings responses as private and non-cacheable (#363).
+
 ## [1.18.0] - 2026-10-22
 
 ### Added
