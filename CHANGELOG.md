@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.17.1] - 2026-10-22
+
 ### Security
 
 - Prevented project, team, and member access links from crossing organization boundaries in the database and server-side manager assignment workflow (#586).
@@ -742,7 +744,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.1...HEAD
+[1.17.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.2...v1.17.0
 [1.16.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.1...v1.16.2
 [1.16.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.0...v1.16.1
