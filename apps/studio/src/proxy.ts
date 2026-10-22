@@ -20,6 +20,7 @@ const appOrigin = (
 function nextWithPathname(request: NextRequest): NextResponse {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", request.nextUrl.pathname);
+  requestHeaders.set("x-search", request.nextUrl.search);
   return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
@@ -44,9 +45,8 @@ async function syncActiveOrganization(
   // Already redirected once for this org and the session still disagrees
   // (stale cookie cache): don't loop; page guards resolve by slug anyway.
   if (request.cookies.get("ll_org_sync")?.value === orgSlug) {
-    const response = NextResponse.next();
+    const response = nextWithPathname(request);
     response.cookies.delete("ll_org_sync");
-    response.headers.set("x-pathname", request.nextUrl.pathname);
     return response;
   }
 
@@ -113,7 +113,16 @@ export async function proxy(request: NextRequest) {
   }
 
   const first = pathname.split("/")[1] ?? "";
-  if (!publicInvitation && first && !isReservedOrgSlug(first)) {
+  const isOrganizationsDirectory =
+    pathname === "/organizations" &&
+    first === "organizations" &&
+    request.nextUrl.searchParams.get("directory") === "1";
+  if (
+    !publicInvitation &&
+    first &&
+    !isReservedOrgSlug(first) &&
+    !isOrganizationsDirectory
+  ) {
     const synced = await syncActiveOrganization(request, first);
     if (synced) return synced;
   }

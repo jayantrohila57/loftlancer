@@ -10,7 +10,7 @@ import * as organizationSchema from "@loftlancer/db/schema/organization";
 import * as teamSchema from "@loftlancer/db/schema/team";
 import { teamMember } from "@loftlancer/db/schema/team";
 import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
-import { isReservedOrgSlug } from "@loftlancer/env/reserved-slugs";
+import { isReservedOrgSlugForCreation } from "@loftlancer/env/reserved-slugs";
 import {
   isNotificationsEnabled,
   linkPendingNotificationsForUser,
@@ -155,7 +155,7 @@ export function platformDatabaseConfig(): BetterAuthOptions["database"] {
 }
 
 function assertOrgSlugAllowed(slug: string | undefined) {
-  if (slug && isReservedOrgSlug(slug)) {
+  if (slug && isReservedOrgSlugForCreation(slug)) {
     throw new APIError("BAD_REQUEST", {
       message: `"${slug}" is reserved. Choose a different slug.`,
     });
@@ -246,7 +246,19 @@ export function organizationPlugin() {
           await assertOrganizationNotArchived(member.organizationId);
           assertOrganizationLogoUrl(updates.logo);
           if (typeof updates.slug === "string") {
-            assertOrgSlugAllowed(updates.slug);
+            const [existingOrganization] = await db
+              .select({ slug: organizationSchema.organization.slug })
+              .from(organizationSchema.organization)
+              .where(
+                eq(organizationSchema.organization.id, member.organizationId),
+              )
+              .limit(1);
+            if (
+              existingOrganization?.slug.toLowerCase() !==
+              updates.slug.toLowerCase()
+            ) {
+              assertOrgSlugAllowed(updates.slug);
+            }
           }
         },
         beforeAddMember: async ({ member: membership }) => {

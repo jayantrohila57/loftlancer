@@ -536,7 +536,7 @@ export function OrganizationSettingsForm({
 
     setDeleteOpen(false);
     setDeletePending(true);
-    router.replace(routes.home());
+    router.replace(routes.organizationsDirectory());
     void invalidateAfterOrganizationChange(queryClient);
 
     try {
@@ -575,7 +575,7 @@ export function OrganizationSettingsForm({
     setLeaveConfirmOpen(false);
     const leftId = organizationId;
     const fallback = orgs.find((o) => o.id !== leftId);
-    router.replace(routes.home());
+    router.replace(routes.organizationsDirectory());
     void invalidateAfterOrganizationChange(queryClient);
 
     try {

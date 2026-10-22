@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { isReservedOrgSlug } from "@loftlancer/env/reserved-slugs";
+import { isReservedOrgSlugForCreation } from "@loftlancer/env/reserved-slugs";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
@@ -40,7 +40,7 @@ const schema = z.object({
         .min(2, "Slug is required")
         .max(200)
         .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
-        .refine((slug) => !isReservedOrgSlug(slug), {
+        .refine((slug) => !isReservedOrgSlugForCreation(slug), {
           message: "That slug is reserved. Choose a different slug.",
         }),
     ),

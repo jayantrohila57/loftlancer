@@ -51,7 +51,7 @@ export function pageHeaderMetaRowClass(hasBackColumn: boolean) {
 }
 
 export const pageHeaderTabsRowClass =
-  "flex min-h-9 h-auto w-full min-w-0 items-end justify-between gap-2 border-b";
+  "flex min-h-11 h-auto w-full min-w-0 items-end justify-between gap-2 border-b";
 
 export const pageHeaderTabsListClass = "-mb-px flex min-w-0 items-end gap-1";
 
@@ -68,6 +68,6 @@ export const pageHeaderTabsEndClass =
 
 /** Grid shell for title + description + actions (primary action stays on the title row). */
 export const pageHeaderDescriptionGridClass = cn(
-  "grid w-full min-w-0 py-0.5",
+  "grid w-full min-w-0 gap-y-2 py-0.5",
   layoutGapClass,
 );

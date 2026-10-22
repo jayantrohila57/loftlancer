@@ -3,6 +3,7 @@
 import {
   BookOpenIcon,
   Building2Icon,
+  ChevronRightIcon,
   ChevronsUpDownIcon,
   FolderClosedIcon,
   LayersIcon,
@@ -28,6 +29,11 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "../components/ui/collapsible";
 import { Dialog, DialogPopup, DialogTitle } from "../components/ui/dialog";
 import {
   Menu,
@@ -389,69 +395,94 @@ export function SidebarFavorites({
   /** First load: keep the group and show placeholder rows. */
   loading?: boolean;
 }) {
+  const [open, setOpen] = useState(true);
   if (loading && !items.length) {
-    return (
-      <SidebarGroup aria-busy="true">
-        <SidebarGroupLabel>
-          <StarIcon className="me-1 size-3" /> Favorites
-        </SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {["w-28", "w-20", "w-24"].map((w) => (
-              <SidebarMenuItem key={w}>
-                <div className="flex h-8 items-center gap-2 px-2">
-                  <Skeleton className="size-2 rounded-full motion-reduce:animate-none" />
-                  <Skeleton
-                    className={cn("h-4 motion-reduce:animate-none", w)}
-                  />
-                </div>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    );
+    return <FavoritesGroup open={open} onOpenChange={setOpen} loading />;
   }
   if (!items.length) return null;
   const L: LinkLike = LinkComponent ?? ((p) => <a {...p} />);
   return (
-    <SidebarGroup data-testid="sidebar-favorites">
-      <SidebarGroupLabel>
-        <StarIcon className="me-1 size-3" /> Favorites
-      </SidebarGroupLabel>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {items.map((p) => (
-            <SidebarMenuItem key={p.id}>
-              <SidebarMenuButton
-                tooltip={p.label}
-                isActive={isActive?.(p.href)}
-                render={<L href={p.href} />}
+    <FavoritesGroup open={open} onOpenChange={setOpen}>
+      {items.map((p) => (
+        <SidebarMenuItem key={p.id}>
+          <SidebarMenuButton
+            tooltip={p.label}
+            isActive={isActive?.(p.href)}
+            render={<L href={p.href} />}
+          >
+            <span className="flex size-4 shrink-0 items-center justify-center">
+              <span
+                className={cn("size-2 rounded-full", projectDotColor(p.id))}
+              />
+            </span>
+            <span className="truncate">{p.label}</span>
+            {p.env ? (
+              <span
+                className={cn(
+                  "ms-auto shrink-0 rounded-full border px-1.5 font-medium text-[10px] leading-4",
+                  p.env.production
+                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                    : "border-sidebar-border text-muted-foreground",
+                )}
               >
-                <span className="flex size-4 shrink-0 items-center justify-center">
-                  <span
-                    className={cn("size-2 rounded-full", projectDotColor(p.id))}
-                  />
-                </span>
-                <span className="truncate">{p.label}</span>
-                {p.env ? (
-                  <span
-                    className={cn(
-                      "ms-auto shrink-0 rounded-full border px-1.5 font-medium text-[10px] leading-4",
-                      p.env.production
-                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                        : "border-sidebar-border text-muted-foreground",
-                    )}
-                  >
-                    {p.env.label}
-                  </span>
-                ) : null}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
+                {p.env.label}
+              </span>
+            ) : null}
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ))}
+    </FavoritesGroup>
+  );
+}
+
+function FavoritesGroup({
+  open,
+  onOpenChange,
+  loading = false,
+  children,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  loading?: boolean;
+  children?: ReactNode;
+}) {
+  return (
+    <Collapsible open={open} onOpenChange={onOpenChange}>
+      <SidebarGroup data-testid="sidebar-favorites" aria-busy={loading}>
+        <CollapsibleTrigger
+          render={
+            <SidebarGroupLabel className="cursor-pointer gap-1 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
+          }
+        >
+          <StarIcon className="me-1 size-3" /> Favorites
+          <ChevronRightIcon
+            className={cn(
+              "ms-auto size-4 text-muted-foreground transition-transform",
+              open && "rotate-90",
+            )}
+            aria-hidden
+          />
+        </CollapsibleTrigger>
+        <CollapsiblePanel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {loading
+                ? ["w-28", "w-20", "w-24"].map((w) => (
+                    <SidebarMenuItem key={w}>
+                      <div className="flex h-8 items-center gap-2 px-2">
+                        <Skeleton className="size-2 rounded-full motion-reduce:animate-none" />
+                        <Skeleton
+                          className={cn("h-4 motion-reduce:animate-none", w)}
+                        />
+                      </div>
+                    </SidebarMenuItem>
+                  ))
+                : children}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </CollapsiblePanel>
+      </SidebarGroup>
+    </Collapsible>
   );
 }
 

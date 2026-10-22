@@ -16,13 +16,28 @@ test("filtered list no-results empty state has no clear-filters action (issue #6
   assert.match(source, /toolbar above/);
 });
 
-test("projects and organizations list content use shared no-results empty", () => {
-  for (const rel of [
-    "domain/projects/components/projects-list-content.tsx",
-    "domain/organizations/components/organizations-list-content.tsx",
-  ]) {
+test("project list content uses the shared no-results empty", () => {
+  for (const rel of ["domain/projects/components/projects-list-content.tsx"]) {
     const source = readFileSync(join(root, rel), "utf8");
     assert.match(source, /FilteredListNoResultsEmpty/);
     assert.doesNotMatch(source, /actionLabel="Clear filters"/);
   }
+});
+
+test("organization directory renders responsive cards with favorite controls", () => {
+  const list = readFileSync(
+    join(
+      root,
+      "domain/organizations/components/organizations-list-content.tsx",
+    ),
+    "utf8",
+  );
+  const card = readFileSync(
+    join(root, "domain/organizations/components/organization-card.tsx"),
+    "utf8",
+  );
+  assert.match(list, /OrganizationCard/);
+  assert.match(list, /xl:grid-cols-4/);
+  assert.match(card, /onToggleFavorite/);
+  assert.doesNotMatch(list, /DataTableToolbar|OrganizationsListFiltersBar/);
 });
