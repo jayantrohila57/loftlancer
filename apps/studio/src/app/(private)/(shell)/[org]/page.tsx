@@ -1,4 +1,5 @@
 import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -44,8 +45,15 @@ export default async function OrganizationHubPage({
 
   return (
     <OrganizationsFeatureGate>
-      <PermissionGate action="organization.hub.view">
-        <Suspense fallback={<OrganizationDetailPageSkeleton />}>
+      <PermissionGate
+        action="organization.hub.view"
+        loadingFallback={<OrganizationDetailPageSkeleton />}
+      >
+        <Suspense
+          fallback={
+            <DelayedPageLoading fallback={<OrganizationDetailPageSkeleton />} />
+          }
+        >
           <OrganizationDetailPage slug={slug} />
         </Suspense>
       </PermissionGate>

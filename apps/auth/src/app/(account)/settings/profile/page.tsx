@@ -1,3 +1,4 @@
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -19,7 +20,11 @@ export default async function ProfileSettingsPage() {
       description="Your name and avatar shown across Loftlancer."
       showStats
     >
-      <Suspense fallback={<SettingsPanelSkeleton rows={4} />}>
+      <Suspense
+        fallback={
+          <DelayedPageLoading fallback={<SettingsPanelSkeleton rows={4} />} />
+        }
+      >
         <AccountSettingsClient section="profile" />
       </Suspense>
     </SettingsSectionShell>

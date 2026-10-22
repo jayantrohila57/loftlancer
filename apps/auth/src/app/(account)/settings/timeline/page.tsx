@@ -1,3 +1,5 @@
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
+import { PageLoadingState } from "@loftlancer/ui/patterns/page-state";
 import type { Metadata, Route } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -24,7 +26,11 @@ export default async function SettingsTimelinePage() {
       activity
       description="Security and activity events for your account."
     >
-      <Suspense fallback={null}>
+      <Suspense
+        fallback={
+          <DelayedPageLoading fallback={<PageLoadingState rows={5} />} />
+        }
+      >
         <TimelinePageClient scope="self" />
       </Suspense>
     </SettingsSectionShell>

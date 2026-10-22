@@ -1,3 +1,4 @@
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProjectsPageClient } from "@/domain/projects/components/projects-page-client";
@@ -10,7 +11,9 @@ export const metadata: Metadata = { title: "New project" };
 export default async function NewProjectPage() {
   await guardPageAction("project.create");
   return (
-    <Suspense fallback={<ProjectsPageSkeleton />}>
+    <Suspense
+      fallback={<DelayedPageLoading fallback={<ProjectsPageSkeleton />} />}
+    >
       <ProjectsPageClient createRoute />
     </Suspense>
   );

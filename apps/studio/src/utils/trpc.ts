@@ -46,6 +46,9 @@ const makeQueryClient = () =>
     defaultOptions: {
       queries: {
         retry: (failureCount, error) => {
+          if (error instanceof Error && error.name === "TimeoutError") {
+            return false;
+          }
           if (isNetworkError(error)) return failureCount < 2;
           return failureCount < 1;
         },
@@ -79,10 +82,26 @@ export const createTrpcClient = () =>
         url: withBasePath("/api/trpc"),
         transformer,
         fetch(url, options) {
+          const timeoutSignal =
+            options?.method === "GET" ? AbortSignal.timeout(10_000) : undefined;
+          const requestSignal = options?.signal;
+          const signal = timeoutSignal
+            ? requestSignal
+              ? AbortSignal.any([requestSignal, timeoutSignal])
+              : timeoutSignal
+            : requestSignal;
           return fetch(url, {
             ...options,
+            signal,
             credentials: "include",
           }).catch((error) => {
+            if (timeoutSignal?.aborted) {
+              const timeoutError = new Error(
+                "This request took longer than expected. Please try again.",
+              );
+              timeoutError.name = "TimeoutError";
+              throw timeoutError;
+            }
             if (isNetworkError(error)) {
               throw new TypeError("Failed to fetch");
             }

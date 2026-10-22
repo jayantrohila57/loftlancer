@@ -24,6 +24,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Fixed
 
 - Added a direct Environments install action and first-variable setup for new projects (#642).
+- Standardized route and account loading states with delayed, layout-matched skeletons and retryable timeout errors (#644).
 - Replace the ignored Sentry transaction scrubber with `beforeSendSpan` for the default streamed trace lifecycle (#354)
 - Made soft-deleted projects and their related environments and variables recoverable from Studio (#463).
 - Marked authenticated auth settings responses as private and non-cacheable (#363).
