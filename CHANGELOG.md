@@ -16,7 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
 - Replace the ignored Sentry transaction scrubber with `beforeSendSpan` for the default streamed trace lifecycle (#354)
+### Fixed
+
+- Marked authenticated auth settings responses as private and non-cacheable (#363).
 
 ## [1.18.0] - 2026-10-22
 
