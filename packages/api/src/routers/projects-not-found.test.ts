@@ -20,6 +20,6 @@ describe("projects router not-found errors", () => {
       projectsRouterSource.match(
         /throw new TRPCError\(\{\s*code: "NOT_FOUND",\s*message: "Project not found",?\s*\}\)/g,
       ) ?? [];
-    assert.equal(notFoundThrows.length, 8);
+    assert.equal(notFoundThrows.length, 9);
   });
 });
