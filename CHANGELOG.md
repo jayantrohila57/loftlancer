@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- Add the dedicated `apps/www` marketing site and route its sign-in CTAs to auth with the validated studio return URL (#103)
+
 ### Fixed
 
 - Made soft-deleted projects and their related environments and variables recoverable from Studio (#463).

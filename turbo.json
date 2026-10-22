@@ -20,7 +20,8 @@
     "PLATFORM_PUBLIC_ORIGIN",
     "NEXT_PUBLIC_PLATFORM_ORIGIN",
     "NEXT_BASE_PATH",
-    "NEXT_PUBLIC_DOCS_URL"
+    "NEXT_PUBLIC_DOCS_URL",
+    "NEXT_PUBLIC_WWW_URL"
   ],
   "tasks": {
     "build": {
@@ -56,6 +57,7 @@
         "NEXT_PUBLIC_PLATFORM_ORIGIN",
         "NEXT_BASE_PATH",
         "NEXT_PUBLIC_DOCS_URL",
+        "NEXT_PUBLIC_WWW_URL",
         "NODE_OPTIONS",
         "SENTRY_DSN",
         "NEXT_PUBLIC_SENTRY_DSN",

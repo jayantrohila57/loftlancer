@@ -23,6 +23,8 @@ import { marketingSiteConfig } from "./site-config";
 
 export type MarketingLandingProps = {
   signInHref: string;
+  /** Absolute base URL for pages hosted by the docs app. */
+  pagesBaseUrl?: string;
   /** Optional slot for theme toggle (rendered in header). */
   headerActions?: ReactNode;
 };
@@ -41,7 +43,7 @@ function HeroSection({ signInHref }: { signInHref: string }) {
         )}
       >
         <Badge variant="outline" className="mb-6">
-          Environment variables, done right
+          Workspace management, made clear
         </Badge>
         <h1
           className="max-w-3xl font-semibold text-4xl tracking-tight md:text-6xl md:leading-[1.08]"
@@ -88,11 +90,11 @@ function FeaturesSection() {
           id="features-heading"
           className="font-semibold text-2xl tracking-tight md:text-3xl"
         >
-          Built for teams shipping fast
+          A connected workspace for your team
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Everything you need to centralize configuration—without sacrificing
-          security or clarity.
+          Manage the people and resources around your work, with clear access
+          and encrypted configuration in one place.
         </p>
       </div>
       <ul
@@ -132,11 +134,11 @@ function CtaSection({ signInHref }: { signInHref: string }) {
         <Card className="w-full max-w-2xl border-border/80 shadow-sm">
           <CardHeader className="items-center text-center">
             <CardTitle className="text-xl md:text-2xl">
-              Ready to organize your env vars?
+              Make your workspace easier to manage
             </CardTitle>
             <CardDescription className="max-w-md text-base">
-              Sign in with GitHub to open your studio workspace. Your projects
-              and secrets stay encrypted and under your control.
+              Bring your organization, projects, teams, and apps into one clear
+              workspace. Your environment variables stay encrypted.
             </CardDescription>
           </CardHeader>
           <CardPanel className="flex justify-center pb-8">
@@ -156,6 +158,7 @@ function CtaSection({ signInHref }: { signInHref: string }) {
 
 export function MarketingLanding({
   signInHref,
+  pagesBaseUrl,
   headerActions,
 }: MarketingLandingProps) {
   return (
@@ -165,6 +168,7 @@ export function MarketingLanding({
     >
       <MarketingSiteHeader
         signInHref={signInHref}
+        pagesBaseUrl={pagesBaseUrl}
         headerActions={headerActions}
       />
       <main className="flex-1">
@@ -172,7 +176,7 @@ export function MarketingLanding({
         <FeaturesSection />
         <CtaSection signInHref={signInHref} />
       </main>
-      <MarketingSiteFooter />
+      <MarketingSiteFooter pagesBaseUrl={pagesBaseUrl} />
     </div>
   );
 }
