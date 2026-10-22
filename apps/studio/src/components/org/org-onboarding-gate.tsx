@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "@/domain/auth/lib/auth-actions";
 import { authClient } from "@/lib/auth-client";
 import { isOnboardingRoute } from "@/lib/is-onboarding-route";
+import { isOrganizationOptionalRoute } from "@/lib/is-organization-optional-route";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
 
 import { routes } from "@/utils/navigation";
@@ -60,6 +61,10 @@ export function OrgOnboardingGate({
         const orgs = list.data ?? [];
 
         if (orgs.length === 0) {
+          if (isOrganizationOptionalRoute(pathname)) {
+            setReady(true);
+            return;
+          }
           router.replace(routes.onboarding());
           return;
         }

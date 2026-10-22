@@ -14,7 +14,7 @@ describe("pathAfterOrganizationSwitch", () => {
   it("goes to the org list when next org is missing", () => {
     assert.equal(
       pathAfterOrganizationSwitch("/org-a/web", undefined, new Set()),
-      "/",
+      "/organizations",
     );
   });
 

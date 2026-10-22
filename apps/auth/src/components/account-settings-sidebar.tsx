@@ -46,6 +46,7 @@ import { studioDashboardPath } from "@/lib/studio-url";
 
 /** Studio platform nav, mirrored from the studio AppSidebar with absolute /studio URLs. */
 const studioNavIcons: Record<PlatformNavKey, LucideIcon> = {
+  overview: FolderClosedIcon,
   organizations: Building2,
   projects: FolderClosedIcon,
   activity: ClockIcon,

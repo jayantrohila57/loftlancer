@@ -3,12 +3,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
+import { useOrganizationFavorites } from "@/components/org/use-organization-favorites";
 import { trpc } from "@/utils/trpc";
 import { OrganizationCard } from "./organization-card";
 import { OrganizationsListBodySkeleton } from "./skeletons";
 
 export function OrganizationsListContent() {
   const { orgs, activeOrganizationId } = useActiveOrganization();
+  const { favorites, toggleFavorite, favoriteLimit } =
+    useOrganizationFavorites();
   const lifecycleQuery = useQuery(trpc.organizations.list.queryOptions());
 
   const orgsWithLifecycle = useMemo(() => {
@@ -32,6 +35,9 @@ export function OrganizationsListContent() {
           key={org.id}
           org={org}
           isActive={org.id === activeOrganizationId}
+          isFavorite={favorites.includes(org.id)}
+          onToggleFavorite={() => toggleFavorite(org.id)}
+          favoriteLimitReached={favorites.length >= favoriteLimit}
         />
       ))}
     </div>

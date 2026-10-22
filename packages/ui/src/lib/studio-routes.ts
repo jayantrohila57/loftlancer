@@ -5,7 +5,8 @@ import type { Route } from "next";
  * (`/studio`); Next `Link`/`router` add the basePath. Use `studioUrl()` for
  * absolute links from other apps (auth, docs, notifications, emails).
  *
- *   /                                    Studio landing page
+ *   /                                    redirects to Studio overview
+ *   /overview                            Studio overview
  *   /organizations                       organization directory
  *   /new                                 create organization
  *   /notifications /activity
@@ -49,6 +50,7 @@ const seg = (value: string | number) => encodeURIComponent(String(value));
 
 export const routes = {
   home: () => "/",
+  overview: () => "/overview",
   organizations: () => "/organizations",
   organizationsDirectory: () => "/organizations?directory=1" as Route,
   newOrganization: () => "/new",
@@ -100,10 +102,12 @@ export function studioUrl(path: string, studioOrigin: string): string {
 
 /** Sidebar platform entries → studio path (null when the entry needs an org). */
 export function platformNavHref(
-  key: "organizations" | "projects" | "activity" | "notifications",
+  key: "overview" | "organizations" | "projects" | "activity" | "notifications",
   org?: string | null,
 ): string | null {
   switch (key) {
+    case "overview":
+      return routes.overview();
     case "organizations":
       return routes.organizationsDirectory();
     case "projects":
