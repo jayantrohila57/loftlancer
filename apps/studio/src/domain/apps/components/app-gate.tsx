@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@loftlancer/ui/button";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import type { ReactNode } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
@@ -19,7 +20,8 @@ export function AppGate({
   fallback: ReactNode;
   children: ReactNode;
 }) {
-  const { apps, isLoading, isError, canManage, refetch } = useProjectApps(slug);
+  const { apps, isLoading, isError, canManage, install, isMutating, refetch } =
+    useProjectApps(slug);
   if (isLoading) return <>{fallback}</>;
   if (isError) {
     return (
@@ -54,8 +56,20 @@ export function AppGate({
         title={`${app?.name ?? "This app"} isn't installed`}
         description={
           canManage
-            ? "Use Apps in the project navigation to install it for this project."
+            ? `Install ${app?.name ?? "this app"} to use it in this project.`
             : "Ask a project manager to install it on this project."
+        }
+        action={
+          app && canManage ? (
+            <Button
+              type="button"
+              size="sm"
+              disabled={isMutating}
+              onClick={() => void install(app.id, app.name)}
+            >
+              {isMutating ? "Installing…" : `Install ${app.name}`}
+            </Button>
+          ) : null
         }
       />
     </DashboardSection>

@@ -68,6 +68,8 @@ interface VariablesTableViewProps {
   onFetchValue: (id: string, options?: { force?: boolean }) => Promise<string>;
   isAddingVariable: boolean;
   isUpdating?: boolean;
+  openFirstVariableForm?: boolean;
+  onFirstVariableFormClose?: () => void;
 }
 
 const columnHelper = legacyCreateColumnHelper<Variable>();
@@ -90,6 +92,8 @@ export function VariablesTableView({
   onFetchValue,
   isAddingVariable,
   isUpdating = false,
+  openFirstVariableForm = false,
+  onFirstVariableFormClose,
 }: VariablesTableViewProps) {
   const variablesV2 = isVariablesV2EnabledOnClient();
 
@@ -110,7 +114,17 @@ export function VariablesTableView({
   const [importText, setImportText] = useState("");
   const [copyingEnv, setCopyingEnv] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [addVariableOpen, setAddVariableOpen] = useState(false);
   const copiedTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (openFirstVariableForm) setAddVariableOpen(true);
+  }, [openFirstVariableForm]);
+
+  const setAddVariableSheetOpen = (open: boolean) => {
+    setAddVariableOpen(open);
+    if (!open && openFirstVariableForm) onFirstVariableFormClose?.();
+  };
 
   const flashCopied = useCallback((id: string) => {
     setCopiedId(id);
@@ -493,6 +507,8 @@ export function VariablesTableView({
             defaultEnvironmentId={activeEnvironmentId}
             isPending={isAddingVariable}
             triggerLayout="tableEmpty"
+            open={addVariableOpen}
+            onOpenChange={setAddVariableSheetOpen}
           />,
         )}
         primaryAction={
@@ -503,6 +519,8 @@ export function VariablesTableView({
               defaultEnvironmentId={activeEnvironmentId}
               isPending={isAddingVariable}
               triggerLayout="toolbar"
+              open={addVariableOpen}
+              onOpenChange={setAddVariableSheetOpen}
             />
           ) : null
         }
