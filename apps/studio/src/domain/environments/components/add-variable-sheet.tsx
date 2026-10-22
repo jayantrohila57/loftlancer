@@ -61,6 +61,8 @@ interface AddVariableSheetProps {
   }) => Promise<void>;
   isPending: boolean;
   triggerLayout?: "toolbar" | "tableEmpty";
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function AddVariableSheet({
@@ -69,10 +71,14 @@ export function AddVariableSheet({
   onConfirm,
   isPending,
   triggerLayout = "toolbar",
+  open: openProp,
+  onOpenChange,
 }: AddVariableSheetProps) {
   const isToolbar = triggerLayout === "toolbar";
   const closeWithoutPromptRef = useRef<(() => void) | null>(null);
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = openProp ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
   const [environmentIds, setEnvironmentIds] = useState<string[]>([
     defaultEnvironmentId,
   ]);

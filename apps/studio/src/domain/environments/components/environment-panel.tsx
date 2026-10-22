@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useVariables } from "../hooks/use-variables";
 import { VariablesTableView } from "./variables-table-view";
 
@@ -25,6 +26,15 @@ export function EnvironmentPanel({
   environmentId,
   projectEnvironments = [],
 }: EnvironmentPanelProps) {
+  const [openFirstVariableForm, setOpenFirstVariableForm] = useState(false);
+  useEffect(() => {
+    if (
+      window.sessionStorage.getItem("loftlancer:first-run-add-variable") === "1"
+    ) {
+      window.sessionStorage.removeItem("loftlancer:first-run-add-variable");
+      setOpenFirstVariableForm(true);
+    }
+  }, []);
   const {
     variables,
     status,
@@ -98,6 +108,8 @@ export function EnvironmentPanel({
       onFetchValue={fetchVariableValue}
       isAddingVariable={isCreating}
       isUpdating={isUpdating}
+      openFirstVariableForm={openFirstVariableForm}
+      onFirstVariableFormClose={() => setOpenFirstVariableForm(false)}
     />
   );
 }

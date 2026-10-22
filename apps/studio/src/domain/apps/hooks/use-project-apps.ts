@@ -1,9 +1,12 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
 import { useEnvironments } from "@/domain/environments/hooks/use-environments";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { actionToast } from "@/lib/action-toast";
+import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 
 /** Installed + available apps for a project, resolved by slug. */
@@ -11,15 +14,22 @@ export function useProjectApps(slug: string) {
   const {
     project,
     projectId,
+    environments,
+    createEnvironment,
     isLoading: projectLoading,
     status: projectStatus,
   } = useEnvironments(slug);
+  const org = useCurrentOrgSlug() ?? "";
+  const router = useRouter();
   const queryClient = useQueryClient();
   const listOptions = trpc.projectApps.list.queryOptions({
     projectId: projectId ?? "",
   });
   const list = useQuery({ ...listOptions, enabled: Boolean(projectId) });
   const canInstall = useCan("project.app.install", {
+    projectId: projectId ?? undefined,
+  });
+  const canCreateEnvironment = useCan("environment.create", {
     projectId: projectId ?? undefined,
   });
 
@@ -57,15 +67,41 @@ export function useProjectApps(slug: string) {
     isError: projectStatus === "error" || list.isError,
     refetch: () => list.refetch(),
     canManage: canInstall.allowed,
-    install: (appId: string, name: string) =>
-      actionToast(
+    install: async (appId: string, name: string) => {
+      await actionToast(
         withProject((id) => install.mutateAsync({ projectId: id, appId })),
         {
           loading: `Installing ${name}…`,
           success: `${name} installed`,
           error: `Couldn't install ${name}`,
         },
-      ),
+      );
+
+      // A new project has no environment yet. Complete the first-run setup
+      // after the user confirms installation, then take them to the variable
+      // form instead of leaving them at an empty app page.
+      if (
+        appId === "env" &&
+        environments.length === 0 &&
+        projectId &&
+        canCreateEnvironment.allowed
+      ) {
+        const response = await createEnvironment({
+          projectId,
+          name: "Development",
+        });
+        const environment = response.data;
+        if (environment) {
+          window.sessionStorage.setItem(
+            "loftlancer:first-run-add-variable",
+            "1",
+          );
+          router.push(
+            routes.env(org, slug, environment.slug ?? environment.id),
+          );
+        }
+      }
+    },
     uninstall: (appId: string, name: string) =>
       actionToast(
         withProject((id) => uninstall.mutateAsync({ projectId: id, appId })),
