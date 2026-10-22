@@ -13,6 +13,7 @@ export async function loadProjectAccessContext(
   userId: string,
   projectId: string,
   organizationId?: string | null,
+  options: { includeDeleted?: boolean } = {},
 ): Promise<{
   isProjectCreator: boolean;
   isProjectManager: boolean;
@@ -30,7 +31,7 @@ export async function loadProjectAccessContext(
     .where(
       and(
         eq(project.id, projectId),
-        isNull(project.deletedAt),
+        ...(options.includeDeleted ? [] : [isNull(project.deletedAt)]),
         isNull(organization.deletedAt),
       ),
     )

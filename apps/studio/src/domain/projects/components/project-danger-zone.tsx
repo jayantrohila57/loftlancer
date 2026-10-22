@@ -80,7 +80,7 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
         )}
         <SettingsRow
           label="Delete project"
-          description="Removes all environments, variables, and history. This cannot be undone."
+          description="Removes the project and its environments and variables. If recovery is enabled, it appears in Recently deleted."
         >
           <Button
             type="button"
@@ -100,7 +100,7 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title="Delete project"
-        description={`Are you sure you want to delete "${project.name}"? This action cannot be undone and will permanently delete all environments and variables associated with this project.`}
+        description={`Are you sure you want to delete "${project.name}"? Its environments and variables will be deleted with it. If recovery is enabled, restore it from Recently deleted.`}
         confirmLabel="Delete project"
         variant="destructive"
         onConfirm={deleteProject}

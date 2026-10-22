@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Made soft-deleted projects and their related environments and variables recoverable from Studio (#463).
+
 ## [1.18.0] - 2026-10-22
 
 ### Added
