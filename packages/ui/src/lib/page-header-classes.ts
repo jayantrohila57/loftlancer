@@ -51,7 +51,7 @@ export function pageHeaderMetaRowClass(hasBackColumn: boolean) {
 }
 
 export const pageHeaderTabsRowClass =
-  "flex min-h-9 h-auto w-full min-w-0 items-end justify-between gap-2 border-b";
+  "flex min-h-11 h-auto w-full min-w-0 items-end justify-between gap-2 border-b";
 
 export const pageHeaderTabsListClass = "-mb-px flex min-w-0 items-end gap-1";
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
+import { Button } from "@loftlancer/ui/button";
 import { Card, CardHeader, CardPanel } from "@loftlancer/ui/card";
 import Link from "next/link";
 import type { OrgListItem } from "@/components/org/active-organization-context";
@@ -14,9 +15,15 @@ import { routes } from "@/utils/navigation";
 export function OrganizationCard({
   org,
   isActive,
+  isFavorite,
+  onToggleFavorite,
+  favoriteLimitReached,
 }: {
   org: OrgListItem;
   isActive: boolean;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  favoriteLimitReached: boolean;
 }) {
   const href = routes.org(org.slug);
   const personal = isPersonalOrganization(org);
@@ -54,7 +61,21 @@ export function OrganizationCard({
           </div>
         </div>
       </CardHeader>
-      <CardPanel className="mt-auto flex items-center justify-end px-4 pb-4">
+      <CardPanel className="mt-auto flex items-center justify-between px-4 pb-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`${isFavorite ? "Remove" : "Add"} ${org.name} ${isFavorite ? "from" : "to"} favorites`}
+          title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          disabled={!isFavorite && favoriteLimitReached}
+          onClick={onToggleFavorite}
+        >
+          <AppIcon
+            name="favorite"
+            className={isFavorite ? "fill-current" : undefined}
+          />
+        </Button>
         <Link
           href={href}
           className="inline-flex items-center gap-1 text-primary text-xs hover:underline"

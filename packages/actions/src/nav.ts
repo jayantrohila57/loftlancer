@@ -8,6 +8,7 @@ export type NavItem = {
 
 /** Studio platform nav entries; each app resolves the href via its route builder (#300). */
 export type PlatformNavKey =
+  | "overview"
   | "organizations"
   | "projects"
   | "activity"
@@ -22,6 +23,12 @@ export type PlatformNavItem = {
 };
 
 export const platformNav: PlatformNavItem[] = [
+  {
+    key: "overview",
+    label: "Overview",
+    action: null,
+    orgScoped: false,
+  },
   {
     key: "organizations",
     label: "Organizations",

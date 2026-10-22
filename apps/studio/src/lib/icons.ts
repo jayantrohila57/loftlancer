@@ -39,6 +39,7 @@ import {
   SearchX,
   Settings,
   ShieldAlert,
+  Star,
   Trash2,
   User,
   UserPlus,
@@ -67,6 +68,7 @@ export const appIcons = {
   invite: UserPlus,
   organization: Building2,
   settings: Settings,
+  favorite: Star,
   danger: ShieldAlert,
   activity: Activity,
   bell: Bell,
@@ -116,6 +118,7 @@ export {
   Mail,
   Plus,
   Settings,
+  Star,
   Users,
   UsersRound,
 } from "lucide-react";
