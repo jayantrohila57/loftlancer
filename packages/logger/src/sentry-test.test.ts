@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { scrubSentryTestToken } from "./sentry";
+import { scrubSentryTestToken, scrubSentryTestTokenFromSpan } from "./sentry";
 import {
   isSentryTestRequest,
   isSentryTestTokenValid,
@@ -93,5 +93,20 @@ describe("scrubSentryTestToken", () => {
       message: "x",
     };
     assert.deepEqual(scrubSentryTestToken(event), { message: "x" });
+  });
+});
+
+describe("scrubSentryTestTokenFromSpan", () => {
+  it("removes streamed span attributes containing the test header", () => {
+    const span = {
+      attributes: {
+        "http.request.header.x-sentry-test-token": TOKEN,
+        "X-Sentry-Test-Token": TOKEN,
+        "http.request.method": "POST",
+      },
+    };
+    const scrubbed = scrubSentryTestTokenFromSpan(span);
+    assert.deepEqual(scrubbed.attributes, { "http.request.method": "POST" });
+    assert.equal(JSON.stringify(scrubbed).includes(TOKEN), false);
   });
 });

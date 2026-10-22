@@ -3,6 +3,7 @@ import {
   createSentrySink,
   type SentryLike,
   scrubSentryTestToken,
+  scrubSentryTestTokenFromSpan,
 } from "./sentry";
 import {
   resolveSentryDsn,
@@ -41,7 +42,7 @@ export function buildSentryInitOptions(
     initialScope: { tags: { app } },
     tracesSampleRate: 0.1,
     beforeSend: scrubSentryTestToken,
-    beforeSendTransaction: scrubSentryTestToken,
+    beforeSendSpan: scrubSentryTestTokenFromSpan,
     ...extras,
   };
 }
