@@ -9,6 +9,7 @@ export type PageBackHref = Route;
 /** Top-level list routes: no inline back (browser history only). */
 const HISTORY_ROOT_PATHS = new Set<string>([
   "/",
+  "/organizations",
   "/notifications",
   "/activity",
   "/support",

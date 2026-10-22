@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { isReservedOrgSlug } from "@loftlancer/env/reserved-slugs";
+import { isReservedOrgSlugForCreation } from "@loftlancer/env/reserved-slugs";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
@@ -48,7 +48,7 @@ const orgSchema = z.object({
           /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
           "Use lowercase letters, numbers, and hyphens only",
         )
-        .refine((slug) => !isReservedOrgSlug(slug), {
+        .refine((slug) => !isReservedOrgSlugForCreation(slug), {
           message: "That slug is reserved. Choose a different slug.",
         }),
     ),
@@ -379,7 +379,7 @@ export default function OnboardingClient() {
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
-                    render={<Link href={routes.home()} />}
+                    render={<Link href={routes.organizationsDirectory()} />}
                   >
                     All organizations
                   </Button>

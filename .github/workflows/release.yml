@@ -130,8 +130,6 @@ jobs:
     needs: detect-dev-release
     if: needs.detect-dev-release.outputs.is_release == 'true'
     uses: ./.github/workflows/ci.yml
-    with:
-      production_build: true
     permissions:
       contents: read
 

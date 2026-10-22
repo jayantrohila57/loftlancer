@@ -1,9 +1,12 @@
+import type { Route } from "next";
+
 /**
  * THE studio route builder (#300). Paths are relative to the studio basePath
  * (`/studio`); Next `Link`/`router` add the basePath. Use `studioUrl()` for
  * absolute links from other apps (auth, docs, notifications, emails).
  *
- *   /                                    org list (pre-org home)
+ *   /                                    Studio landing page
+ *   /organizations                       organization directory
  *   /new                                 create organization
  *   /notifications /activity
  *   /support /support/tickets[/new|/:id] /support/help[/:slug]
@@ -46,6 +49,8 @@ const seg = (value: string | number) => encodeURIComponent(String(value));
 
 export const routes = {
   home: () => "/",
+  organizations: () => "/organizations",
+  organizationsDirectory: () => "/organizations?directory=1" as Route,
   newOrganization: () => "/new",
   notifications: () => "/notifications",
   invitation: (id: string) => `/invite/${seg(id)}`,
@@ -100,7 +105,7 @@ export function platformNavHref(
 ): string | null {
   switch (key) {
     case "organizations":
-      return routes.home();
+      return routes.organizationsDirectory();
     case "projects":
       return org ? routes.projects(org) : null;
     case "activity":

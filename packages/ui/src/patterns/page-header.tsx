@@ -99,12 +99,14 @@ export function PageHeaderTabsRow({
   activeTab,
   onTabChange,
   end,
+  viewportClassName,
   LinkComponent = "a",
 }: {
   tabs?: PageHeaderTabItem[];
   activeTab?: string;
   onTabChange?: (value: string) => void;
   end?: ReactNode;
+  viewportClassName?: string;
   LinkComponent?: LinkLike | "a";
 }) {
   const L = LinkComponent as React.ElementType;
@@ -120,7 +122,11 @@ export function PageHeaderTabsRow({
 
   return (
     <div className={pageHeaderTabsRowClass} data-slot="page-header-tabs">
-      <HorizontalScrollRail compactControls className="min-w-0 flex-1">
+      <HorizontalScrollRail
+        compactControls
+        className="min-w-0 flex-1"
+        viewportClassName={viewportClassName}
+      >
         <div
           ref={tabsListRef}
           role="tablist"
@@ -203,12 +209,14 @@ function PageHeaderTopRow({
   titleAccessory,
   description,
   actions,
+  descriptionGapClassName,
 }: {
   back?: ReactNode | null;
   title: ReactNode;
   titleAccessory?: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
+  descriptionGapClassName?: string;
 }) {
   const hasBack = back != null;
   const hasAction = Boolean(actions);
@@ -262,6 +270,7 @@ function PageHeaderTopRow({
     <div
       className={cn(
         pageHeaderDescriptionGridClass,
+        descriptionGapClassName,
         mobileCols,
         mobileAreas,
         desktopAreas,
@@ -309,6 +318,7 @@ export function PageHeaderLayout({
   titleAccessory,
   description,
   actions,
+  descriptionGapClassName,
   meta,
   tabs,
 }: {
@@ -317,6 +327,7 @@ export function PageHeaderLayout({
   titleAccessory?: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
+  descriptionGapClassName?: string;
   meta?: ReactNode;
   /** A rendered {@link PageHeaderTabsRow}. */
   tabs: ReactNode;
@@ -331,6 +342,7 @@ export function PageHeaderLayout({
         titleAccessory={titleAccessory}
         description={description}
         actions={actions}
+        descriptionGapClassName={descriptionGapClassName}
       />
       {hasMeta ? (
         <div

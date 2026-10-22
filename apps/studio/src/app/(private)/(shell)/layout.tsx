@@ -14,8 +14,10 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await guardAuthenticatedPage();
-  const pathname = (await headers()).get("x-pathname") ?? "";
-  const urlOrgSlug = orgSlugFromRequestPath(pathname);
+  const requestHeaders = await headers();
+  const pathname = requestHeaders.get("x-pathname") ?? "";
+  const search = requestHeaders.get("x-search") ?? "";
+  const urlOrgSlug = orgSlugFromRequestPath(pathname, search);
   const dehydratedState = await dehydrateStudioShellQueries(session, {
     urlOrgSlug,
   });

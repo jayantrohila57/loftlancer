@@ -47,8 +47,9 @@ export function OrganizationCard({
               {org.slug}
             </p>
             <p className="mt-2 text-muted-foreground text-xs">
-              {personal ? "Personal workspace" : "Team workspace"}
-              {isActive ? " · Active" : null}
+              {personal ? "Personal" : "Team"} ·{" "}
+              {org.archivedAt ? "Archived" : "Active"}
+              {isActive ? " · Current" : null}
             </p>
           </div>
         </div>
