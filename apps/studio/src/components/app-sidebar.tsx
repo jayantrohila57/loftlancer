@@ -166,6 +166,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const pathMatchesNavItem = (href: string) => {
     const hrefPathname = href.split("?", 1)[0] ?? href;
+    if (href.includes("directory=1")) return pathname === hrefPathname;
     if (pathname === hrefPathname) return true;
     if (hrefPathname === routes.home()) return pathname === hrefPathname;
     return pathname.startsWith(`${hrefPathname}/`);

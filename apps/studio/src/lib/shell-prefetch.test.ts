@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { isReservedOrgSlugForCreation } from "@loftlancer/env/reserved-slugs";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { orgSlugFromRequestPath } from "./org-slug-from-request-path";
 
@@ -23,6 +24,11 @@ describe("orgSlugFromRequestPath", () => {
       orgSlugFromRequestPath("/organizations/projects", "?directory=1"),
       "organizations",
     );
+  });
+
+  it("reserves the directory slug for new organizations while keeping legacy routing", () => {
+    assert.equal(isReservedOrgSlugForCreation("organizations"), true);
+    assert.equal(orgSlugFromRequestPath("/organizations"), "organizations");
   });
 });
 
