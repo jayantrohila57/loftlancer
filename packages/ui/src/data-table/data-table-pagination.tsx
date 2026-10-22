@@ -47,22 +47,24 @@ export function DataTablePagination({
           type="button"
           variant="outline"
           size="sm"
-          className="h-8"
+          className="h-10 px-2 sm:h-8 sm:px-3"
+          aria-label="Previous page"
           onClick={() => table.previousPage()}
           disabled={disabled || !table.getCanPreviousPage()}
         >
           <ChevronLeft className="size-4" aria-hidden />
-          Previous
+          <span className="sr-only sm:not-sr-only">Previous</span>
         </Button>
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="h-8"
+          className="h-10 px-2 sm:h-8 sm:px-3"
+          aria-label="Next page"
           onClick={() => table.nextPage()}
           disabled={disabled || !table.getCanNextPage()}
         >
-          Next
+          <span className="sr-only sm:not-sr-only">Next</span>
           <ChevronRight className="size-4" aria-hidden />
         </Button>
       </div>

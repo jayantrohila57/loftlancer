@@ -56,7 +56,7 @@ export function DashboardAppShell({
               <div className="flex min-w-0 flex-1 items-center gap-1.5">
                 <SidebarTrigger
                   variant="outline"
-                  className={headerIconButtonClassName}
+                  className={`${headerIconButtonClassName} max-md:size-10`}
                 />
                 <Separator
                   orientation="vertical"
@@ -70,7 +70,7 @@ export function DashboardAppShell({
                 </div>
               </div>
               {headerActions ? (
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="flex shrink-0 items-center gap-1 sm:gap-2">
                   {headerActions}
                 </div>
               ) : null}

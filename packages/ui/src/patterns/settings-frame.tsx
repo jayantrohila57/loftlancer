@@ -13,6 +13,7 @@ import {
 } from "../lib/page-header-classes";
 import { resolveSettingsTabHref } from "../lib/settings-tabs";
 import { cn } from "../lib/utils";
+import { HorizontalScrollRail } from "./horizontal-scroll-rail";
 import {
   PageHeaderBackLink,
   PageHeaderLayout,
@@ -79,35 +80,41 @@ export function SettingsTabs({
   const L = LinkComponent as React.ElementType;
   return (
     <div className={pageHeaderTabsRowClass} data-slot="page-header-tabs">
-      <nav aria-label="Sections" className={pageHeaderTabsListClass}>
-        {tabs.map((tab) =>
-          tab.disabled ? (
-            <span
-              key={tab.href}
-              aria-disabled="true"
-              className={pageHeaderTabClass}
-            >
-              {tab.icon}
-              {tab.label}
-            </span>
-          ) : (
-            <L
-              key={tab.href}
-              href={tab.href}
-              aria-current={tab.active ? "page" : undefined}
-              className={cn(
-                pageHeaderTabClass,
-                tab.active
-                  ? pageHeaderTabActiveClass
-                  : pageHeaderTabInactiveClass,
-              )}
-            >
-              {tab.icon}
-              {tab.label}
-            </L>
-          ),
-        )}
-      </nav>
+      <HorizontalScrollRail compactControls className="min-w-0 flex-1">
+        <nav
+          aria-label="Sections"
+          className={cn(pageHeaderTabsListClass, "w-max overflow-visible")}
+        >
+          {tabs.map((tab) =>
+            tab.disabled ? (
+              <span
+                key={tab.href}
+                aria-disabled="true"
+                className={cn(pageHeaderTabClass, "min-h-10 sm:min-h-0")}
+              >
+                {tab.icon}
+                {tab.label}
+              </span>
+            ) : (
+              <L
+                key={tab.href}
+                href={tab.href}
+                aria-current={tab.active ? "page" : undefined}
+                className={cn(
+                  pageHeaderTabClass,
+                  "min-h-10 sm:min-h-0",
+                  tab.active
+                    ? pageHeaderTabActiveClass
+                    : pageHeaderTabInactiveClass,
+                )}
+              >
+                {tab.icon}
+                {tab.label}
+              </L>
+            ),
+          )}
+        </nav>
+      </HorizontalScrollRail>
     </div>
   );
 }
