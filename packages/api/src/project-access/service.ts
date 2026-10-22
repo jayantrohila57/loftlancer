@@ -2,7 +2,7 @@ import {
   DEFAULT_TEAM_PROJECT_GRANTS,
   mergeProjectMemberGrants,
 } from "@loftlancer/actions";
-import { db, softDeleteSet } from "@loftlancer/db";
+import { activeMemberWhere, db, softDeleteSet } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
 import { member } from "@loftlancer/db/schema/organization";
 import {
@@ -232,6 +232,33 @@ export async function upsertProjectManagerRow(input: {
   userId: string;
   createdBy: string;
 }) {
+  const [projectRow] = await db
+    .select({ id: project.id })
+    .from(project)
+    .where(
+      and(
+        eq(project.id, input.projectId),
+        eq(project.organizationId, input.organizationId),
+        isNull(project.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (!projectRow) throw new Error("project_not_found");
+
+  const [activeOrganizationMember] = await db
+    .select({ id: member.id })
+    .from(member)
+    .where(
+      activeMemberWhere(
+        and(
+          eq(member.organizationId, input.organizationId),
+          eq(member.userId, input.userId),
+        ),
+      ),
+    )
+    .limit(1);
+  if (!activeOrganizationMember) throw new Error("active_member_required");
+
   const [existing] = await db
     .select({ id: projectManager.id, deletedAt: projectManager.deletedAt })
     .from(projectManager)
