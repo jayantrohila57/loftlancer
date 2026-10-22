@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Simplified homepage sign-in, centered product features in the branding panel, and moved public links into its footer with a mobile page-footer fallback (#605).
+
 ## [1.16.1] - 2026-10-22
 
 ### Added

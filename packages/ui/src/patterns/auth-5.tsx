@@ -187,34 +187,67 @@ const Auth5FrameContext = createContext(false);
  * `Auth5Content` for wider marketing/onboarding content. The right
  * column scrolls for long content.
  */
-export function Auth5Frame({ children }: { children: ReactNode }) {
+export function Auth5Frame({
+  children,
+  brandContent,
+  brandFooter,
+}: {
+  children: ReactNode;
+  /** Optional homepage feature content in the center of the brand panel. */
+  brandContent?: ReactNode;
+  /** Public navigation at the brand-panel bottom, or the page bottom on mobile. */
+  brandFooter?: ReactNode;
+}) {
   return (
     <main
       data-testid="auth-5"
-      className="relative md:h-screen md:overflow-hidden lg:grid lg:grid-cols-2"
+      className={cn(
+        "relative lg:grid lg:grid-cols-2",
+        brandFooter
+          ? "min-h-svh lg:h-svh lg:overflow-hidden"
+          : "md:h-screen md:overflow-hidden",
+      )}
     >
-      <div className="relative hidden h-full flex-col border-r bg-secondary p-10 lg:flex dark:bg-secondary/20">
+      <div className="relative hidden h-full min-h-0 flex-col overflow-y-auto border-r bg-secondary p-10 lg:flex dark:bg-secondary/20">
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-background" />
         <Logo href={LOGO_HOME_HREF} className="relative z-10 mr-auto h-4.5" />
 
-        <div className="z-10 mt-auto">
-          <blockquote className="space-y-2">
-            <p className="text-xl">
-              &ldquo;Loftlancer keeps our organizations, projects and encrypted
-              environment variables in one place, for our team and our
-              agents.&rdquo;
-            </p>
-            <footer className="font-mono font-semibold text-sm">
-              ~ The Loftlancer team
-            </footer>
-          </blockquote>
-        </div>
-        <div className="absolute inset-0">
-          <FloatingPaths position={1} />
-          <FloatingPaths position={-1} />
-        </div>
+        {brandContent ? (
+          <div className="relative z-10 flex flex-1 items-center py-6">
+            {brandContent}
+          </div>
+        ) : (
+          <div className="z-10 mt-auto">
+            <blockquote className="space-y-2">
+              <p className="text-xl">
+                &ldquo;Loftlancer keeps our organizations, projects and
+                encrypted environment variables in one place, for our team and
+                our agents.&rdquo;
+              </p>
+              <footer className="font-mono font-semibold text-sm">
+                ~ The Loftlancer team
+              </footer>
+            </blockquote>
+          </div>
+        )}
+        {brandFooter ? (
+          <div className="relative z-10 shrink-0">{brandFooter}</div>
+        ) : null}
+        {!brandContent ? (
+          <div className="absolute inset-0" aria-hidden="true">
+            <FloatingPaths position={1} />
+            <FloatingPaths position={-1} />
+          </div>
+        ) : null}
       </div>
-      <div className="justify-center-safe relative flex min-h-screen flex-col px-8 md:h-screen md:overflow-y-auto">
+      <div
+        className={cn(
+          "relative flex flex-col px-8",
+          brandFooter
+            ? "min-h-svh lg:h-svh lg:overflow-y-auto"
+            : "justify-center-safe min-h-screen md:h-screen md:overflow-y-auto",
+        )}
+      >
         {/* Top Shades */}
         <div
           aria-hidden
@@ -225,7 +258,16 @@ export function Auth5Frame({ children }: { children: ReactNode }) {
           <div className="absolute top-0 right-0 h-320 w-60 -translate-y-87.5 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,--theme(--color-foreground/.04)_0,--theme(--color-foreground/.01)_80%,transparent_100%)]" />
         </div>
         <Auth5FrameContext.Provider value={true}>
-          {children}
+          {brandFooter ? (
+            <>
+              <div className="justify-center-safe flex flex-1 flex-col py-20">
+                {children}
+              </div>
+              <div className="shrink-0 pb-8 lg:hidden">{brandFooter}</div>
+            </>
+          ) : (
+            children
+          )}
         </Auth5FrameContext.Provider>
       </div>
     </main>
