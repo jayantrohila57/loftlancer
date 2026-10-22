@@ -9,6 +9,7 @@ import { routes } from "@/utils/navigation";
 import { useOrgSlug } from "@/utils/use-route-scope";
 import { useProjects } from "../hooks/use-projects";
 import { CreateProjectSheet } from "./create-project-sheet";
+import { DeletedProjectsSection } from "./deleted-projects-section";
 import ProjectList from "./project-list";
 
 export function ProjectsPageClient({
@@ -53,7 +54,10 @@ export function ProjectsPageClient({
           </Can>
         }
       >
-        <ProjectList list={projectsList} />
+        <div className="space-y-4">
+          <ProjectList list={projectsList} />
+          <DeletedProjectsSection />
+        </div>
       </DashboardSection>
       <CreateProjectSheet
         open={createOpen}

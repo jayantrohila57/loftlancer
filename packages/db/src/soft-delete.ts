@@ -107,9 +107,9 @@ export function requireAnd(
   return mergeAnd(required, ...optional) ?? required;
 }
 
-export function softDeleteSet(deletedByUserId: string) {
+export function softDeleteSet(deletedByUserId: string, deletedAt = new Date()) {
   return {
-    deletedAt: new Date(),
+    deletedAt,
     deletedBy: deletedByUserId,
   };
 }
@@ -117,6 +117,7 @@ export function softDeleteSet(deletedByUserId: string) {
 export async function softDeleteEnvironmentVariablesByEnvironmentIds(
   environmentIds: string[],
   deletedByUserId: string,
+  deletedAt = new Date(),
 ): Promise<void> {
   if (environmentIds.length === 0) {
     return;
@@ -124,7 +125,7 @@ export async function softDeleteEnvironmentVariablesByEnvironmentIds(
   if (isSoftDeletesEnabled()) {
     await db
       .update(environmentVariable)
-      .set(softDeleteSet(deletedByUserId))
+      .set(softDeleteSet(deletedByUserId, deletedAt))
       .where(
         requireAnd(
           inArray(environmentVariable.environmentId, environmentIds),
@@ -141,6 +142,7 @@ export async function softDeleteEnvironmentVariablesByEnvironmentIds(
 export async function softDeleteEnvironmentsByProjectId(
   projectId: string,
   deletedByUserId: string,
+  deletedAt = new Date(),
 ): Promise<void> {
   const envRows = await db
     .select({ id: environment.id })
@@ -156,12 +158,13 @@ export async function softDeleteEnvironmentsByProjectId(
   await softDeleteEnvironmentVariablesByEnvironmentIds(
     environmentIds,
     deletedByUserId,
+    deletedAt,
   );
 
   if (isSoftDeletesEnabled()) {
     await db
       .update(environment)
-      .set(softDeleteSet(deletedByUserId))
+      .set(softDeleteSet(deletedByUserId, deletedAt))
       .where(
         requireAnd(
           eq(environment.projectId, projectId),
@@ -177,17 +180,22 @@ export async function softDeleteProjectById(
   projectId: string,
   deletedByUserId: string,
 ): Promise<void> {
-  await softDeleteEnvironmentsByProjectId(projectId, deletedByUserId);
-
   if (isSoftDeletesEnabled()) {
+    const deletedAt = new Date();
+    await softDeleteEnvironmentsByProjectId(
+      projectId,
+      deletedByUserId,
+      deletedAt,
+    );
     await db
       .update(project)
-      .set(softDeleteSet(deletedByUserId))
+      .set(softDeleteSet(deletedByUserId, deletedAt))
       .where(
         mergeAnd(eq(project.id, projectId), notDeleted(project.deletedAt)),
       );
     return;
   }
+  await softDeleteEnvironmentsByProjectId(projectId, deletedByUserId);
   await db.delete(project).where(eq(project.id, projectId));
 }
 
