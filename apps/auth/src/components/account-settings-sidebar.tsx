@@ -25,6 +25,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@loftlancer/ui/sidebar";
+import { Skeleton } from "@loftlancer/ui/skeleton";
 import { platformNavHref, routes } from "@loftlancer/ui/studio-routes";
 import type { LucideIcon } from "lucide-react";
 import { BellIcon, Building2, ClockIcon, FolderClosedIcon } from "lucide-react";
@@ -177,7 +178,22 @@ export function AccountSettingsSidebar({
       </SidebarContent>
 
       <SidebarFooter className="mt-auto shrink-0 border-sidebar-border border-t bg-sidebar">
-        <SidebarUserMenu {...userMenuProps} />
+        {_userMenuReady ? (
+          <SidebarUserMenu {...userMenuProps} />
+        ) : (
+          <div
+            aria-label="Loading account"
+            aria-busy="true"
+            className="flex h-12 items-center gap-2 px-2"
+            role="status"
+          >
+            <Skeleton className="size-8 rounded-md" />
+            <span className="grid flex-1 gap-1">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-3 w-32" />
+            </span>
+          </div>
+        )}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

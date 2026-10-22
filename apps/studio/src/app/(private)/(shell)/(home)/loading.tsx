@@ -1,12 +1,20 @@
-import { Spinner } from "@loftlancer/ui/spinner";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
+import DashboardSection from "@/components/section-dashboard";
 
 export default function OrganizationsLoading() {
   return (
-    <div
-      className="flex min-h-48 flex-1 items-center justify-center py-12"
-      aria-busy="true"
-    >
-      <Spinner className="size-6 text-muted-foreground" />
-    </div>
+    <DelayedPageLoading
+      fallback={
+        <DashboardSection
+          title="Overview"
+          description="Your workspace overview."
+          back={false}
+          hideTabs
+        >
+          <AccordionSectionSkeleton rows={2} />
+        </DashboardSection>
+      }
+    />
   );
 }

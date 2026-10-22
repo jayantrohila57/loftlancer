@@ -54,6 +54,7 @@
     "./patterns/confirm-dialog": "./src/patterns/confirm-dialog.tsx",
     "./patterns/empty-state": "./src/patterns/empty-state.tsx",
     "./patterns/page-state": "./src/patterns/page-state.tsx",
+    "./patterns/delayed-page-loading": "./src/patterns/delayed-page-loading.tsx",
     "./patterns/app-route-states": "./src/patterns/app-route-states.tsx",
     "./app-shell": {
       "default": "./src/app-shell/index.ts"

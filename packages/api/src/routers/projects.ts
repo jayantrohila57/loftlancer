@@ -70,6 +70,7 @@ import {
   environmentOutput,
   getProjectBySlugInput,
   getProjectInput,
+  isProjectDateRangeValid,
   makeResponseSchema,
   projectOutput,
   respond,
@@ -316,6 +317,12 @@ export const projectsRouter = router({
     .use(actionGuard("project.create"))
     .output(makeResponseSchema(projectOutput))
     .mutation(async ({ ctx, input }) => {
+      if (!isProjectDateRangeValid(input.startDate, input.targetDate)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Target date must be on or after the start date",
+        });
+      }
       try {
         await assertUniqueProjectName(ctx.session.user.id, input.name);
         const baseSlug = buildProjectSlugFromName(input.name);
@@ -405,6 +412,28 @@ export const projectsRouter = router({
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Project not found",
+        });
+      }
+
+      const currentProject = existingProject[0];
+      if (!currentProject) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+      const effectiveStartDate =
+        input.startDate === undefined
+          ? currentProject.startDate
+          : input.startDate || null;
+      const effectiveTargetDate =
+        input.targetDate === undefined
+          ? currentProject.targetDate
+          : input.targetDate || null;
+      if (!isProjectDateRangeValid(effectiveStartDate, effectiveTargetDate)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Target date must be on or after the start date",
         });
       }
 

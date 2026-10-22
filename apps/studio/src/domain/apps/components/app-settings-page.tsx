@@ -35,6 +35,7 @@ export function AppSettingsPage({
     isLoading,
     isError,
     canManage,
+    install,
     uninstall,
     isMutating,
     refetch,
@@ -84,9 +85,21 @@ export function AppSettingsPage({
           description={
             app
               ? canManage
-                ? "Use Apps in the project navigation to install it before configuring it."
+                ? `Install ${app.name} to configure it for this project.`
                 : "Ask a project manager to install this app."
               : "This app doesn't exist."
+          }
+          action={
+            app && canManage ? (
+              <Button
+                type="button"
+                size="sm"
+                disabled={isMutating}
+                onClick={() => void install(app.id, app.name)}
+              >
+                {isMutating ? "Installing…" : `Install ${app.name}`}
+              </Button>
+            ) : null
           }
         />
       </DashboardSection>

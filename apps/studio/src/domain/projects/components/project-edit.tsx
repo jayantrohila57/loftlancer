@@ -43,6 +43,10 @@ export function EditProject({
       id: project.id,
       name: project.name,
       description: project.description || "",
+      purpose: project.purpose || "",
+      documentationUrl: project.documentationUrl || "",
+      startDate: project.startDate || "",
+      targetDate: project.targetDate || "",
       repositoryUrl: project.repositoryUrl || "",
       websiteUrl: project.websiteUrl || "",
       isPublic: project.isPublic,
@@ -51,16 +55,31 @@ export function EditProject({
   });
 
   const descriptionLength = form.watch("description")?.length ?? 0;
+  const startDate = form.watch("startDate") || "";
+  const targetDate = form.watch("targetDate") || "";
+  const dateRangeInvalid =
+    startDate.length > 0 && targetDate.length > 0 && targetDate < startDate;
 
   const onSubmit = async (
     data: z.infer<typeof updateProjectInput>,
     allowNextNavigationWithoutPrompt: () => void,
   ) => {
+    if (dateRangeInvalid) {
+      form.setError("targetDate", {
+        type: "validate",
+        message: "Target date must be on or after the start date.",
+      });
+      return;
+    }
     try {
       await updateProject({
         id: data.id,
         name: data.name?.trim(),
         description: data.description?.trim() || undefined,
+        purpose: data.purpose?.trim() || null,
+        documentationUrl: data.documentationUrl?.trim() || null,
+        startDate: data.startDate || null,
+        targetDate: data.targetDate || null,
         repositoryUrl: data.repositoryUrl?.trim() || undefined,
         websiteUrl: data.websiteUrl?.trim() || undefined,
         isPublic: data.isPublic,
@@ -124,6 +143,130 @@ export function EditProject({
           )
         }
       />
+
+      <Controller
+        name="purpose"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <SettingsField
+            label="Purpose"
+            description="What this project is for. Optional."
+            controlClassName="w-full max-w-md"
+          >
+            <div className="space-y-1">
+              <Textarea
+                {...field}
+                value={field.value ?? ""}
+                id={field.name}
+                placeholder="Describe the project's purpose"
+                rows={3}
+                maxLength={500}
+                disabled={isUpdating}
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.invalid ? (
+                <p className="text-destructive text-xs">
+                  {fieldState.error?.message}
+                </p>
+              ) : null}
+            </div>
+          </SettingsField>
+        )}
+      />
+
+      <Controller
+        name="documentationUrl"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <SettingsField
+            label="Documentation URL"
+            description="Link to project documentation. Optional."
+          >
+            <div className="space-y-1">
+              <Input
+                {...field}
+                value={field.value ?? ""}
+                id={field.name}
+                type="url"
+                placeholder="https://docs.example.com"
+                disabled={isUpdating}
+                aria-invalid={fieldState.invalid}
+                className={fieldInputClass}
+              />
+              {fieldState.invalid ? (
+                <p className="text-destructive text-xs">
+                  {fieldState.error?.message}
+                </p>
+              ) : null}
+            </div>
+          </SettingsField>
+        )}
+      />
+
+      <div
+        className={
+          embedded ? "grid gap-3 sm:grid-cols-2" : "grid gap-4 sm:grid-cols-2"
+        }
+      >
+        <Controller
+          name="startDate"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <SettingsField label="Start date" description="Optional.">
+              <div className="space-y-1">
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  id={field.name}
+                  type="date"
+                  disabled={isUpdating}
+                  aria-invalid={fieldState.invalid}
+                  className={fieldInputClass}
+                  onChange={(event) => {
+                    field.onChange(event);
+                    void form.trigger(["startDate", "targetDate"]);
+                  }}
+                />
+                {fieldState.invalid ? (
+                  <p className="text-destructive text-xs">
+                    {fieldState.error?.message}
+                  </p>
+                ) : null}
+              </div>
+            </SettingsField>
+          )}
+        />
+        <Controller
+          name="targetDate"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <SettingsField label="Target date" description="Optional.">
+              <div className="space-y-1">
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  id={field.name}
+                  type="date"
+                  disabled={isUpdating}
+                  aria-invalid={fieldState.invalid || dateRangeInvalid}
+                  className={fieldInputClass}
+                  onChange={(event) => {
+                    field.onChange(event);
+                    void form.trigger(["startDate", "targetDate"]);
+                  }}
+                />
+                {fieldState.invalid || dateRangeInvalid ? (
+                  <p className="text-destructive text-xs">
+                    {dateRangeInvalid
+                      ? "Target date must be on or after the start date."
+                      : fieldState.error?.message}
+                  </p>
+                ) : null}
+              </div>
+            </SettingsField>
+          )}
+        />
+      </div>
 
       <Controller
         name="description"
@@ -352,7 +495,7 @@ export function EditProject({
               size="sm"
               isLoading={isUpdating}
               loadingLabel="Updating…"
-              disabled={!form.formState.isValid}
+              disabled={!form.formState.isValid || dateRangeInvalid}
             >
               Update project
             </SubmitButton>
@@ -377,7 +520,7 @@ export function EditProject({
             <SubmitButton
               isLoading={isUpdating}
               loadingLabel="Updating…"
-              disabled={!form.formState.isValid}
+              disabled={!form.formState.isValid || dateRangeInvalid}
             >
               Update Project
             </SubmitButton>
@@ -392,6 +535,10 @@ export function EditProject({
       id: project.id,
       name: project.name,
       description: project.description || "",
+      purpose: project.purpose || "",
+      documentationUrl: project.documentationUrl || "",
+      startDate: project.startDate || "",
+      targetDate: project.targetDate || "",
       repositoryUrl: project.repositoryUrl || "",
       websiteUrl: project.websiteUrl || "",
       isPublic: project.isPublic,
@@ -406,7 +553,7 @@ export function EditProject({
         {({ guardNavigation, allowNextNavigationWithoutPrompt }) => (
           <AccordionSection
             title="Project details"
-            description="Name, links, and visibility."
+            description="Name, purpose, dates, links, and visibility."
           >
             <form
               onSubmit={form.handleSubmit((data) =>

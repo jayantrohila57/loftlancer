@@ -18,12 +18,14 @@ export function useSession() {
 export async function performSignOut(options: {
   queryClient: QueryClient;
   router: AppRouterInstance;
+  returnTo?: string;
 }): Promise<void> {
-  const { queryClient } = options;
+  const { queryClient, returnTo } = options;
 
   await performPlatformSignOut({
     onClearClient: () => queryClient.clear(),
     signOutLocal: () => authClient.signOut(),
+    returnTo,
   });
 }
 

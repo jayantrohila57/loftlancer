@@ -16,12 +16,20 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.0] - 2026-10-23
+
 ### Added
 
+- Populated Studio Overview with favorite organizations, recent projects, pending invitations, and permission-checked recent activity (#643).
+- Add the 22 October 2026 UX audit and 60 screenshot evidence files for tracked fixes (#627).
 - Add the dedicated `apps/www` marketing site and route its sign-in CTAs to auth with the validated studio return URL (#103)
 
 ### Fixed
 
+- Added a direct Environments install action and first-variable setup for new projects (#642).
+- Standardized route and account loading states with delayed, layout-matched skeletons and retryable timeout errors (#644).
+- Clarify account anonymization and retention, require matching email confirmation, and show post-deletion guidance on the public landing page (#647).
+- Make all project creation fields editable from project settings and validate project date order (#649).
 - Replace the ignored Sentry transaction scrubber with `beforeSendSpan` for the default streamed trace lifecycle (#354)
 - Made soft-deleted projects and their related environments and variables recoverable from Studio (#463).
 - Marked authenticated auth settings responses as private and non-cacheable (#363).
@@ -760,7 +768,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.18.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.0...HEAD
+[1.19.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.2...v1.17.0
