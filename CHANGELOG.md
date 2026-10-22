@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- Added a permission-checked member access view spanning organization roles, teams, projects, apps, and audit activity (#590).
+
 ## [1.17.1] - 2026-10-22
 
 ### Security

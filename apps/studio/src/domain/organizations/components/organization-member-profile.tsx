@@ -1,6 +1,6 @@
 "use client";
 
-import { normalizeOrgRole } from "@loftlancer/actions";
+import { formatActionLabel, normalizeOrgRole } from "@loftlancer/actions";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
@@ -9,22 +9,30 @@ import {
   LocalDateTime,
 } from "@loftlancer/ui/patterns/local-date-time";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { useState } from "react";
+import { ErrorState } from "@/components/patterns/error-state";
 import { Can } from "@/domain/permissions/components/can";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
+import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 
 export function OrganizationMemberProfiles({
   memberId,
+  organizationSlug,
   onClose,
 }: {
   memberId: string;
+  organizationSlug: string;
   onClose: () => void;
 }) {
   const client = useQueryClient();
   const members = useQuery(trpc.organizations.listMembers.queryOptions());
+  const access = useQuery(
+    trpc.organizations.getMemberAccessSummary.queryOptions({ memberId }),
+  );
   const profilePermission = useCan("member.profile.update");
   const [drafts, setDrafts] = useState<
     Record<string, { jobTitle: string; department: string }>
@@ -36,6 +44,11 @@ export function OrganizationMemberProfiles({
         toast.success("Member profile updated");
         void client.invalidateQueries({
           queryKey: trpc.organizations.listMembers.queryKey(),
+        });
+        void client.invalidateQueries({
+          queryKey: trpc.organizations.getMemberAccessSummary.queryKey({
+            memberId,
+          }),
         });
       },
       onError: (error) => toast.error(error.message),
@@ -50,6 +63,11 @@ export function OrganizationMemberProfiles({
         });
         void client.invalidateQueries({
           queryKey: trpc.organizations.listCustomRoles.queryKey(),
+        });
+        void client.invalidateQueries({
+          queryKey: trpc.organizations.getMemberAccessSummary.queryKey({
+            memberId,
+          }),
         });
       },
       onError: (error) => toast.error(error.message),
@@ -281,6 +299,198 @@ export function OrganizationMemberProfiles({
           </p>
         ) : null}
       </AccordionSection>
+      {access.isPending ? (
+        <AccordionSection title="Access across this organization">
+          <p className="text-muted-foreground text-sm">
+            Loading current access…
+          </p>
+        </AccordionSection>
+      ) : access.isError ? (
+        <AccordionSection title="Access across this organization">
+          <ErrorState
+            title="Could not load member access"
+            description="Try loading the access summary again."
+            onRetry={() => void access.refetch()}
+          />
+        </AccordionSection>
+      ) : access.data ? (
+        <>
+          <AccordionSection
+            title="Organization access"
+            description="The member’s organization role and permissions."
+          >
+            <p className="font-medium capitalize">
+              {access.data.member.role ?? "No organization role"}
+              {access.data.member.customRole
+                ? ` · ${access.data.member.customRole}`
+                : ""}
+            </p>
+            {access.data.member.suspended ? (
+              <p className="mt-2 text-destructive text-sm">
+                Access is suspended. Team, project, and app access is inactive.
+                {access.data.member.suspensionReason
+                  ? ` ${access.data.member.suspensionReason}`
+                  : ""}
+              </p>
+            ) : null}
+            <p className="mt-2 text-muted-foreground text-sm">
+              {access.data.member.organizationActions.length
+                ? access.data.member.organizationActions.join(" · ")
+                : "No additional organization permissions."}
+            </p>
+          </AccordionSection>
+          <AccordionSection
+            title="Teams"
+            description="Team membership is one way project access is inherited."
+          >
+            {access.data.teams.length ? (
+              <ul className="divide-y">
+                {access.data.teams.map((team) => (
+                  <li
+                    key={team.id}
+                    className="flex flex-wrap justify-between gap-2 py-3"
+                  >
+                    <div>
+                      <p className="font-medium">{team.name}</p>
+                      <p className="text-muted-foreground text-sm">
+                        {team.role}
+                      </p>
+                    </div>
+                    <Link
+                      className="text-primary text-sm underline-offset-4 hover:underline"
+                      href={routes.teamSection(
+                        organizationSlug,
+                        team.id,
+                        "members",
+                      )}
+                    >
+                      Manage team
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                No active team memberships.
+              </p>
+            )}
+          </AccordionSection>
+          <AccordionSection
+            title="Projects"
+            description="Access sources and effective permissions for projects you can view."
+          >
+            {access.data.projects.length ? (
+              <ul className="divide-y">
+                {access.data.projects.map((project) => (
+                  <li
+                    key={project.id}
+                    className="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:justify-between"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium">{project.name}</p>
+                      <p className="text-muted-foreground text-sm">
+                        Access through:{" "}
+                        {project.sources.join(", ") || "Organization role"}
+                      </p>
+                      <details className="mt-1 text-xs">
+                        <summary className="cursor-pointer text-muted-foreground">
+                          Effective permissions
+                        </summary>
+                        <p className="mt-1 text-muted-foreground">
+                          {project.permissions.join(" · ")}
+                        </p>
+                      </details>
+                    </div>
+                    <Link
+                      className="shrink-0 text-primary text-sm underline-offset-4 hover:underline"
+                      href={routes.projectSection(
+                        organizationSlug,
+                        project.slug,
+                        "access",
+                      )}
+                    >
+                      Manage project access
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                No accessible projects are visible to you.
+              </p>
+            )}
+          </AccordionSection>
+          <AccordionSection
+            title="Applications"
+            description="Applications inherit project access unless a project restricts access."
+          >
+            {access.data.apps.length ? (
+              <ul className="divide-y">
+                {access.data.apps.map((app) => (
+                  <li
+                    key={`${app.projectId}:${app.id}`}
+                    className="flex flex-wrap justify-between gap-2 py-3"
+                  >
+                    <div>
+                      <p className="font-medium">{app.name}</p>
+                      <p className="text-muted-foreground text-sm">
+                        {app.projectName} ·{" "}
+                        {app.sources.join(", ") || "Project access"}
+                      </p>
+                    </div>
+                    <Link
+                      className="text-primary text-sm underline-offset-4 hover:underline"
+                      href={routes.app(
+                        organizationSlug,
+                        app.projectSlug,
+                        app.id,
+                      )}
+                    >
+                      Open application
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                No application access is visible to you.
+              </p>
+            )}
+          </AccordionSection>
+          <AccordionSection
+            title="Activity"
+            description="Recent audit events performed by this member."
+          >
+            {access.data.activity === null ? (
+              <p className="text-muted-foreground text-sm">
+                Activity is unavailable to your role or is not enabled.
+              </p>
+            ) : access.data.activity.length ? (
+              <ul className="divide-y">
+                {access.data.activity.map((event) => (
+                  <li
+                    key={event.id}
+                    className="flex flex-wrap justify-between gap-2 py-2 text-sm"
+                  >
+                    <span>
+                      {formatActionLabel(event.action)} ·{" "}
+                      {event.entityType.replaceAll("_", " ")} · {event.result}
+                    </span>
+                    <LocalDateTime
+                      value={String(event.createdAt)}
+                      options={LOCAL_DATE_TIME_FORMAT}
+                    />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                No recent activity recorded.
+              </p>
+            )}
+          </AccordionSection>
+        </>
+      ) : null}
       {ConfirmDialog}
     </>
   );
