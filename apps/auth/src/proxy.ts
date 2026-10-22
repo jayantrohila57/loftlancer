@@ -3,6 +3,7 @@ import { DEFAULT_AUTH_URL } from "@loftlancer/env/platform";
 import { resolvePublicServiceUrl } from "@loftlancer/env/vercel-services";
 import { type NextRequest, NextResponse } from "next/server";
 import { appUrl } from "@/lib/base-path";
+import { setPrivateNoStore } from "@/lib/private-response";
 
 const appOrigin = (
   process.env.NEXT_PUBLIC_AUTH_URL ??
@@ -46,9 +47,13 @@ export function proxy(request: NextRequest) {
     protectedPrefixes: ["/settings"],
   });
   if (gated) {
+    setPrivateNoStore(gated.headers);
     return gated;
   }
   const response = NextResponse.next();
+  if (pathname === "/settings" || pathname.startsWith("/settings/")) {
+    setPrivateNoStore(response.headers);
+  }
   response.headers.set("x-pathname", request.nextUrl.pathname);
   return response;
 }
