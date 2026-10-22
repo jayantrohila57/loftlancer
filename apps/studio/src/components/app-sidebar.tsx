@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
+  useSidebar,
 } from "@loftlancer/ui/sidebar";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -40,6 +41,7 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { OrgSwitcher } from "@/components/org/org-switcher";
 import { useSidebarNavigator } from "@/components/sidebar/use-sidebar-navigator";
@@ -86,8 +88,13 @@ const navIcons: Record<PlatformNavKey, LucideIcon> = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
   const router = useRouter();
   const scope = useRouteScope();
+
+  useEffect(() => {
+    if (isMobile && pathname !== null) setOpenMobile(false);
+  }, [isMobile, pathname, setOpenMobile]);
   const settingsLinks = [
     { label: "Account settings", href: accountSettingsHref },
     { label: "Notifications", href: routes.notifications() },
@@ -186,7 +193,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           onNavigate={navigate}
         />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="max-md:[&_[data-slot=sidebar-menu-button]]:min-h-11">
         <SidebarGroup>
           <SidebarGroupLabel>Studio</SidebarGroupLabel>
           <SidebarGroupContent>

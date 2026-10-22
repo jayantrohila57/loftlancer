@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Added
 
+- Improved narrow-screen dashboard navigation, resource tabs, and table search/pagination controls (#593, #594, #595).
 - Added Project purpose, documentation, and schedule fields; Team purpose and descriptions; and member history details for scoped management forms (#585, #587, #588, #589).
 - Added additive Project, Team, team-member, and organization-member schema fields for profile and change provenance; existing records retain unknown historical actors (#585, #587, #588, #589).
 - Added organization member profiles, scoped custom roles, suspension controls, and invitation lifecycle tracking with shared permission enforcement (#579).

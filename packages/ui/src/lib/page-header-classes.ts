@@ -51,10 +51,9 @@ export function pageHeaderMetaRowClass(hasBackColumn: boolean) {
 }
 
 export const pageHeaderTabsRowClass =
-  "flex h-9 w-full min-w-0 items-end justify-between gap-2 border-b";
+  "flex min-h-9 h-auto w-full min-w-0 items-end justify-between gap-2 border-b";
 
-export const pageHeaderTabsListClass =
-  "-mb-px flex min-w-0 items-end gap-1 overflow-x-auto";
+export const pageHeaderTabsListClass = "-mb-px flex min-w-0 items-end gap-1";
 
 export const pageHeaderTabClass =
   "inline-flex h-9 shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap border-b-2 px-2.5 font-medium text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4";
