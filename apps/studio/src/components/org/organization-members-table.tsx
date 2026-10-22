@@ -1,5 +1,6 @@
 "use client";
 
+import { normalizeOrgRole } from "@loftlancer/actions";
 import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
@@ -10,7 +11,10 @@ import {
   legacyCreateColumnHelper,
 } from "@tanstack/react-table/legacy";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
+import {
+  type DataTableRowAction,
+  DataTableRowActions,
+} from "@/components/data-table/data-table-row-actions";
 import { RoleBadge } from "@/components/patterns/status-badge";
 import { TableLeadingCell } from "@/components/patterns/table-leading-cell";
 import { initialsFromLabel } from "@/lib/initials";
@@ -19,6 +23,14 @@ export type OrganizationMemberRow = {
   id: string;
   role: string;
   createdAt?: Date | string;
+  joinedAt?: Date | string | null;
+  jobTitle?: string | null;
+  department?: string | null;
+  suspendedAt?: Date | string | null;
+  access?: {
+    builtInRole: string;
+    customRole: { name: string; actions: string[] } | null;
+  };
   user: { name: string; email: string; id?: string };
 };
 
@@ -33,6 +45,7 @@ interface OrganizationMembersTableProps {
   removalPendingId?: string | null;
   onRoleChange: (memberId: string, role: string) => void;
   onRemove?: (member: OrganizationMemberRow) => void;
+  onViewDetails?: (member: OrganizationMemberRow) => void;
   empty?: DataTableEmptyConfig;
 }
 
@@ -45,6 +58,7 @@ export function OrganizationMembersTable({
   removalPendingId,
   onRoleChange,
   onRemove,
+  onViewDetails,
   empty,
 }: OrganizationMembersTableProps) {
   const columns = [
@@ -72,7 +86,28 @@ export function OrganizationMembersTable({
             <span className="block truncate text-muted-foreground text-xs">
               {member.user.email}
             </span>
+            {[member.jobTitle, member.department].filter(Boolean).length ? (
+              <span className="block truncate text-muted-foreground text-xs md:hidden">
+                {[member.jobTitle, member.department]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+            ) : null}
           </TableLeadingCell>
+        );
+      },
+    }),
+    columnHelper.display({
+      id: "organizationDetails",
+      meta: { className: "hidden md:table-cell" },
+      header: "Organization details",
+      cell: ({ row }) => {
+        const member = row.original;
+        const details = [member.jobTitle, member.department].filter(Boolean);
+        return (
+          <span className="text-muted-foreground text-xs">
+            {details.length ? details.join(" · ") : "—"}
+          </span>
         );
       },
     }),
@@ -82,23 +117,38 @@ export function OrganizationMembersTable({
       ),
       cell: ({ row }) => {
         const member = row.original;
-        if (!isOwner) {
-          return <RoleBadge role={member.role} />;
-        }
-
+        const role = normalizeOrgRole(member.role) ?? "member";
         return (
-          <SearchableCombobox
-            value={member.role}
-            onChange={(role) => onRoleChange(member.id, role)}
-            disabled={rolePendingId === member.id}
-            ariaLabel={`Role for ${member.user.email}`}
-            className="w-32"
-            options={roleSelectItems}
-          />
+          <div className="flex flex-col items-start gap-1">
+            {isOwner ? (
+              <SearchableCombobox
+                value={role}
+                onChange={(role) => onRoleChange(member.id, role)}
+                disabled={
+                  rolePendingId === member.id || Boolean(member.suspendedAt)
+                }
+                ariaLabel={`Role for ${member.user.email}`}
+                className="w-32"
+                options={roleSelectItems}
+              />
+            ) : (
+              <RoleBadge role={role} />
+            )}
+            {member.suspendedAt ? (
+              <span className="text-destructive text-xs">Suspended</span>
+            ) : null}
+            {member.access?.customRole ? (
+              <span className="text-muted-foreground text-xs">
+                {member.access.customRole.name}
+              </span>
+            ) : null}
+          </div>
         );
       },
     }),
-    columnHelper.accessor("createdAt", {
+    columnHelper.accessor((member) => member.joinedAt ?? member.createdAt, {
+      id: "joinedAt",
+      meta: { className: "hidden lg:table-cell" },
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Joined" />
       ),
@@ -116,7 +166,7 @@ export function OrganizationMembersTable({
         );
       },
     }),
-    ...(onRemove && isOwner
+    ...(onRemove || onViewDetails
       ? [
           columnHelper.display({
             id: "actions",
@@ -124,21 +174,29 @@ export function OrganizationMembersTable({
             header: () => <span className="sr-only">Actions</span>,
             cell: ({ row }) => {
               const member = row.original;
-              if (member.user.id === currentUserId) return null;
+              const actions: DataTableRowAction[] = [];
+              if (onViewDetails) {
+                actions.push({
+                  label: "Member details and access",
+                  onSelect: () => onViewDetails(member),
+                });
+              }
+              if (onRemove && isOwner && member.user.id !== currentUserId) {
+                actions.push({
+                  label:
+                    removalPendingId === member.id
+                      ? "Removing…"
+                      : "Remove member",
+                  onSelect: () => onRemove(member),
+                  destructive: true,
+                  disabled: removalPendingId === member.id,
+                });
+              }
+              if (actions.length === 0) return null;
               return (
                 <DataTableRowActions
                   label={`Actions for ${member.user.name || member.user.email}`}
-                  actions={[
-                    {
-                      label:
-                        removalPendingId === member.id
-                          ? "Removing…"
-                          : "Remove member",
-                      onSelect: () => onRemove(member),
-                      destructive: true,
-                      disabled: removalPendingId === member.id,
-                    },
-                  ]}
+                  actions={actions}
                 />
               );
             },

@@ -2,7 +2,7 @@
 
 import { ChevronLeft } from "lucide-react";
 import type React from "react";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   pageHeaderActionsClass,
@@ -26,6 +26,7 @@ import {
   pageHeaderDescriptionGridTitleClass,
 } from "../lib/page-header-grid-classes";
 import { cn } from "../lib/utils";
+import { HorizontalScrollRail } from "./horizontal-scroll-rail";
 import { PageHeaderDescription } from "./page-header-description";
 
 /**
@@ -109,46 +110,60 @@ export function PageHeaderTabsRow({
   const L = LinkComponent as React.ElementType;
   const list = tabs?.length ? tabs : [{ value: "all", label: "All" }];
   const value = activeTab ?? list[0]?.value;
+  const tabsListRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    tabsListRef.current
+      ?.querySelector(`[data-tab-value="${CSS.escape(value ?? "")}"]`)
+      ?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [value]);
+
   return (
     <div className={pageHeaderTabsRowClass} data-slot="page-header-tabs">
-      <div
-        role="tablist"
-        aria-label="Sections"
-        className={pageHeaderTabsListClass}
-      >
-        {list.map((tab) => {
-          const active = tab.value === value;
-          const className = cn(
-            pageHeaderTabClass,
-            active ? pageHeaderTabActiveClass : pageHeaderTabInactiveClass,
-            tab.disabled && "pointer-events-none opacity-60",
-          );
-          return tab.href ? (
-            <L
-              key={tab.value}
-              href={tab.href}
-              role="tab"
-              aria-selected={active}
-              aria-current={active ? "page" : undefined}
-              className={className}
-            >
-              {tab.label}
-            </L>
-          ) : (
-            <button
-              key={tab.value}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              disabled={tab.disabled}
-              className={className}
-              onClick={() => onTabChange?.(tab.value)}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
+      <HorizontalScrollRail compactControls className="min-w-0 flex-1">
+        <div
+          ref={tabsListRef}
+          role="tablist"
+          aria-label="Sections"
+          className={cn(pageHeaderTabsListClass, "w-max overflow-visible")}
+        >
+          {list.map((tab) => {
+            const active = tab.value === value;
+            const className = cn(
+              pageHeaderTabClass,
+              active ? pageHeaderTabActiveClass : pageHeaderTabInactiveClass,
+              "min-h-10 sm:min-h-0",
+              tab.disabled && "pointer-events-none opacity-60",
+            );
+            return tab.href ? (
+              <L
+                key={tab.value}
+                href={tab.href}
+                role="tab"
+                aria-selected={active}
+                aria-current={active ? "page" : undefined}
+                data-tab-value={tab.value}
+                className={className}
+              >
+                {tab.label}
+              </L>
+            ) : (
+              <button
+                key={tab.value}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                data-tab-value={tab.value}
+                disabled={tab.disabled}
+                className={className}
+                onClick={() => onTabChange?.(tab.value)}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </HorizontalScrollRail>
       {end ? <div className={pageHeaderTabsEndClass}>{end}</div> : null}
     </div>
   );

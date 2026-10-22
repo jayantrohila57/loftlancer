@@ -24,4 +24,8 @@ describe("MCP exposed actions", () => {
     assert.ok(exposed.has("project.permission.grant"));
     assert.ok(exposed.has("variable.reveal"));
   });
+
+  it("exposes organization member suspension through the shared MCP guards", () => {
+    assert.ok(listMcpExposedActions().includes("member.suspend"));
+  });
 });

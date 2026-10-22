@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Button } from "@loftlancer/ui/button";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import Link from "next/link";
@@ -27,6 +27,7 @@ export function createOrganizationsTableColumns(
           <TableLeadingCell
             leading={
               <Avatar className="size-7">
+                <AvatarImage src={org.logo ?? undefined} alt="" />
                 <AvatarFallback className="bg-muted text-[10px]">
                   {initialsFromLabel(org.name, "OR")}
                 </AvatarFallback>
@@ -56,7 +57,11 @@ export function createOrganizationsTableColumns(
       id: "status",
       header: "Status",
       cell: ({ row }) =>
-        row.original.id === activeOrganizationId ? "Active" : "—",
+        row.original.archivedAt
+          ? "Archived"
+          : row.original.id === activeOrganizationId
+            ? "Active"
+            : "—",
     }),
     columnHelper.display({
       id: "actions",

@@ -4,6 +4,7 @@ import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
+import { Textarea } from "@loftlancer/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -28,13 +29,19 @@ export function TeamSettingsPage({
   const teams = useQuery(trpc.teams.list.queryOptions());
   const team = teams.data?.items.find((row) => row.id === teamId);
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [purpose, setPurpose] = useState("");
   useEffect(() => {
-    if (team) setName(team.name);
+    if (team) {
+      setName(team.name);
+      setDescription(team.description ?? "");
+      setPurpose(team.purpose ?? "");
+    }
   }, [team]);
   const update = useMutation(
     trpc.teams.update.mutationOptions({
       onSuccess: () => {
-        toast.success("Team renamed");
+        toast.success("Team profile updated");
         void queryClient.invalidateQueries({
           queryKey: trpc.teams.list.queryKey(),
         });
@@ -94,29 +101,66 @@ export function TeamSettingsPage({
       </div>
       <Can action="team.update">
         <AccordionSection
-          title="Team name"
-          description="Update how this team appears across the organization."
+          title="Team profile"
+          description="Give people a clear description of this team and its purpose."
         >
-          <SettingsRow label="Team name" description="Required.">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="space-y-4">
+            <SettingsRow label="Team name" description="Required.">
               <Input
                 id="team-settings-name"
                 value={name}
+                maxLength={100}
                 onChange={(event) => setName(event.target.value)}
-                className="max-w-sm"
+                className="max-w-xl"
               />
-              <Button
-                type="button"
-                size="sm"
-                disabled={
-                  !name.trim() || name.trim() === team.name || update.isPending
-                }
-                onClick={() => update.mutate({ teamId, name: name.trim() })}
-              >
-                Save name
-              </Button>
-            </div>
-          </SettingsRow>
+            </SettingsRow>
+            <SettingsRow
+              label="Description"
+              description="Up to 500 characters."
+            >
+              <Textarea
+                id="team-settings-description"
+                value={description}
+                maxLength={500}
+                rows={3}
+                onChange={(event) => setDescription(event.target.value)}
+                className="max-w-xl"
+              />
+            </SettingsRow>
+            <SettingsRow
+              label="Purpose"
+              description="What work does this team own?"
+            >
+              <Input
+                id="team-settings-purpose"
+                value={purpose}
+                maxLength={250}
+                onChange={(event) => setPurpose(event.target.value)}
+                className="max-w-xl"
+              />
+            </SettingsRow>
+            <Button
+              type="button"
+              size="sm"
+              disabled={
+                !name.trim() ||
+                update.isPending ||
+                (name.trim() === team.name &&
+                  description.trim() === (team.description ?? "") &&
+                  purpose.trim() === (team.purpose ?? ""))
+              }
+              onClick={() =>
+                update.mutate({
+                  teamId,
+                  name: name.trim(),
+                  description: description.trim() || null,
+                  purpose: purpose.trim() || null,
+                })
+              }
+            >
+              Save profile
+            </Button>
+          </div>
         </AccordionSection>
       </Can>
       <Can action="team.delete">

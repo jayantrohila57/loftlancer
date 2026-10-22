@@ -6,8 +6,12 @@ export function isInviteMemberFormDirty(
   return email.trim().length > 0 || role !== defaultRole;
 }
 
-export function isTeamCreateFormDirty(teamName: string): boolean {
-  return teamName.trim().length > 0;
+export function isTeamCreateFormDirty(
+  teamName: string,
+  description = "",
+  purpose = "",
+): boolean {
+  return Boolean(teamName.trim() || description.trim() || purpose.trim());
 }
 
 export function isOrganizationProfileEditDirty(

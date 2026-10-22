@@ -31,6 +31,8 @@ Generated from `@loftlancer/actions` registry at the time of this audit. Update 
 | `organization.transfer_ownership` | organization | owner | role | `no_org_role`, `org_role_denied`, `action_blocked` |
 | `organization.settings.view` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `action_blocked` |
 | `organization.settings.update` | organization | owner | role | `no_org_role`, `org_role_denied`, `action_blocked` |
+| `organization.archive` | organization | owner | role | `no_org_role`, `org_role_denied`, `action_blocked` |
+| `organization.unarchive` | organization | owner | role | `no_org_role`, `org_role_denied`, `action_blocked` |
 | `organization.restore` | organization | owner | role | `no_org_role`, `org_role_denied`, `action_blocked` |
 | `member.list` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `action_blocked` |
 | `member.invite` | organization | owner,manager | role | `no_org_role`, `org_role_denied`, `action_blocked` |

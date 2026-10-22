@@ -53,7 +53,7 @@ export function DataTableToolbar({
       >
         {showSearch ? (
           <InputGroup
-            className="h-8 w-full min-w-0 shrink-0 sm:max-w-xs"
+            className="h-10 w-full min-w-0 shrink-0 sm:h-8 sm:max-w-xs"
             data-size="sm"
           >
             <InputGroupAddon>
@@ -66,7 +66,7 @@ export function DataTableToolbar({
               value={searchValue ?? ""}
               onChange={(event) => onSearchChange(event.target.value)}
               placeholder={searchPlaceholder}
-              className="h-8"
+              className="h-10 sm:h-8"
               aria-label={searchPlaceholder}
             />
           </InputGroup>
@@ -85,12 +85,16 @@ export function DataTableToolbar({
       {(trailing || primaryAction) && (
         <div
           className={cn(
-            "flex shrink-0 flex-wrap items-center justify-end",
+            "flex w-full shrink-0 flex-wrap items-center justify-end sm:w-auto",
             layoutGapClass,
           )}
         >
           {trailing}
-          {primaryAction}
+          {primaryAction ? (
+            <div className="w-full sm:w-auto [&>*]:w-full sm:[&>*]:w-auto">
+              {primaryAction}
+            </div>
+          ) : null}
         </div>
       )}
     </div>

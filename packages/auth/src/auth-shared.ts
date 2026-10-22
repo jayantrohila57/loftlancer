@@ -15,13 +15,13 @@ import {
   isNotificationsEnabled,
   linkPendingNotificationsForUser,
 } from "@loftlancer/notifications";
-import type { BetterAuthOptions } from "better-auth";
+import type { BetterAuthOptions, BetterAuthPlugin } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { organization } from "better-auth/plugins";
 import { admin } from "better-auth/plugins/admin";
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import { writeAuthAuditEvent } from "./audit-event";
 import { resolveDefaultActiveOrganizationId } from "./bootstrap-active-organization";
 import { sendOrganizationInvitationEmail } from "./organization-invitation-email";
@@ -162,6 +162,38 @@ function assertOrgSlugAllowed(slug: string | undefined) {
   }
 }
 
+async function assertOrganizationNotArchived(organizationId: string) {
+  const [row] = await db
+    .select({ archivedAt: organizationSchema.organization.archivedAt })
+    .from(organizationSchema.organization)
+    .where(eq(organizationSchema.organization.id, organizationId))
+    .limit(1);
+  if (row?.archivedAt) {
+    throw new APIError("FORBIDDEN", {
+      message:
+        "This organization is archived. Restore it before making changes.",
+    });
+  }
+}
+
+function assertOrganizationLogoUrl(logo: unknown) {
+  if (logo === undefined || logo === null) return;
+  let parsed: URL;
+  try {
+    if (typeof logo !== "string" || logo.length > 2048) throw new Error();
+    parsed = new URL(logo);
+  } catch {
+    throw new APIError("BAD_REQUEST", {
+      message: "Use a valid HTTP or HTTPS organization logo URL.",
+    });
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+    throw new APIError("BAD_REQUEST", {
+      message: "Use a valid HTTP or HTTPS organization logo URL.",
+    });
+  }
+}
+
 export function organizationPlugin() {
   if (!isOrganizationsEnabled()) {
     return [];
@@ -190,6 +222,7 @@ export function organizationPlugin() {
       },
       organizationHooks: {
         beforeAcceptInvitation: async ({ invitation: invite }) => {
+          await assertOrganizationNotArchived(invite.organizationId);
           const [scope] = await db
             .select({
               projectId: organizationSchema.invitation.projectId,
@@ -209,15 +242,63 @@ export function organizationPlugin() {
         beforeCreateOrganization: async ({ organization: org }) => {
           assertOrgSlugAllowed(org.slug);
         },
-        beforeUpdateOrganization: async ({ organization: updates }) => {
+        beforeUpdateOrganization: async ({ organization: updates, member }) => {
+          await assertOrganizationNotArchived(member.organizationId);
+          assertOrganizationLogoUrl(updates.logo);
           if (typeof updates.slug === "string") {
             assertOrgSlugAllowed(updates.slug);
           }
+        },
+        beforeAddMember: async ({ member: membership }) => {
+          await assertOrganizationNotArchived(membership.organizationId);
+        },
+        beforeRemoveMember: async ({ member: membership }) => {
+          await assertOrganizationNotArchived(membership.organizationId);
+        },
+        beforeUpdateMemberRole: async ({ member: membership }) => {
+          await assertOrganizationNotArchived(membership.organizationId);
+        },
+        beforeCreateInvitation: async ({ invitation: invite }) => {
+          await assertOrganizationNotArchived(invite.organizationId);
+        },
+        beforeCreateTeam: async ({ team }) => {
+          await assertOrganizationNotArchived(team.organizationId);
+        },
+        beforeUpdateTeam: async ({ organization: org }) => {
+          await assertOrganizationNotArchived(org.id);
+        },
+        beforeDeleteTeam: async ({ organization: org }) => {
+          await assertOrganizationNotArchived(org.id);
+        },
+        beforeAddTeamMember: async ({ organization: org }) => {
+          await assertOrganizationNotArchived(org.id);
+        },
+        beforeRemoveTeamMember: async ({ organization: org }) => {
+          await assertOrganizationNotArchived(org.id);
         },
         beforeDeleteOrganization: async ({ organization: org, user }) => {
           await assertOrganizationCanBeDeleted(org, user.id);
         },
         afterCreateOrganization: async ({ organization: org, user }) => {
+          const joinedAt = new Date();
+          await db
+            .update(organizationSchema.member)
+            .set({ joinedAt })
+            .where(
+              and(
+                eq(organizationSchema.member.organizationId, org.id),
+                eq(organizationSchema.member.userId, user.id),
+                isNull(organizationSchema.member.deletedAt),
+              ),
+            );
+          await db
+            .update(organizationSchema.organization)
+            .set({
+              createdBy: user.id,
+              updatedBy: user.id,
+              updatedAt: new Date(),
+            })
+            .where(eq(organizationSchema.organization.id, org.id));
           await writeAuthAuditEvent({
             action: "organization.create",
             result: "success",
@@ -230,6 +311,10 @@ export function organizationPlugin() {
         },
         afterUpdateOrganization: async ({ organization: org, user }) => {
           if (!org) return;
+          await db
+            .update(organizationSchema.organization)
+            .set({ updatedBy: user.id, updatedAt: new Date() })
+            .where(eq(organizationSchema.organization.id, org.id));
           await writeAuthAuditEvent({
             action: "organization.update",
             result: "success",
@@ -240,6 +325,10 @@ export function organizationPlugin() {
           });
         },
         afterCreateInvitation: async ({ invitation: invite, inviter }) => {
+          await db
+            .update(organizationSchema.invitation)
+            .set({ lastSentAt: new Date(), updatedAt: new Date() })
+            .where(eq(organizationSchema.invitation.id, invite.id));
           await writeAuthAuditEvent({
             action: "member.invite",
             result: "success",
@@ -253,6 +342,24 @@ export function organizationPlugin() {
           });
         },
         afterAcceptInvitation: async ({ invitation: invite, user }) => {
+          const acceptedAt = new Date();
+          await db
+            .update(organizationSchema.invitation)
+            .set({ acceptedAt, acceptedBy: user.id, updatedAt: acceptedAt })
+            .where(eq(organizationSchema.invitation.id, invite.id));
+          await db
+            .update(organizationSchema.member)
+            .set({ joinedAt: acceptedAt, invitedBy: invite.inviterId })
+            .where(
+              and(
+                eq(
+                  organizationSchema.member.organizationId,
+                  invite.organizationId,
+                ),
+                eq(organizationSchema.member.userId, user.id),
+                isNull(organizationSchema.member.deletedAt),
+              ),
+            );
           await writeAuthAuditEvent({
             action: "invitation.accept",
             result: "success",
@@ -262,7 +369,30 @@ export function organizationPlugin() {
             payload: { invitationId: invite.id },
           });
         },
+        afterRejectInvitation: async ({ invitation: invite, user }) => {
+          const rejectedAt = new Date();
+          await db
+            .update(organizationSchema.invitation)
+            .set({ rejectedAt, rejectedBy: user.id, updatedAt: rejectedAt })
+            .where(eq(organizationSchema.invitation.id, invite.id));
+          await writeAuthAuditEvent({
+            action: "invitation.reject",
+            result: "success",
+            actorUserId: user.id,
+            organizationId: invite.organizationId,
+            entityId: invite.id,
+            payload: { invitationId: invite.id },
+          });
+        },
         afterCancelInvitation: async ({ invitation: invite, cancelledBy }) => {
+          await db
+            .update(organizationSchema.invitation)
+            .set({
+              revokedAt: new Date(),
+              revokedBy: cancelledBy.id,
+              updatedAt: new Date(),
+            })
+            .where(eq(organizationSchema.invitation.id, invite.id));
           await writeAuthAuditEvent({
             action: "invitation.cancel",
             result: "success",
@@ -326,10 +456,68 @@ export function organizationPlugin() {
   ];
 }
 
+function suspendedOrganizationMemberGuardPlugin(): BetterAuthPlugin {
+  return {
+    id: "loftlancer-suspended-organization-member-guard",
+    hooks: {
+      before: [
+        {
+          matcher: (ctx) => ctx.path?.startsWith("/organization/") ?? false,
+          handler: createAuthMiddleware(async (ctx) => {
+            const session = ctx.context.session;
+            if (!session?.user?.id) return;
+            const body = ctx.body as
+              | {
+                  organizationId?: unknown;
+                  invitationId?: unknown;
+                  inviteId?: unknown;
+                }
+              | undefined;
+            const invitationId = body?.invitationId ?? body?.inviteId;
+            let organizationId =
+              typeof body?.organizationId === "string"
+                ? body.organizationId
+                : session.session.activeOrganizationId;
+            if (typeof invitationId === "string") {
+              const [invite] = await db
+                .select({
+                  organizationId: organizationSchema.invitation.organizationId,
+                })
+                .from(organizationSchema.invitation)
+                .where(eq(organizationSchema.invitation.id, invitationId))
+                .limit(1);
+              organizationId = invite?.organizationId;
+            }
+            if (!organizationId) return;
+            const [suspended] = await db
+              .select({ id: organizationSchema.member.id })
+              .from(organizationSchema.member)
+              .where(
+                and(
+                  eq(organizationSchema.member.organizationId, organizationId),
+                  eq(organizationSchema.member.userId, session.user.id),
+                  isNull(organizationSchema.member.deletedAt),
+                  isNotNull(organizationSchema.member.suspendedAt),
+                ),
+              )
+              .limit(1);
+            if (suspended) {
+              throw new APIError("FORBIDDEN", {
+                message: "Your access to this organization is suspended.",
+              });
+            }
+          }),
+        },
+      ],
+    },
+  };
+}
+
 /** Auth plugins excluding Next.js cookie forwarding — append `withNextCookies()` last. */
 export function coreAuthPlugins() {
   return [
     sessionCookieMigrationPlugin(),
+    suspendedOrganizationMemberGuardPlugin(),
     admin({
       defaultRole: "user",
       adminRoles: ["admin"],

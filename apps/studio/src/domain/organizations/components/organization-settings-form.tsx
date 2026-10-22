@@ -1,5 +1,6 @@
 "use client";
 
+import { normalizeOrgRole } from "@loftlancer/actions";
 import { getMemberRemovalBlockReason } from "@loftlancer/auth/member-removal-policy";
 import { Button } from "@loftlancer/ui/button";
 import {
@@ -18,7 +19,8 @@ import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox"
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetDescription } from "@loftlancer/ui/sheet";
 import { Spinner } from "@loftlancer/ui/spinner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Textarea } from "@loftlancer/ui/textarea";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
   type ReactNode,
@@ -80,6 +82,17 @@ type MemberRow = {
   id: string;
   role: string;
   createdAt?: Date | string;
+  jobTitle?: string | null;
+  department?: string | null;
+  suspendedAt?: Date | string | null;
+  suspensionReason?: string | null;
+  joinedAt?: Date | string | null;
+  invitedByName?: string | null;
+  invitedByEmail?: string | null;
+  access?: {
+    builtInRole: string;
+    customRole: { name: string; actions: string[] } | null;
+  };
   user: { name: string; email: string; id?: string };
 };
 
@@ -154,9 +167,11 @@ export type OrganizationSettingsMode =
 export function OrganizationSettingsForm({
   organizationId,
   mode,
+  onManageMember,
 }: {
   organizationId: string;
   mode: OrganizationSettingsMode;
+  onManageMember?: (memberId: string) => void;
 }) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -164,6 +179,10 @@ export function OrganizationSettingsForm({
   const { syncInvitationReceived } = useNotificationMutations();
   const { refreshOrganizations, orgs, setActiveOrganization } =
     useActiveOrganization();
+  const memberProfiles = useQuery({
+    ...trpc.organizations.listMembers.queryOptions(),
+    enabled: mode === "members" && Boolean(organizationId),
+  });
 
   const [members, setMembers] = useState<MemberRow[]>([]);
   const [invitations, setInvitations] = useState<OrganizationInvitationRow[]>(
@@ -199,6 +218,7 @@ export function OrganizationSettingsForm({
   const [roleConfirmOpen, setRoleConfirmOpen] = useState(false);
   const [memberRemovalConfirmOpen, setMemberRemovalConfirmOpen] =
     useState(false);
+  const [memberRemovalReason, setMemberRemovalReason] = useState("");
   const [memberRemovalPendingId, setMemberRemovalPendingId] = useState<
     string | null
   >(null);
@@ -214,11 +234,32 @@ export function OrganizationSettingsForm({
   const myMembership = members.find(
     (m) => m.user.id === currentUserId || m.user.email === session?.user?.email,
   );
-  const isOwner = myMembership?.role === "owner";
+  const isOwner = normalizeOrgRole(myMembership?.role) === "owner";
   const canInvite = assignableInviteRoles(myMembership?.role).length > 0;
   const isPersonal = isPersonalOrganization({ metadata: orgMetadata });
   const pendingInvitations = pendingOrganizationInvitations(invitations);
-  const ownerCount = members.filter((member) => member.role === "owner").length;
+  const ownerCount = members.filter(
+    (member) => normalizeOrgRole(member.role) === "owner",
+  ).length;
+  const profilesById = new Map(
+    (memberProfiles.data?.items ?? []).map((profile) => [profile.id, profile]),
+  );
+  const membersWithProfiles = members.map((member) => {
+    const profile = profilesById.get(member.id);
+    return profile
+      ? {
+          ...member,
+          jobTitle: profile.jobTitle,
+          department: profile.department,
+          suspendedAt: profile.suspendedAt,
+          joinedAt: profile.joinedAt,
+          invitedByName: profile.invitedByName,
+          invitedByEmail: profile.invitedByEmail,
+          suspensionReason: profile.suspensionReason,
+          access: profile.access,
+        }
+      : member;
+  });
 
   const editDraftDirty = isOrganizationProfileEditDirty(
     editDraftName,
@@ -260,6 +301,10 @@ export function OrganizationSettingsForm({
       setInvitations((inviteData.rows ?? []) as OrganizationInvitationRow[]);
     },
     [queryClient],
+  );
+
+  const removeMemberMutation = useMutation(
+    trpc.organizations.removeMember.mutationOptions(),
   );
 
   const transferOwnershipMutation = useMutation(
@@ -362,7 +407,11 @@ export function OrganizationSettingsForm({
     if (!pendingRoleChange) return;
     const { memberId, role } = pendingRoleChange;
     const target = members.find((member) => member.id === memberId);
-    if (target?.role === "owner" && ownerCount <= 1 && role !== "owner") {
+    if (
+      normalizeOrgRole(target?.role) === "owner" &&
+      ownerCount <= 1 &&
+      role !== "owner"
+    ) {
       toast.error(
         "Transfer ownership first; the organization must have an owner.",
       );
@@ -415,21 +464,19 @@ export function OrganizationSettingsForm({
 
   const handleMemberRemoval = async () => {
     const member = pendingMemberRemoval;
-    const memberIdOrEmail = member?.user.id ?? member?.user.email;
-    if (!member || !memberIdOrEmail) return;
+    const targetUserId = member?.user.id;
+    if (!member || !targetUserId) return;
 
     setMemberRemovalPendingId(member.id);
     try {
-      const result = await authClient.organization.removeMember({
-        memberIdOrEmail,
-        organizationId,
+      await removeMemberMutation.mutateAsync({
+        userId: targetUserId,
+        reason: memberRemovalReason.trim() || undefined,
       });
-      if (result.error) {
-        throw new Error(result.error.message ?? "Could not remove member");
-      }
       toast.success(`Removed ${member.user.name || member.user.email}`);
       setMemberRemovalConfirmOpen(false);
       setPendingMemberRemoval(null);
+      setMemberRemovalReason("");
       await loadOrganization(organizationId);
       void invalidateAfterOrganizationChange(queryClient);
       await refreshOrganizations();
@@ -724,10 +771,17 @@ export function OrganizationSettingsForm({
                   </span>
                 </div>
                 <OrganizationMembersTable
-                  members={members.filter((m) => {
+                  members={membersWithProfiles.filter((m) => {
                     const q = memberQuery.trim().toLowerCase();
                     if (!q) return true;
-                    return [m.user.name, m.user.email, m.role]
+                    return [
+                      m.user.name,
+                      m.user.email,
+                      m.role,
+                      m.jobTitle,
+                      m.department,
+                      m.access?.customRole?.name,
+                    ]
                       .filter(Boolean)
                       .some((v) => String(v).toLowerCase().includes(q));
                   })}
@@ -737,6 +791,7 @@ export function OrganizationSettingsForm({
                   currentUserId={currentUserId}
                   removalPendingId={memberRemovalPendingId}
                   onRemove={requestMemberRemoval}
+                  onViewDetails={(member) => onManageMember?.(member.id)}
                   onRoleChange={(memberId, role) => {
                     const member = members.find((m) => m.id === memberId);
                     requestRoleChange(
@@ -1050,6 +1105,7 @@ export function OrganizationSettingsForm({
           setMemberRemovalConfirmOpen(open);
           if (!open && memberRemovalPendingId === null) {
             setPendingMemberRemoval(null);
+            setMemberRemovalReason("");
           }
         }}
         title="Remove organization member"
@@ -1060,6 +1116,19 @@ export function OrganizationSettingsForm({
         }
         confirmLabel="Remove member"
         variant="destructive"
+        content={
+          <FormField id="member-removal-reason" label="Reason (optional)">
+            <Textarea
+              id="member-removal-reason"
+              value={memberRemovalReason}
+              maxLength={250}
+              rows={3}
+              disabled={memberRemovalPendingId !== null}
+              placeholder="Add a short note for the membership history"
+              onChange={(event) => setMemberRemovalReason(event.target.value)}
+            />
+          </FormField>
+        }
         onConfirm={handleMemberRemoval}
         isPending={memberRemovalPendingId !== null}
       />

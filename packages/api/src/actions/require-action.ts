@@ -16,6 +16,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { isAppInstalled } from "../apps/installed";
 import { hasProjectAppAccess } from "../apps/project-app-access";
 import { writeAuditEvent } from "./audit-event-writer";
+import { loadCustomOrganizationActions } from "./custom-role-permissions";
 import { isActionBlocked } from "./is-action-blocked";
 import {
   loadProjectAccessContext,
@@ -29,6 +30,7 @@ export type RequireActionContext = {
   projectId?: string | null;
   teamId?: string | null;
   targetUserId?: string | null;
+  entityId?: string | null;
   ipAddress?: string | null;
   userAgent?: string | null;
   /** Extra audit payload, e.g. `{ scope: "all", count }`. */
@@ -61,13 +63,22 @@ export async function requireAction(
   const def = getActionDefinition(action);
   let result: "success" | "denied" | "failure" = "denied";
   let denialReason: string | undefined;
+  const archivedPromise =
+    def.scope !== "user" && ctx.organizationId
+      ? db
+          .select({ archivedAt: organization.archivedAt })
+          .from(organization)
+          .where(eq(organization.id, ctx.organizationId))
+          .limit(1)
+      : null;
 
   try {
+    archivedPromise?.catch(() => undefined);
     // Block check and membership lookup are independent: run them together.
     const membershipPromise =
       def.scope !== "user" && ctx.organizationId && !isPlatformAdmin()
         ? db
-            .select({ role: member.role })
+            .select({ id: member.id, role: member.role })
             .from(member)
             .innerJoin(organization, eq(member.organizationId, organization.id))
             .where(
@@ -91,6 +102,22 @@ export async function requireAction(
     ) {
       denialReason = "blocked";
       throw new TRPCError({ code: "FORBIDDEN", message: "Action blocked" });
+    }
+
+    const [organizationState] = (await archivedPromise) ?? [];
+    if (
+      organizationState?.archivedAt &&
+      !isReadAction(action) &&
+      action !== "organization.unarchive" &&
+      action !== "organization.restore" &&
+      action !== "organization.delete"
+    ) {
+      denialReason = "organization_archived";
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message:
+          "This organization is archived. Restore it before making changes.",
+      });
     }
 
     const appId = appIdForAction(action);
@@ -131,6 +158,10 @@ export async function requireAction(
     const [membership] = (await membershipPromise) ?? [];
 
     const orgRole = normalizeOrgRole(membership?.role);
+    const customOrganizationActions =
+      orgRole === "member" && def.scope === "organization"
+        ? await loadCustomOrganizationActions(ctx.userId, ctx.organizationId)
+        : [];
 
     const projectCtx = ctx.projectId
       ? await loadProjectAccessContext(
@@ -176,6 +207,7 @@ export async function requireAction(
     const decision = evaluatePermission({
       action,
       orgRole,
+      customOrganizationActions,
       project: projectCtx,
       team: teamCtx,
     });
@@ -233,6 +265,7 @@ export async function requireAction(
           actorUserId: ctx.userId,
           organizationId: ctx.organizationId,
           projectId: ctx.projectId,
+          entityId: ctx.entityId,
           targetUserId: ctx.targetUserId,
           denialReason,
           durationMs: Date.now() - startedAt,

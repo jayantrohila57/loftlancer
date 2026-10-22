@@ -89,6 +89,14 @@ export function createProjectsTableColumns(
             >
               {description}
             </span>
+            <span className="mt-1 flex flex-wrap items-center gap-1.5 md:hidden">
+              {project.isArchived ? (
+                <StatusBadge status="archived" />
+              ) : (
+                <StatusBadge status={project.status} />
+              )}
+              <VisibilityBadge isPublic={project.isPublic} />
+            </span>
           </TableLeadingCell>
         );
       },

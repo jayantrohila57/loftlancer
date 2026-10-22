@@ -118,12 +118,17 @@ export const projectsRouter = router({
           name: project.name,
           slug: project.slug,
           description: project.description,
+          purpose: project.purpose,
+          documentationUrl: project.documentationUrl,
+          startDate: project.startDate,
+          targetDate: project.targetDate,
           isArchived: project.isArchived,
           isPublic: project.isPublic,
           repositoryUrl: project.repositoryUrl,
           websiteUrl: project.websiteUrl,
           status: project.status,
           userId: project.userId,
+          updatedBy: project.updatedBy,
           createdAt: project.createdAt,
           updatedAt: project.updatedAt,
         })
@@ -185,12 +190,17 @@ export const projectsRouter = router({
           name: project.name,
           slug: project.slug,
           description: project.description,
+          purpose: project.purpose,
+          documentationUrl: project.documentationUrl,
+          startDate: project.startDate,
+          targetDate: project.targetDate,
           isArchived: project.isArchived,
           isPublic: project.isPublic,
           repositoryUrl: project.repositoryUrl,
           websiteUrl: project.websiteUrl,
           status: project.status,
           userId: project.userId,
+          updatedBy: project.updatedBy,
           createdAt: project.createdAt,
           updatedAt: project.updatedAt,
         })
@@ -244,12 +254,17 @@ export const projectsRouter = router({
             id: crypto.randomUUID(),
             name: input.name.trim(),
             description: input.description?.trim() || null,
+            purpose: input.purpose?.trim() || null,
+            documentationUrl: input.documentationUrl?.trim() || null,
+            startDate: input.startDate || null,
+            targetDate: input.targetDate || null,
             repositoryUrl: input.repositoryUrl || null,
             websiteUrl: input.websiteUrl || null,
             isPublic: input.isPublic ?? false,
             slug,
             userId: ctx.session.user.id,
             organizationId: ctx.activeOrganizationId ?? null,
+            updatedBy: ctx.session.user.id,
           })
           .returning();
 
@@ -329,6 +344,15 @@ export const projectsRouter = router({
       }
       if (input.description !== undefined)
         updateData.description = input.description;
+      if (input.purpose !== undefined)
+        updateData.purpose = input.purpose?.trim() || null;
+      if (input.documentationUrl !== undefined)
+        updateData.documentationUrl = input.documentationUrl?.trim() || null;
+      if (input.startDate !== undefined)
+        updateData.startDate = input.startDate || null;
+      if (input.targetDate !== undefined)
+        updateData.targetDate = input.targetDate || null;
+      updateData.updatedBy = ctx.session.user.id;
       if (input.repositoryUrl !== undefined)
         updateData.repositoryUrl = input.repositoryUrl || null;
       if (input.websiteUrl !== undefined)
@@ -443,7 +467,7 @@ export const projectsRouter = router({
 
       const archivedProject = await db
         .update(project)
-        .set({ isArchived: true })
+        .set({ isArchived: true, updatedBy: ctx.session.user.id })
         .where(eq(project.id, input.id))
         .returning();
 
@@ -485,7 +509,7 @@ export const projectsRouter = router({
 
       const unarchivedProject = await db
         .update(project)
-        .set({ isArchived: false })
+        .set({ isArchived: false, updatedBy: ctx.session.user.id })
         .where(eq(project.id, input.id))
         .returning();
 
@@ -530,7 +554,7 @@ export const projectsRouter = router({
 
       const updatedProject = await db
         .update(project)
-        .set({ status: input.status })
+        .set({ status: input.status, updatedBy: ctx.session.user.id })
         .where(eq(project.id, input.id))
         .returning();
 

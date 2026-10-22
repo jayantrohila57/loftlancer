@@ -16,6 +16,25 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.16.1] - 2026-10-22
+
+### Added
+
+- Improved narrow-screen dashboard navigation, resource tabs, and table search/pagination controls (#593, #594, #595).
+- Improved mobile organization and team access tables, project/app access lists, task rows, environment variable controls, and management sheets (#596, #597, #598).
+- Added a route-by-route mobile dashboard verification checklist and recorded the visual checks awaiting browser access (#599).
+- Added Project purpose, documentation, and schedule fields; Team purpose and descriptions; and member history details for scoped management forms (#585, #587, #588, #589).
+- Added additive Project, Team, team-member, and organization-member schema fields for profile and change provenance; existing records retain unknown historical actors (#585, #587, #588, #589).
+- Added organization member profiles, scoped custom roles, suspension controls, and invitation lifecycle tracking with shared permission enforcement (#579).
+- Added organization-level presentation defaults and apply saved project visibility to new projects (#577).
+
+- Added a typed organization profile, owner-only private details, safe archive/restore lifecycle, and archived-write enforcement across tRPC, MCP, and Better Auth (#575).
+- Added owner-managed HTTPS organization logos and consistent logo previews in organization cards, lists, and switcher (#576).
+
+### Security
+
+- Added owner-verified organization email domains with expiring DNS challenges and clear security capability status (#578).
+
 ## [1.16.0] - 2026-10-21
 
 ### Added
@@ -706,7 +725,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.1...HEAD
+[1.16.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.0...v1.16.1
 [1.16.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.1...v1.16.0
 [1.15.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.0...v1.15.1
 [1.15.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.14.11...v1.15.0

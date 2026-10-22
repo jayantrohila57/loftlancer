@@ -95,7 +95,7 @@ export function CreateTaskSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetPopup>
+      <SheetPopup className="max-sm:max-h-[100dvh] max-sm:w-full max-sm:max-w-none">
         <form onSubmit={submit} className="flex h-full flex-col">
           <SheetHeader>
             <SheetTitle>New task</SheetTitle>
@@ -127,7 +127,7 @@ export function CreateTaskSheet({
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid gap-1.5 sm:grid-cols-2">
               <FieldSelect
                 ariaLabel="Status"
                 className="w-full"

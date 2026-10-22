@@ -10,6 +10,7 @@ import { activeMemberWhere, db } from "@loftlancer/db";
 import { member, organization } from "@loftlancer/db/schema/organization";
 import { and, eq, isNull } from "drizzle-orm";
 import { hasProjectAppAccess } from "../apps/project-app-access";
+import { loadCustomOrganizationActions } from "./custom-role-permissions";
 import {
   isActionBlockedInSet,
   loadBlockedActionsForScope,
@@ -64,6 +65,10 @@ export async function buildPermissionsSnapshot(input: {
         input.organizationId,
       )
     : null;
+  const customOrganizationActions =
+    orgRole === "member" && input.organizationId
+      ? await loadCustomOrganizationActions(input.userId, input.organizationId)
+      : [];
   const teamCtx =
     input.teamId && input.organizationId
       ? await loadTeamAccessContext(
@@ -149,6 +154,7 @@ export async function buildPermissionsSnapshot(input: {
     const defScope = evaluatePermission({
       action,
       orgRole,
+      customOrganizationActions,
       project: projectCtx,
       team: teamCtx,
     });

@@ -1,6 +1,10 @@
 import type { ActionName } from "@loftlancer/actions";
 import { z } from "zod/v3";
 import {
+  organizationProfileFieldsSchema,
+  safeHttpUrlSchema,
+} from "../organization-profile-validation";
+import {
   bulkImportVariablesInput,
   changeProjectStatusInput,
   createEnvironmentInput,
@@ -26,6 +30,7 @@ import {
   mcpInvitationReject,
   mcpMemberInvite,
   mcpMemberRemove,
+  mcpMemberSetSuspended,
   mcpMembersList,
   mcpMemberUpdateRole,
   mcpOrganizationCreate,
@@ -121,7 +126,7 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
   "organization.update": {
     schema: orgFields.extend({
       name: z.string().min(1).optional(),
-      logo: z.string().nullable().optional(),
+      logo: safeHttpUrlSchema.nullable().optional(),
     }),
     run: async (input, ctx) => {
       const organizationId = await resolveOrgFromInput(
@@ -182,31 +187,70 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
       withOrgCaller(
         ctx.userId,
         input as { organizationId?: string; organizationSlug?: string },
-        (caller) => caller.dashboard.getOrgSettingsStats(),
+        (caller) => caller.organizations.getProfile(),
       ),
   },
   "organization.settings.update": {
     schema: orgFields.extend({
       name: z.string().min(1).optional(),
-      logo: z.string().nullable().optional(),
+      logo: safeHttpUrlSchema.nullable().optional(),
+      ...organizationProfileFieldsSchema.shape,
     }),
     run: async (input, ctx) => {
-      const organizationId = await resolveOrgFromInput(
+      const { name, logo, ...profile } = input as Record<string, unknown> & {
+        name?: string;
+        logo?: string | null;
+        organizationId?: string;
+        organizationSlug?: string;
+      };
+      const result = await withOrgCaller(
         ctx.userId,
-        input as {
-          organizationId?: string;
-          organizationSlug?: string;
+        input as { organizationId?: string; organizationSlug?: string },
+        async (caller, organizationId) => {
+          if (name !== undefined || logo !== undefined) {
+            await mcpOrganizationUpdate(
+              ctx.userId,
+              organizationId,
+              { name, logo },
+              "organization.settings.update",
+            );
+          }
+          const patch = Object.fromEntries(
+            Object.entries(profile).filter(
+              ([key]) => key !== "organizationId" && key !== "organizationSlug",
+            ),
+          );
+          if (Object.keys(patch).length)
+            await caller.organizations.updateProfile(patch as never);
+          if (
+            name === undefined &&
+            logo === undefined &&
+            !Object.keys(patch).length
+          )
+            throw new Error("organization_profile_patch_required");
+          return { success: true };
         },
       );
-      if (!organizationId) throw new Error("organization_required");
-      const { name, logo } = input as { name?: string; logo?: string | null };
-      return mcpOrganizationUpdate(
-        ctx.userId,
-        organizationId,
-        { name, logo },
-        "organization.settings.update",
-      );
+      return result;
     },
+  },
+  "organization.archive": {
+    schema: orgRef,
+    run: async (input, ctx) =>
+      withOrgCaller(
+        ctx.userId,
+        input as { organizationId?: string; organizationSlug?: string },
+        (caller) => caller.organizations.archive(),
+      ),
+  },
+  "organization.unarchive": {
+    schema: orgRef,
+    run: async (input, ctx) =>
+      withOrgCaller(
+        ctx.userId,
+        input as { organizationId?: string; organizationSlug?: string },
+        (caller) => caller.organizations.unarchive(),
+      ),
   },
   "member.list": {
     schema: orgRef,
@@ -262,6 +306,32 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
       if (!organizationId) throw new Error("organization_required");
       const { userId: targetUserId } = input as { userId: string };
       return mcpMemberRemove(ctx.userId, organizationId, targetUserId);
+    },
+  },
+  "member.suspend": {
+    schema: orgFields.extend({
+      memberId: z.string().min(1),
+      suspended: z.boolean(),
+      reason: z.string().trim().max(250).optional(),
+    }),
+    run: async (input, ctx) => {
+      const organizationId = await resolveOrgFromInput(
+        ctx.userId,
+        input as { organizationId?: string; organizationSlug?: string },
+      );
+      if (!organizationId) throw new Error("organization_required");
+      const { memberId, suspended, reason } = input as {
+        memberId: string;
+        suspended: boolean;
+        reason?: string;
+      };
+      return mcpMemberSetSuspended(
+        ctx.userId,
+        organizationId,
+        memberId,
+        suspended,
+        reason,
+      );
     },
   },
   "member.role.update": {
@@ -320,24 +390,10 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
     },
   },
   "team.create": {
-    schema: orgFields.extend({ name: z.string().min(1) }),
-    run: async (input, ctx) => {
-      const organizationId = await resolveOrgFromInput(
-        ctx.userId,
-        input as {
-          organizationId?: string;
-          organizationSlug?: string;
-        },
-      );
-      if (!organizationId) throw new Error("organization_required");
-      const { name } = input as { name: string };
-      return mcpTeamCreate(ctx.userId, organizationId, name);
-    },
-  },
-  "team.update": {
     schema: orgFields.extend({
-      teamId: z.string().min(1),
       name: z.string().min(1),
+      description: z.string().max(500).nullable().optional(),
+      purpose: z.string().max(250).nullable().optional(),
     }),
     run: async (input, ctx) => {
       const organizationId = await resolveOrgFromInput(
@@ -348,8 +404,43 @@ export const mcpActionHandlers: Partial<Record<ActionName, HandlerDef>> = {
         },
       );
       if (!organizationId) throw new Error("organization_required");
-      const { teamId, name } = input as { teamId: string; name: string };
-      return mcpTeamUpdate(ctx.userId, organizationId, teamId, name);
+      const { name, description, purpose } = input as {
+        name: string;
+        description?: string | null;
+        purpose?: string | null;
+      };
+      return mcpTeamCreate(ctx.userId, organizationId, name, {
+        description,
+        purpose,
+      });
+    },
+  },
+  "team.update": {
+    schema: orgFields.extend({
+      teamId: z.string().min(1),
+      name: z.string().min(1),
+      description: z.string().max(500).nullable().optional(),
+      purpose: z.string().max(250).nullable().optional(),
+    }),
+    run: async (input, ctx) => {
+      const organizationId = await resolveOrgFromInput(
+        ctx.userId,
+        input as {
+          organizationId?: string;
+          organizationSlug?: string;
+        },
+      );
+      if (!organizationId) throw new Error("organization_required");
+      const { teamId, name, description, purpose } = input as {
+        teamId: string;
+        name: string;
+        description?: string | null;
+        purpose?: string | null;
+      };
+      return mcpTeamUpdate(ctx.userId, organizationId, teamId, name, {
+        description,
+        purpose,
+      });
     },
   },
   "team.delete": {

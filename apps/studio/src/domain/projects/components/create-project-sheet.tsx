@@ -9,8 +9,9 @@ import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetClose, SheetDescription } from "@loftlancer/ui/sheet";
 import { Switch } from "@loftlancer/ui/switch";
 import { Textarea } from "@loftlancer/ui/textarea";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod/v3";
 import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
@@ -25,6 +26,7 @@ import {
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
 
 import { routes } from "@/utils/navigation";
+import { trpc } from "@/utils/trpc";
 import { useProjects } from "../hooks/use-projects";
 
 interface CreateProjectSheetProps {
@@ -40,12 +42,17 @@ export function CreateProjectSheet({
   const org = useCurrentOrgSlug() ?? "";
   const closeWithoutPromptRef = useRef<(() => void) | null>(null);
   const { createProject, isCreating } = useProjects();
+  const orgSettings = useQuery(trpc.organizations.getSettings.queryOptions());
 
   const form = useForm({
     resolver: zodResolver(createProjectInput),
     defaultValues: {
       name: "",
       description: "",
+      purpose: "",
+      documentationUrl: "",
+      startDate: "",
+      targetDate: "",
       repositoryUrl: "",
       websiteUrl: "",
       isPublic: false,
@@ -55,11 +62,32 @@ export function CreateProjectSheet({
 
   const descriptionLength = form.watch("description")?.length ?? 0;
 
+  useEffect(() => {
+    if (open && !form.formState.isDirty && orgSettings.data) {
+      form.setValue(
+        "isPublic",
+        orgSettings.data.defaultProjectVisibility === "public",
+        { shouldDirty: false },
+      );
+    }
+  }, [form, form.formState.isDirty, open, orgSettings.data]);
+
   const onSubmit = async (data: z.infer<typeof createProjectInput>) => {
+    if (data.startDate && data.targetDate && data.targetDate < data.startDate) {
+      form.setError("targetDate", {
+        type: "validate",
+        message: "Target date must be on or after the start date.",
+      });
+      return;
+    }
     try {
       const result = await createProject({
         name: data.name.trim(),
         description: data.description?.trim() || undefined,
+        purpose: data.purpose?.trim() || undefined,
+        documentationUrl: data.documentationUrl?.trim() || undefined,
+        startDate: data.startDate || undefined,
+        targetDate: data.targetDate || undefined,
         repositoryUrl: data.repositoryUrl?.trim() || undefined,
         websiteUrl: data.websiteUrl?.trim() || undefined,
         isPublic: data.isPublic,
@@ -157,6 +185,74 @@ export function CreateProjectSheet({
                 </div>
               )}
             />
+            <div className="space-y-2">
+              <Label htmlFor="project-purpose">Purpose (optional)</Label>
+              <Textarea
+                id="project-purpose"
+                maxLength={500}
+                rows={3}
+                placeholder="What is this project for?"
+                disabled={isCreating}
+                {...form.register("purpose")}
+              />
+              {form.formState.errors.purpose ? (
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.purpose.message}
+                </p>
+              ) : null}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="project-documentation-url">
+                Documentation URL (optional)
+              </Label>
+              <Input
+                id="project-documentation-url"
+                type="url"
+                placeholder="https://docs.example.com"
+                disabled={isCreating}
+                aria-invalid={Boolean(form.formState.errors.documentationUrl)}
+                {...form.register("documentationUrl")}
+              />
+              {form.formState.errors.documentationUrl ? (
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.documentationUrl.message}
+                </p>
+              ) : null}
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="project-start-date">
+                  Start date (optional)
+                </Label>
+                <Input
+                  id="project-start-date"
+                  type="date"
+                  disabled={isCreating}
+                  {...form.register("startDate")}
+                />
+                {form.formState.errors.startDate ? (
+                  <p className="text-destructive text-sm">
+                    {form.formState.errors.startDate.message}
+                  </p>
+                ) : null}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="project-target-date">
+                  Target date (optional)
+                </Label>
+                <Input
+                  id="project-target-date"
+                  type="date"
+                  disabled={isCreating}
+                  {...form.register("targetDate")}
+                />
+                {form.formState.errors.targetDate ? (
+                  <p className="text-destructive text-sm">
+                    {form.formState.errors.targetDate.message}
+                  </p>
+                ) : null}
+              </div>
+            </div>
             <Controller
               name="repositoryUrl"
               control={form.control}

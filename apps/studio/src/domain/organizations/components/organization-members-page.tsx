@@ -1,13 +1,23 @@
 "use client";
 
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
+import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
+import { OrganizationMemberProfiles } from "./organization-member-profile";
 import { OrganizationSectionPage } from "./organization-section-page";
 import { OrganizationSettingsForm } from "./organization-settings-form";
 
 export function OrganizationMembersPage({ slug }: { slug: string }) {
   const { organization, status, error, reload } = useOrganizationBySlug(slug);
+  const [selectedMember, setSelectedMember] = useState<{
+    organizationId: string;
+    memberId: string;
+  } | null>(null);
+  const selectedMemberId =
+    selectedMember && selectedMember.organizationId === organization?.id
+      ? selectedMember.memberId
+      : null;
 
   return (
     <OrganizationSectionPage
@@ -24,11 +34,22 @@ export function OrganizationMembersPage({ slug }: { slug: string }) {
       ) : status === "loading" || !organization ? (
         <AccordionSectionSkeleton rows={4} />
       ) : (
-        <OrganizationSettingsForm
-          key={organization.id}
-          organizationId={organization.id}
-          mode="members"
-        />
+        <div className="flex flex-col gap-4">
+          <OrganizationSettingsForm
+            key={organization.id}
+            organizationId={organization.id}
+            mode="members"
+            onManageMember={(memberId) =>
+              setSelectedMember({ organizationId: organization.id, memberId })
+            }
+          />
+          {selectedMemberId ? (
+            <OrganizationMemberProfiles
+              memberId={selectedMemberId}
+              onClose={() => setSelectedMember(null)}
+            />
+          ) : null}
+        </div>
       )}
     </OrganizationSectionPage>
   );

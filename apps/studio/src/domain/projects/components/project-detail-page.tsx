@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
+import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
 import { trpc } from "@/utils/trpc";
@@ -19,6 +20,7 @@ function ProjectDetailPageContent({ slug }: ProjectDetailPageProps) {
     trpc.projects.getBySlug.queryOptions({ slug }),
   );
   const project = data?.data?.project;
+  const orgSlug = useCurrentOrgSlug() ?? "";
 
   if (isPending && !project) {
     return <ProjectOverviewSectionsSkeleton />;
@@ -36,7 +38,11 @@ function ProjectDetailPageContent({ slug }: ProjectDetailPageProps) {
 
   return (
     <DashboardSection title="Overview" back={false} hideTabs>
-      <ProjectOverviewSections slug={slug} />
+      <ProjectOverviewSections
+        slug={slug}
+        orgSlug={orgSlug}
+        project={project}
+      />
     </DashboardSection>
   );
 }

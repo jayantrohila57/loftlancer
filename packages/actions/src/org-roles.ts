@@ -1,14 +1,14 @@
 import type { OrgRole, StoredMemberRole } from "./types";
 
-/** Normalize DB member.role (legacy `admin` → manager). */
+/** Normalize scalar or comma-separated DB roles (legacy `admin` → manager). */
 export function normalizeOrgRole(
   role: string | null | undefined,
 ): OrgRole | null {
   if (!role) return null;
-  if (role === "admin") return "manager";
-  if (role === "owner" || role === "manager" || role === "member") {
-    return role;
-  }
+  const roles = role.split(",").map((item) => item.trim());
+  if (roles.includes("owner")) return "owner";
+  if (roles.includes("manager") || roles.includes("admin")) return "manager";
+  if (roles.includes("member")) return "member";
   return "member";
 }
 

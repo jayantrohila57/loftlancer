@@ -33,6 +33,10 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
       Boolean(organization?.id) &&
       allowed,
   });
+  const profileQuery = useQuery({
+    ...trpc.organizations.getBySlug.queryOptions({ slug }),
+    enabled: queryEnabled && status === "success" && Boolean(organization?.id),
+  });
 
   if (status === "loading" || permissionLoading) {
     return <OrganizationOverviewSectionsSkeleton />;
@@ -40,7 +44,8 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
 
   if (!allowed) return null;
 
-  if (projectsQuery.isPending) return <OrganizationOverviewSectionsSkeleton />;
+  if (projectsQuery.isPending || profileQuery.isPending)
+    return <OrganizationOverviewSectionsSkeleton />;
 
   if (projectsQuery.isError) {
     return (
@@ -59,29 +64,85 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
     )
     .slice(0, 5);
+  const profile = profileQuery.data;
 
   return (
-    <AccordionSection
-      title="Recent projects"
-      description="Recently updated projects in this workspace."
-      actions={
-        <Button
-          variant="outline"
-          size="sm"
-          render={<Link href={routes.projects(slug)} />}
-        >
-          View all
-        </Button>
-      }
-    >
-      <ProjectsTableView
-        projects={recentProjects}
-        isLoading={projectsQuery.isPending}
-        searchable={false}
-        limitRows={5}
-        caption="Recently updated projects"
-        captionSrOnly
-      />
-    </AccordionSection>
+    <div className="flex flex-col gap-4">
+      <AccordionSection
+        title="Organization details"
+        description="A brief profile to help people recognize this workspace."
+      >
+        {profileQuery.isError ? (
+          <ErrorState
+            title="Organization details unavailable"
+            description="Could not load this organization’s public profile."
+            onRetry={() => void profileQuery.refetch()}
+          />
+        ) : profile ? (
+          <div className="space-y-3 text-sm">
+            {profile.description ? <p>{profile.description}</p> : null}
+            <dl className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
+              {profile.industry ? (
+                <div>
+                  <dt className="text-muted-foreground">Industry</dt>
+                  <dd>{profile.industry}</dd>
+                </div>
+              ) : null}
+              {profile.sizeBand ? (
+                <div>
+                  <dt className="text-muted-foreground">Organization size</dt>
+                  <dd>{profile.sizeBand} people</dd>
+                </div>
+              ) : null}
+              {profile.websiteUrl ? (
+                <div>
+                  <dt className="text-muted-foreground">Website</dt>
+                  <dd>
+                    <a
+                      className="text-primary underline underline-offset-4"
+                      href={profile.websiteUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {profile.websiteUrl}
+                    </a>
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+            {!profile.description &&
+            !profile.industry &&
+            !profile.sizeBand &&
+            !profile.websiteUrl ? (
+              <p className="text-muted-foreground">
+                No public details added yet.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+      </AccordionSection>
+      <AccordionSection
+        title="Recent projects"
+        description="Recently updated projects in this workspace."
+        actions={
+          <Button
+            variant="outline"
+            size="sm"
+            render={<Link href={routes.projects(slug)} />}
+          >
+            View all
+          </Button>
+        }
+      >
+        <ProjectsTableView
+          projects={recentProjects}
+          isLoading={projectsQuery.isPending}
+          searchable={false}
+          limitRows={5}
+          caption="Recently updated projects"
+          captionSrOnly
+        />
+      </AccordionSection>
+    </div>
   );
 }

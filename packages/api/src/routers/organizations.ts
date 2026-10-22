@@ -1,11 +1,19 @@
-import { isActionsAuditEnabled } from "@loftlancer/actions";
+import { randomBytes, randomUUID } from "node:crypto";
+import { resolveTxt } from "node:dns/promises";
+import { isActionsAuditEnabled, normalizeOrgRole } from "@loftlancer/actions";
 import { sendOrganizationInvitationEmail } from "@loftlancer/auth/organization-invitation-email";
 import { activeMemberWhere, db } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
 import {
   invitation,
   member,
+  memberOrganizationRole,
   organization,
+  organizationDomain,
+  organizationProfile,
+  organizationRole,
+  organizationRolePermission,
+  organizationSettings,
 } from "@loftlancer/db/schema/organization";
 import { projectTeam } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
@@ -14,6 +22,7 @@ import { TRPCError } from "@trpc/server";
 import { and, desc, eq, gt, isNull, lte, type SQL, sql } from "drizzle-orm";
 import { z } from "zod/v3";
 import { actionGuard } from "../actions/action-guard";
+import { isDelegableOrganizationAction } from "../actions/custom-role-permissions";
 import { requireAction } from "../actions/require-action";
 import {
   orgAwareProcedure,
@@ -26,11 +35,509 @@ import { getPublicInvitationStatus } from "../invitation-preview";
 import {
   mcpInvitationAccept,
   mcpMemberInvite,
+  mcpMemberRemove,
   mcpMembersList,
 } from "../mcp/organization-ops";
+import { organizationBrandingLogoSchema } from "../organization-branding-validation";
+import {
+  domainChallengeMatches,
+  hashDomainChallenge,
+  normalizeOrganizationEmailDomain,
+} from "../organization-domain-verification";
 import { transferOrganizationOwnership } from "../organization-ownership";
+import { organizationProfilePatchSchema } from "../organization-profile-validation";
+import { organizationSettingsPatchSchema } from "../organization-settings-validation";
+
+async function requireOrganizationOwner(
+  userId: string,
+  organizationId: string,
+) {
+  const [membership] = await db
+    .select({ role: member.role })
+    .from(member)
+    .where(
+      and(
+        eq(member.organizationId, organizationId),
+        eq(member.userId, userId),
+        isNull(member.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (normalizeOrgRole(membership?.role) !== "owner")
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message:
+        "Only organization owners can manage organization roles and domains.",
+    });
+}
 
 export const organizationsRouter = router({
+  updateMemberProfile: orgProcedure
+    .input(
+      z.object({
+        memberId: z.string().min(1),
+        jobTitle: z.string().trim().max(100).nullable(),
+        department: z.string().trim().max(100).nullable(),
+      }),
+    )
+    .use(
+      actionGuard("member.profile.update", (input) => {
+        const profile = input as {
+          memberId: string;
+          jobTitle: string | null;
+          department: string | null;
+        };
+        return {
+          entityId: profile.memberId,
+          payload: { fields: ["jobTitle", "department"] },
+        };
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      const [updated] = await db
+        .update(member)
+        .set({
+          jobTitle: input.jobTitle || null,
+          department: input.department || null,
+          updatedAt: new Date(),
+          updatedBy: ctx.session.user.id,
+        })
+        .where(
+          and(
+            eq(member.id, input.memberId),
+            eq(member.organizationId, organizationId),
+            isNull(member.deletedAt),
+            isNull(member.suspendedAt),
+          ),
+        )
+        .returning({ id: member.id });
+      if (!updated)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Active organization member not found.",
+        });
+      return { success: true };
+    }),
+
+  setMemberSuspended: orgProcedure
+    .input(
+      z.object({
+        memberId: z.string().min(1),
+        suspended: z.boolean(),
+        reason: z.string().trim().max(250).optional(),
+      }),
+    )
+    .use(
+      actionGuard("member.suspend", (input) => {
+        const target = input as { memberId: string; suspended: boolean };
+        return {
+          entityId: target.memberId,
+          payload: { suspended: target.suspended },
+        };
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      const [target] = await db
+        .select({
+          id: member.id,
+          role: member.role,
+          suspendedAt: member.suspendedAt,
+        })
+        .from(member)
+        .where(
+          and(
+            eq(member.id, input.memberId),
+            eq(member.organizationId, organizationId),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (!target)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization member not found.",
+        });
+      if (normalizeOrgRole(target.role) === "owner")
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Transfer ownership before changing an owner's access.",
+        });
+      if (input.suspended === Boolean(target.suspendedAt))
+        return { success: true };
+      await db
+        .update(member)
+        .set(
+          input.suspended
+            ? {
+                suspendedAt: new Date(),
+                suspendedBy: ctx.session.user.id,
+                suspensionReason: input.reason || null,
+                updatedAt: new Date(),
+                updatedBy: ctx.session.user.id,
+              }
+            : {
+                suspendedAt: null,
+                suspendedBy: null,
+                suspensionReason: null,
+                updatedAt: new Date(),
+                updatedBy: ctx.session.user.id,
+              },
+        )
+        .where(
+          and(
+            eq(member.id, target.id),
+            eq(member.organizationId, organizationId),
+            isNull(member.deletedAt),
+          ),
+        );
+      return { success: true };
+    }),
+
+  listCustomRoles: orgProcedure
+    .use(actionGuard("member.list"))
+    .query(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      const [roles, assignments] = await Promise.all([
+        db
+          .select({
+            id: organizationRole.id,
+            name: organizationRole.name,
+            description: organizationRole.description,
+            createdAt: organizationRole.createdAt,
+          })
+          .from(organizationRole)
+          .where(eq(organizationRole.organizationId, organizationId))
+          .orderBy(organizationRole.name),
+        db
+          .select({
+            memberId: memberOrganizationRole.memberId,
+            roleId: memberOrganizationRole.roleId,
+          })
+          .from(memberOrganizationRole)
+          .innerJoin(
+            member,
+            and(
+              eq(member.id, memberOrganizationRole.memberId),
+              eq(member.organizationId, memberOrganizationRole.organizationId),
+            ),
+          )
+          .where(
+            and(
+              eq(memberOrganizationRole.organizationId, organizationId),
+              isNull(member.deletedAt),
+            ),
+          ),
+      ]);
+      const permissions = await db
+        .select({
+          roleId: organizationRolePermission.roleId,
+          action: organizationRolePermission.actionName,
+        })
+        .from(organizationRolePermission)
+        .where(eq(organizationRolePermission.organizationId, organizationId));
+      return roles.map((role) => ({
+        ...role,
+        actions: permissions
+          .filter((p) => p.roleId === role.id)
+          .map((p) => p.action),
+        memberIds: assignments
+          .filter((a) => a.roleId === role.id)
+          .map((a) => a.memberId),
+      }));
+    }),
+
+  createCustomRole: orgProcedure
+    .input(
+      z.object({
+        name: z.string().trim().min(2).max(60),
+        description: z.string().trim().max(240).optional(),
+        actions: z.array(z.string()).max(40),
+      }),
+    )
+    .use(
+      actionGuard("organization.role.create", (input) => {
+        const role = input as { name: string; actions: string[] };
+        return {
+          payload: {
+            fields: ["name", "description", "permissions"],
+            permissionCount: role.actions.length,
+          },
+        };
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      const actions = [...new Set(input.actions)];
+      if (actions.some((action) => !isDelegableOrganizationAction(action)))
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            "One or more selected permissions cannot be assigned to a custom role.",
+        });
+      const id = randomUUID();
+      try {
+        await db.transaction(async (tx) => {
+          await tx.insert(organizationRole).values({
+            id,
+            organizationId,
+            name: input.name,
+            description: input.description || null,
+            createdBy: ctx.session.user.id,
+          });
+          if (actions.length)
+            await tx.insert(organizationRolePermission).values(
+              actions.map((actionName) => ({
+                id: randomUUID(),
+                organizationId,
+                roleId: id,
+                actionName,
+              })),
+            );
+        });
+      } catch (error) {
+        if ((error as { code?: string }).code === "23505")
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "A role with this name already exists.",
+          });
+        throw error;
+      }
+      return { id };
+    }),
+
+  assignCustomRole: orgProcedure
+    .input(
+      z.object({
+        memberId: z.string().min(1),
+        roleId: z.string().min(1).nullable(),
+      }),
+    )
+    .use(
+      actionGuard("organization.role.assign", (input) => {
+        const target = input as { memberId: string; roleId: string | null };
+        return {
+          entityId: target.memberId,
+          payload: { roleId: target.roleId },
+        };
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      const [target] = await db
+        .select({
+          id: member.id,
+          role: member.role,
+          suspendedAt: member.suspendedAt,
+        })
+        .from(member)
+        .where(
+          and(
+            eq(member.id, input.memberId),
+            eq(member.organizationId, organizationId),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (
+        !target ||
+        target.suspendedAt ||
+        normalizeOrgRole(target.role) !== "member"
+      )
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Custom roles can only be assigned to active Members.",
+        });
+      if (input.roleId) {
+        const [role] = await db
+          .select({ id: organizationRole.id })
+          .from(organizationRole)
+          .where(
+            and(
+              eq(organizationRole.id, input.roleId),
+              eq(organizationRole.organizationId, organizationId),
+            ),
+          )
+          .limit(1);
+        if (!role)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Organization role not found.",
+          });
+        await db
+          .insert(memberOrganizationRole)
+          .values({
+            id: randomUUID(),
+            organizationId,
+            memberId: target.id,
+            roleId: role.id,
+            assignedBy: ctx.session.user.id,
+          })
+          .onConflictDoUpdate({
+            target: [
+              memberOrganizationRole.organizationId,
+              memberOrganizationRole.memberId,
+            ],
+            set: {
+              roleId: role.id,
+              assignedBy: ctx.session.user.id,
+              assignedAt: new Date(),
+            },
+          });
+      } else {
+        await db
+          .delete(memberOrganizationRole)
+          .where(
+            and(
+              eq(memberOrganizationRole.organizationId, organizationId),
+              eq(memberOrganizationRole.memberId, target.id),
+            ),
+          );
+      }
+      return { success: true };
+    }),
+
+  updateCustomRole: orgProcedure
+    .input(
+      z.object({
+        roleId: z.string().min(1),
+        name: z.string().trim().min(2).max(60),
+        description: z.string().trim().max(240).optional(),
+        actions: z.array(z.string()).max(40),
+      }),
+    )
+    .use(
+      actionGuard("organization.role.update", (input) => {
+        const role = input as { roleId: string; actions: string[] };
+        return {
+          entityId: role.roleId,
+          payload: {
+            fields: ["name", "description", "permissions"],
+            permissionCount: role.actions.length,
+          },
+        };
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      const actions = [...new Set(input.actions)];
+      if (actions.some((action) => !isDelegableOrganizationAction(action)))
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            "One or more selected permissions cannot be assigned to a custom role.",
+        });
+      try {
+        await db.transaction(async (tx) => {
+          const [updated] = await tx
+            .update(organizationRole)
+            .set({
+              name: input.name,
+              description: input.description || null,
+              updatedAt: new Date(),
+            })
+            .where(
+              and(
+                eq(organizationRole.id, input.roleId),
+                eq(organizationRole.organizationId, organizationId),
+              ),
+            )
+            .returning({ id: organizationRole.id });
+          if (!updated)
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Organization role not found.",
+            });
+          await tx
+            .delete(organizationRolePermission)
+            .where(
+              and(
+                eq(organizationRolePermission.roleId, updated.id),
+                eq(organizationRolePermission.organizationId, organizationId),
+              ),
+            );
+          if (actions.length)
+            await tx.insert(organizationRolePermission).values(
+              actions.map((actionName) => ({
+                id: randomUUID(),
+                organizationId,
+                roleId: updated.id,
+                actionName,
+              })),
+            );
+        });
+      } catch (error) {
+        if ((error as { code?: string }).code === "23505")
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "A role with this name already exists.",
+          });
+        throw error;
+      }
+      return { success: true };
+    }),
+
+  deleteCustomRole: orgProcedure
+    .input(z.object({ roleId: z.string().min(1) }))
+    .use(
+      actionGuard("organization.role.delete", (input) => ({
+        entityId: (input as { roleId: string }).roleId,
+        payload: { operation: "delete" },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      await db
+        .delete(organizationRole)
+        .where(
+          and(
+            eq(organizationRole.id, input.roleId),
+            eq(organizationRole.organizationId, organizationId),
+          ),
+        );
+      return { success: true };
+    }),
+
   transferOwnership: orgProcedure
     .input(z.object({ targetUserId: z.string().min(1) }))
     .use(actionGuard("organization.transfer_ownership"))
@@ -269,6 +776,11 @@ export const organizationsRouter = router({
             role: invitation.role,
             status: invitation.status,
             createdAt: invitation.createdAt,
+            updatedAt: invitation.updatedAt,
+            lastSentAt: invitation.lastSentAt,
+            acceptedAt: invitation.acceptedAt,
+            rejectedAt: invitation.rejectedAt,
+            revokedAt: invitation.revokedAt,
             expiresAt: invitation.expiresAt,
             inviterName: user.name,
           })
@@ -308,7 +820,12 @@ export const organizationsRouter = router({
       }
       const [row] = await db
         .update(invitation)
-        .set({ status: "canceled" })
+        .set({
+          status: "canceled",
+          revokedAt: new Date(),
+          revokedBy: ctx.session.user.id,
+          updatedAt: new Date(),
+        })
         .where(
           and(
             eq(invitation.id, input.invitationId),
@@ -425,6 +942,147 @@ export const organizationsRouter = router({
     return { items: rows };
   }),
 
+  resendInvitation: orgProcedure
+    .input(z.object({ invitationId: z.string().min(1) }))
+    .use(
+      actionGuard("member.invite", (input) => ({
+        entityId: (input as { invitationId: string }).invitationId,
+        payload: { operation: "resend" },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      const [row] = await db
+        .select({
+          id: invitation.id,
+          email: invitation.email,
+          role: invitation.role,
+          organizationName: organization.name,
+        })
+        .from(invitation)
+        .innerJoin(organization, eq(organization.id, invitation.organizationId))
+        .where(
+          and(
+            eq(invitation.id, input.invitationId),
+            eq(invitation.organizationId, organizationId),
+            eq(invitation.status, "pending"),
+            isNull(invitation.deletedAt),
+            isNull(organization.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (!row)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Pending invitation not found.",
+        });
+      const now = new Date();
+      await sendOrganizationInvitationEmail({
+        invitationId: row.id,
+        email: row.email,
+        role: row.role,
+        organizationName: row.organizationName,
+        inviterName: ctx.session.user.name || ctx.session.user.email,
+      });
+      await db
+        .update(invitation)
+        .set({
+          lastSentAt: now,
+          updatedAt: now,
+          expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+        })
+        .where(
+          and(
+            eq(invitation.id, row.id),
+            eq(invitation.organizationId, organizationId),
+            eq(invitation.status, "pending"),
+          ),
+        );
+      return { success: true };
+    }),
+
+  createInvitation: orgProcedure
+    .input(
+      z.object({
+        organizationId: z.string().min(1),
+        email: z.string().email(),
+        role: z.enum(["owner", "manager", "member"]).default("member"),
+        teamId: z.string().min(1).optional(),
+      }),
+    )
+    .use(
+      actionGuard("member.invite", (input) => {
+        const invite = input as { role: string; teamId?: string };
+        return {
+          payload: {
+            role: invite.role,
+            scope: invite.teamId ? "team" : "organization",
+          },
+        };
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId || organizationId !== input.organizationId)
+        throw new TRPCError({
+          code: organizationId ? "FORBIDDEN" : "BAD_REQUEST",
+          message: organizationId
+            ? "The active organization changed. Reload and try again."
+            : "Select an organization first.",
+        });
+      return mcpMemberInvite(
+        ctx.session.user.id,
+        organizationId,
+        { email: input.email, role: input.role, teamId: input.teamId },
+        { alreadyAuthorized: true, audit: false },
+      );
+    }),
+
+  revokeInvitation: orgProcedure
+    .input(z.object({ invitationId: z.string().min(1) }))
+    .use(
+      actionGuard("invitation.cancel", (input) => ({
+        entityId: (input as { invitationId: string }).invitationId,
+        payload: { operation: "revoke" },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      const [row] = await db
+        .update(invitation)
+        .set({
+          status: "canceled",
+          revokedAt: new Date(),
+          revokedBy: ctx.session.user.id,
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(invitation.id, input.invitationId),
+            eq(invitation.organizationId, organizationId),
+            eq(invitation.status, "pending"),
+            isNull(invitation.deletedAt),
+          ),
+        )
+        .returning({ id: invitation.id });
+      if (!row)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Pending invitation not found.",
+        });
+      return { success: true };
+    }),
+
   list: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
     if (isActionsAuditEnabled()) {
@@ -439,6 +1097,7 @@ export const organizationsRouter = router({
         logo: organization.logo,
         role: member.role,
         createdAt: organization.createdAt,
+        archivedAt: organization.archivedAt,
       })
       .from(member)
       .innerJoin(organization, eq(member.organizationId, organization.id))
@@ -462,9 +1121,17 @@ export const organizationsRouter = router({
           slug: organization.slug,
           logo: organization.logo,
           role: member.role,
+          description: organizationProfile.description,
+          websiteUrl: organizationProfile.websiteUrl,
+          industry: organizationProfile.industry,
+          sizeBand: organizationProfile.sizeBand,
         })
         .from(organization)
         .innerJoin(member, eq(member.organizationId, organization.id))
+        .leftJoin(
+          organizationProfile,
+          eq(organizationProfile.organizationId, organization.id),
+        )
         .where(
           activeMemberWhere(
             and(
@@ -494,6 +1161,562 @@ export const organizationsRouter = router({
       return row;
     }),
 
+  getProfile: orgProcedure
+    .use(actionGuard("organization.settings.view"))
+    .query(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [membership] = await db
+        .select({ role: member.role })
+        .from(member)
+        .where(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, ctx.session.user.id),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      const canManageProfile = normalizeOrgRole(membership?.role) === "owner";
+      const [row] = await db
+        .select({
+          id: organization.id,
+          name: organization.name,
+          slug: organization.slug,
+          logo: organization.logo,
+          createdAt: organization.createdAt,
+          updatedAt: organization.updatedAt,
+          archivedAt: organization.archivedAt,
+          description: organizationProfile.description,
+          legalName: organizationProfile.legalName,
+          websiteUrl: organizationProfile.websiteUrl,
+          industry: organizationProfile.industry,
+          sizeBand: organizationProfile.sizeBand,
+          foundedYear: organizationProfile.foundedYear,
+          contactEmail: organizationProfile.contactEmail,
+          contactPhone: organizationProfile.contactPhone,
+          supportUrl: organizationProfile.supportUrl,
+          countryCode: organizationProfile.countryCode,
+          region: organizationProfile.region,
+          city: organizationProfile.city,
+          postalCode: organizationProfile.postalCode,
+          addressLine1: organizationProfile.addressLine1,
+          addressLine2: organizationProfile.addressLine2,
+        })
+        .from(organization)
+        .leftJoin(
+          organizationProfile,
+          eq(organizationProfile.organizationId, organization.id),
+        )
+        .where(
+          and(
+            eq(organization.id, organizationId),
+            isNull(organization.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (!row) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found.",
+        });
+      }
+      return canManageProfile
+        ? { ...row, canManageBranding: true }
+        : {
+            ...row,
+            canManageBranding: false,
+            legalName: null,
+            foundedYear: null,
+            contactEmail: null,
+            contactPhone: null,
+            supportUrl: null,
+            countryCode: null,
+            region: null,
+            city: null,
+            postalCode: null,
+            addressLine1: null,
+            addressLine2: null,
+          };
+    }),
+
+  updateBrandingLogo: orgProcedure
+    .input(z.object({ logo: organizationBrandingLogoSchema }))
+    .use(
+      actionGuard("organization.settings.update", () => ({
+        payload: { surface: "organization_branding", changedFields: ["logo"] },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [membership] = await db
+        .select({ role: member.role })
+        .from(member)
+        .where(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, ctx.session.user.id),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (normalizeOrgRole(membership?.role) !== "owner") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only organization owners can change branding.",
+        });
+      }
+      const [updated] = await db
+        .update(organization)
+        .set({
+          logo: input.logo,
+          updatedAt: new Date(),
+          updatedBy: ctx.session.user.id,
+        })
+        .where(
+          and(
+            eq(organization.id, organizationId),
+            isNull(organization.deletedAt),
+          ),
+        )
+        .returning({ id: organization.id });
+      if (!updated)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found.",
+        });
+      return { success: true };
+    }),
+
+  updateProfile: orgProcedure
+    .input(organizationProfilePatchSchema)
+    .use(
+      actionGuard("organization.settings.update", (input) => ({
+        payload: {
+          surface: "organization_profile",
+          changedFields: Object.keys(input as Record<string, unknown>).sort(),
+        },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const values = {
+        ...input,
+        countryCode:
+          input.countryCode === undefined
+            ? undefined
+            : (input.countryCode?.toUpperCase() ?? null),
+        updatedAt: new Date(),
+        updatedBy: ctx.session.user.id,
+      };
+      await db.transaction(async (tx) => {
+        await tx
+          .insert(organizationProfile)
+          .values({
+            organizationId,
+            ...values,
+          })
+          .onConflictDoUpdate({
+            target: organizationProfile.organizationId,
+            set: values,
+          });
+        await tx
+          .update(organization)
+          .set({ updatedAt: new Date(), updatedBy: ctx.session.user.id })
+          .where(eq(organization.id, organizationId));
+      });
+      return { success: true };
+    }),
+
+  getSettings: orgProcedure
+    .use(actionGuard("organization.settings.view"))
+    .query(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [row] = await db
+        .select()
+        .from(organizationSettings)
+        .where(eq(organizationSettings.organizationId, organizationId))
+        .limit(1);
+      const [membership] = await db
+        .select({ role: member.role })
+        .from(member)
+        .where(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, ctx.session.user.id),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      return {
+        timeZone: row?.timeZone ?? "UTC",
+        locale: row?.locale ?? "en",
+        dateFormat: row?.dateFormat ?? "medium",
+        timeFormat: row?.timeFormat ?? "12h",
+        weekStart: row?.weekStart ?? 1,
+        displayCurrency: row?.displayCurrency ?? "USD",
+        defaultProjectVisibility: row?.defaultProjectVisibility ?? "private",
+        notificationDefaults: row?.notificationDefaults ?? {
+          email: true,
+          inApp: true,
+          version: 1 as const,
+        },
+        canEdit: normalizeOrgRole(membership?.role) === "owner",
+      };
+    }),
+
+  updateSettings: orgProcedure
+    .input(organizationSettingsPatchSchema)
+    .use(
+      actionGuard("organization.settings.update", (input) => ({
+        payload: {
+          surface: "organization_settings",
+          changedFields: Object.keys(input as Record<string, unknown>).sort(),
+        },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [membership] = await db
+        .select({ role: member.role })
+        .from(member)
+        .where(
+          and(
+            eq(member.organizationId, organizationId),
+            eq(member.userId, ctx.session.user.id),
+            isNull(member.deletedAt),
+          ),
+        )
+        .limit(1);
+      if (normalizeOrgRole(membership?.role) !== "owner") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only organization owners can update workspace defaults.",
+        });
+      }
+      await db
+        .insert(organizationSettings)
+        .values({
+          organizationId,
+          ...input,
+          updatedAt: new Date(),
+          updatedBy: ctx.session.user.id,
+        })
+        .onConflictDoUpdate({
+          target: organizationSettings.organizationId,
+          set: {
+            ...input,
+            updatedAt: new Date(),
+            updatedBy: ctx.session.user.id,
+          },
+        });
+      return { success: true };
+    }),
+
+  listSecurityDomains: orgProcedure
+    .use(actionGuard("organization.settings.view"))
+    .query(async ({ ctx }) => {
+      if (!ctx.activeOrganizationId) return { items: [] };
+      const items = await db
+        .select({
+          id: organizationDomain.id,
+          hostname: organizationDomain.hostname,
+          purpose: organizationDomain.purpose,
+          state: organizationDomain.state,
+          challengeExpiresAt: organizationDomain.challengeExpiresAt,
+          verifiedAt: organizationDomain.verifiedAt,
+          createdAt: organizationDomain.createdAt,
+        })
+        .from(organizationDomain)
+        .where(eq(organizationDomain.organizationId, ctx.activeOrganizationId))
+        .orderBy(desc(organizationDomain.createdAt));
+      return { items };
+    }),
+
+  createSecurityDomain: orgProcedure
+    .input(z.object({ hostname: z.string().min(1).max(253) }))
+    .use(
+      actionGuard("organization.settings.update", (_input) => ({
+        payload: {
+          surface: "organization_domain",
+          changedFields: ["hostname"],
+        },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      let hostname: string;
+      try {
+        hostname = normalizeOrganizationEmailDomain(input.hostname);
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: error instanceof Error ? error.message : "Invalid domain.",
+        });
+      }
+      const [existing] = await db
+        .select({ id: organizationDomain.id })
+        .from(organizationDomain)
+        .where(
+          and(
+            eq(organizationDomain.organizationId, organizationId),
+            eq(organizationDomain.hostname, hostname),
+            sql`${organizationDomain.state} <> 'revoked'`,
+          ),
+        )
+        .limit(1);
+      if (existing)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This domain is already added.",
+        });
+      const token = randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      const id = randomUUID();
+      try {
+        await db.insert(organizationDomain).values({
+          id,
+          organizationId,
+          hostname,
+          purpose: "email",
+          state: "pending",
+          verificationTokenHash: hashDomainChallenge(token),
+          challengeExpiresAt: expiresAt,
+          createdBy: ctx.session.user.id,
+        });
+      } catch {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This domain is already claimed or pending verification.",
+        });
+      }
+      return {
+        id,
+        hostname,
+        state: "pending" as const,
+        txtRecord: {
+          name: `_loftlancer-verification.${hostname}`,
+          value: token,
+        },
+        expiresAt,
+      };
+    }),
+
+  verifySecurityDomain: orgProcedure
+    .input(z.object({ domainId: z.string().uuid() }))
+    .use(
+      actionGuard("organization.settings.update", () => ({
+        payload: { surface: "organization_domain", changedFields: ["state"] },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      const [row] = await db
+        .select()
+        .from(organizationDomain)
+        .where(
+          and(
+            eq(organizationDomain.id, input.domainId),
+            eq(organizationDomain.organizationId, organizationId),
+          ),
+        )
+        .limit(1);
+      if (row?.state !== "pending")
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Pending domain verification not found.",
+        });
+      if (row.challengeExpiresAt <= new Date())
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message:
+            "The verification record expired. Remove the domain and add it again.",
+        });
+      let records: string[][] = [];
+      try {
+        records = await Promise.race([
+          resolveTxt(`_loftlancer-verification.${row.hostname}`),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("DNS lookup timed out")), 3000),
+          ),
+        ]);
+      } catch {
+        return {
+          verified: false,
+          message:
+            "TXT record was not found yet. DNS changes can take time to appear.",
+        };
+      }
+      if (!domainChallengeMatches(records, row.verificationTokenHash)) {
+        return {
+          verified: false,
+          message:
+            "TXT record does not match the current verification challenge.",
+        };
+      }
+      const [updated] = await db
+        .update(organizationDomain)
+        .set({ state: "verified", verifiedAt: new Date() })
+        .where(
+          and(
+            eq(organizationDomain.id, row.id),
+            eq(organizationDomain.organizationId, organizationId),
+            eq(organizationDomain.state, "pending"),
+          ),
+        )
+        .returning({ id: organizationDomain.id });
+      if (!updated)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Domain status changed. Refresh and try again.",
+        });
+      return { verified: true, message: "Domain ownership verified." };
+    }),
+
+  revokeSecurityDomain: orgProcedure
+    .input(z.object({ domainId: z.string().uuid() }))
+    .use(
+      actionGuard("organization.settings.update", () => ({
+        payload: { surface: "organization_domain", changedFields: ["state"] },
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      await requireOrganizationOwner(ctx.session.user.id, organizationId);
+      const [row] = await db
+        .update(organizationDomain)
+        .set({ state: "revoked", revokedAt: new Date() })
+        .where(
+          and(
+            eq(organizationDomain.id, input.domainId),
+            eq(organizationDomain.organizationId, organizationId),
+            sql`${organizationDomain.state} <> 'revoked'`,
+          ),
+        )
+        .returning({ id: organizationDomain.id });
+      if (!row)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Domain not found.",
+        });
+      return { success: true };
+    }),
+
+  archive: orgProcedure
+    .use(actionGuard("organization.archive"))
+    .mutation(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const now = new Date();
+      const [row] = await db
+        .update(organization)
+        .set({
+          archivedAt: now,
+          archivedBy: ctx.session.user.id,
+          updatedAt: now,
+          updatedBy: ctx.session.user.id,
+        })
+        .where(
+          and(
+            eq(organization.id, organizationId),
+            isNull(organization.deletedAt),
+            isNull(organization.archivedAt),
+          ),
+        )
+        .returning({ id: organization.id });
+      if (!row)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Organization is already archived or unavailable.",
+        });
+      return { success: true };
+    }),
+
+  unarchive: orgProcedure
+    .use(actionGuard("organization.unarchive"))
+    .mutation(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      const [row] = await db
+        .update(organization)
+        .set({
+          archivedAt: null,
+          archivedBy: null,
+          updatedAt: new Date(),
+          updatedBy: ctx.session.user.id,
+        })
+        .where(
+          and(
+            eq(organization.id, organizationId),
+            isNull(organization.deletedAt),
+            sql`${organization.archivedAt} IS NOT NULL`,
+          ),
+        )
+        .returning({ id: organization.id });
+      if (!row)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Organization is not archived or is unavailable.",
+        });
+      return { success: true };
+    }),
+
   listMembers: orgProcedure
     .use(actionGuard("member.list"))
     .query(async ({ ctx }) => {
@@ -502,6 +1725,34 @@ export const organizationsRouter = router({
         return { items: [] };
       }
       return mcpMembersList(ctx.session.user.id, organizationId);
+    }),
+
+  removeMember: orgProcedure
+    .input(
+      z.object({
+        userId: z.string().min(1),
+        reason: z.string().trim().max(250).optional(),
+      }),
+    )
+    .use(
+      actionGuard("member.remove", (input) => ({
+        targetUserId: (input as { userId: string }).userId,
+      })),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization first.",
+        });
+      }
+      return mcpMemberRemove(
+        ctx.session.user.id,
+        organizationId,
+        input.userId,
+        input.reason,
+      );
     }),
 
   /** Server-side paginated invitations with status filter (#261). Better

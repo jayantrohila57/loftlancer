@@ -41,7 +41,9 @@ export function TeamLayoutShell({
       LinkComponent={Link as never}
       back={{ href: routes.orgSection(slug, "teams"), label: "Teams" }}
       title={team.name}
-      description="Team members and project access."
+      description={
+        team.purpose || team.description || "Team members and project access."
+      }
       tabs={[
         { href: root, label: "Overview", active: pathname === root },
         {
