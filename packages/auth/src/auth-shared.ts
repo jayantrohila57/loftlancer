@@ -246,7 +246,19 @@ export function organizationPlugin() {
           await assertOrganizationNotArchived(member.organizationId);
           assertOrganizationLogoUrl(updates.logo);
           if (typeof updates.slug === "string") {
-            assertOrgSlugAllowed(updates.slug);
+            const [existingOrganization] = await db
+              .select({ slug: organizationSchema.organization.slug })
+              .from(organizationSchema.organization)
+              .where(
+                eq(organizationSchema.organization.id, member.organizationId),
+              )
+              .limit(1);
+            if (
+              existingOrganization?.slug.toLowerCase() !==
+              updates.slug.toLowerCase()
+            ) {
+              assertOrgSlugAllowed(updates.slug);
+            }
           }
         },
         beforeAddMember: async ({ member: membership }) => {
