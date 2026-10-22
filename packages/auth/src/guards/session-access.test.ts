@@ -18,6 +18,14 @@ describe("evaluateSessionAccess", () => {
     }
   });
 
+  it("rejects sessions for deleted users", () => {
+    const result = evaluateSessionAccess({
+      user: { id: "u1", deletedAt: new Date() },
+      session: { id: "s1", userId: "u1", expiresAt: new Date() },
+    } as never);
+    assert.equal(result.status, "deleted_user");
+  });
+
   it("returns ok for active user", () => {
     const result = evaluateSessionAccess({
       user: { id: "u1", banned: false },

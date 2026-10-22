@@ -9,7 +9,7 @@ import {
   AlertDialogPopup,
   AlertDialogTitle,
 } from "@loftlancer/ui/alert-dialog";
-import { isGoogleSignInEnabled } from "@loftlancer/ui/auth-links";
+import { isGoogleSignInEnabled, landingUrl } from "@loftlancer/ui/auth-links";
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
@@ -188,8 +188,13 @@ export function AccountSettingsClient({
   const softDeleteMutation = useMutation(
     trpc.account.softDelete.mutationOptions({
       onSuccess: async () => {
-        toast.success("Account deleted");
-        void performSignOut({ queryClient, router });
+        const landing = new URL(landingUrl());
+        landing.searchParams.set("notice", "account-deleted");
+        await performSignOut({
+          queryClient,
+          router,
+          returnTo: landing.toString(),
+        });
       },
       onError: (err) => {
         toast.error(err.message ?? "Could not delete account");
@@ -711,7 +716,7 @@ export function AccountSettingsClient({
                 <SettingsPanel className="border-destructive/32 bg-destructive/4">
                   <SettingsSectionHeader
                     title="Delete account"
-                    description="Soft-deletes your user and signs you out."
+                    description="Anonymizes your profile and revokes sessions. Organization and project records remain."
                     icon="danger"
                   />
                   {!canDeleteAccount && soleOwnerOrgs.length > 0 ? (
@@ -731,7 +736,7 @@ export function AccountSettingsClient({
                   ) : null}
                   <SettingsRow
                     label="Delete"
-                    description="Type your email to confirm. This cannot be undone."
+                    description="Type your email to confirm. Your profile will be anonymized; workspace records and activity history remain."
                   >
                     <Button
                       type="button"
@@ -842,7 +847,7 @@ export function AccountSettingsClient({
             open={deleteOpen}
             onOpenChange={setDeleteOpen}
             title="Delete account"
-            description="Your profile will be anonymized and all sessions revoked."
+            description="Your name, email, and avatar will be anonymized, and your sessions revoked. Your organization and project records and audit history remain; Loftlancer does not currently set an automatic removal date for them. You cannot restore this profile yourself."
             confirmLabel="Delete account"
             confirmText={deletePhrase}
             variant="destructive"
