@@ -114,6 +114,7 @@ export async function proxy(request: NextRequest) {
 
   const first = pathname.split("/")[1] ?? "";
   const isOrganizationsDirectory =
+    pathname === "/organizations" &&
     first === "organizations" &&
     request.nextUrl.searchParams.get("directory") === "1";
   if (

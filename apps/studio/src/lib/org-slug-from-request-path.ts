@@ -7,6 +7,7 @@ export function orgSlugFromRequestPath(
 ): string | null {
   const [first] = pathname.split("/").filter(Boolean);
   if (
+    pathname === "/organizations" &&
     first === "organizations" &&
     new URLSearchParams(search).get("directory") === "1"
   ) {

@@ -19,6 +19,10 @@ describe("orgSlugFromRequestPath", () => {
       null,
     );
     assert.equal(orgSlugFromRequestPath("/organizations"), "organizations");
+    assert.equal(
+      orgSlugFromRequestPath("/organizations/projects", "?directory=1"),
+      "organizations",
+    );
   });
 });
 
