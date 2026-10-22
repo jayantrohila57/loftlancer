@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Added
 
+- Populated Studio Overview with favorite organizations, recent projects, pending invitations, and permission-checked recent activity (#643).
 - Add the 22 October 2026 UX audit and 60 screenshot evidence files for tracked fixes (#627).
 - Add the dedicated `apps/www` marketing site and route its sign-in CTAs to auth with the validated studio return URL (#103)
 

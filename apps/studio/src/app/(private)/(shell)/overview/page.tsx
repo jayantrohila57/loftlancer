@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import DashboardSection from "@/components/section-dashboard";
+import { StudioOverviewContent } from "@/domain/organizations/components/studio-overview-content";
 import { siteConfig } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export default function StudioOverviewPage() {
       description="Your workspace overview."
       back={false}
     >
-      <div />
+      <StudioOverviewContent />
     </DashboardSection>
   );
 }
