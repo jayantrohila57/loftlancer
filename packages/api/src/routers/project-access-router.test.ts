@@ -8,6 +8,10 @@ const routerSource = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), "project-access-router.ts"),
   "utf8",
 );
+const serviceSource = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "../project-access/service.ts"),
+  "utf8",
+);
 
 function assignManagerBlock(): string {
   const start = routerSource.indexOf("assignManager:");
@@ -49,5 +53,28 @@ describe("projectAccessRouter assignManager", () => {
     assert.match(block, /assertProjectAccess\(/);
     assert.match(block, /activeMemberWhere\(/);
     assert.match(block, /One or more project permission grants are invalid/);
+  });
+});
+
+describe("project manager service scope", () => {
+  it("checks project ownership and active organization membership before inserting", () => {
+    const start = serviceSource.indexOf(
+      "export async function upsertProjectManagerRow(",
+    );
+    const end = serviceSource.indexOf(
+      "export async function softDeleteProjectManager(",
+      start,
+    );
+    const block = serviceSource.slice(start, end);
+    const projectCheck = block.indexOf(
+      "eq(project.organizationId, input.organizationId)",
+    );
+    const memberCheck = block.indexOf("activeMemberWhere(");
+    const insert = block.indexOf("db.insert(projectManager)");
+    assert.notEqual(projectCheck, -1);
+    assert.notEqual(memberCheck, -1);
+    assert.notEqual(insert, -1);
+    assert.ok(projectCheck < insert);
+    assert.ok(memberCheck < insert);
   });
 });
