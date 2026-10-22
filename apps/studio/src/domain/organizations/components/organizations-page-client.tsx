@@ -27,7 +27,7 @@ export function OrganizationsPageClient({
   const closeCreate = useCallback(() => {
     setCreateOpen(false);
     if (createRoute) {
-      router.replace(routes.organizations(), { scroll: false });
+      router.replace(routes.organizationsDirectory(), { scroll: false });
     }
   }, [createRoute, router]);
 
@@ -38,15 +38,13 @@ export function OrganizationsPageClient({
   const setActiveTab = useCallback(
     (value: string) => {
       const params = new URLSearchParams(window.location.search);
+      params.set("directory", "1");
       if (value === "invites") params.set("tab", value);
       else params.delete("tab");
       const query = params.toString();
-      router.replace(
-        (query
-          ? `${routes.organizations()}?${query}`
-          : routes.organizations()) as Route,
-        { scroll: false },
-      );
+      router.replace(`${routes.organizations()}?${query}` as Route, {
+        scroll: false,
+      });
     },
     [router],
   );

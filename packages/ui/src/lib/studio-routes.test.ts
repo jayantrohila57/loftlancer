@@ -5,7 +5,8 @@ import { isReservedOrgSlug, routes } from "./studio-routes";
 test("resource routes keep applications nested under projects", () => {
   assert.equal(routes.org("acme"), "/acme");
   assert.equal(routes.organizations(), "/organizations");
-  assert.equal(isReservedOrgSlug("organizations"), true);
+  assert.equal(routes.organizationsDirectory(), "/organizations?directory=1");
+  assert.equal(isReservedOrgSlug("organizations"), false);
   assert.equal(routes.team("acme", "design"), "/acme/teams/design");
   assert.equal(routes.project("acme", "website"), "/acme/website");
   assert.equal(

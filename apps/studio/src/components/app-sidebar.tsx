@@ -100,7 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     { label: "Notifications", href: routes.notifications() },
     { label: "Activity", href: routes.activity() },
     { label: "Support", href: routes.supportTickets() },
-    { label: "Organizations", href: routes.organizations() },
+    { label: "Organizations", href: routes.organizationsDirectory() },
   ];
   const nav = useSidebarNavigator({
     projectHref,

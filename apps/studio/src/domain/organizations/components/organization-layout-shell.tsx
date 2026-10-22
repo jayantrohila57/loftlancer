@@ -70,7 +70,7 @@ function OrganizationFrame({
       LinkComponent={Link as never}
       back={{
         href: isOrgHome
-          ? routes.organizations()
+          ? routes.organizationsDirectory()
           : isTeamDetail
             ? teamsHref
             : orgHome,

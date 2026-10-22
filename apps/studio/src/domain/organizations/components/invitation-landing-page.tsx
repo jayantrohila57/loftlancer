@@ -306,7 +306,7 @@ function InvitationLayout({ children }: { children: ReactNode }) {
       <section className="flex min-h-64 w-full max-w-lg flex-col justify-center gap-5 rounded-xl border bg-card p-6 shadow-sm">
         <Link
           className="text-muted-foreground text-sm hover:text-foreground"
-          href={routes.organizations()}
+          href={routes.organizationsDirectory()}
         >
           ← Back to Loftlancer
         </Link>

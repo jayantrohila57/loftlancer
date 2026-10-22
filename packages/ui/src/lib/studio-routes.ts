@@ -1,3 +1,5 @@
+import type { Route } from "next";
+
 /**
  * THE studio route builder (#300). Paths are relative to the studio basePath
  * (`/studio`); Next `Link`/`router` add the basePath. Use `studioUrl()` for
@@ -48,6 +50,7 @@ const seg = (value: string | number) => encodeURIComponent(String(value));
 export const routes = {
   home: () => "/",
   organizations: () => "/organizations",
+  organizationsDirectory: () => "/organizations?directory=1" as Route,
   newOrganization: () => "/new",
   notifications: () => "/notifications",
   invitation: (id: string) => `/invite/${seg(id)}`,
@@ -102,7 +105,7 @@ export function platformNavHref(
 ): string | null {
   switch (key) {
     case "organizations":
-      return routes.organizations();
+      return routes.organizationsDirectory();
     case "projects":
       return org ? routes.projects(org) : null;
     case "activity":

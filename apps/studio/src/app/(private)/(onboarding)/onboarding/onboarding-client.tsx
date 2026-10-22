@@ -379,7 +379,7 @@ export default function OnboardingClient() {
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
-                    render={<Link href={routes.organizations()} />}
+                    render={<Link href={routes.organizationsDirectory()} />}
                   >
                     All organizations
                   </Button>

@@ -133,7 +133,10 @@ export function OrgSwitcher() {
           triggerContent={switcherBody}
           footer={
             <>
-              <Link href={routes.organizations()} className={linkClass}>
+              <Link
+                href={routes.organizationsDirectory()}
+                className={linkClass}
+              >
                 <Settings
                   className="size-4 text-muted-foreground"
                   aria-hidden

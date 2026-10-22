@@ -35,7 +35,10 @@ function copyFor(scope: NotFoundScope): Copy {
       emptyTitle: "No such organization",
       emptyDescription:
         "Check the URL, or pick one of the organizations you belong to.",
-      cta: { label: "Your organizations", href: routes.organizations() },
+      cta: {
+        label: "Your organizations",
+        href: routes.organizationsDirectory(),
+      },
     };
   }
   if (scope.kind === "project" && org) {
@@ -56,7 +59,10 @@ function copyFor(scope: NotFoundScope): Copy {
         }
       : org
         ? { label: "Organization overview", href: routes.org(org.slug) }
-        : { label: "Your organizations", href: routes.organizations() };
+        : {
+            label: "Your organizations",
+            href: routes.organizationsDirectory(),
+          };
   return {
     title: "Page not found",
     description: "This page doesn't exist.",
