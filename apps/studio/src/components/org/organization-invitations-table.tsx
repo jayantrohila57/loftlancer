@@ -55,6 +55,7 @@ export function OrganizationInvitationsTable({
   const columns: DataTableColumnDef<OrganizationInvitationRow>[] = [
     columnHelper.display({
       id: "scope",
+      meta: { className: "hidden sm:table-cell" },
       header: "Access scope",
       cell: ({ row }) => (
         <span className="text-muted-foreground">
@@ -67,13 +68,24 @@ export function OrganizationInvitationsTable({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Email" />
       ),
-      cell: ({ getValue }) => (
-        <span
-          className="block max-w-56 truncate font-medium"
-          title={String(getValue())}
-        >
-          {String(getValue())}
-        </span>
+      cell: ({ row }) => (
+        <div className="min-w-0">
+          <span
+            className="block max-w-56 truncate font-medium"
+            title={row.original.email}
+          >
+            {row.original.email}
+          </span>
+          <span className="block truncate text-muted-foreground text-xs sm:hidden">
+            {scopeLabel}
+            {row.original.teamName ? `: ${row.original.teamName}` : ""}
+          </span>
+          {scopeLabel === "Team" && row.original.linkedProjects?.length ? (
+            <span className="block truncate text-muted-foreground text-xs lg:hidden">
+              Projects: {row.original.linkedProjects.join(", ")}
+            </span>
+          ) : null}
+        </div>
       ),
     }),
     columnHelper.accessor("role", {
@@ -83,12 +95,22 @@ export function OrganizationInvitationsTable({
           title={scopeLabel === "Team" ? "Organization role" : "Role"}
         />
       ),
-      cell: ({ getValue }) => <RoleBadge role={String(getValue())} />,
+      cell: ({ row }) => (
+        <div className="flex flex-col items-start gap-1">
+          <RoleBadge role={row.original.role} />
+          {scopeLabel === "Team" ? (
+            <span className="text-muted-foreground text-xs sm:hidden">
+              Team: {row.original.invitedTeamRole ?? "Member"}
+            </span>
+          ) : null}
+        </div>
+      ),
     }),
     ...(scopeLabel === "Team"
       ? [
           columnHelper.display({
             id: "invitedTeamRole",
+            meta: { className: "hidden sm:table-cell" },
             header: "Invited team role",
             cell: ({ row }) => (
               <RoleBadge role={row.original.invitedTeamRole ?? "member"} />
@@ -96,6 +118,7 @@ export function OrganizationInvitationsTable({
           }),
           columnHelper.display({
             id: "linkedProjects",
+            meta: { className: "hidden lg:table-cell" },
             header: "Project access",
             cell: ({ row }) => (
               <span className="text-muted-foreground">
@@ -114,6 +137,7 @@ export function OrganizationInvitationsTable({
       cell: ({ getValue }) => <StatusBadge status={String(getValue())} />,
     }),
     columnHelper.accessor("inviterName", {
+      meta: { className: "hidden lg:table-cell" },
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Invited by" />
       ),
@@ -124,6 +148,7 @@ export function OrganizationInvitationsTable({
       ),
     }),
     columnHelper.accessor("createdAt", {
+      meta: { className: "hidden md:table-cell" },
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Sent" />
       ),
@@ -143,6 +168,7 @@ export function OrganizationInvitationsTable({
     }),
     columnHelper.display({
       id: "lifecycle",
+      meta: { className: "hidden xl:table-cell" },
       header: "Activity",
       cell: ({ row }) => {
         const invite = row.original;
@@ -175,6 +201,7 @@ export function OrganizationInvitationsTable({
       },
     }),
     columnHelper.accessor("expiresAt", {
+      meta: { className: "hidden xl:table-cell" },
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Expires" />
       ),

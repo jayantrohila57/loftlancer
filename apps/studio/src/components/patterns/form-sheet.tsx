@@ -55,7 +55,11 @@ export function FormSheetPopup({
   return (
     <SheetPopup
       variant={variant}
-      className={cn(formSheetPopupClassName, className)}
+      className={cn(
+        formSheetPopupClassName,
+        "max-sm:max-h-[100dvh] max-sm:w-full max-sm:max-w-none",
+        className,
+      )}
       {...props}
     />
   );
@@ -108,5 +112,13 @@ export function FormSheetFooter({
   className,
   ...props
 }: ComponentProps<typeof SheetFooter>) {
-  return <SheetFooter className={cn("shrink-0", className)} {...props} />;
+  return (
+    <SheetFooter
+      className={cn(
+        "shrink-0 max-sm:pb-[calc(1rem+env(safe-area-inset-bottom))] max-sm:[&_[data-slot=button]]:min-h-11",
+        className,
+      )}
+      {...props}
+    />
+  );
 }

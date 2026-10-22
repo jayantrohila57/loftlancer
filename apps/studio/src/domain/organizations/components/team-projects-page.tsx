@@ -80,16 +80,22 @@ export function TeamProjectsPage({
         <DataTableColumnHeader column={column} title="Project" />
       ),
       cell: ({ row }) => (
-        <Link
-          href={routes.project(slug, row.original.slug)}
-          className="font-medium hover:underline"
-        >
-          {row.original.name}
-        </Link>
+        <div className="min-w-0">
+          <Link
+            href={routes.project(slug, row.original.slug)}
+            className="block truncate font-medium hover:underline"
+          >
+            {row.original.name}
+          </Link>
+          <span className="block truncate text-muted-foreground text-xs sm:hidden">
+            /{slug}/{row.original.slug}
+          </span>
+        </div>
       ),
     },
     {
       accessorKey: "slug",
+      meta: { className: "hidden sm:table-cell" },
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Project URL" />
       ),
@@ -156,7 +162,7 @@ export function TeamProjectsPage({
             ariaLabel="Project to link"
             placeholder="Select a project"
             searchPlaceholder="Search projects…"
-            className="w-64"
+            className="w-full sm:w-64"
             options={available.map((item) => ({
               value: item.id,
               label: item.name,

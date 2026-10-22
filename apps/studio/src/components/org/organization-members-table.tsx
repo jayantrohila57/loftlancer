@@ -86,12 +86,20 @@ export function OrganizationMembersTable({
             <span className="block truncate text-muted-foreground text-xs">
               {member.user.email}
             </span>
+            {[member.jobTitle, member.department].filter(Boolean).length ? (
+              <span className="block truncate text-muted-foreground text-xs md:hidden">
+                {[member.jobTitle, member.department]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+            ) : null}
           </TableLeadingCell>
         );
       },
     }),
     columnHelper.display({
       id: "organizationDetails",
+      meta: { className: "hidden md:table-cell" },
       header: "Organization details",
       cell: ({ row }) => {
         const member = row.original;
@@ -140,6 +148,7 @@ export function OrganizationMembersTable({
     }),
     columnHelper.accessor((member) => member.joinedAt ?? member.createdAt, {
       id: "joinedAt",
+      meta: { className: "hidden lg:table-cell" },
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Joined" />
       ),
