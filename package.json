@@ -1,6 +1,6 @@
 {
   "name": "loftlancer",
-  "version": "1.17.1",
+  "version": "1.18.0",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -13,6 +13,7 @@
     "check-types": "turbo check-types",
     "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test turbo test && pnpm --filter studio exec node --import tsx --test ../../scripts/pwa-manifest.test.ts",
     "dev:docs": "turbo -F docs dev",
+    "dev:www": "turbo -F www dev",
     "dev:auth": "turbo -F auth dev",
     "dev:studio": "turbo -F studio dev",
     "db:push": "turbo -F @loftlancer/db db:push",

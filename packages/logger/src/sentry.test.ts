@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
 import { createSentrySink } from "./sentry";
 import { resolveSentryDsn, resolveSentryEnvironment } from "./sentry-env";
+import { buildSentryInitOptions } from "./sentry-instrument";
 
 afterEach(() => {
   delete process.env.NEXT_PUBLIC_SENTRY_DSN;
@@ -52,4 +53,11 @@ test("createSentrySink calls onAfterLog after forwarding", () => {
   );
   sink.log("info", "hello", { app: "test" });
   assert.deepEqual(calls, ["info:hello", "after"]);
+});
+
+test("Sentry init uses streamed span scrubbing instead of transactions", () => {
+  process.env.SENTRY_DSN = "https://sentry.io/server";
+  const options = buildSentryInitOptions("auth", false);
+  assert.equal(typeof options.beforeSendSpan, "function");
+  assert.equal("beforeSendTransaction" in options, false);
 });

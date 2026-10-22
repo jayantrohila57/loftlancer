@@ -5,7 +5,7 @@ import {
   project,
 } from "@loftlancer/db/schema/projects";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { requireAction } from "../actions/require-action";
 
 export async function mcpProjectRestore(
@@ -21,16 +21,65 @@ export async function mcpProjectRestore(
   if (!isSoftDeletesEnabled()) {
     throw new Error("soft_deletes_disabled");
   }
-  const [row] = await db
-    .update(project)
-    .set({ deletedAt: null, deletedBy: null })
-    .where(
-      and(
-        eq(project.id, projectId),
-        eq(project.organizationId, organizationId),
-      ),
-    )
-    .returning({ id: project.id, slug: project.slug });
+  const row = await db.transaction(async (tx) => {
+    const [deletedProject] = await tx
+      .select({ deletedAt: project.deletedAt })
+      .from(project)
+      .where(
+        and(
+          eq(project.id, projectId),
+          eq(project.organizationId, organizationId),
+          isNotNull(project.deletedAt),
+        ),
+      )
+      .limit(1);
+    if (!deletedProject?.deletedAt) return null;
+
+    const deletedAt = deletedProject.deletedAt;
+    const environments = await tx
+      .select({ id: environment.id })
+      .from(environment)
+      .where(
+        and(
+          eq(environment.projectId, projectId),
+          eq(environment.deletedAt, deletedAt),
+        ),
+      );
+    const environmentIds = environments.map((row) => row.id);
+    if (environmentIds.length > 0) {
+      await tx
+        .update(environmentVariable)
+        .set({ deletedAt: null, deletedBy: null })
+        .where(
+          and(
+            inArray(environmentVariable.environmentId, environmentIds),
+            eq(environmentVariable.deletedAt, deletedAt),
+          ),
+        );
+      await tx
+        .update(environment)
+        .set({ deletedAt: null, deletedBy: null })
+        .where(
+          and(
+            eq(environment.projectId, projectId),
+            eq(environment.deletedAt, deletedAt),
+          ),
+        );
+    }
+
+    const [restoredProject] = await tx
+      .update(project)
+      .set({ deletedAt: null, deletedBy: null })
+      .where(
+        and(
+          eq(project.id, projectId),
+          eq(project.organizationId, organizationId),
+          eq(project.deletedAt, deletedAt),
+        ),
+      )
+      .returning({ id: project.id, slug: project.slug });
+    return restoredProject ?? null;
+  });
   if (!row) {
     throw new Error("project_not_found");
   }

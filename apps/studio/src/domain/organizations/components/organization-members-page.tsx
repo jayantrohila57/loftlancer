@@ -46,6 +46,7 @@ export function OrganizationMembersPage({ slug }: { slug: string }) {
           {selectedMemberId ? (
             <OrganizationMemberProfiles
               memberId={selectedMemberId}
+              organizationSlug={organization.slug}
               onClose={() => setSelectedMember(null)}
             />
           ) : null}

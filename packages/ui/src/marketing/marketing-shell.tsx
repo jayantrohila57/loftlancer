@@ -52,7 +52,13 @@ function MarketingLinkButton({
   );
 }
 
-function NavLink({ item }: { item: MarketingNavItem }) {
+function NavLink({
+  item,
+  pagesBaseUrl,
+}: {
+  item: MarketingNavItem;
+  pagesBaseUrl?: string;
+}) {
   const className =
     "text-sm text-muted-foreground transition-colors hover:text-foreground";
   if (item.external) {
@@ -67,6 +73,19 @@ function NavLink({ item }: { item: MarketingNavItem }) {
       </a>
     );
   }
+  if (pagesBaseUrl) {
+    return (
+      <a
+        href={new URL(
+          item.href.replace(/^\//, ""),
+          `${pagesBaseUrl.replace(/\/$/, "")}/`,
+        ).toString()}
+        className={className}
+      >
+        {item.label}
+      </a>
+    );
+  }
   return (
     <Link href={item.href as "/"} className={className}>
       {item.label}
@@ -76,11 +95,13 @@ function NavLink({ item }: { item: MarketingNavItem }) {
 
 export type MarketingSiteHeaderProps = {
   signInHref: string;
+  pagesBaseUrl?: string;
   headerActions?: ReactNode;
 };
 
 export function MarketingSiteHeader({
   signInHref,
+  pagesBaseUrl,
   headerActions,
 }: MarketingSiteHeaderProps) {
   return (
@@ -105,7 +126,11 @@ export function MarketingSiteHeader({
         <nav className="flex items-center gap-2 sm:gap-3" aria-label="Primary">
           <div className="hidden items-center gap-4 md:flex">
             {primaryNav.map((item) => (
-              <NavLink key={item.href} item={item} />
+              <NavLink
+                key={item.href}
+                item={item}
+                pagesBaseUrl={pagesBaseUrl}
+              />
             ))}
           </div>
           {headerActions}
@@ -122,14 +147,18 @@ export function MarketingSiteHeader({
   );
 }
 
-export function MarketingSiteFooter() {
+export function MarketingSiteFooter({
+  pagesBaseUrl,
+}: {
+  pagesBaseUrl?: string;
+} = {}) {
   return (
     <footer className="border-t">
       <div className={cn(marketingContainerClass, "py-10")}>
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-muted-foreground text-sm">
           {footerNav.map((item) => (
             <span key={item.href}>
-              <NavLink item={item} />
+              <NavLink item={item} pagesBaseUrl={pagesBaseUrl} />
             </span>
           ))}
         </div>
@@ -143,6 +172,7 @@ export function MarketingSiteFooter() {
 
 export type MarketingPageShellProps = {
   signInHref: string;
+  pagesBaseUrl?: string;
   headerActions?: ReactNode;
   children: ReactNode;
 };
@@ -150,6 +180,7 @@ export type MarketingPageShellProps = {
 /** Standard marketing chrome for inner pages on `apps/www`. */
 export function MarketingPageShell({
   signInHref,
+  pagesBaseUrl,
   headerActions,
   children,
 }: MarketingPageShellProps) {
@@ -157,6 +188,7 @@ export function MarketingPageShell({
     <div className="flex min-h-svh flex-col bg-background">
       <MarketingSiteHeader
         signInHref={signInHref}
+        pagesBaseUrl={pagesBaseUrl}
         headerActions={headerActions}
       />
       <main className="flex-1">{children}</main>

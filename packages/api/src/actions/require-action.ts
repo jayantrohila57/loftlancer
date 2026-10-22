@@ -168,6 +168,7 @@ export async function requireAction(
           ctx.userId,
           ctx.projectId,
           ctx.organizationId,
+          { includeDeleted: action === "project.restore" },
         )
       : null;
     const teamCtx = ctx.teamId

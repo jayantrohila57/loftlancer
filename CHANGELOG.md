@@ -16,6 +16,22 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- Add the dedicated `apps/www` marketing site and route its sign-in CTAs to auth with the validated studio return URL (#103)
+
+### Fixed
+
+- Replace the ignored Sentry transaction scrubber with `beforeSendSpan` for the default streamed trace lifecycle (#354)
+- Made soft-deleted projects and their related environments and variables recoverable from Studio (#463).
+- Marked authenticated auth settings responses as private and non-cacheable (#363).
+
+## [1.18.0] - 2026-10-22
+
+### Added
+
+- Added a permission-checked member access view spanning organization roles, teams, projects, apps, and audit activity (#590).
+
 ## [1.17.1] - 2026-10-22
 
 ### Security
@@ -744,7 +760,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.1...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.18.0...HEAD
+[1.18.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.2...v1.17.0
 [1.16.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.1...v1.16.2

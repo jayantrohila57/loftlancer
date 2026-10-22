@@ -38,6 +38,7 @@ import {
   mcpMemberRemove,
   mcpMembersList,
 } from "../mcp/organization-ops";
+import { loadMemberAccessSummary } from "../member-access/service";
 import { organizationBrandingLogoSchema } from "../organization-branding-validation";
 import {
   domainChallengeMatches,
@@ -1725,6 +1726,27 @@ export const organizationsRouter = router({
         return { items: [] };
       }
       return mcpMembersList(ctx.session.user.id, organizationId);
+    }),
+
+  getMemberAccessSummary: orgProcedure
+    .input(z.object({ memberId: z.string().min(1) }))
+    .use(
+      actionGuard("member.list", (input) => ({
+        entityId: (input as { memberId: string }).memberId,
+      })),
+    )
+    .query(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) return null;
+      const summary = await loadMemberAccessSummary({
+        organizationId,
+        memberId: input.memberId,
+        viewerUserId: ctx.session.user.id,
+      });
+      if (!summary) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Member not found" });
+      }
+      return summary;
     }),
 
   removeMember: orgProcedure

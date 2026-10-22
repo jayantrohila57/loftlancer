@@ -4,14 +4,17 @@ import {
   softDeleteProjectById,
 } from "@loftlancer/db";
 import { environment, project } from "@loftlancer/db/schema/projects";
+import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 import { z } from "zod/v3";
 import { actionGuard } from "../actions/action-guard";
 import { projectIdFromInput } from "../actions/guard-resolve";
+import { requireAction } from "../actions/require-action";
 import { createAuditLog } from "../audit";
 import { throwFriendlyError } from "../errors";
 import { orgProcedure, router } from "../index";
+import { mcpProjectRestore } from "../mcp/restore-ops";
 import { formatEnvironmentRows } from "../variable-format";
 import { isVariablesV2Enabled } from "../variables-v2";
 
@@ -91,6 +94,79 @@ export const projectsRouter = router({
         .orderBy(project.updatedAt);
 
       return respond({ message: "Projects fetched", data: projectsList });
+    }),
+
+  deleted: orgProcedure
+    .use(actionGuard("organization.list"))
+    .query(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId || !isSoftDeletesEnabled()) return { items: [] };
+
+      const deletedProjects = await db
+        .select({
+          id: project.id,
+          name: project.name,
+          slug: project.slug,
+          deletedAt: project.deletedAt,
+        })
+        .from(project)
+        .where(
+          and(
+            eq(project.organizationId, organizationId),
+            isNotNull(project.deletedAt),
+          ),
+        )
+        .orderBy(project.deletedAt);
+
+      const restorableProjects = await Promise.all(
+        deletedProjects.map(async (row) => {
+          try {
+            await requireAction("project.restore", {
+              userId: ctx.session.user.id,
+              organizationId,
+              projectId: row.id,
+              audit: false,
+            });
+            return row;
+          } catch (error) {
+            if (error instanceof TRPCError && error.code === "FORBIDDEN") {
+              return null;
+            }
+            throw error;
+          }
+        }),
+      );
+      return { items: restorableProjects.filter((row) => row !== null) };
+    }),
+
+  restore: orgProcedure
+    .input(getProjectInput)
+    .use(actionGuard("project.restore", projectIdFromInput))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization before restoring a project.",
+        });
+      }
+      try {
+        const data = await mcpProjectRestore(
+          ctx.session.user.id,
+          organizationId,
+          input.id,
+        );
+        return respond({ message: "Project restored", data });
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        if (error instanceof Error && error.message === "project_not_found") {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Project not found",
+          });
+        }
+        throw error;
+      }
     }),
 
   // Get a single project with its environments by ID
