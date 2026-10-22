@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Activity, Boxes, Layers, Lock } from "lucide-react";
+import { Activity, Boxes, Layers, Lock, Users } from "lucide-react";
 import { GithubIcon } from "../components/icons/github-icon";
 
 export type MarketingFeature = {
@@ -23,9 +23,15 @@ export const marketingFeatures: MarketingFeature[] = [
   },
   {
     icon: Boxes,
-    title: "Projects & organizations",
+    title: "Organizations, projects & apps",
     description:
-      "Group repositories, invite teammates, and control access with org roles.",
+      "Group work, connect apps, invite teammates, and control access with clear roles.",
+  },
+  {
+    icon: Users,
+    title: "People & access",
+    description:
+      "Manage organization, project, and team membership with roles that match each resource.",
   },
   {
     icon: Activity,

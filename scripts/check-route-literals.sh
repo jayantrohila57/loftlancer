@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 pattern='(["'"'"'`]|/studio)/dashboard([/"'"'"'`?#]|$)|["'"'"'`]/p/'
-paths=(apps/studio/src apps/auth/src apps/docs/src packages)
+paths=(apps/studio/src apps/auth/src apps/docs/src apps/www/src packages)
 
 if matches=$(grep -RInE "$pattern" "${paths[@]}" \
   --include='*.ts' --include='*.tsx' --include='*.mts' --include='*.mjs' \

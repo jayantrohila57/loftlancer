@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+- Add the dedicated `apps/www` marketing site and route its sign-in CTAs to auth with the validated studio return URL (#103)
+
 ## [1.18.0] - 2026-10-22
 
 ### Added

@@ -1,8 +1,8 @@
 export const marketingSiteConfig = {
   name: "Loftlancer",
-  tagline: "One workspace for project configuration",
+  tagline: "Bring your organization, projects, teams, and apps together.",
   description:
-    "Securely manage environment variables and secrets across projects and environments—with encryption, audit history, and GitHub sign-in.",
+    "Keep workspaces connected, access clear, and environment variables encrypted across every project.",
   links: {
     github: "https://github.com/jayantrohila57/loftlancer",
   },
