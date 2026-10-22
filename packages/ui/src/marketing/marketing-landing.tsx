@@ -23,6 +23,8 @@ import { marketingSiteConfig } from "./site-config";
 
 export type MarketingLandingProps = {
   signInHref: string;
+  /** Show one-time confirmation after account deletion. */
+  accountDeleted?: boolean;
   /** Absolute base URL for pages hosted by the docs app. */
   pagesBaseUrl?: string;
   /** Optional slot for theme toggle (rendered in header). */
@@ -158,6 +160,7 @@ function CtaSection({ signInHref }: { signInHref: string }) {
 
 export function MarketingLanding({
   signInHref,
+  accountDeleted = false,
   pagesBaseUrl,
   headerActions,
 }: MarketingLandingProps) {
@@ -171,6 +174,23 @@ export function MarketingLanding({
         pagesBaseUrl={pagesBaseUrl}
         headerActions={headerActions}
       />
+      {accountDeleted ? (
+        <div className={cn(marketingContainerClass, "py-4")}>
+          <div
+            role="status"
+            aria-live="polite"
+            className="rounded-lg border bg-muted/30 px-4 py-3 text-sm"
+          >
+            <p className="font-medium">Your account was deleted.</p>
+            <p className="mt-1 text-muted-foreground">
+              Your profile was anonymized and your sessions were revoked.
+              Organization, project, and audit records remain, with no automatic
+              removal date currently set. You cannot restore this profile
+              yourself; sign in with a different account to continue.
+            </p>
+          </div>
+        </div>
+      ) : null}
       <main className="flex-1">
         <HeroSection signInHref={signInHref} />
         <FeaturesSection />

@@ -9,7 +9,7 @@ Drizzle tables that support soft delete expose nullable:
 - `deleted_at` (`timestamp`)
 - `deleted_by` (`text`, FK → `user.id`, `ON DELETE SET NULL`)
 
-Applied in schema for: `project`, `environment`, `environment_variable`, `organization`, `member`, `invitation`, and `notification`. (`user` stays hard-delete only for Better Auth compatibility.)
+Applied in schema for: `project`, `environment`, `environment_variable`, `organization`, `member`, `invitation`, and `notification`. Account deletion also soft-deletes the `user` row and replaces the name, email, and image with anonymized values.
 
 **Exceptions (hard delete only):** `session`, `account`, `verification`, and immutable `audit_log`.
 
@@ -45,6 +45,10 @@ When on (after migration):
 ## Better Auth
 
 Organization/member/invitation deletes initiated via Better Auth still use the adapter’s hard delete until the auth workstream wires soft-delete hooks. App-owned tRPC deletes and all list/get paths already respect the flag.
+
+## Account deletion
+
+The account settings action anonymizes the user name, email, and image, marks the user row as deleted, and removes active sessions. Organization/project data and audit history remain. There is currently no automatic deletion date configured for those records. The anonymized profile cannot be restored by the user; sign-in attempts for a deleted user are rejected.
 
 ## Enabling in production
 
