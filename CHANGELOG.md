@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Fixed
 
+- Made soft-deleted projects and their related environments and variables recoverable from Studio (#463).
 - Marked authenticated auth settings responses as private and non-cacheable (#363).
 
 ## [1.18.0] - 2026-10-22
