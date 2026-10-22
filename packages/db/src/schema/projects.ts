@@ -71,6 +71,12 @@ export const project = pgTable(
     uniqueIndex("project_org_slug_active_uidx")
       .on(table.organizationId, table.slug)
       .where(sql`${table.deletedAt} IS NULL`),
+    // Access links reference this pair so their organization must match the
+    // project even when writes bypass the application layer.
+    uniqueIndex("project_id_organization_id_uidx").on(
+      table.id,
+      table.organizationId,
+    ),
     index("project_userId_idx").on(table.userId),
     index("project_slug_idx").on(table.slug),
     index("project_status_idx").on(table.status),

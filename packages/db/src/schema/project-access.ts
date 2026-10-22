@@ -1,5 +1,11 @@
 import { relations } from "drizzle-orm";
-import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  foreignKey,
+  index,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { organization } from "./organization";
 import { project } from "./projects";
@@ -32,6 +38,16 @@ export const projectManager = pgTable(
   (table) => [
     index("project_manager_user_idx").on(table.userId),
     index("project_manager_project_idx").on(table.projectId),
+    index("project_manager_org_project_user_idx").on(
+      table.organizationId,
+      table.projectId,
+      table.userId,
+    ),
+    foreignKey({
+      name: "project_manager_project_org_fk",
+      columns: [table.projectId, table.organizationId],
+      foreignColumns: [project.id, project.organizationId],
+    }).onDelete("cascade"),
   ],
 );
 
@@ -59,7 +75,24 @@ export const projectTeam = pgTable(
       onDelete: "set null",
     }),
   },
-  (table) => [index("project_team_project_idx").on(table.projectId)],
+  (table) => [
+    index("project_team_project_idx").on(table.projectId),
+    index("project_team_org_project_team_idx").on(
+      table.organizationId,
+      table.projectId,
+      table.teamId,
+    ),
+    foreignKey({
+      name: "project_team_project_org_fk",
+      columns: [table.projectId, table.organizationId],
+      foreignColumns: [project.id, project.organizationId],
+    }).onDelete("cascade"),
+    foreignKey({
+      name: "project_team_team_org_fk",
+      columns: [table.teamId, table.organizationId],
+      foreignColumns: [team.id, team.organizationId],
+    }).onDelete("cascade"),
+  ],
 );
 
 export const projectMemberGrant = pgTable(
@@ -93,6 +126,16 @@ export const projectMemberGrant = pgTable(
   (table) => [
     index("project_member_grant_user_idx").on(table.userId),
     index("project_member_grant_project_idx").on(table.projectId),
+    index("project_member_grant_org_project_user_idx").on(
+      table.organizationId,
+      table.projectId,
+      table.userId,
+    ),
+    foreignKey({
+      name: "project_member_grant_project_org_fk",
+      columns: [table.projectId, table.organizationId],
+      foreignColumns: [project.id, project.organizationId],
+    }).onDelete("cascade"),
   ],
 );
 

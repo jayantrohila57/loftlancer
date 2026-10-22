@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Security
+
+- Prevented project, team, and member access links from crossing organization boundaries in the database and server-side manager assignment workflow (#586).
+
 ## [1.17.0] - 2026-10-22
 
 ### Changed
