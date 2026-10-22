@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.16.2] - 2026-10-22
+
 ### Changed
 
 - Simplified homepage sign-in, centered product features in the branding panel, and moved public links into its footer with a mobile page-footer fallback (#605).
@@ -729,7 +731,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.1...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.2...HEAD
+[1.16.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.1...v1.16.2
 [1.16.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.16.0...v1.16.1
 [1.16.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.1...v1.16.0
 [1.15.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.15.0...v1.15.1
