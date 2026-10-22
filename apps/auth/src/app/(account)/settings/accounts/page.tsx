@@ -1,3 +1,4 @@
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SettingsSectionShell } from "@/app/(account)/settings/_components/settings-section-shell";
@@ -18,7 +19,9 @@ export default async function AccountsSettingsPage() {
       title="Connected accounts"
       description="GitHub and other providers used to sign in."
     >
-      <Suspense fallback={<AccountSettingsSkeleton />}>
+      <Suspense
+        fallback={<DelayedPageLoading fallback={<AccountSettingsSkeleton />} />}
+      >
         <AccountSettingsClient section="accounts" />
       </Suspense>
     </SettingsSectionShell>

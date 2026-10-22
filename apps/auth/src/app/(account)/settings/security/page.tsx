@@ -1,3 +1,4 @@
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SettingsSectionShell } from "@/app/(account)/settings/_components/settings-section-shell";
@@ -18,7 +19,9 @@ export default async function SecuritySettingsPage() {
       title="Security"
       description="How you sign in and protect your account."
     >
-      <Suspense fallback={<AccountSettingsSkeleton />}>
+      <Suspense
+        fallback={<DelayedPageLoading fallback={<AccountSettingsSkeleton />} />}
+      >
         <SecuritySettingsPanel />
       </Suspense>
     </SettingsSectionShell>

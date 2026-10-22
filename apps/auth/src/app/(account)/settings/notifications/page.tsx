@@ -1,3 +1,4 @@
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SettingsSectionShell } from "@/app/(account)/settings/_components/settings-section-shell";
@@ -18,7 +19,11 @@ export default async function NotificationsSettingsPage() {
       title="Notifications"
       description="Where to review in-app alerts."
     >
-      <Suspense fallback={<NotificationPreferencesSkeleton />}>
+      <Suspense
+        fallback={
+          <DelayedPageLoading fallback={<NotificationPreferencesSkeleton />} />
+        }
+      >
         <NotificationPreferencesPanel />
       </Suspense>
     </SettingsSectionShell>

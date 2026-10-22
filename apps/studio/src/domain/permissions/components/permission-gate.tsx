@@ -1,7 +1,7 @@
 "use client";
 
 import type { ActionName } from "@loftlancer/actions";
-import { Spinner } from "@loftlancer/ui/spinner";
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import { ErrorState } from "@/components/patterns/error-state";
 import { useCan } from "../hooks/use-permissions";
 
@@ -10,6 +10,8 @@ type PermissionGateProps = {
   projectId?: string;
   /** Shown when denied (default: compact forbidden message). */
   fallback?: React.ReactNode;
+  /** Page-shaped placeholder shown while the client permission check resolves. */
+  loadingFallback: React.ReactNode;
   children: React.ReactNode;
 };
 
@@ -17,16 +19,13 @@ export function PermissionGate({
   action,
   projectId,
   fallback,
+  loadingFallback,
   children,
 }: PermissionGateProps) {
   const { allowed, isLoading, reason } = useCan(action, { projectId });
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Spinner />
-      </div>
-    );
+    return <DelayedPageLoading fallback={loadingFallback} />;
   }
 
   if (!allowed) {

@@ -22,6 +22,7 @@ import {
 import { Input } from "@loftlancer/ui/input";
 import { GoogleMark } from "@loftlancer/ui/patterns/auth-5";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { UnsavedChangesPageGuard } from "@loftlancer/ui/patterns/unsaved-changes-page-guard";
@@ -265,7 +266,12 @@ export function AccountSettingsClient({
   const organizationSlug = sidebarContext.data?.organizationSlug;
 
   if (isPending) {
-    return <AccountSettingsSkeleton />;
+    return (
+      <DelayedPageLoading
+        fallback={<AccountSettingsSkeleton />}
+        onRetry={() => void refetch()}
+      />
+    );
   }
 
   if (error || !user) {

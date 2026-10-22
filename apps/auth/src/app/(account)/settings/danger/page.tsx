@@ -1,3 +1,4 @@
+import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SettingsSectionShell } from "@/app/(account)/settings/_components/settings-section-shell";
@@ -19,10 +20,18 @@ export default async function DangerZoneSettingsPage() {
       description="Export your data or permanently delete your account."
     >
       <div className="flex flex-col gap-4">
-        <Suspense fallback={<AccountSettingsSkeleton />}>
+        <Suspense
+          fallback={
+            <DelayedPageLoading fallback={<AccountSettingsSkeleton />} />
+          }
+        >
           <AccountSettingsClient section="export" />
         </Suspense>
-        <Suspense fallback={<AccountSettingsSkeleton />}>
+        <Suspense
+          fallback={
+            <DelayedPageLoading fallback={<AccountSettingsSkeleton />} />
+          }
+        >
           <AccountSettingsClient section="delete" />
         </Suspense>
       </div>
