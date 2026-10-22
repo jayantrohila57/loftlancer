@@ -45,7 +45,7 @@ type EventWithRequest = {
 };
 
 /**
- * `beforeSend` / `beforeSendTransaction` scrubber: drops the test-error token
+ * `beforeSend` scrubber: drops the test-error token
  * header (any casing) from captured request data, so the token never reaches
  * Sentry (#354).
  */
@@ -57,4 +57,22 @@ export function scrubSentryTestToken<T extends EventWithRequest>(event: T): T {
     }
   }
   return event;
+}
+
+type SpanWithAttributes = { attributes: Record<string, unknown> };
+
+/**
+ * Streamed spans use `beforeSendSpan` (transaction callbacks are ignored by
+ * Sentry's default stream lifecycle). Remove any span attribute carrying the
+ * test token header, including normalized `http.request.header.*` names.
+ */
+export function scrubSentryTestTokenFromSpan<T extends SpanWithAttributes>(
+  span: T,
+): T {
+  for (const key of Object.keys(span.attributes)) {
+    if (key.toLowerCase().includes(SENTRY_TEST_HEADER)) {
+      delete span.attributes[key];
+    }
+  }
+  return span;
 }

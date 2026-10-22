@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+- Replace the ignored Sentry transaction scrubber with `beforeSendSpan` for the default streamed trace lifecycle (#354)
+
 ## [1.18.0] - 2026-10-22
 
 ### Added
