@@ -43,7 +43,15 @@ const projectDateSchema = z
       parsed.toISOString().slice(0, 10) === value
     );
   }, "Enter a valid date")
-  .optional();
+  .optional()
+  .or(z.literal(""));
+
+export function isProjectDateRangeValid(
+  startDate: string | null | undefined,
+  targetDate: string | null | undefined,
+): boolean {
+  return !startDate || !targetDate || targetDate >= startDate;
+}
 
 // Project schemas
 export const createProjectInput = z.object({
@@ -71,10 +79,10 @@ export const updateProjectInput = z.object({
     .max(100, "Project name must be 100 characters or fewer")
     .optional(),
   description: projectDescriptionSchema,
-  purpose: projectPurposeSchema.nullable(),
-  documentationUrl: projectDocumentationUrlSchema.nullable(),
-  startDate: projectDateSchema.nullable(),
-  targetDate: projectDateSchema.nullable(),
+  purpose: projectPurposeSchema.nullable().optional(),
+  documentationUrl: projectDocumentationUrlSchema.nullable().optional(),
+  startDate: projectDateSchema.nullable().optional(),
+  targetDate: projectDateSchema.nullable().optional(),
   repositoryUrl: z.string().url().optional().or(z.literal("")),
   websiteUrl: z.string().url().optional().or(z.literal("")),
   isPublic: z.boolean().optional(),
