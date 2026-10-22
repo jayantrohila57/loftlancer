@@ -132,7 +132,7 @@ export function TasksPage({ slug }: { slug: string }) {
     {
       id: "number",
       header: "ID",
-      meta: { className: "w-16" },
+      meta: { className: "hidden w-16 sm:table-cell" },
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs tabular-nums">
           #{row.original.number}
@@ -142,28 +142,51 @@ export function TasksPage({ slug }: { slug: string }) {
     {
       id: "title",
       header: "Title",
-      meta: { className: "max-w-0" },
+      meta: { className: "max-w-0 min-w-48 sm:min-w-0" },
       cell: ({ row }) => {
         const t = row.original;
         return (
-          <div className="flex min-w-0 items-center gap-1.5">
-            <Link
-              href={routes.task(org, slug, t.number)}
-              className="truncate hover:underline"
-              onClick={(e) => {
-                // Plain click opens the sheet in place; modifier clicks open a new tab.
-                if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-                e.preventDefault();
-                setOpenNumber(t.number);
-              }}
-            >
-              {t.title}
-            </Link>
-            {t.labels.slice(0, 2).map((l) => (
-              <Badge key={l} variant="outline" size="sm" className="shrink-0">
-                {l}
+          <div className="min-w-0">
+            <div className="flex min-w-0 items-center gap-1.5">
+              <Link
+                href={routes.task(org, slug, t.number)}
+                className="truncate hover:underline"
+                onClick={(e) => {
+                  // Plain click opens the sheet in place; modifier clicks open a new tab.
+                  if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+                  e.preventDefault();
+                  setOpenNumber(t.number);
+                }}
+              >
+                {t.title}
+              </Link>
+              {t.labels.slice(0, 2).map((l) => (
+                <Badge key={l} variant="outline" size="sm" className="shrink-0">
+                  {l}
+                </Badge>
+              ))}
+            </div>
+            <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs sm:hidden">
+              <span className="text-muted-foreground tabular-nums">
+                #{t.number}
+              </span>
+              <Badge variant={statusBadgeVariant(t.status)} size="sm">
+                {statusLabel(t.status)}
               </Badge>
-            ))}
+              {t.priority !== "none" ? (
+                <Badge variant={priorityBadgeVariant(t.priority)} size="sm">
+                  {priorityLabel(t.priority)}
+                </Badge>
+              ) : null}
+              <span className="text-muted-foreground">
+                {t.assigneeName || "Unassigned"}
+              </span>
+              {t.dueDate ? (
+                <span className="text-muted-foreground">
+                  · Due <LocalDateTime value={t.dueDate} />
+                </span>
+              ) : null}
+            </div>
           </div>
         );
       },
@@ -171,7 +194,7 @@ export function TasksPage({ slug }: { slug: string }) {
     {
       id: "status",
       header: "Status",
-      meta: { className: "w-32" },
+      meta: { className: "hidden w-32 sm:table-cell" },
       cell: ({ row }) => (
         <Badge variant={statusBadgeVariant(row.original.status)} size="sm">
           {statusLabel(row.original.status)}
@@ -181,7 +204,7 @@ export function TasksPage({ slug }: { slug: string }) {
     {
       id: "priority",
       header: "Priority",
-      meta: { className: "w-28" },
+      meta: { className: "hidden w-28 lg:table-cell" },
       cell: ({ row }) =>
         row.original.priority === "none" ? (
           <span className="text-muted-foreground text-xs">—</span>
@@ -197,7 +220,7 @@ export function TasksPage({ slug }: { slug: string }) {
     {
       id: "assignee",
       header: "Assignee",
-      meta: { className: "w-44" },
+      meta: { className: "hidden w-44 md:table-cell" },
       cell: ({ row }) => {
         const t = row.original;
         return t.assigneeId ? (
@@ -220,7 +243,7 @@ export function TasksPage({ slug }: { slug: string }) {
     {
       id: "due",
       header: "Due",
-      meta: { className: "w-28" },
+      meta: { className: "hidden w-28 lg:table-cell" },
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs tabular-nums">
           <LocalDateTime value={row.original.dueDate} />
@@ -230,7 +253,7 @@ export function TasksPage({ slug }: { slug: string }) {
     {
       id: "updated",
       header: "Updated",
-      meta: { className: "w-28" },
+      meta: { className: "hidden w-28 xl:table-cell" },
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs">
           <ClientRelativeTime value={row.original.updatedAt} />

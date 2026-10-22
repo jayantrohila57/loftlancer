@@ -305,7 +305,7 @@ export function VariablesTableView({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    className="size-7 shrink-0 text-muted-foreground"
+                    className="size-10 shrink-0 text-muted-foreground sm:size-7"
                     aria-label={
                       isRevealed
                         ? `Hide ${variable.key}`
@@ -322,7 +322,7 @@ export function VariablesTableView({
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  className="size-7 shrink-0 text-muted-foreground"
+                  className="size-10 shrink-0 text-muted-foreground sm:size-7"
                   aria-label={`Copy ${variable.key}`}
                   onClick={() => void copyValue(variable)}
                   data-testid="variable-copy"

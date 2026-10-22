@@ -225,7 +225,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
                   ariaLabel="Organization member to add"
                   placeholder="Select a member"
                   searchPlaceholder="Search members…"
-                  className="w-64"
+                  className="w-full sm:w-64"
                   options={addable.map((row) => ({
                     value: row.userId,
                     label: row.name || row.email,

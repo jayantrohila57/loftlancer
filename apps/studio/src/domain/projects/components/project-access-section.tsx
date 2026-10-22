@@ -161,8 +161,16 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
     {
       id: "effectiveActions",
       header: "Effective project access",
-      cell: ({ row }) =>
-        row.original.effectiveActions.map(formatActionLabel).join(", "),
+      cell: ({ row }) => (
+        <span
+          className="block max-w-72 whitespace-normal text-xs"
+          title={row.original.effectiveActions
+            .map(formatActionLabel)
+            .join(", ")}
+        >
+          {row.original.effectiveActions.map(formatActionLabel).join(", ")}
+        </span>
+      ),
     },
   ];
   const managerColumns: DataTableColumnDef<(typeof managers)[number]>[] = [
@@ -373,7 +381,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                 ariaLabel="Manager"
                 placeholder="Select member"
                 searchPlaceholder="Search members…"
-                className="w-64"
+                className="w-full sm:w-64"
                 options={orgMembers
                   .filter((m) => m.role === "manager" || m.role === "owner")
                   .map((member) => ({
@@ -434,7 +442,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                 ariaLabel="Team"
                 placeholder="Select team"
                 searchPlaceholder="Search teams…"
-                className="w-56"
+                className="w-full sm:w-56"
                 options={availableTeams.map((team) => ({
                   value: team.id,
                   label: team.name,
@@ -484,7 +492,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
               ariaLabel="Member"
               placeholder="Select member"
               searchPlaceholder="Search members…"
-              className="w-64"
+              className="w-full sm:w-64"
               options={orgMembers
                 .filter((m) => m.role === "member")
                 .map((member) => ({

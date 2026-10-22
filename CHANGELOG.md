@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Added
 
 - Improved narrow-screen dashboard navigation, resource tabs, and table search/pagination controls (#593, #594, #595).
+- Improved mobile organization and team access tables, project/app access lists, task rows, environment variable controls, and management sheets (#596, #597, #598).
 - Added Project purpose, documentation, and schedule fields; Team purpose and descriptions; and member history details for scoped management forms (#585, #587, #588, #589).
 - Added additive Project, Team, team-member, and organization-member schema fields for profile and change provenance; existing records retain unknown historical actors (#585, #587, #588, #589).
 - Added organization member profiles, scoped custom roles, suspension controls, and invitation lifecycle tracking with shared permission enforcement (#579).

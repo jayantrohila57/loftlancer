@@ -155,17 +155,33 @@ export function AppAccessSection({
     {
       accessorKey: "projectSources",
       header: "Project access through",
-      cell: ({ row }) => row.original.projectSources.join(", "),
+      cell: ({ row }) => (
+        <span
+          className="block max-w-64 whitespace-normal text-xs"
+          title={row.original.projectSources.join(", ")}
+        >
+          {row.original.projectSources.join(", ")}
+        </span>
+      ),
     },
     {
       accessorKey: "appSources",
       header: "App access through",
-      cell: ({ row }) =>
-        !row.original.projectCanReadApp
+      cell: ({ row }) => {
+        const sources = !row.original.projectCanReadApp
           ? "Project permissions don't include app access"
           : row.original.canAccess
             ? row.original.appSources.join(", ")
-            : "No app assignment",
+            : "No app assignment";
+        return (
+          <span
+            className="block max-w-64 whitespace-normal text-xs"
+            title={sources}
+          >
+            {sources}
+          </span>
+        );
+      },
     },
   ];
 

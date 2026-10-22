@@ -114,7 +114,7 @@ export function TaskDetailSheet({
 
   return (
     <Sheet open={number !== null} onOpenChange={(o) => !o && onClose()}>
-      <SheetPopup className="sm:max-w-lg">
+      <SheetPopup className="max-sm:max-h-[100dvh] max-sm:w-full max-sm:max-w-none sm:max-w-lg">
         <SheetHeader>
           <SheetTitle className="text-sm">
             {t ? `#${t.number}` : number ? `#${number}` : "Task"}
@@ -171,7 +171,7 @@ export function TaskDetailSheet({
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="grid gap-1.5 sm:grid-cols-2">
                 <FieldSelect
                   ariaLabel="Status"
                   className="w-full"
