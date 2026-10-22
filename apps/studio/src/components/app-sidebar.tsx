@@ -149,6 +149,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     favorites: favoriteOrganizationIds,
     toggleFavorite,
     retainOrganizations,
+    favoriteLimit: organizationFavoriteLimit,
   } = useOrganizationFavorites();
   const orgSlug = scope.org;
   const showOrganizations = isOrganizationsEnabledOnClient();
@@ -161,11 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     envHref,
     memberHref,
     teamHref,
-    settingsLinks: [
-      { label: "Account settings", href: accountSettingsHref },
-      { label: "Notifications", href: routes.notifications() },
-      { label: "Activity", href: routes.activity() },
-    ],
+    settingsLinks: [{ label: "Account settings", href: accountSettingsHref }],
   });
   const teams =
     nav.groups.find((group) => group.heading === "Teams")?.items ?? [];
@@ -300,7 +297,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenuAction
                     aria-label={`Add ${org.name} to favorites`}
                     disabled={
-                      favoriteOrganizationIds.length >= MAX_SIDEBAR_FAVORITES
+                      favoriteOrganizationIds.length >=
+                      organizationFavoriteLimit
                     }
                     onClick={() => toggleFavorite(org.id)}
                   >

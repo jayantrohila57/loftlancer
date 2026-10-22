@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Added a dedicated `/organizations` directory with responsive organization cards and moved its create action into the header (#610).
 - Reorganized Studio navigation into collapsible groups and introduced a dedicated Overview landing page with organization favorites (#609, #611).
 
 ## [1.16.2] - 2026-10-22

@@ -18,7 +18,7 @@ export function pathAfterOrganizationSwitch(
   projectSlugs: ReadonlySet<string>,
 ): Route | null {
   if (!nextOrg) {
-    return routes.organizations();
+    return routes.organizationsDirectory();
   }
   const parts = pathname.split("/").filter(Boolean);
   const [orgSlug, second, ...rest] = parts;

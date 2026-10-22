@@ -26,7 +26,10 @@ test("project list content uses the shared no-results empty", () => {
 
 test("organization directory renders responsive cards with favorite controls", () => {
   const list = readFileSync(
-    join(root, "domain/organizations/components/organizations-list-content.tsx"),
+    join(
+      root,
+      "domain/organizations/components/organizations-list-content.tsx",
+    ),
     "utf8",
   );
   const card = readFileSync(

@@ -3,7 +3,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Button } from "@loftlancer/ui/button";
 import { Card, CardHeader, CardPanel } from "@loftlancer/ui/card";
-import { Star } from "lucide-react";
 import Link from "next/link";
 import type { OrgListItem } from "@/components/org/active-organization-context";
 import { AppIcon } from "@/components/patterns/app-icon";
@@ -72,7 +71,10 @@ export function OrganizationCard({
           disabled={!isFavorite && favoriteLimitReached}
           onClick={onToggleFavorite}
         >
-          <Star className={isFavorite ? "fill-current" : undefined} />
+          <AppIcon
+            name="favorite"
+            className={isFavorite ? "fill-current" : undefined}
+          />
         </Button>
         <Link
           href={href}
