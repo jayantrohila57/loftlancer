@@ -6,7 +6,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Features",
   description:
-    "Encryption, organizations, projects, apps and audit timeline in Loftlancer.",
+    "Encryption, organizations, projects, apps and activity in Loftlancer.",
   path: "/features",
 });
 

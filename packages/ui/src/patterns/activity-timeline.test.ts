@@ -38,7 +38,7 @@ describe("auditRowToActivityItem", () => {
       { ...base, action: "audit.timeline.view.org", projectId: null },
       { projectHref: () => null },
     );
-    assert.equal(item.verb, "View organization audit timeline");
+    assert.equal(item.verb, "View organization activity");
   });
 });
 

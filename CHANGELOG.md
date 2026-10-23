@@ -16,9 +16,14 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Standardized Activity labels across account, organization, and project pages; routed the duplicate account-settings entry to the shared Activity page (#630).
+
 ### Fixed
 
 - Removed the unmonitored Landing row from the public status board and made truncated monitor URLs accessible in a tooltip (#661).
+- Added a high-contrast scrim behind the split-layout quote so animated artwork cannot obscure its text (#662).
 - Standardized support, project invitation, help search, and project overview empty states with clear next actions (#645).
 
 ## [1.19.0] - 2026-10-23

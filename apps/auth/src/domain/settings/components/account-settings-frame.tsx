@@ -6,21 +6,13 @@ import {
   type SettingsTab,
 } from "@loftlancer/ui/patterns/settings-frame";
 import { routes } from "@loftlancer/ui/studio-routes";
-import {
-  Activity,
-  Bell,
-  Monitor,
-  ShieldAlert,
-  ShieldCheck,
-  User,
-} from "lucide-react";
+import { Bell, Monitor, ShieldAlert, ShieldCheck, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { studioDashboardPath } from "@/lib/studio-url";
 
-const TABS: (SettingsTab & { audit?: boolean })[] = [
+const TABS: SettingsTab[] = [
   { href: "/settings/profile", label: "Profile", icon: <User /> },
   { href: "/settings/security", label: "Security", icon: <ShieldCheck /> },
   { href: "/settings/sessions", label: "Sessions", icon: <Monitor /> },
@@ -30,12 +22,6 @@ const TABS: (SettingsTab & { audit?: boolean })[] = [
     icon: <GithubIcon />,
   },
   { href: "/settings/notifications", label: "Notifications", icon: <Bell /> },
-  {
-    href: "/settings/timeline",
-    label: "Activity",
-    icon: <Activity />,
-    audit: true,
-  },
   { href: "/settings/danger", label: "Danger zone", icon: <ShieldAlert /> },
 ];
 
@@ -49,13 +35,10 @@ export function AccountSettingsFrame({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const audit = isActionsAuditEnabledOnClient();
-  const tabs = TABS.filter((t) => !t.audit || audit).map(
-    ({ audit: _a, ...t }) => ({
-      ...t,
-      active: pathname === t.href || pathname.startsWith(`${t.href}/`),
-    }),
-  );
+  const tabs = TABS.map((t) => ({
+    ...t,
+    active: pathname === t.href || pathname.startsWith(`${t.href}/`),
+  }));
 
   return (
     <SettingsFrame

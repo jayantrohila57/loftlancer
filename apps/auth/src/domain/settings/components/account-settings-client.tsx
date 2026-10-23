@@ -13,12 +13,6 @@ import { isGoogleSignInEnabled, landingUrl } from "@loftlancer/ui/auth-links";
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from "@loftlancer/ui/empty";
 import { Input } from "@loftlancer/ui/input";
 import { GoogleMark } from "@loftlancer/ui/patterns/auth-5";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
@@ -65,8 +59,6 @@ import {
   type AuthSessionRow,
   SessionsList,
 } from "@/domain/settings/components/sessions-list";
-import { TimelinePageClient } from "@/domain/timeline/components/timeline-page-client";
-import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { initialsFromLabel } from "@/lib/initials";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
 import { studioDashboardPath } from "@/lib/studio-url";
@@ -80,7 +72,6 @@ const ACCOUNT_TABS = [
   "accounts",
   "export",
   "delete",
-  "timeline",
 ] as const;
 
 type AccountTab = (typeof ACCOUNT_TABS)[number];
@@ -224,7 +215,6 @@ export function AccountSettingsClient({
   const canAccounts = useCan(accountSettingsActions.accounts);
   const canExport = useCan(accountSettingsActions.export);
   const canDelete = useCan(accountSettingsActions.delete);
-  const canTimeline = useCan(accountSettingsActions.timeline);
 
   const deletePhrase = user?.email ?? "";
   const canDeleteAccount = deleteBlockersQuery.data?.data.canDelete ?? false;
@@ -412,11 +402,6 @@ export function AccountSettingsClient({
                 {canDelete.allowed ? (
                   <SettingsTabsTab value="delete" icon="danger">
                     Delete account
-                  </SettingsTabsTab>
-                ) : null}
-                {canTimeline.allowed ? (
-                  <SettingsTabsTab value="timeline" icon="activity">
-                    Timeline
                   </SettingsTabsTab>
                 ) : null}
               </SettingsTabsList>
@@ -753,27 +738,6 @@ export function AccountSettingsClient({
                       Delete account
                     </Button>
                   </SettingsRow>
-                </SettingsPanel>
-              </PermissionGate>
-            </SettingsTabsPanel>
-
-            <SettingsTabsPanel value="timeline" className="min-w-0">
-              <PermissionGate action={accountSettingsActions.timeline}>
-                <SettingsPanel>
-                  <div className="min-w-0 px-4 py-4">
-                    {isActionsAuditEnabledOnClient() ? (
-                      <TimelinePageClient scope="self" />
-                    ) : (
-                      <Empty>
-                        <EmptyHeader>
-                          <EmptyTitle>Activity unavailable</EmptyTitle>
-                          <EmptyDescription>
-                            Audit timeline is not enabled for this environment.
-                          </EmptyDescription>
-                        </EmptyHeader>
-                      </Empty>
-                    )}
-                  </div>
                 </SettingsPanel>
               </PermissionGate>
             </SettingsTabsPanel>

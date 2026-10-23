@@ -1,14 +1,11 @@
 "use client";
 
-import { ActivityOverview } from "./activity-overview";
-
 type OrganizationSectionPageProps = {
   slug: string;
   title: string;
   description: string;
   children: React.ReactNode;
   action?: React.ReactNode;
-  activity?: boolean;
 };
 
 /** Route-specific content heading. Organization identity and tabs live in the layout. */
@@ -17,7 +14,6 @@ export function OrganizationSectionPage({
   description,
   children,
   action,
-  activity = false,
 }: OrganizationSectionPageProps) {
   return (
     <section className="min-w-0 space-y-4">
@@ -28,9 +24,6 @@ export function OrganizationSectionPage({
         </div>
         {action}
       </header>
-      {activity ? (
-        <ActivityOverview scope="org" title="Organization activity" />
-      ) : null}
       {children}
     </section>
   );
