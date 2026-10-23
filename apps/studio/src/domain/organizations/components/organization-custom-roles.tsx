@@ -154,7 +154,7 @@ export function OrganizationCustomRoles() {
                   create.isPending || update.isPending || name.trim().length < 2
                 }
               >
-                {editingRoleId ? "Save role" : "Create role"}
+                {editingRoleId ? "Save changes" : "Create role"}
               </Button>
               {editingRoleId ? (
                 <Button

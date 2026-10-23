@@ -76,7 +76,7 @@ export function OrganizationBrandingEditor() {
           disabled={!canEdit || value === current || mutation.isPending}
           onClick={() => mutation.mutate({ logo: value.trim() || null })}
         >
-          {mutation.isPending ? "Saving…" : "Save logo"}
+          {mutation.isPending ? "Saving…" : "Save changes"}
         </Button>
       </div>
     </AccordionSection>

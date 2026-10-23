@@ -497,7 +497,7 @@ export function EditProject({
               loadingLabel="Updating…"
               disabled={!form.formState.isValid || dateRangeInvalid}
             >
-              Update project
+              Save changes
             </SubmitButton>
           </div>
         </SettingsRow>

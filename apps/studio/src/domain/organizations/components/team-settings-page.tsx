@@ -158,7 +158,7 @@ export function TeamSettingsPage({
                 })
               }
             >
-              Save profile
+              Save changes
             </Button>
           </div>
         </AccordionSection>
