@@ -15,10 +15,9 @@ export default function PrivacyPage() {
     >
       <h2>What we store</h2>
       <p>
-        When you sign in with GitHub, Better Auth stores your account, session,
-        and linked OAuth account metadata. Organizations, projects,
-        environments, and variables live in PostgreSQL. Secret variable values
-        are encrypted with <code>@loftlancer/crypto</code> before persistence.
+        When you sign in, your account and session details are stored securely.
+        Organizations, projects, environments, and variables are stored in the
+        service. Secret variable values are encrypted before they are stored.
       </p>
       <h2>How we use data</h2>
       <p>
@@ -28,22 +27,72 @@ export default function PrivacyPage() {
       </p>
       <h2>Third parties</h2>
       <p>
-        Hosting (Vercel), database (Neon), and GitHub OAuth are required to run
-        the service. Transactional email such as invitations is sent through
-        Resend. Errors are reported to Sentry. As rate limiting and file uploads
-        ship, they use Upstash Redis and Vercel Blob. Vercel Web Analytics and
-        Speed Insights measure page views and performance without cookies.
+        External providers help us run the service, store data, send email,
+        protect accounts, and understand reliability. Optional analytics load
+        only after you accept them in the cookie banner; you can decline and
+        nothing is loaded. See the provider table below and the{" "}
+        <a href="/legal/cookies">cookie policy</a> for optional analytics
+        details.
       </p>
-      <p>
-        Optional analytics (Google Analytics on the public site, PostHog in
-        Studio) load only after you accept them in the cookie banner. You can
-        decline, and nothing is loaded.
-      </p>
+      <table>
+        <caption>Service providers</caption>
+        <thead>
+          <tr>
+            <th scope="col">Service</th>
+            <th scope="col">Provider</th>
+            <th scope="col">Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Hosting</th>
+            <td>Vercel</td>
+            <td>Runs the Loftlancer websites and application.</td>
+          </tr>
+          <tr>
+            <th scope="row">Database</th>
+            <td>Neon</td>
+            <td>
+              Stores account, organization, project, and configuration data.
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Sign-in</th>
+            <td>GitHub OAuth</td>
+            <td>Provides sign-in and account identity.</td>
+          </tr>
+          <tr>
+            <th scope="row">Email</th>
+            <td>Resend</td>
+            <td>Sends invitations and other transactional email.</td>
+          </tr>
+          <tr>
+            <th scope="row">Error reporting</th>
+            <td>Sentry</td>
+            <td>Helps identify and resolve application errors.</td>
+          </tr>
+          <tr>
+            <th scope="row">Rate limiting</th>
+            <td>Upstash Redis</td>
+            <td>Helps protect service endpoints from excessive requests.</td>
+          </tr>
+          <tr>
+            <th scope="row">File storage</th>
+            <td>Vercel Blob</td>
+            <td>Stores uploaded files when the feature is enabled.</td>
+          </tr>
+          <tr>
+            <th scope="row">Performance measurement</th>
+            <td>Vercel Web Analytics and Speed Insights</td>
+            <td>Measures page visits and performance without cookies.</td>
+          </tr>
+        </tbody>
+      </table>
       <h2>Your choices</h2>
       <p>
-        Account settings support session management and account deletion flows
-        exposed as user-scoped actions in the registry. Contact the repository
-        owner for data requests related to self-hosted deployments.
+        You can review active sessions and request account deletion in account
+        settings. For data requests about a self-hosted copy of Loftlancer,
+        contact the person who operates it.
       </p>
     </MarketingPage>
   );

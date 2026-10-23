@@ -36,7 +36,7 @@ export default function NewSupportTicketPage() {
   return (
     <DashboardSection
       title="New ticket"
-      description="Describe your issue and we will follow up by email in production."
+      description="Describe your issue and our support team will follow up by email."
       back={false}
     >
       <form

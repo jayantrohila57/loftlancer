@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Replaced internal product names and engineering terms in user-facing copy (#632).
+
 ## [1.19.3] - 2026-10-23
 
 ### Changed

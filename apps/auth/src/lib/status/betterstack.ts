@@ -43,11 +43,11 @@ type IncidentResource = {
 /** Friendly names for the four public surfaces, by URL path. */
 const NAMES_BY_PATH: Record<string, string> = {
   "/": "Landing",
-  "/docs": "Docs",
-  "/studio": "Studio",
-  "/auth": "Auth",
+  "/docs": "Documentation",
+  "/studio": "Dashboard",
+  "/auth": "Sign-in",
 };
-const ORDER = ["Landing", "Docs", "Studio", "Auth"];
+const ORDER = ["Landing", "Documentation", "Dashboard", "Sign-in"];
 
 /** Only monitors on loftlancer.com (skips e.g. the auto-created google.com one). */
 export function isPublicMonitorUrl(url: string | null | undefined): boolean {
