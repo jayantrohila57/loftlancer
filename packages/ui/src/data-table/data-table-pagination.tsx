@@ -26,6 +26,7 @@ export function DataTablePagination({
 }) {
   // Always rendered so the table never changes height between states.
   const pageCount = Math.max(table.getPageCount(), 1);
+  if (pageCount <= 1) return null;
   const pageIndex = Math.min(
     table.getState().pagination.pageIndex,
     pageCount - 1,
