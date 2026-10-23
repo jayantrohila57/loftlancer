@@ -14,7 +14,7 @@ import {
 function cellLabel(cell: MatrixCell): string {
   if (cell === "Y") return "Yes";
   if (cell === "G") return "Access configured";
-  return "—";
+  return "No";
 }
 
 export function OrganizationPermissionsMatrix() {

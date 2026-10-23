@@ -120,7 +120,7 @@ export function NotificationListItem({
           <span className="flex min-w-0 items-center gap-1 text-muted-foreground text-xs leading-4">
             {actor ? (
               <>
-                <span className="max-w-[40%] shrink-0 truncate text-foreground/70">
+                <span className="max-w-[40%] shrink-0 truncate text-muted-foreground">
                   {actor.name}
                 </span>
                 <span aria-hidden>·</span>
@@ -150,7 +150,7 @@ export function NotificationListItem({
           <span className="flex min-w-0 items-center gap-1 text-muted-foreground text-xs leading-4">
             {actor ? (
               <>
-                <span className="max-w-[40%] shrink-0 truncate text-foreground/70">
+                <span className="max-w-[40%] shrink-0 truncate text-muted-foreground">
                   {actor.name}
                 </span>
                 <span aria-hidden>·</span>

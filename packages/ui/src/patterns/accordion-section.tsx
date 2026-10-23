@@ -35,7 +35,7 @@ export function AccordionSection({
           setOpen(nextOpen);
           onToggle?.(nextOpen);
         }}
-        className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left"
+        className="flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <span className="min-w-0 flex-1">
           <span className="block font-medium text-sm">{title}</span>
