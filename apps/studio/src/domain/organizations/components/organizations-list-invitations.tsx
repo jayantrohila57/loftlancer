@@ -4,6 +4,7 @@ import type { StudioRouter } from "@loftlancer/api/routers/studio";
 import { Button } from "@loftlancer/ui/button";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
+import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { useQuery } from "@tanstack/react-query";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import type { inferRouterOutputs } from "@trpc/server";
@@ -43,7 +44,9 @@ export function OrganizationsListInvitations() {
       }),
       columnHelper.accessor("expiresAt", {
         header: "Expires",
-        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+        cell: ({ getValue }) => (
+          <LocalDateTime value={getValue()} showTimeOnHover />
+        ),
       }),
       columnHelper.display({
         id: "action",
