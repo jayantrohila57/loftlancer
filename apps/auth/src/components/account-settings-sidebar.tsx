@@ -131,7 +131,7 @@ export function AccountSettingsSidebar({
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Platform</SidebarGroupLabel>
+          <SidebarGroupLabel>General</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="flex min-w-0 flex-col gap-1">
               {studioItems.map((item) => {
