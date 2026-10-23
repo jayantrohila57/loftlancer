@@ -50,12 +50,18 @@ export function AppNotFoundPage({ links }: { links: AppRouteStateLinks }) {
   );
 }
 
-export function AppForbiddenPage({ links }: { links: AppRouteStateLinks }) {
+export function AppForbiddenPage({
+  links,
+  resourceLabel = "this organization or project",
+}: {
+  links: AppRouteStateLinks;
+  resourceLabel?: string;
+}) {
   return (
     <PageStatusForbidden
       icon={ShieldX}
       title="Access denied"
-      description="You do not have permission to view this page."
+      description={`Your current role does not include access to ${resourceLabel}. Ask an organization owner or manager to update your access.`}
       action={
         <div className="flex flex-wrap justify-center gap-2">
           {links.dashboardHref ? (
@@ -63,7 +69,7 @@ export function AppForbiddenPage({ links }: { links: AppRouteStateLinks }) {
               size="sm"
               render={<Link href={links.dashboardHref as Route} />}
             >
-              Back to dashboard
+              Go to overview
             </Button>
           ) : null}
           <Button
@@ -71,7 +77,7 @@ export function AppForbiddenPage({ links }: { links: AppRouteStateLinks }) {
             variant={links.dashboardHref ? "outline" : "default"}
             render={<Link href={links.homeHref as Route} />}
           >
-            {links.homeLabel ?? "Go home"}
+            {links.homeLabel ?? "Open organizations"}
           </Button>
         </div>
       }
