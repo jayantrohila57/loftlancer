@@ -24,6 +24,7 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
   const { activeOrganizationId } = useActiveOrganization();
   const [inviteOpen, setInviteOpen] = useState(false);
   const [status, setStatus] = useState<InvitationStatusFilter>("pending");
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [resendingId, setResendingId] = useState<string | null>(null);
@@ -33,6 +34,7 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
     ...trpc.organizations.listProjectInvitations.queryOptions({
       projectId: project?.id ?? "",
       status,
+      search: search.trim() || undefined,
       limit: INVITATION_PAGE_SIZE,
       offset: page * INVITATION_PAGE_SIZE,
     }),
@@ -106,6 +108,11 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
         status={status}
         page={page}
         total={invitations.data?.total ?? 0}
+        search={search}
+        onSearchChange={(next) => {
+          setSearch(next);
+          setPage(0);
+        }}
         onStatusChange={(next) => {
           setStatus(next);
           setPage(0);
