@@ -20,7 +20,8 @@ export const layoutDashboardSectionGapClass = "gap-4";
 export const layoutDashboardScrollTopClass = "pt-4";
 
 /** Full-width content inside the dashboard inset (header + main share this width). */
-export const layoutInsetContainerWideClass = "w-full min-w-0";
+export const layoutInsetContainerWideClass =
+  "mx-auto w-full min-w-0 max-w-[1600px]";
 export const layoutInsetContainerNarrowClass = layoutInsetContainerWideClass;
 
 /** Centered marketing site column (public landing only). */
