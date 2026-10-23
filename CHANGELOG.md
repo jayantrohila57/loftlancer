@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the platform follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with one product version for the whole monorepo (root `package.json`).
 
-- `0.x` covers the env-manager and Collidr eras, from the first commit.
+- `0.x` covers releases before the Loftlancer product launch.
 - `1.0.0` is the Loftlancer rebrand on `main`.
 - After that, every `dev` → `main` release bumps the minor version for
   feature releases and the patch version for fix batches.
@@ -16,12 +16,21 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.2] - 2026-10-23
+
 ### Changed
 
+- Aligned the public Documentation labels, defined DPA on first use, and matched changelog badge names to their headings (#634).
 - Standardized the features page into a three-column card grid and labeled MCP as coming soon (#663).
 - Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).
 - Use the shared breadcrumb trail as navigation instead of duplicating it with back arrows in resource frames (#637).
 - Standardized organization, support-ticket, and invitation lists around the shared search, filter, sort, and pagination toolbar patterns (#658).
+- Resolve breadcrumb names from cached organization, project, and team data without exposing team IDs or loading skeletons (#638).
+
+### Fixed
+
+- Redirect the account settings landing page to Profile so the tab bar is the single navigation pattern (#641).
+- Show organization, project, and team descriptions only on their overview pages to remove repeated subtitles across management tabs (#640).
 
 ## [1.19.1] - 2026-10-23
 
@@ -788,7 +797,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.1...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.2...HEAD
+[1.19.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.1...v1.18.0

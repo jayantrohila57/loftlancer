@@ -36,7 +36,9 @@ export function ProjectLayoutShell({
       back={false}
       title={project?.name ?? slug}
       description={
-        project?.description ?? "Project workspace and applications."
+        isProjectOverview
+          ? (project?.description ?? "Project workspace and applications.")
+          : undefined
       }
       tabs={[
         { href: projectHref, label: "Overview", active: isProjectOverview },
