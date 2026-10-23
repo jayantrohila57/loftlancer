@@ -13,8 +13,7 @@ import {
   SidebarFavorites,
   SidebarSearch,
 } from "@loftlancer/ui/patterns/sidebar-kit";
-import { VersionBadge } from "@loftlancer/ui/patterns/version-badge";
-import { docsSiteUrl, docsUrl } from "@loftlancer/ui/platform-urls";
+import { docsUrl } from "@loftlancer/ui/platform-urls";
 import {
   Sidebar,
   SidebarContent,
@@ -65,7 +64,6 @@ import { platformNavHref, routes } from "@/utils/navigation";
 import { useRouteScope } from "@/utils/use-route-scope";
 
 const accountSettingsHref = accountSettingsUrl();
-const changelogHref = `${docsSiteUrl()}/changelog`;
 const orgListLimit = 4;
 const footerGroups = [
   {
@@ -254,10 +252,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <Icon />
                     <span>{item.label}</span>
                     {item.key === "organizations" ? (
-                      <NavCountBadge
-                        count={nav.counts?.pendingInvites}
-                        loading={nav.loading}
-                      />
+                      <NavCountBadge count={nav.counts?.pendingInvites} />
                     ) : null}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -407,9 +402,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
           </SidebarNavGroup>
         ))}
-        <div className="flex items-center justify-between gap-2 px-2 pt-1 text-[10px] text-muted-foreground group-data-[collapsible=icon]:hidden">
+        <div className="flex items-center gap-2 px-2 pt-1 text-[10px] text-muted-foreground group-data-[collapsible=icon]:hidden">
           <span>© {new Date().getFullYear()} Loftlancer</span>
-          <VersionBadge href={changelogHref} />
         </div>
       </SidebarFooter>
       <SidebarRail />

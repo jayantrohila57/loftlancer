@@ -2,7 +2,8 @@
 
 import { Input } from "@loftlancer/ui/input";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { docsUrl } from "@loftlancer/ui/platform-urls";
+import { VersionBadge } from "@loftlancer/ui/patterns/version-badge";
+import { docsSiteUrl, docsUrl } from "@loftlancer/ui/platform-urls";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
@@ -99,6 +100,9 @@ export default function SupportHelpPage() {
             }
           />
         ) : null}
+        <div className="flex justify-end border-t pt-3">
+          <VersionBadge href={`${docsSiteUrl()}/changelog`} />
+        </div>
       </div>
     </DashboardSection>
   );
