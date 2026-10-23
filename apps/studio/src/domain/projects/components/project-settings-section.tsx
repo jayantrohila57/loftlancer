@@ -46,7 +46,6 @@ export function ProjectSettingsSection({
         <SettingsRow
           label="Status"
           description="Operational state for this project."
-          icon="statusActive"
         >
           <div className="flex flex-col items-start gap-2 sm:items-end">
             <StatusBadge status={project.status} />

@@ -32,7 +32,7 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
     <>
       <AccordionSection
         title="Danger zone"
-        description="Archive the project, or permanently delete it and its environments."
+        description="Archive this project or permanently delete it and its environments."
         className="border-destructive/32 bg-destructive/4"
       >
         {project.isArchived ? (
@@ -80,7 +80,7 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
         )}
         <SettingsRow
           label="Delete project"
-          description="Removes the project and its environments and variables. If recovery is enabled, it appears in Recently deleted."
+          description="Permanently removes the project and its environments and variables."
         >
           <Button
             type="button"
@@ -100,7 +100,7 @@ export function ProjectDangerZone({ project }: ProjectDangerZoneProps) {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title="Delete project"
-        description={`Are you sure you want to delete "${project.name}"? Its environments and variables will be deleted with it. If recovery is enabled, restore it from Recently deleted.`}
+        description={`Are you sure you want to delete "${project.name}"? Its environments and variables will be deleted with it.`}
         confirmLabel="Delete project"
         variant="destructive"
         onConfirm={deleteProject}
