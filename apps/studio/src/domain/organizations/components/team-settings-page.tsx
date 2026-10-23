@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
+import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
 import { SettingsRow } from "@/components/patterns/settings-layout";
 import { Can } from "@/domain/permissions/components/can";
 import { useConfirm } from "@/hooks/use-confirm";
@@ -105,7 +106,8 @@ export function TeamSettingsPage({
           description="Give people a clear description of this team and its purpose."
         >
           <div className="space-y-4">
-            <SettingsRow label="Team name" description="Required.">
+            <RequiredFieldsHint />
+            <SettingsRow label="Team name" required>
               <Input
                 id="team-settings-name"
                 value={name}
