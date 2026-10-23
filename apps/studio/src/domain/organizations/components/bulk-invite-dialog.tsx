@@ -199,9 +199,9 @@ export function BulkInviteDialog({
             <DialogTitle className="flex items-center gap-1.5 text-base">
               <AppIcon name="invite" className="size-4" />
               {fixedProjectId
-                ? "Invite to project"
+                ? "Invite members to this project"
                 : fixedTeamId
-                  ? "Invite to team"
+                  ? "Invite members to this team"
                   : "Invite members"}
             </DialogTitle>
             <DialogDescription className="text-sm">

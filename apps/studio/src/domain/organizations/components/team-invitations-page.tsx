@@ -69,7 +69,7 @@ export function TeamInvitationsPage({
         </div>
         <Can action="member.invite">
           <Button type="button" size="sm" onClick={() => setOpen(true)}>
-            Invite to team
+            Invite member
           </Button>
         </Can>
       </div>

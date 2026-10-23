@@ -14,9 +14,11 @@ import ProjectList from "./project-list";
 
 export function ProjectsPageClient({
   createRoute = false,
+  showDeletedProjects = false,
 }: {
   /** Rendered at /[org]/projects/new: sheet open, closing returns to the list. */
   createRoute?: boolean;
+  showDeletedProjects?: boolean;
 } = {}) {
   const org = useOrgSlug();
   const router = useRouter();
@@ -56,7 +58,7 @@ export function ProjectsPageClient({
       >
         <div className="space-y-4">
           <ProjectList list={projectsList} />
-          <DeletedProjectsSection />
+          {showDeletedProjects ? <DeletedProjectsSection /> : null}
         </div>
       </DashboardSection>
       <CreateProjectSheet

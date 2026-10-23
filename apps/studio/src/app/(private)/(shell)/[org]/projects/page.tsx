@@ -1,3 +1,4 @@
+import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -17,7 +18,7 @@ export default async function ProjectsPage() {
     <Suspense
       fallback={<DelayedPageLoading fallback={<ProjectsPageSkeleton />} />}
     >
-      <ProjectsPageClient />
+      <ProjectsPageClient showDeletedProjects={isSoftDeletesEnabled()} />
     </Suspense>
   );
 }

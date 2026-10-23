@@ -95,7 +95,7 @@ export function StudioOverviewContent() {
             icon={appIcons.organization}
             title="No organizations yet"
             description="Create an organization to bring your projects and teammates together."
-            actionLabel="Create organization"
+            actionLabel="New organization"
             actionHref={routes.newOrganization()}
           />
         </AccordionSection>
