@@ -36,7 +36,11 @@ const groups: PublicNavGroup[] = [
         icon: FileTextIcon,
       },
       { label: "Cookies", href: "/legal/cookies", icon: CookieIcon },
-      { label: "DPA", href: "/legal/dpa", icon: FileTextIcon },
+      {
+        label: "Data processing agreement",
+        href: "/legal/dpa",
+        icon: FileTextIcon,
+      },
       { label: "Security", href: "/legal/security", icon: ShieldIcon },
     ],
   },

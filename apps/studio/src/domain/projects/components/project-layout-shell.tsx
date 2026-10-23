@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
-import { getProjectFrameBackTarget } from "@/domain/projects/lib/project-frame-back";
+import { getProjectTabs } from "@/domain/projects/lib/project-tabs";
 import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
@@ -28,63 +28,29 @@ export function ProjectLayoutShell({
     projectId: project?.id,
   });
   const pathname = usePathname() ?? projectHref;
-  const backTarget = getProjectFrameBackTarget(pathname, org, slug);
-  const suffix = pathname.slice(projectHref.length).split("/").filter(Boolean);
-  const isProjectOverview = suffix.length === 0;
+  const isProjectOverview = pathname === projectHref;
+  const tabs = getProjectTabs({
+    org,
+    project: slug,
+    pathname,
+    canListMembers: canListMembers.allowed,
+    isCheckingMembers: canListMembers.isLoading,
+    canViewActivity: canViewActivity.allowed,
+    isCheckingActivity: canViewActivity.isLoading,
+    activityEnabled: isActionsAuditEnabledOnClient(),
+  });
 
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={backTarget}
+      back={false}
       title={project?.name ?? slug}
       description={
         isProjectOverview
           ? (project?.description ?? "Project workspace and applications.")
           : undefined
       }
-      tabs={[
-        { href: projectHref, label: "Overview", active: isProjectOverview },
-        {
-          href: routes.projectSection(org, slug, "apps"),
-          label: "Apps",
-          active:
-            suffix[0] === "apps" ||
-            suffix[0] === "tasks" ||
-            suffix[0] === "env" ||
-            (Boolean(suffix[0]) &&
-              !["access", "invitations", "activity", "settings"].includes(
-                suffix[0] ?? "",
-              )),
-        },
-        {
-          href: routes.projectSection(org, slug, "access"),
-          label: "Access",
-          active: suffix[0] === "access",
-        },
-        ...(canListMembers.allowed
-          ? [
-              {
-                href: routes.projectSection(org, slug, "invitations"),
-                label: "Invitations",
-                active: suffix[0] === "invitations",
-              },
-            ]
-          : []),
-        ...(isActionsAuditEnabledOnClient() && canViewActivity.allowed
-          ? [
-              {
-                href: routes.projectSection(org, slug, "activity"),
-                label: "Activity",
-                active: suffix[0] === "activity",
-              },
-            ]
-          : []),
-        {
-          href: routes.projectSection(org, slug, "settings"),
-          label: "Project settings",
-          active: suffix[0] === "settings",
-        },
-      ]}
+      tabs={tabs}
     >
       {children}
     </SettingsFrame>
