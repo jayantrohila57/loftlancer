@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Redirect the account settings landing page to Profile so the tab bar is the single navigation pattern (#641).
+
 ## [1.19.1] - 2026-10-23
 
 ### Changed
