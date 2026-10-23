@@ -15,13 +15,13 @@ export const metadata = pageMetadata({
 
 const REPO = "https://github.com/jayantrohila57/loftlancer";
 
-/** Keep a Changelog groups mapped to ReUI timeline-5 type tags. */
+/** Keep changelog badges aligned with their Keep a Changelog headings. */
 const GROUP_TAGS: Record<
   string,
   { label: string; variant: BadgeProps["variant"] }
 > = {
-  Added: { label: "New", variant: "success" },
-  Changed: { label: "Improved", variant: "info" },
+  Added: { label: "Added", variant: "success" },
+  Changed: { label: "Changed", variant: "info" },
   Fixed: { label: "Fixed", variant: "warning" },
   Security: { label: "Security", variant: "error" },
   Removed: { label: "Removed", variant: "secondary" },
@@ -198,7 +198,7 @@ export default async function ChangelogPage() {
   return (
     <MarketingPage
       title="Changelog"
-      description="Every Loftlancer release since the first commit. Versions 0.x cover the env-manager and Collidr eras; 1.0.0 is the Loftlancer rebrand."
+      description="Every Loftlancer release since the first commit. Versions 0.x cover earlier product names; 1.0.0 marks the Loftlancer name."
     >
       {releases.length === 0 ? (
         <p className="not-prose text-muted-foreground text-sm">

@@ -166,13 +166,13 @@ export function TeamSettingsPage({
       <Can action="team.delete">
         <AccordionSection
           title="Delete team"
-          description="Remove the team and its project links."
+          description="Remove the team and its project access."
           className="border-destructive/30"
         >
           <p className="text-muted-foreground text-sm">
-            Organization members remain members. Project grants stay saved but
-            need another linked team to remain effective. Pending team
-            invitations are canceled.
+            Organization members remain members. Individual project access
+            settings stay saved and apply while at least one team has access.
+            Pending team invitations are canceled.
           </p>
           <Button
             type="button"
@@ -184,7 +184,7 @@ export function TeamSettingsPage({
               confirm({
                 title: `Delete ${team.name}?`,
                 description:
-                  "Members stay in the organization. Existing project grants stay saved but become ineffective unless another linked team gives them access. Pending team invitations are canceled. This cannot be undone.",
+                  "Members stay in the organization. Individual project access settings stay saved and apply while at least one team has access. Pending team invitations are canceled. This cannot be undone.",
                 confirmLabel: "Delete team",
                 variant: "destructive",
                 onConfirm: async () => {

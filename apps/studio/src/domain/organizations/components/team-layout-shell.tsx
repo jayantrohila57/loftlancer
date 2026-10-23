@@ -43,8 +43,8 @@ export function TeamLayoutShell({
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={{ href: routes.orgSection(slug, "teams"), label: "Teams" }}
       title={teamDisplayName(team.name, organizationName)}
+      back={false}
       description={
         pathname === root
           ? team.purpose ||

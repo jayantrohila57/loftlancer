@@ -103,7 +103,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
   const assignTeam = useMutation(
     trpc.projectAccess.assignTeam.mutationOptions({
       onSuccess: () => {
-        toast.success("Team linked to project");
+        toast.success("Team added to project");
         setTeamId("");
         invalidate();
       },
@@ -124,10 +124,10 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
   const setGrants = useMutation(
     trpc.projectAccess.setMemberGrants.mutationOptions({
       onSuccess: () => {
-        toast.success("Member grants updated");
+        toast.success("Individual access updated");
         invalidate();
       },
-      onError: () => toast.error("Could not update grants"),
+      onError: () => toast.error("Could not update access"),
     }),
   );
 
@@ -198,7 +198,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                 confirm({
                   title: `Remove ${row.original.name ?? row.original.email ?? "this manager"}?`,
                   description:
-                    "They will lose project manager permissions. Their organization role and any direct member grants stay in place.",
+                    "They will lose project manager permissions. Their organization role and individual project access stay in place.",
                   confirmLabel: "Remove manager",
                   variant: "destructive",
                   onConfirm: async () => {
@@ -230,15 +230,15 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
           label={`Actions for ${row.original.teamName}`}
           actions={[
             {
-              label: "Unlink team",
+              label: "Remove team access",
               destructive: true,
               disabled: removeTeam.isPending,
               onSelect: () =>
                 confirm({
-                  title: `Unlink ${row.original.teamName}?`,
+                  title: `Remove ${row.original.teamName} from this project?`,
                   description:
-                    "Team members will lose access from this link. Direct grants stay saved, but need another linked team to be effective. Project manager assignments stay in place.",
-                  confirmLabel: "Unlink team",
+                    "Team members may lose project access. Individual access settings stay saved and apply while at least one team has access. Project managers keep their access.",
+                  confirmLabel: "Remove team",
                   variant: "destructive",
                   onConfirm: async () => {
                     await removeTeam.mutateAsync({
@@ -277,7 +277,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
           label={`Access actions for ${row.original.name ?? row.original.email ?? "member"}`}
           actions={[
             {
-              label: "Edit grants",
+              label: "Edit access",
               onSelect: () => loadGrantsForUser(row.original.userId),
             },
           ]}
@@ -335,7 +335,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
     <div className="flex flex-col gap-4">
       <AccordionSection
         title="Effective access"
-        description="Shows who can access this project and why. Direct member grants are effective only while a team is linked to the project."
+        description="A person gets project access through any team that has access to the project."
       >
         <DataTable
           columns={effectiveAccessColumns}
@@ -355,7 +355,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
       <Can action="project.assign_manager">
         <AccordionSection
           title="Project managers"
-          description="Managers assigned to this project can manage resources and member grants."
+          description="Managers assigned to this project can manage resources and individual access."
         >
           <DataTable
             columns={managerColumns}
@@ -411,8 +411,8 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
 
       <Can action="project.assign_team" projectId={project.id}>
         <AccordionSection
-          title="Teams on project"
-          description="Team members receive default project grants when linked. Direct member grants can add or change specific capabilities."
+          title="Teams with access"
+          description="Choose which teams can give members access to the project."
         >
           <DataTable
             columns={teamColumns}
@@ -422,17 +422,17 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
             pageSize={10}
             framed
             compactLayout
-            caption="Teams on this project"
+            caption="Teams with access to this project"
             captionSrOnly
             searchPlaceholder="Search teams…"
-            emptyMessage="No teams linked yet."
+            emptyMessage="No teams have access yet."
           />
           <SettingsRow
-            label="Link a team"
+            label="Add a team"
             description={
               availableTeams.length
-                ? "Team members receive the default read grants for this project."
-                : "Every team in this organization is already linked."
+                ? "Team members get basic read access to this project."
+                : "Every team in this organization already has access."
             }
           >
             <div className="flex flex-wrap items-end gap-2">
@@ -457,7 +457,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                   assignTeam.mutate({ projectId: project.id, teamId })
                 }
               >
-                Link team
+                Add team
               </LoadingButton>
             </div>
           </SettingsRow>
@@ -466,8 +466,8 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
 
       <Can action="project.permission.grant" projectId={project.id}>
         <AccordionSection
-          title="Member grants"
-          description="Per-member create/read/update/delete access on this project."
+          title="Individual access"
+          description="Choose which actions each person can take in this project."
         >
           <DataTable
             columns={grantColumns}
@@ -477,14 +477,14 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
             pageSize={10}
             framed
             compactLayout
-            caption="Project member grants"
+            caption="Individual project access"
             captionSrOnly
             searchPlaceholder="Search members…"
-            emptyMessage="No member grants configured yet."
+            emptyMessage="No individual access settings yet."
           />
           <SettingsRow
             label="Member"
-            description="Org members receive grants when on a linked team."
+            description="Use these settings to add access beyond the team defaults."
           >
             <SearchableCombobox
               value={grantUserId}
@@ -504,7 +504,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
           </SettingsRow>
           {grantUserId ? (
             <div className="flex flex-col gap-3 px-4 pb-4">
-              <p className="font-medium text-sm">Grants</p>
+              <p className="font-medium text-sm">Access levels</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 {PROJECT_MEMBER_GRANT_KEYS.map((grant) => {
                   const checked = grantSelection.includes(grant);
@@ -544,7 +544,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
                   })
                 }
               >
-                Save grants
+                Save access
               </LoadingButton>
             </div>
           ) : null}

@@ -19,7 +19,7 @@ const ROLES: { role: OrgRole; summary: string }[] = [
     role: "manager",
     summary: "Runs members, invites and teams; project work once assigned.",
   },
-  { role: "member", summary: "Works inside projects their teams are granted." },
+  { role: "member", summary: "Works in projects their teams can access." },
 ];
 
 /**
