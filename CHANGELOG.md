@@ -16,6 +16,16 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.5] - 2026-10-23
+
+### Changed
+
+- Made access-denied pages explain next steps and link to available areas (#646).
+- Clarified project deletion, recovery, and status controls (#650).
+- Standardized create, save, and invite action labels across management pages (#651).
+- Opened support ticket creation in a consistent form sheet (#652).
+- Made shared accordion controls keyboard accessible and exposed their expanded state (#655).
+
 ## [1.19.4] - 2026-10-23
 
 ### Changed
@@ -814,7 +824,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.4...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.5...HEAD
+[1.19.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.4...v1.19.5
 [1.19.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.3...v1.19.4
 [1.19.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.2...v1.19.3
 [1.19.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.1...v1.19.2
