@@ -16,6 +16,14 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Add account notification delivery preferences and return navigation (#648).
+- Standardize required-field cues across management forms (#653).
+- Clarify organization branding actions and confirm logo removal (#654).
+- Explain invitation scope and unify organization, team, and project access flows (#656).
+- Align role descriptions and permission matrix labels (#657).
+
 ## [1.19.5] - 2026-10-23
 
 ### Changed
