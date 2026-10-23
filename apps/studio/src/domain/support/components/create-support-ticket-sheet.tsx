@@ -92,7 +92,13 @@ export function CreateSupportTicketSheet({
         >
           <FormSheetBody className="gap-4">
             <div className="space-y-2">
-              <Label htmlFor="support-ticket-subject">Subject</Label>
+              <Label htmlFor="support-ticket-subject">
+                Subject{" "}
+                <span aria-hidden="true" className="text-destructive">
+                  *
+                </span>
+                <span className="sr-only"> (required)</span>
+              </Label>
               <Input
                 id="support-ticket-subject"
                 value={subject}
@@ -143,7 +149,13 @@ export function CreateSupportTicketSheet({
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="support-ticket-description">Description</Label>
+              <Label htmlFor="support-ticket-description">
+                Description{" "}
+                <span aria-hidden="true" className="text-destructive">
+                  *
+                </span>
+                <span className="sr-only"> (required)</span>
+              </Label>
               <Textarea
                 id="support-ticket-description"
                 rows={8}

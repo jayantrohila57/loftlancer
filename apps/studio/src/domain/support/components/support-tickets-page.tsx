@@ -1,7 +1,6 @@
 "use client";
 
 import { Badge } from "@loftlancer/ui/badge";
-import { Button } from "@loftlancer/ui/button";
 import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
@@ -14,6 +13,7 @@ import { appIcons } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 import { CreateSupportTicketSheet } from "./create-support-ticket-sheet";
+import { SupportTicketCreateAction } from "./support-ticket-create-action";
 
 type TicketRow = {
   id: string;
@@ -98,7 +98,6 @@ export function SupportTicketsPage({
 
   useEffect(() => setCreateOpen(createRoute), [createRoute]);
 
-  const openCreate = () => router.push(routes.supportNewTicket());
   const closeCreate = (open: boolean) => {
     setCreateOpen(open);
     if (!open && createRoute) router.push(routes.supportTickets());
@@ -127,10 +126,10 @@ export function SupportTicketsPage({
 
   return (
     <DashboardSection
-      title="My tickets"
+      title="Tickets"
       description="Create and track support requests."
       back={false}
-      action={<Button onClick={openCreate}>New ticket</Button>}
+      action={<SupportTicketCreateAction>New ticket</SupportTicketCreateAction>}
     >
       <DataTable
         columns={columns}
@@ -224,7 +223,9 @@ export function SupportTicketsPage({
             icon: appIcons.support,
             title: "No tickets yet",
             description: "Support requests you create will appear here.",
-            action: <Button onClick={openCreate}>New ticket</Button>,
+            action: (
+              <SupportTicketCreateAction>New ticket</SupportTicketCreateAction>
+            ),
           },
         }}
       />
