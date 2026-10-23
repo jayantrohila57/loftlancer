@@ -16,6 +16,14 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Improved Support ticket creation and the empty Help center state (#660).
+- Constrained dashboard content at wide widths (#666).
+- Standardized dates across management lists and verified changelog release dates (#667).
+- Removed empty navigation and list artifacts (#668).
+- Improved contrast, keyboard focus, and permission labels in shared controls (#669).
+
 ## [1.19.6] - 2026-10-23
 
 ### Changed
