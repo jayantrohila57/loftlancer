@@ -145,7 +145,7 @@ export function OrgSwitcher() {
               </Link>
               <Link href={routes.newOrganization()} className={linkClass}>
                 <Plus className="size-4 text-muted-foreground" aria-hidden />
-                Create organization
+                New organization
               </Link>
             </>
           }

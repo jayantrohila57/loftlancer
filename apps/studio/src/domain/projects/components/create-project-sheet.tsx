@@ -341,7 +341,7 @@ export function CreateProjectSheet({
               loadingLabel="Creating…"
               disabled={!form.formState.isValid}
             >
-              Create Project
+              Create project
             </SubmitButton>
           </FormSheetFooter>
         </FormSheetForm>

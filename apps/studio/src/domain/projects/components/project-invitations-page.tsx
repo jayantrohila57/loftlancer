@@ -99,7 +99,7 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
         <Can action="member.invite">
           <Can action="project.permission.grant" projectId={project.id}>
             <Button type="button" size="sm" onClick={() => setInviteOpen(true)}>
-              Invite to project
+              Invite member
             </Button>
           </Can>
         </Can>

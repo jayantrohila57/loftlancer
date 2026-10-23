@@ -457,7 +457,7 @@ export function AccountSettingsClient({
                     disabled={!profileDirty || !name.trim()}
                     onClick={() => profileSaveMutation.mutate()}
                   >
-                    Save profile
+                    Save changes
                   </SubmitButton>
                 </SettingsRow>
               </SettingsPanel>

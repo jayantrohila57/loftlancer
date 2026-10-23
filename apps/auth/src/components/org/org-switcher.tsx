@@ -142,7 +142,7 @@ export function OrgSwitcher({ activeSlug }: { activeSlug: string | null }) {
                 className={linkClass}
               >
                 <Plus className="size-4 text-muted-foreground" aria-hidden />
-                Create organization
+                New organization
               </a>
             </>
           }
