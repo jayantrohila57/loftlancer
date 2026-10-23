@@ -26,7 +26,12 @@ type LinkLike = React.ElementType<{
   href: string;
   className?: string;
   children?: ReactNode;
+  role?: string;
+  "aria-selected"?: boolean;
   "aria-current"?: "page";
+  "aria-disabled"?: boolean;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  tabIndex?: number;
 }>;
 
 export type SettingsTab = {
@@ -35,6 +40,7 @@ export type SettingsTab = {
   icon?: ReactNode;
   active?: boolean;
   disabled?: boolean;
+  disabledReason?: string;
 };
 
 export function SettingsAvatar({
@@ -163,6 +169,7 @@ export function SettingsFrame({
                   </>
                 ),
                 disabled: t.disabled,
+                disabledReason: t.disabledReason,
               }))}
               activeTab={activeTabHref}
             />
