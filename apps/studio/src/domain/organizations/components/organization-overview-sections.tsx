@@ -136,6 +136,9 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
       >
         <ProjectsTableView
           projects={recentProjects}
+          showLinksColumn={recentProjects.some((project) =>
+            Boolean(project.repositoryUrl || project.websiteUrl),
+          )}
           isLoading={projectsQuery.isPending}
           searchable={false}
           limitRows={5}

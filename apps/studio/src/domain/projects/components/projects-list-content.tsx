@@ -117,6 +117,9 @@ export function ProjectsListContent({ projects }: ProjectsListContentProps) {
       ) : (
         <ProjectsTableView
           projects={filtered}
+          showLinksColumn={projects.some((project) =>
+            Boolean(project.repositoryUrl || project.websiteUrl),
+          )}
           caption="All projects"
           captionSrOnly
           searchable={false}

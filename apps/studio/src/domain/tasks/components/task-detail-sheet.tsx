@@ -4,6 +4,7 @@ import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { Label } from "@loftlancer/ui/label";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
+import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import {
   Sheet,
   SheetDescription,
@@ -16,7 +17,6 @@ import { Skeleton } from "@loftlancer/ui/skeleton";
 import { Textarea } from "@loftlancer/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ClientRelativeTime } from "@/components/patterns/client-relative-time";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { actionToast } from "@/lib/action-toast";
 import { trpc } from "@/utils/trpc";
@@ -122,7 +122,7 @@ export function TaskDetailSheet({
           <SheetDescription className="text-xs">
             {t ? (
               <>
-                Created <ClientRelativeTime value={t.createdAt} />
+                Created <LocalDateTime value={t.createdAt} showTimeOnHover />
               </>
             ) : (
               "\u00a0"

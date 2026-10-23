@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
-import { ClientRelativeTime } from "@/components/patterns/client-relative-time";
+import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { cn } from "@/lib/utils";
 
 export type ProvenanceUser = {
@@ -45,7 +45,7 @@ export function ProvenanceAttribution({
         {valid ? (
           <>
             {label ? `${label} ` : null}
-            <ClientRelativeTime value={at} />
+            <LocalDateTime value={at} showTimeOnHover />
           </>
         ) : (
           "—"
@@ -73,7 +73,7 @@ export function ProvenanceAttribution({
         <span className="text-foreground">{user.name}</span>
         <span className="text-muted-foreground">
           {" · "}
-          <ClientRelativeTime value={at} />
+          <LocalDateTime value={at} showTimeOnHover />
         </span>
       </span>
     </div>

@@ -766,6 +766,13 @@ const rows: MatrixRow[] = [
     entityType: "notification",
   },
   {
+    name: "notification.preferences.update",
+    scope: "user",
+    description: "Update notification delivery preferences",
+    selfOnly: true,
+    entityType: "user",
+  },
+  {
     name: "profile.view",
     scope: "user",
     description: "View profile settings",

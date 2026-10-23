@@ -104,20 +104,10 @@ export function SidebarBrand({ href }: { href: string }) {
 export function NavCountBadge({
   count,
   tone = "muted",
-  loading = false,
 }: {
   count?: number | null;
   tone?: "muted" | "alert";
-  /** Reserve the badge slot while the count loads. */
-  loading?: boolean;
 }) {
-  if (loading && count == null) {
-    return (
-      <SidebarMenuBadge aria-hidden>
-        <Skeleton className="h-5 w-8 rounded-full motion-reduce:animate-none" />
-      </SidebarMenuBadge>
-    );
-  }
   if (!count || count <= 0) return null;
   return (
     <SidebarMenuBadge

@@ -8,7 +8,7 @@ import { guardPageAction } from "@/lib/page-guards";
 
 export const metadata: Metadata = {
   title: "Notifications",
-  description: "In-app notification preferences.",
+  description: "Choose where you receive account and workspace updates.",
 };
 
 export default async function NotificationsSettingsPage() {
@@ -17,7 +17,7 @@ export default async function NotificationsSettingsPage() {
   return (
     <SettingsSectionShell
       title="Notifications"
-      description="Where to review in-app alerts."
+      description="Choose which updates arrive in-app and by email."
     >
       <Suspense
         fallback={

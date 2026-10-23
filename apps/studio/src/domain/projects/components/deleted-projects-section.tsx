@@ -2,9 +2,9 @@
 
 import { Button } from "@loftlancer/ui/button";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ErrorState } from "@/components/patterns/error-state";
 import { appIcons } from "@/lib/icons";
@@ -30,12 +30,7 @@ export function DeletedProjectsSection() {
   });
 
   if (deleted.isPending) {
-    return (
-      <Skeleton
-        className="h-20 rounded-xl"
-        aria-label="Loading deleted projects"
-      />
-    );
+    return <AccordionSectionSkeleton rows={1} />;
   }
   if (deleted.isError) {
     return (
@@ -69,7 +64,8 @@ export function DeletedProjectsSection() {
               <div className="min-w-0">
                 <p className="truncate font-medium text-sm">{project.name}</p>
                 <p className="text-muted-foreground text-xs">
-                  Deleted <LocalDateTime value={project.deletedAt} />
+                  Deleted{" "}
+                  <LocalDateTime value={project.deletedAt} showTimeOnHover />
                 </p>
               </div>
               <Button

@@ -22,6 +22,7 @@ interface ProjectsTableViewProps {
   empty?: DataTableEmptyConfig;
   onCreateProject?: () => void;
   filterActive?: boolean;
+  showLinksColumn?: boolean;
 }
 
 export function ProjectsTableView({
@@ -36,9 +37,18 @@ export function ProjectsTableView({
   empty,
   onCreateProject,
   filterActive = false,
+  showLinksColumn,
 }: ProjectsTableViewProps) {
   const org = useOrgSlug();
-  const columns = useMemo(() => createProjectsTableColumns(org), [org]);
+  const showLinks =
+    showLinksColumn ??
+    projects.some((project) =>
+      Boolean(project.repositoryUrl || project.websiteUrl),
+    );
+  const columns = useMemo(
+    () => createProjectsTableColumns(org, showLinks),
+    [org, showLinks],
+  );
   const data = limitRows ? projects.slice(0, limitRows) : projects;
 
   const emptyConfig =
