@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
-import { getProjectFrameBackTarget } from "@/domain/projects/lib/project-frame-back";
 import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
@@ -28,14 +27,13 @@ export function ProjectLayoutShell({
     projectId: project?.id,
   });
   const pathname = usePathname() ?? projectHref;
-  const backTarget = getProjectFrameBackTarget(pathname, org, slug);
   const suffix = pathname.slice(projectHref.length).split("/").filter(Boolean);
   const isProjectOverview = suffix.length === 0;
 
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={backTarget}
+      back={false}
       title={project?.name ?? slug}
       description={
         project?.description ?? "Project workspace and applications."

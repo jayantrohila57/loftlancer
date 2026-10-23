@@ -4,7 +4,6 @@ import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 import { BASE_PATH } from "@/lib/base-path";
-import { routes } from "@/utils/navigation";
 import {
   type OrganizationDetail,
   useOrganizationBySlug,
@@ -60,22 +59,11 @@ function OrganizationFrame({
   const { tabs, activeTab } = useOrganizationTabs(slug);
   const pathname = usePathname() ?? "";
   const name = organization?.name ?? listItem?.name ?? slug;
-  const orgHome = routes.org(slug);
-  const isOrgHome = pathname === orgHome;
-  const teamsHref = routes.orgSection(slug, "teams");
-  const isTeamDetail = pathname.startsWith(`${teamsHref}/`);
 
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={{
-        href: isOrgHome
-          ? routes.organizationsDirectory()
-          : isTeamDetail
-            ? teamsHref
-            : orgHome,
-        label: isOrgHome ? "Organizations" : isTeamDetail ? "Teams" : name,
-      }}
+      back={false}
       title={name}
       description="Organization workspace and administration."
       tabs={tabs.map((tab) => ({
