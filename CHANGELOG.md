@@ -16,6 +16,19 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.1] - 2026-10-23
+
+### Changed
+
+- Standardized Activity labels across account, organization, and project pages; routed the duplicate account-settings entry to the shared Activity page (#630).
+
+### Fixed
+
+- Hide list pagination when results fit on one page, including empty invitation lists (#659).
+- Removed the unmonitored Landing row from the public status board and made truncated monitor URLs accessible in a tooltip (#661).
+- Added a high-contrast scrim behind the split-layout quote so animated artwork cannot obscure its text (#662).
+- Standardized support, project invitation, help search, and project overview empty states with clear next actions (#645).
+
 ## [1.19.0] - 2026-10-23
 
 ### Added
@@ -768,7 +781,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.1...HEAD
+[1.19.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.0...v1.17.1

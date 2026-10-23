@@ -46,7 +46,7 @@ export const auditEventsRouter = router({
     if (!isActionsAuditEnabled()) {
       throw new TRPCError({
         code: "PRECONDITION_FAILED",
-        message: "Audit timeline is not enabled.",
+        message: "Activity is not enabled.",
       });
     }
 
@@ -208,7 +208,7 @@ export const auditEventsRouter = router({
       if (!isActionsAuditEnabled()) {
         throw new TRPCError({
           code: "PRECONDITION_FAILED",
-          message: "Audit timeline is not enabled.",
+          message: "Activity is not enabled.",
         });
       }
 
@@ -284,7 +284,7 @@ export const auditEventsRouter = router({
       if (!isActionsAuditEnabled()) {
         throw new TRPCError({
           code: "PRECONDITION_FAILED",
-          message: "Audit timeline is not enabled.",
+          message: "Activity is not enabled.",
         });
       }
       const organizationId = getActiveOrganizationId(ctx.session);

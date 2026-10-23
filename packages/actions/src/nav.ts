@@ -71,9 +71,4 @@ export const accountSettingsNav: NavItem[] = [
     action: "notification.list",
   },
   { href: "/settings/danger", label: "Danger zone", action: "account.delete" },
-  {
-    href: "/settings/timeline",
-    label: "Activity",
-    action: "audit.timeline.view.self",
-  },
 ];

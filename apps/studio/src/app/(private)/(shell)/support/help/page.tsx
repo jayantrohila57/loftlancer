@@ -1,10 +1,13 @@
 "use client";
 
+import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
+import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 import DashboardSection from "@/components/section-dashboard";
+import { appIcons } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 
@@ -76,16 +79,33 @@ export default function SupportHelpPage() {
           </section>
         ))}
         {faq.isSuccess && (faq.data?.items.length ?? 0) === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            No articles found. You can{" "}
-            <Link
-              href={routes.supportNewTicket()}
-              className="text-primary underline"
-            >
-              open a support ticket
-            </Link>{" "}
-            if you need help.
-          </p>
+          <EmptyState
+            icon={appIcons.searchEmpty}
+            title={
+              search.trim()
+                ? "No articles match your search"
+                : "No help articles yet"
+            }
+            description={
+              search.trim()
+                ? "Try a different search, or contact support for help."
+                : "Help articles will appear here. Contact support if you need help."
+            }
+            actionLabel={search.trim() ? "Clear search" : "Open a ticket"}
+            actionHref={search.trim() ? undefined : routes.supportNewTicket()}
+            onAction={search.trim() ? () => setSearch("") : undefined}
+            secondaryAction={
+              search.trim() ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  render={<Link href={routes.supportNewTicket()} />}
+                >
+                  Open a ticket
+                </Button>
+              ) : undefined
+            }
+          />
         ) : null}
       </div>
     </DashboardSection>

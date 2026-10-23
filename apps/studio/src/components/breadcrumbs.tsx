@@ -155,14 +155,6 @@ export function Breadcrumbs({ className }: { className?: string }) {
       if (segments.length === 2) return "Organization settings";
       if (segments.length === 3) return "Project settings";
     }
-    if (crumb.segment === "activity") {
-      const depth = crumb.href.split("/").filter(Boolean).length;
-      return depth === 1
-        ? "My activity"
-        : depth === 2
-          ? "Organization activity"
-          : "Project activity";
-    }
     // Unresolved org/project names: a placeholder while loading, not the slug.
     if (crumb.kind === "org" && !orgName && !initialLoadDone) {
       return <Skeleton className="inline-block h-3 w-20 align-middle" />;
