@@ -5,7 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Status",
   description:
-    "Live status and uptime for the Loftlancer landing page, docs, studio and auth, from our Better Stack monitors.",
+    "Live status and uptime for Loftlancer documentation, dashboard and sign-in services, from our Better Stack monitors.",
   path: "/status",
 });
 
@@ -14,7 +14,7 @@ export default function StatusPage() {
   return (
     <MarketingPage
       title="Status"
-      description="Live checks of every Loftlancer surface, refreshed every minute."
+      description="Live checks of our monitored services, refreshed every minute."
     >
       <StatusBoard />
     </MarketingPage>

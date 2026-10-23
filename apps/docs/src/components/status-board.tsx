@@ -11,11 +11,16 @@ import type {
   PlatformStatus,
 } from "@loftlancer/ui/platform-status";
 import { Skeleton } from "@loftlancer/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@loftlancer/ui/tooltip";
 import { cn } from "@loftlancer/ui/utils";
 import { useEffect, useState } from "react";
 
-/** The four public surfaces, rendered as fixed rows so nothing shifts. */
-const SURFACES = ["Landing", "Docs", "Studio", "Auth"] as const;
+/** Monitored services with fixed rows so the status table does not shift. */
+const SURFACES = ["Docs", "Studio", "Auth"] as const;
 const REFRESH_MS = 60_000;
 
 const OVERALL: Record<
@@ -138,9 +143,25 @@ function MonitorRow({
           )}
         />
         <span className="font-medium text-sm">{name}</span>
-        <span className="hidden min-w-0 truncate text-muted-foreground text-xs md:inline">
-          {monitor ? monitor.url.replace(/^https?:\/\//, "") : null}
-        </span>
+        {monitor ? (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <a
+                  aria-label={`Open ${name} monitor at ${monitor.url}`}
+                  className="hidden min-w-0 cursor-help truncate text-muted-foreground text-xs md:inline"
+                  href={monitor.url}
+                  rel="noreferrer"
+                  target="_blank"
+                  title={monitor.url}
+                />
+              }
+            >
+              {monitor.url.replace(/^https?:\/\//, "")}
+            </TooltipTrigger>
+            <TooltipContent>{monitor.url}</TooltipContent>
+          </Tooltip>
+        ) : null}
       </div>
       <div className="hidden text-right text-sm tabular-nums sm:block">
         <Value loading={loading}>{percent(monitor?.uptime30d)}</Value>
@@ -344,8 +365,8 @@ export function StatusBoard() {
         )}
       </section>
       <p className="text-muted-foreground text-xs">
-        Checks run every 3 minutes from Better Stack. The same monitors are on
-        the{" "}
+        Checks run every 3 minutes from Better Stack. View monitor status and
+        incident history on the{" "}
         <a
           href="https://loftlancer.betteruptime.com/"
           className="underline underline-offset-2 hover:text-foreground"

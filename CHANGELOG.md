@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Removed the unmonitored Landing row from the public status board and made truncated monitor URLs accessible in a tooltip (#661).
+
 ## [1.19.0] - 2026-10-23
 
 ### Added
