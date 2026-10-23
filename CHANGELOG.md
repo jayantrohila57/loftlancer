@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Hide list pagination when results fit on one page, including empty invitation lists (#659).
+
 ## [1.19.0] - 2026-10-23
 
 ### Added

@@ -39,26 +39,28 @@ export function InvitationListControls({
           label: value.charAt(0).toUpperCase() + value.slice(1),
         }))}
       />
-      <div className="ms-auto flex gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={page === 0}
-          onClick={() => onPageChange(page - 1)}
-        >
-          Previous
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={(page + 1) * INVITATION_PAGE_SIZE >= total}
-          onClick={() => onPageChange(page + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {total > INVITATION_PAGE_SIZE ? (
+        <div className="ms-auto flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={page === 0}
+            onClick={() => onPageChange(page - 1)}
+          >
+            Previous
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={(page + 1) * INVITATION_PAGE_SIZE >= total}
+            onClick={() => onPageChange(page + 1)}
+          >
+            Next
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }
