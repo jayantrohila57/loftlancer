@@ -16,6 +16,11 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).
+- Standardized organization, support-ticket, and invitation lists around the shared search, filter, sort, and pagination toolbar patterns (#658).
+
 ### Fixed
 
 - Redirect the account settings landing page to Profile so the tab bar is the single navigation pattern (#641).
@@ -24,9 +29,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
-- Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).
 - Standardized Activity labels across account, organization, and project pages; routed the duplicate account-settings entry to the shared Activity page (#630).
-- Standardized organization, support-ticket, and invitation lists around the shared search, filter, sort, and pagination toolbar patterns (#658).
 
 ### Fixed
 
