@@ -7,22 +7,16 @@ import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import type { OrgSection } from "@/utils/navigation";
 import { routes } from "@/utils/navigation";
 
-/** Same section tabs as the org settings frame, for the org overview header. */
+/** Organization pages expose sections here; entity lists remain in the sidebar. */
 export function useOrganizationTabs(slug: string) {
   const pathname = usePathname() ?? "";
   const base = routes.org(slug);
   const canViewMembers = useCan("member.list").allowed;
   const canInvite = useCan("member.invite").allowed;
-  const canViewTeams = useCan("organization.hub.view").allowed;
   const canViewRoles = useCan("organization.settings.view").allowed;
   const canViewSettings = useCan("organization.settings.view").allowed;
   const canViewActivity = useCan("audit.timeline.view.org").allowed;
-  const peopleSections: OrgSection[] = [
-    "members",
-    "invitations",
-    "teams",
-    "roles",
-  ];
+  const peopleSections: OrgSection[] = ["members", "invitations", "roles"];
   const tabs: PageHeaderTab[] = [
     { value: base, label: "Overview", href: base },
     ...(canViewMembers
@@ -43,15 +37,6 @@ export function useOrganizationTabs(slug: string) {
           },
         ]
       : []),
-    ...(canViewTeams
-      ? [
-          {
-            value: routes.orgSection(slug, "teams"),
-            label: "Teams",
-            href: routes.orgSection(slug, "teams"),
-          },
-        ]
-      : []),
     ...(canViewRoles
       ? [
           {
@@ -61,11 +46,6 @@ export function useOrganizationTabs(slug: string) {
           },
         ]
       : []),
-    {
-      value: routes.orgSection(slug, "projects"),
-      label: "Projects",
-      href: routes.orgSection(slug, "projects"),
-    },
     ...(isActionsAuditEnabledOnClient() && canViewActivity
       ? [
           {

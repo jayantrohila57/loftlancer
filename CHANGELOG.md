@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Removed duplicate organization overview/activity links and moved team/project list navigation to the sidebar (#636).
 - Standardized organization, team, and project terminology and labeled same-name default teams consistently (#629).
 - Clarified that project apps are installable project features, distinct from dashboard, sign-in, and documentation surfaces (#631).
 - Replaced internal product names and engineering terms in user-facing copy (#632).
