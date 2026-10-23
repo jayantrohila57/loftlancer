@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Standardized the features page into a three-column card grid and labeled MCP as coming soon (#663).
 - Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).
 - Standardized organization, support-ticket, and invitation lists around the shared search, filter, sort, and pagination toolbar patterns (#658).
 
