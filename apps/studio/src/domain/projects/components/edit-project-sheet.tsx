@@ -21,6 +21,7 @@ import {
   FormSheetHeader,
   FormSheetPopup,
 } from "@/components/patterns/form-sheet";
+import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
 import { useProjects } from "../hooks/use-projects";
 
@@ -136,6 +137,7 @@ export function EditProjectSheet({
         </FormSheetHeader>
         <FormSheetForm onSubmit={form.handleSubmit(onSubmit)}>
           <FormSheetBody>
+            <RequiredFieldsHint />
             <Controller
               name="name"
               control={form.control}
@@ -166,8 +168,7 @@ export function EditProjectSheet({
                 <div className="space-y-2">
                   <div className="flex items-baseline justify-between gap-2">
                     <Label htmlFor={field.name} className="font-medium text-sm">
-                      Description{" "}
-                      <span className="text-muted-foreground">(Optional)</span>
+                      Description
                     </Label>
                     <span
                       className={`shrink-0 text-xs tabular-nums ${
@@ -198,7 +199,7 @@ export function EditProjectSheet({
               )}
             />
             <div className="space-y-2">
-              <Label htmlFor="edit-project-purpose">Purpose (optional)</Label>
+              <Label htmlFor="edit-project-purpose">Purpose</Label>
               <Textarea
                 id="edit-project-purpose"
                 maxLength={500}
@@ -215,7 +216,7 @@ export function EditProjectSheet({
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-project-documentation-url">
-                Documentation URL (optional)
+                Documentation URL
               </Label>
               <Input
                 id="edit-project-documentation-url"
@@ -233,9 +234,7 @@ export function EditProjectSheet({
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="edit-project-start-date">
-                  Start date (optional)
-                </Label>
+                <Label htmlFor="edit-project-start-date">Start date</Label>
                 <Input
                   id="edit-project-start-date"
                   type="date"
@@ -249,9 +248,7 @@ export function EditProjectSheet({
                 ) : null}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-project-target-date">
-                  Target date (optional)
-                </Label>
+                <Label htmlFor="edit-project-target-date">Target date</Label>
                 <Input
                   id="edit-project-target-date"
                   type="date"
@@ -297,8 +294,7 @@ export function EditProjectSheet({
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
                   <Label htmlFor={field.name} className="font-medium text-sm">
-                    Repository URL{" "}
-                    <span className="text-muted-foreground">(Optional)</span>
+                    Repository URL
                   </Label>
                   <Input
                     {...field}
@@ -322,8 +318,7 @@ export function EditProjectSheet({
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
                   <Label htmlFor={field.name} className="font-medium text-sm">
-                    Website URL{" "}
-                    <span className="text-muted-foreground">(Optional)</span>
+                    Website URL
                   </Label>
                   <Input
                     {...field}

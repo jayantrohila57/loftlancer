@@ -92,6 +92,13 @@
       "when": 1771700000000,
       "tag": "0012_better_auth_jwks_device_code",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792745373404,
+      "tag": "0028_user_notification_preferences",
+      "breakpoints": true
     }
   ]
 }

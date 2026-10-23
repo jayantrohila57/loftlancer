@@ -23,6 +23,7 @@ import {
   FormSheetHeader,
   FormSheetPopup,
 } from "@/components/patterns/form-sheet";
+import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
 
 import { routes } from "@/utils/navigation";
@@ -126,6 +127,7 @@ export function CreateProjectSheet({
         </FormSheetHeader>
         <FormSheetForm onSubmit={form.handleSubmit(onSubmit)}>
           <FormSheetBody>
+            <RequiredFieldsHint />
             <Controller
               name="name"
               control={form.control}
@@ -155,8 +157,7 @@ export function CreateProjectSheet({
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
                   <Label htmlFor={field.name} className="font-medium text-sm">
-                    Description{" "}
-                    <span className="text-muted-foreground">(Optional)</span>
+                    Description
                   </Label>
                   <Textarea
                     {...field}
@@ -186,7 +187,7 @@ export function CreateProjectSheet({
               )}
             />
             <div className="space-y-2">
-              <Label htmlFor="project-purpose">Purpose (optional)</Label>
+              <Label htmlFor="project-purpose">Purpose</Label>
               <Textarea
                 id="project-purpose"
                 maxLength={500}
@@ -203,7 +204,7 @@ export function CreateProjectSheet({
             </div>
             <div className="space-y-2">
               <Label htmlFor="project-documentation-url">
-                Documentation URL (optional)
+                Documentation URL
               </Label>
               <Input
                 id="project-documentation-url"
@@ -221,9 +222,7 @@ export function CreateProjectSheet({
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="project-start-date">
-                  Start date (optional)
-                </Label>
+                <Label htmlFor="project-start-date">Start date</Label>
                 <Input
                   id="project-start-date"
                   type="date"
@@ -237,9 +236,7 @@ export function CreateProjectSheet({
                 ) : null}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="project-target-date">
-                  Target date (optional)
-                </Label>
+                <Label htmlFor="project-target-date">Target date</Label>
                 <Input
                   id="project-target-date"
                   type="date"
@@ -259,8 +256,7 @@ export function CreateProjectSheet({
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
                   <Label htmlFor={field.name} className="font-medium text-sm">
-                    Repository URL{" "}
-                    <span className="text-muted-foreground">(Optional)</span>
+                    Repository URL
                   </Label>
                   <Input
                     {...field}
@@ -284,8 +280,7 @@ export function CreateProjectSheet({
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
                   <Label htmlFor={field.name} className="font-medium text-sm">
-                    Website URL{" "}
-                    <span className="text-muted-foreground">(Optional)</span>
+                    Website URL
                   </Label>
                   <Input
                     {...field}

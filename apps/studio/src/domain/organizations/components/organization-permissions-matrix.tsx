@@ -14,7 +14,11 @@ import {
 function cellLabel(cell: MatrixCell): string {
   if (cell === "Y") return "Yes";
   if (cell === "G") return "Access configured";
+<<<<<<< HEAD
   return "No";
+=======
+  return "No";
+>>>>>>> origin/dev
 }
 
 export function OrganizationPermissionsMatrix() {
@@ -25,7 +29,8 @@ export function OrganizationPermissionsMatrix() {
         <>
           See what each built-in role can do. <strong>G</strong> means access is
           set through a project assignment or for an individual member.{" "}
-          <strong>Admin</strong> is not available in organization settings.
+          <strong>Admin</strong> is not available in organization settings. No
+          means the role does not have that permission.
         </>
       }
     >

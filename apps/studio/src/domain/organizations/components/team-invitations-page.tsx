@@ -2,7 +2,7 @@
 
 import { Button } from "@loftlancer/ui/button";
 import { Skeleton } from "@loftlancer/ui/skeleton";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   INVITATION_PAGE_SIZE,
@@ -16,7 +16,6 @@ import { authClient } from "@/lib/auth-client";
 import {
   cancelOrganizationInvitation,
   pendingOrganizationInvitations,
-  toOrganizationInviteRole,
 } from "@/lib/organization-invitations";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
@@ -49,11 +48,21 @@ export function TeamInvitationsPage({
     }),
     enabled: Boolean(organization?.id),
   });
-  const members = useQuery(trpc.organizations.listMembers.queryOptions());
   const refresh = () =>
     queryClient.invalidateQueries({
       queryKey: trpc.organizations.listInvitations.pathKey(),
     });
+  const resend = useMutation(
+    trpc.organizations.resendInvitation.mutationOptions({
+      onSuccess: () => {
+        toast.success("Invitation resent");
+        void refresh();
+      },
+      onError: (error) => toast.error(error.message),
+      onSettled: () => setResendingId(null),
+    }),
+  );
+  const members = useQuery(trpc.organizations.listMembers.queryOptions());
   const invitations = query.data?.rows ?? [];
 
   return (
@@ -62,9 +71,8 @@ export function TeamInvitationsPage({
         <div>
           <h2 className="font-semibold text-xl tracking-tight">Invitations</h2>
           <p className="mt-1 text-muted-foreground text-sm">
-            Invite someone to join this organization and team. They join as a
-            team member and receive access through the team’s current project
-            links. Add existing organization members from the Members tab.
+            People invited here join the organization and this team; team access
+            follows the team’s linked projects.
           </p>
         </div>
         <Can action="member.invite">
@@ -118,25 +126,8 @@ export function TeamInvitationsPage({
               .finally(() => setRevokingId(null));
           }}
           onResend={(invite) => {
-            if (!organization) return;
             setResendingId(invite.id);
-            void authClient.organization
-              .inviteMember({
-                organizationId: organization.id,
-                ...(teamId ? { teamId } : {}),
-                email: invite.email,
-                role: toOrganizationInviteRole(invite.role),
-                resend: true,
-              })
-              .then((result) => {
-                if (result.error) {
-                  throw new Error(result.error.message ?? "Could not resend");
-                }
-                toast.success("Invitation resent");
-                return refresh();
-              })
-              .catch((error) => toast.error(error.message))
-              .finally(() => setResendingId(null));
+            resend.mutate({ invitationId: invite.id });
           }}
           clientPagination={false}
         />

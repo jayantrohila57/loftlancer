@@ -7,13 +7,15 @@ import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
+import { AppIcon } from "@/components/patterns/app-icon";
 import { FormField } from "@/components/patterns/form-field";
-import { initialsFromLabel } from "@/lib/initials";
+import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
 
 export function OrganizationBrandingEditor() {
   const queryClient = useQueryClient();
+  const { confirm, ConfirmDialog } = useConfirm();
   const { refreshOrganizations } = useActiveOrganization();
   const query = useQuery(trpc.organizations.getProfile.queryOptions());
   const canEdit = query.data?.canManageBranding === true;
@@ -43,7 +45,7 @@ export function OrganizationBrandingEditor() {
         <FormField
           id="organization-logo-url"
           label="Logo image URL"
-          hint="Use a public HTTPS image URL. Image uploads are not configured yet."
+          hint="Use a public HTTPS image URL."
         >
           <Input
             id="organization-logo-url"
@@ -60,7 +62,7 @@ export function OrganizationBrandingEditor() {
             alt="Organization logo preview"
           />
           <AvatarFallback>
-            {initialsFromLabel(query.data?.name ?? "", "OR")}
+            <AppIcon name="organization" className="size-5" />
           </AvatarFallback>
         </Avatar>
       </div>
@@ -68,7 +70,16 @@ export function OrganizationBrandingEditor() {
         <Button
           variant="outline"
           disabled={!canEdit || !value || mutation.isPending}
-          onClick={() => setDraft("")}
+          onClick={() =>
+            confirm({
+              title: "Remove organization logo?",
+              description:
+                "This clears the logo URL from the form. Save changes to apply the removal.",
+              confirmLabel: "Remove logo",
+              variant: "destructive",
+              onConfirm: () => setDraft(""),
+            })
+          }
         >
           Remove logo
         </Button>
@@ -79,6 +90,7 @@ export function OrganizationBrandingEditor() {
           {mutation.isPending ? "Saving…" : "Save changes"}
         </Button>
       </div>
+      {ConfirmDialog}
     </AccordionSection>
   );
 }

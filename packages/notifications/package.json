@@ -11,17 +11,20 @@
   },
   "dependencies": {
     "@loftlancer/db": "workspace:*",
+    "@loftlancer/email": "workspace:*",
     "@loftlancer/env": "workspace:*",
     "drizzle-orm": "catalog:",
+    "react": "^19.3.1",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@types/react": "^19.3.0",
     "@loftlancer/config": "workspace:*",
     "tsx": "^4.23.15",
     "typescript": "catalog:"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "node --import tsx --test src/from-audit.test.ts src/registry.test.ts"
+    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test node --import tsx --test src/from-audit.test.ts src/registry.test.ts src/preferences.test.ts"
   }
 }
