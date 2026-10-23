@@ -13,13 +13,18 @@ const ROLES: { role: OrgRole; summary: string }[] = [
   {
     role: "owner",
     summary:
-      "Full control, including transferring or deleting the organization.",
+      "Can manage members and settings, transfer ownership, archive, restore, or delete the organization.",
   },
   {
     role: "manager",
-    summary: "Runs members, invites and teams; project work once assigned.",
+    summary:
+      "Can invite members and manage teams; project access must be assigned.",
   },
-  { role: "member", summary: "Works in projects their teams can access." },
+  {
+    role: "member",
+    summary:
+      "Can view organization information and work in projects they can access.",
+  },
 ];
 
 /**
@@ -78,6 +83,11 @@ export function OrganizationRoleCards() {
                   {cap === "grant" ? (
                     <span className="ms-auto text-muted-foreground text-xs">
                       with access
+                    </span>
+                  ) : null}
+                  {cap === "no" ? (
+                    <span className="ms-auto text-muted-foreground text-xs">
+                      Not included
                     </span>
                   ) : null}
                 </li>

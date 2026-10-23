@@ -32,7 +32,7 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "node --import tsx --test src/return-to.test.ts src/guards/session-access.test.ts src/session-cookies.test.ts src/platform-middleware.test.ts src/e2e-route-access.test.ts src/member-removal-policy.test.ts src/organization-member-removal.test.ts src/rate-limit-storage.test.ts src/organization-invitation-email.test.ts"
+    "test": "NODE_ENV=test node --import tsx --test src/return-to.test.ts src/guards/session-access.test.ts src/session-cookies.test.ts src/platform-middleware.test.ts src/e2e-route-access.test.ts src/member-removal-policy.test.ts src/organization-member-removal.test.ts src/rate-limit-storage.test.ts src/organization-invitation-email.test.ts"
   },
   "dependencies": {
     "@better-auth/cimd": "^1.7.7",

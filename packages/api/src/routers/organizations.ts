@@ -1037,15 +1037,24 @@ export const organizationsRouter = router({
         email: z.string().email(),
         role: z.enum(["owner", "manager", "member"]).default("member"),
         teamId: z.string().min(1).optional(),
+        projectId: z.string().min(1).optional(),
       }),
     )
     .use(
       actionGuard("member.invite", (input) => {
-        const invite = input as { role: string; teamId?: string };
+        const invite = input as {
+          role: string;
+          teamId?: string;
+          projectId?: string;
+        };
         return {
           payload: {
             role: invite.role,
-            scope: invite.teamId ? "team" : "organization",
+            scope: invite.projectId
+              ? "project"
+              : invite.teamId
+                ? "team"
+                : "organization",
           },
         };
       }),
@@ -1059,10 +1068,23 @@ export const organizationsRouter = router({
             ? "The active organization changed. Reload and try again."
             : "Select an organization first.",
         });
+      if (input.projectId) {
+        await requireAction("project.permission.grant", {
+          userId: ctx.session.user.id,
+          organizationId,
+          projectId: input.projectId,
+          audit: false,
+        });
+      }
       return mcpMemberInvite(
         ctx.session.user.id,
         organizationId,
-        { email: input.email, role: input.role, teamId: input.teamId },
+        {
+          email: input.email,
+          role: input.role,
+          teamId: input.teamId,
+          projectId: input.projectId,
+        },
         { alreadyAuthorized: true, audit: false },
       );
     }),
@@ -1847,10 +1869,9 @@ export const organizationsRouter = router({
       const now = new Date();
       const org = and(
         eq(invitation.organizationId, input.organizationId),
-        isNull(invitation.projectId),
         input.teamId
           ? eq(invitation.teamId, input.teamId)
-          : isNull(invitation.teamId),
+          : and(isNull(invitation.teamId), isNull(invitation.projectId)),
       );
       const search = input.search;
       const searchableOrg = and(

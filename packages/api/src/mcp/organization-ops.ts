@@ -529,7 +529,7 @@ export async function mcpMemberInvite(
   const email = input.email.trim().toLowerCase();
   if (!email) throw new Error("invalid_invitation_email");
   const role = input.role ?? "member";
-  if (input.projectId && (input.teamId || role !== "member")) {
+  if (input.projectId && role !== "member") {
     throw new Error("invalid_project_invitation_scope");
   }
   if (!["member", "manager", "owner"].includes(role)) {

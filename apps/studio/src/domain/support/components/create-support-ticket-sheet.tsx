@@ -24,6 +24,7 @@ import {
   FormSheetHeader,
   FormSheetPopup,
 } from "@/components/patterns/form-sheet";
+import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
@@ -91,6 +92,7 @@ export function CreateSupportTicketSheet({
           }}
         >
           <FormSheetBody className="gap-4">
+            <RequiredFieldsHint />
             <div className="space-y-2">
               <Label htmlFor="support-ticket-subject">
                 Subject{" "}

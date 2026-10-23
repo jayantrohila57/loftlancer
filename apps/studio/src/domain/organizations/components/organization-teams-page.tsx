@@ -19,6 +19,7 @@ import { AppIcon } from "@/components/patterns/app-icon";
 import { ErrorState } from "@/components/patterns/error-state";
 import { FormField } from "@/components/patterns/form-field";
 import { GuardedDialog } from "@/components/patterns/guarded-dialog";
+import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
 import { Can } from "@/domain/permissions/components/can";
 import { isTeamCreateFormDirty } from "@/lib/form-dirty";
 import { appIcons } from "@/lib/icons";
@@ -172,6 +173,7 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
           <DialogHeader>
             <DialogTitle>Create team</DialogTitle>
           </DialogHeader>
+          <RequiredFieldsHint />
           <FormField id="team-name" label="Team name" required>
             <Input
               id="team-name"
