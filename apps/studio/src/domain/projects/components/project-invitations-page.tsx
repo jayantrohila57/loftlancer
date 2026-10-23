@@ -92,8 +92,8 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
         <div>
           <h2 className="font-semibold text-xl tracking-tight">Invitations</h2>
           <p className="mt-1 text-muted-foreground text-sm">
-            Invite a person to this project. Acceptance adds them to the
-            organization if needed and gives default project read access.
+            People invited here join the organization and receive read-only
+            access to this project.
           </p>
         </div>
         <Can action="member.invite">
