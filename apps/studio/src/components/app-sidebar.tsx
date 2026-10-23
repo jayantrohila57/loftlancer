@@ -54,6 +54,7 @@ import { useActiveOrganization } from "@/components/org/active-organization-cont
 import { useOrganizationFavorites } from "@/components/org/use-organization-favorites";
 import { useSidebarNavigator } from "@/components/sidebar/use-sidebar-navigator";
 import { SidebarProjectsGroup } from "@/components/sidebar-projects-group";
+import { teamDisplayName } from "@/domain/organizations/lib/team-display-name";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useProjects } from "@/domain/projects/hooks/use-projects";
 import { accountSettingsUrl } from "@/lib/account-url";
@@ -164,8 +165,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     teamHref,
     settingsLinks: [{ label: "Account settings", href: accountSettingsHref }],
   });
-  const teams =
-    nav.groups.find((group) => group.heading === "Teams")?.items ?? [];
+  const organizationName = orgs.find((org) => org.slug === orgSlug)?.name;
+  const groups = nav.groups.map((group) =>
+    group.heading === "Teams"
+      ? {
+          ...group,
+          items: group.items.map((team) => ({
+            ...team,
+            label: teamDisplayName(team.label, organizationName),
+          })),
+        }
+      : group,
+  );
+  const teams = groups.find((group) => group.heading === "Teams")?.items ?? [];
   const menuItems = platformNav.flatMap((item) => {
     if (
       item.key === "projects" ||
@@ -219,7 +231,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="shrink-0 gap-2">
         <SidebarBrand href={withBasePath(routes.overview())} />
         <SidebarSearch
-          groups={nav.groups}
+          groups={groups}
           loading={nav.loading}
           onNavigate={navigate}
         />

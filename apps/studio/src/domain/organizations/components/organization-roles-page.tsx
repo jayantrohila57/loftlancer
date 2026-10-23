@@ -31,7 +31,7 @@ export function OrganizationRolesPage({ slug }: { slug: string }) {
   } else if (status === "error") {
     body = (
       <ErrorState
-        title="Could not load workspace"
+        title="Could not load organization"
         description={error?.message ?? "Try refreshing the page."}
       />
     );
@@ -48,7 +48,7 @@ export function OrganizationRolesPage({ slug }: { slug: string }) {
     body = (
       <ErrorState
         title="Not allowed"
-        description="You do not have permission to view roles and access for this workspace."
+        description="You do not have permission to view roles and access for this organization."
       />
     );
   } else {

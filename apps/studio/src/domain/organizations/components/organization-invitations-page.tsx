@@ -90,7 +90,7 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     } catch (error) {
       if (
         error instanceof Error &&
-        error.message === "Revoke is not available for this workspace."
+        error.message === "Revoke is not available for this organization."
       ) {
         toast.error(error.message);
       }
@@ -132,7 +132,7 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     <OrganizationSectionPage
       slug={slug}
       title="Invitations"
-      description="Pending and recent email invitations for this workspace."
+      description="Pending and recent email invitations for this organization."
       action={<Can action="member.invite">{inviteAction}</Can>}
     >
       {orgStatus === "error" ? (

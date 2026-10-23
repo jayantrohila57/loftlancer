@@ -51,7 +51,7 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
     return (
       <ErrorState
         title="Projects unavailable"
-        description="Could not load this workspace’s projects."
+        description="Could not load this organization’s projects."
         onRetry={() => void projectsQuery.refetch()}
       />
     );
@@ -70,7 +70,7 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
     <div className="flex flex-col gap-4">
       <AccordionSection
         title="Organization details"
-        description="A brief profile to help people recognize this workspace."
+        description="A brief profile to help people recognize this organization."
       >
         {profileQuery.isError ? (
           <ErrorState
@@ -123,7 +123,7 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
       </AccordionSection>
       <AccordionSection
         title="Recent projects"
-        description="Recently updated projects in this workspace."
+        description="Recently updated projects in this organization."
         actions={
           <Button
             variant="outline"

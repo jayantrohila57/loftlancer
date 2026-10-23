@@ -8,7 +8,7 @@ import { routes } from "@/utils/navigation";
 
 export const metadata: Metadata = {
   title: "Organization settings",
-  description: "Workspace profile and danger zone.",
+  description: "Organization profile and danger zone.",
 };
 
 export default async function OrganizationSettingsRoute({

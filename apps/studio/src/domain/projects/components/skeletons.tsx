@@ -60,7 +60,7 @@ export function ProjectsPageSkeleton() {
   return (
     <DashboardSection
       title="Projects"
-      description="All workspace projects in one searchable list."
+      description="All your projects in one searchable list."
       back={false}
       hideTabs
       action={<PageHeaderActionButton label="New project" disabled />}

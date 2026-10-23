@@ -67,9 +67,7 @@ function OrganizationFrame({
       LinkComponent={Link as never}
       back={false}
       title={name}
-      description={
-        isOrgHome ? "Organization workspace and administration." : undefined
-      }
+      description={isOrgHome ? "Organization settings and members." : undefined}
       tabs={tabs.map((tab) => ({
         href: tab.href ?? "#",
         label: tab.label,

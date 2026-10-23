@@ -120,7 +120,7 @@ export function CreateOrganizationSheet({
             New organization
           </SheetTitleWithIcon>
           <SheetDescription>
-            Create a team workspace. Invites are not sent until you add members.
+            Create an organization, then invite people from its Members page.
           </SheetDescription>
         </FormSheetHeader>
         <FormSheetForm onSubmit={onSubmit}>

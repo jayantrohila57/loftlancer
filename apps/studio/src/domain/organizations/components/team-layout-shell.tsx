@@ -5,10 +5,12 @@ import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
+import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { ErrorState } from "@/components/patterns/error-state";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
+import { teamDisplayName } from "../lib/team-display-name";
 
 export function TeamLayoutShell({
   slug,
@@ -21,6 +23,8 @@ export function TeamLayoutShell({
 }) {
   const teamsQuery = useQuery(trpc.teams.get.queryOptions({ teamId }));
   const team = teamsQuery.data?.team;
+  const { orgs } = useActiveOrganization();
+  const organizationName = orgs.find((org) => org.slug === slug)?.name;
   const canListInvitations = useCan("member.list");
   const pathname = usePathname() ?? "";
   const root = routes.team(slug, teamId);
@@ -39,8 +43,8 @@ export function TeamLayoutShell({
   return (
     <SettingsFrame
       LinkComponent={Link as never}
+      title={teamDisplayName(team.name, organizationName)}
       back={false}
-      title={team.name}
       description={
         pathname === root
           ? team.purpose ||

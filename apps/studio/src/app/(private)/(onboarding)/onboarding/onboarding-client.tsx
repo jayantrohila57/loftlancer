@@ -63,7 +63,7 @@ const projectSchema = z.object({
 });
 
 const STEPS = [
-  { title: "Organization", description: "Your workspace" },
+  { title: "Organization", description: "Your organization" },
   { title: "Project", description: "Where variables live" },
 ] as const;
 
@@ -268,7 +268,7 @@ export default function OnboardingClient() {
               >
                 <StepHeading
                   title="Create your organization"
-                  description="This name appears in the sidebar team switcher."
+                  description="This name appears in the organization switcher."
                 />
                 <Controller
                   name="name"

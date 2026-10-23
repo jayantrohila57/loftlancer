@@ -7,7 +7,7 @@ import { routes } from "@/utils/navigation";
 
 export const metadata: Metadata = {
   title: "Notifications",
-  description: "Your workspace notifications.",
+  description: "Your notifications across organizations and projects.",
 };
 
 export default async function NotificationsPage() {

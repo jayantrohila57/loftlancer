@@ -5,14 +5,14 @@ import { siteConfig } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "Overview",
-  description: `Your workspace overview in ${siteConfig.name}.`,
+  description: `Your dashboard overview in ${siteConfig.name}.`,
 };
 
 export default function StudioOverviewPage() {
   return (
     <DashboardSection
       title="Overview"
-      description="Your workspace overview."
+      description="Your dashboard overview."
       back={false}
     >
       <StudioOverviewContent />
