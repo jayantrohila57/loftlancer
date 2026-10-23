@@ -343,7 +343,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       isActive={
                         pathname === routes.orgSection(orgSlug, "activity")
                       }
-                      tooltip="Organization activity"
+                      tooltip="Activity"
                       render={
                         <Link
                           href={routes.orgSection(orgSlug, "activity") as Route}
@@ -351,7 +351,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       }
                     >
                       <ActivityIcon />
-                      <span>Organization activity</span>
+                      <span>Activity</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ) : null}

@@ -5,7 +5,7 @@ import { isActionsAuditEnabledOnServer } from "@/lib/actions-audit-enabled";
 import { guardPageAction, guardProjectSlugPage } from "@/lib/page-guards";
 
 export const metadata: Metadata = {
-  title: "Project activity",
+  title: "Activity",
   description: "Audit events for this project.",
 };
 
@@ -24,9 +24,7 @@ export default async function ProjectActivityRoute({
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="font-semibold text-xl tracking-tight">
-          Project activity
-        </h2>
+        <h2 className="font-semibold text-xl tracking-tight">Activity</h2>
         <p className="mt-1 text-muted-foreground text-sm">
           Audit events for this project.
         </p>

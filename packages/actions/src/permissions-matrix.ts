@@ -87,7 +87,7 @@ export const PERMISSION_MATRIX_ROWS: PermissionMatrixRow[] = [
   },
   {
     action: "audit.timeline.view.org",
-    label: "Organization timeline",
+    label: "Activity",
     owner: "Y",
     manager: "G",
     member: "—",

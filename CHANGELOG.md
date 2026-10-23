@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Standardized Activity labels across account, organization, and project pages; routed the duplicate account-settings entry to the shared Activity page (#630).
+
 ## [1.19.0] - 2026-10-23
 
 ### Added
