@@ -51,6 +51,15 @@ describe("evaluatePermission", () => {
     assert.equal(result.allowed, true);
   });
 
+  it("allows users to update only their own notification preferences", () => {
+    const result = evaluatePermission({
+      action: "notification.preferences.update",
+      orgRole: null,
+      project: null,
+    });
+    assert.equal(result.allowed, true);
+  });
+
   it("allows members with team link and grant", () => {
     const result = evaluatePermission({
       action: "variable.read",

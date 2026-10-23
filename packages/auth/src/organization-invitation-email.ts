@@ -1,4 +1,42 @@
 import { OrgInviteEmail, sendEmail } from "@loftlancer/email";
+import {
+  defaultNotificationPreferences,
+  notificationPreferencesSchema,
+} from "@loftlancer/notifications/preferences";
+
+async function maySendInvitationEmail(email: string) {
+  if (process.env.NODE_ENV === "test" || !process.env.DATABASE_URL?.trim()) {
+    return true;
+  }
+
+  try {
+    const [{ activeUserWhere, db }, { user }, { eq, sql }] = await Promise.all([
+      import("@loftlancer/db"),
+      import("@loftlancer/db/schema/auth"),
+      import("drizzle-orm"),
+    ]);
+    const [account] = await db
+      .select({ notificationPreferences: user.notificationPreferences })
+      .from(user)
+      .where(
+        activeUserWhere(
+          eq(sql`lower(${user.email})`, email.trim().toLowerCase()),
+        ),
+      )
+      .limit(1);
+    if (!account) return true;
+
+    const preferences = notificationPreferencesSchema.safeParse(
+      account.notificationPreferences,
+    );
+    return (
+      preferences.success ? preferences.data : defaultNotificationPreferences
+    ).invitations.email;
+  } catch {
+    // Honor an opt-out if settings cannot be loaded; do not send by default.
+    return false;
+  }
+}
 
 export async function sendOrganizationInvitationEmail(input: {
   invitationId: string;
@@ -7,6 +45,8 @@ export async function sendOrganizationInvitationEmail(input: {
   organizationName: string;
   inviterName: string;
 }) {
+  if (!(await maySendInvitationEmail(input.email))) return;
+
   const studioUrl = (
     process.env.NEXT_PUBLIC_STUDIO_URL ?? "https://loftlancer.com/studio"
   ).replace(/\/$/, "");
