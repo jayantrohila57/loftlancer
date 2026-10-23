@@ -72,7 +72,7 @@ export function ProjectCard({ project }: { project: ProjectOutput }) {
       </CardHeader>
       <CardPanel className="flex flex-wrap items-center justify-between gap-2 px-3 pt-1 pb-3 text-muted-foreground text-xs">
         <span className="tabular-nums">
-          Updated <LocalDateTime value={project.updatedAt} />
+          Updated <LocalDateTime value={project.updatedAt} showTimeOnHover />
         </span>
         <div className="flex items-center gap-0.5">
           {project.repositoryUrl ? (

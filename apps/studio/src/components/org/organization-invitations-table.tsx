@@ -7,10 +7,7 @@ import {
   DataTableActionsColumnHeader,
 } from "@loftlancer/ui/data-table/data-table-actions-column";
 import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
-import {
-  LOCAL_DATE_TIME_FORMAT,
-  LocalDateTime,
-} from "@loftlancer/ui/patterns/local-date-time";
+import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
@@ -156,10 +153,7 @@ export function OrganizationInvitationsTable({
         const value = getValue();
         return value ? (
           <span className="text-muted-foreground text-xs">
-            <LocalDateTime
-              value={String(value)}
-              options={LOCAL_DATE_TIME_FORMAT}
-            />
+            <LocalDateTime value={String(value)} showTimeOnHover />
           </span>
         ) : (
           <span className="text-muted-foreground">—</span>
@@ -189,11 +183,7 @@ export function OrganizationInvitationsTable({
                 : "Updated";
         return date ? (
           <span className="text-muted-foreground text-xs">
-            {label}:{" "}
-            <LocalDateTime
-              value={String(date)}
-              options={LOCAL_DATE_TIME_FORMAT}
-            />
+            {label}: <LocalDateTime value={String(date)} showTimeOnHover />
           </span>
         ) : (
           <span className="text-muted-foreground">—</span>
@@ -207,10 +197,7 @@ export function OrganizationInvitationsTable({
       ),
       cell: ({ getValue }) => (
         <span className="text-muted-foreground text-xs">
-          <LocalDateTime
-            value={String(getValue())}
-            options={LOCAL_DATE_TIME_FORMAT}
-          />
+          <LocalDateTime value={String(getValue())} showTimeOnHover />
         </span>
       ),
     }),

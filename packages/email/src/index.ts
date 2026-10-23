@@ -12,6 +12,10 @@ export {
   type MagicLinkEmailProps,
 } from "./templates/magic-link";
 export {
+  NotificationEmail,
+  type NotificationEmailProps,
+} from "./templates/notification";
+export {
   OrgInviteEmail,
   type OrgInviteEmailProps,
 } from "./templates/org-invite";

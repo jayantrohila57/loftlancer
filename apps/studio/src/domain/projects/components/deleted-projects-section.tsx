@@ -64,7 +64,8 @@ export function DeletedProjectsSection() {
               <div className="min-w-0">
                 <p className="truncate font-medium text-sm">{project.name}</p>
                 <p className="text-muted-foreground text-xs">
-                  Deleted <LocalDateTime value={project.deletedAt} />
+                  Deleted{" "}
+                  <LocalDateTime value={project.deletedAt} showTimeOnHover />
                 </p>
               </div>
               <Button

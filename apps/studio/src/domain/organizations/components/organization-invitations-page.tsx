@@ -132,7 +132,7 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     <OrganizationSectionPage
       slug={slug}
       title="Invitations"
-      description="Pending and recent email invitations for this organization."
+      description="Invite people as organization members, with optional team and read-only project access."
       action={<Can action="member.invite">{inviteAction}</Can>}
     >
       {orgStatus === "error" ? (

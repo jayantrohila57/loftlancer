@@ -156,10 +156,7 @@ export function OrganizationMembersTable({
         const value = getValue();
         return value ? (
           <span className="text-muted-foreground text-xs">
-            <LocalDateTime
-              value={String(value)}
-              options={{ dateStyle: "medium" }}
-            />
+            <LocalDateTime value={String(value)} showTimeOnHover />
           </span>
         ) : (
           <span className="text-muted-foreground">—</span>

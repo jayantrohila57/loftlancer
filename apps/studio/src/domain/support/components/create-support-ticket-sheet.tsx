@@ -24,6 +24,7 @@ import {
   FormSheetHeader,
   FormSheetPopup,
 } from "@/components/patterns/form-sheet";
+import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
@@ -91,8 +92,15 @@ export function CreateSupportTicketSheet({
           }}
         >
           <FormSheetBody className="gap-4">
+            <RequiredFieldsHint />
             <div className="space-y-2">
-              <Label htmlFor="support-ticket-subject">Subject</Label>
+              <Label htmlFor="support-ticket-subject">
+                Subject{" "}
+                <span aria-hidden="true" className="text-destructive">
+                  *
+                </span>
+                <span className="sr-only"> (required)</span>
+              </Label>
               <Input
                 id="support-ticket-subject"
                 value={subject}
@@ -143,7 +151,13 @@ export function CreateSupportTicketSheet({
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="support-ticket-description">Description</Label>
+              <Label htmlFor="support-ticket-description">
+                Description{" "}
+                <span aria-hidden="true" className="text-destructive">
+                  *
+                </span>
+                <span className="sr-only"> (required)</span>
+              </Label>
               <Textarea
                 id="support-ticket-description"
                 rows={8}
