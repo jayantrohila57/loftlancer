@@ -42,7 +42,11 @@ export function TeamLayoutShell({
       back={{ href: routes.orgSection(slug, "teams"), label: "Teams" }}
       title={team.name}
       description={
-        team.purpose || team.description || "Team members and project access."
+        pathname === root
+          ? team.purpose ||
+            team.description ||
+            "Team members and project access."
+          : undefined
       }
       tabs={[
         { href: root, label: "Overview", active: pathname === root },
