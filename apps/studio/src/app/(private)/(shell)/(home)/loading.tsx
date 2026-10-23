@@ -8,7 +8,7 @@ export default function OrganizationsLoading() {
       fallback={
         <DashboardSection
           title="Overview"
-          description="Your workspace overview."
+          description="Your dashboard overview."
           back={false}
           hideTabs
         >

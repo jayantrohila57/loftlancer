@@ -30,9 +30,9 @@ export function OrganizationPreferencesEditor() {
           queryKey: trpc.organizations.getSettings.queryKey(),
         });
         setDraft(null);
-        toast.success("Workspace defaults saved.");
+        toast.success("Organization defaults saved.");
       },
-      onError: () => toast.error("Could not save workspace defaults."),
+      onError: () => toast.error("Could not save organization defaults."),
     }),
   );
   const saved = query.data;
@@ -55,7 +55,7 @@ export function OrganizationPreferencesEditor() {
   if (!saved || !draft) {
     return (
       <AccordionSection
-        title="Workspace defaults"
+        title="Organization defaults"
         description="Loading organization preferences…"
       >
         <p className="text-muted-foreground text-sm">
@@ -107,7 +107,7 @@ export function OrganizationPreferencesEditor() {
   );
   return (
     <AccordionSection
-      title="Workspace defaults"
+      title="Organization defaults"
       description="Set presentation defaults for this organization. Personal choices and existing project settings remain unchanged."
       actions={
         saved.canEdit ? (

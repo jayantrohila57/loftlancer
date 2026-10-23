@@ -24,7 +24,7 @@ export function baseOptions(): BaseLayoutProps {
     links: [
       {
         type: "button",
-        text: "Studio",
+        text: "Dashboard",
         url: studioHomeUrl(),
         external: true,
       },

@@ -92,7 +92,7 @@ export function NotificationsPageClient() {
   return (
     <DashboardSection
       title="Notifications"
-      description="Updates about invitations, your organization, and workspace activity."
+      description="Updates about invitations, your organizations, and project activity."
       back={routes.home()}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">

@@ -20,7 +20,7 @@ import { cn } from "@loftlancer/ui/utils";
 import { useEffect, useState } from "react";
 
 /** Monitored services with fixed rows so the status table does not shift. */
-const SURFACES = ["Docs", "Studio", "Auth"] as const;
+const SURFACES = ["Documentation", "Dashboard", "Sign-in"] as const;
 const REFRESH_MS = 60_000;
 
 const OVERALL: Record<

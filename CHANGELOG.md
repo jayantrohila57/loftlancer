@@ -16,6 +16,16 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.4] - 2026-10-23
+
+### Changed
+
+- Aligned account navigation with the shared signed-in shell, switched OAuth/device authorization to a single-column layout, and standardized secondary marketing pages on the public shell (#635).
+- Removed duplicate organization overview/activity links and moved team/project list navigation to the sidebar (#636).
+- Standardized organization, team, and project terminology and labeled same-name default teams consistently (#629).
+- Clarified that project apps are installable project features, distinct from dashboard, sign-in, and documentation surfaces (#631).
+- Replaced internal product names and engineering terms in user-facing copy (#632).
+
 ## [1.19.3] - 2026-10-23
 
 ### Changed
@@ -804,7 +814,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.3...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.4...HEAD
+[1.19.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.3...v1.19.4
 [1.19.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.2...v1.19.3
 [1.19.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.0...v1.19.1

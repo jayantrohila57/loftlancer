@@ -362,7 +362,7 @@ export function OrganizationSettingsForm({
     } catch (error) {
       if (
         error instanceof Error &&
-        error.message === "Revoke is not available for this workspace."
+        error.message === "Revoke is not available for this organization."
       ) {
         toast.error(error.message);
       }
@@ -667,7 +667,7 @@ export function OrganizationSettingsForm({
           <SettingsPanel>
             <SettingsSectionHeader
               title="Profile"
-              description="Name and slug for this workspace."
+              description="Name and slug for this organization."
               icon="organization"
             />
             <SettingsRow label="Name" description="Organization display name.">
@@ -675,7 +675,7 @@ export function OrganizationSettingsForm({
             </SettingsRow>
             <SettingsRow
               label="Slug"
-              description="URL-safe workspace identifier."
+              description="URL-safe organization identifier."
             >
               <span className="font-mono text-sm">{orgSlug}</span>
             </SettingsRow>
@@ -878,8 +878,8 @@ export function OrganizationSettingsForm({
             {isOwner ? (
               isPersonal ? (
                 <SettingsRow
-                  label="Personal workspace"
-                  description="Your personal workspace cannot be deleted."
+                  label="Personal organization"
+                  description="Your personal organization cannot be deleted."
                 >
                   <span className="text-muted-foreground text-xs">—</span>
                 </SettingsRow>
@@ -955,7 +955,7 @@ export function OrganizationSettingsForm({
               Edit organization
             </SheetTitleWithIcon>
             <SheetDescription>
-              Update the name and URL slug for this workspace.
+              Update the name and URL slug for this organization.
             </SheetDescription>
           </FormSheetHeader>
           <FormSheetForm onSubmit={handleSaveProfile}>

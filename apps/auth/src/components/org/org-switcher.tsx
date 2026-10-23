@@ -26,7 +26,7 @@ type OrgListItem = {
 };
 
 function orgSubtitle(org: OrgListItem | undefined): string {
-  if (!org) return "Workspace";
+  if (!org) return "Organization";
   if (isPersonalOrganization(org)) return "Personal";
   return "Team";
 }

@@ -21,7 +21,7 @@ export default function OrganizationDetailPage({ slug }: { slug: string }) {
     return (
       <ErrorState
         title="Organization unavailable"
-        description={error?.message ?? "Could not load this workspace."}
+        description={error?.message ?? "Could not load this organization."}
         onRetry={() => void reload()}
       />
     );
@@ -36,8 +36,8 @@ export default function OrganizationDetailPage({ slug }: { slug: string }) {
           <h2 className="font-semibold text-xl tracking-tight">Overview</h2>
           <p className="mt-1 text-muted-foreground text-sm">
             {personal
-              ? "Personal workspace overview and administration."
-              : "Team workspace overview and administration."}
+              ? "Personal organization overview and settings."
+              : "Organization overview and settings."}
           </p>
         </div>
       </header>

@@ -23,9 +23,9 @@ export const marketingFeatures: MarketingFeature[] = [
   },
   {
     icon: Boxes,
-    title: "Organizations, projects & apps",
+    title: "Organizations, projects & project apps",
     description:
-      "Group work, connect apps, invite teammates, and control access with clear roles.",
+      "Organize teams and projects, install project apps, invite teammates, and control access with clear roles.",
   },
   {
     icon: Users,

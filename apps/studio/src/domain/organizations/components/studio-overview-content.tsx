@@ -89,7 +89,7 @@ export function StudioOverviewContent() {
       {orgs.length === 0 ? (
         <AccordionSection
           title="Your organizations"
-          description="Create a workspace to organize projects, people, and access."
+          description="Create an organization to manage projects, people, and access."
         >
           <EmptyState
             icon={appIcons.organization}
@@ -102,7 +102,7 @@ export function StudioOverviewContent() {
       ) : (
         <AccordionSection
           title="Favorite organizations"
-          description="Your pinned workspaces for quick access."
+          description="Your pinned organizations for quick access."
           actions={
             <Button
               size="sm"
@@ -280,7 +280,7 @@ export function StudioOverviewContent() {
       {canViewDashboard && queryEnabled ? (
         <AccordionSection
           title="Your recent activity"
-          description="Recent changes you made in the current workspace."
+          description="Recent changes you made in the current organization."
           defaultOpen={false}
           actions={
             <Button
@@ -323,7 +323,7 @@ export function StudioOverviewContent() {
             <EmptyState
               icon={appIcons.activity}
               title="No recent activity"
-              description="Changes you make in this workspace will appear here."
+              description="Changes you make in this organization will appear here."
             />
           )}
         </AccordionSection>

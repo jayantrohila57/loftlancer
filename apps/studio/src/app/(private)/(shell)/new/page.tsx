@@ -12,7 +12,7 @@ import { siteConfig } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "New organization",
-  description: `Manage workspaces and members in ${siteConfig.name}.`,
+  description: `Manage organizations and members in ${siteConfig.name}.`,
 };
 
 export default async function NewOrganizationPage() {

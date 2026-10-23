@@ -74,7 +74,7 @@ export function OrganizationsListFiltersBar({
       <DataTableFacetedFilter<OrgTypeFacet>
         title="Type"
         filterIcon="organization"
-        ariaLabel="Filter by workspace type"
+        ariaLabel="Filter by organization type"
         value={typeApplied}
         onValueChange={async (next) => {
           await onTypeChange(next[0] ?? "all");

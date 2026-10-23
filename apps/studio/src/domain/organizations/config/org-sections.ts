@@ -24,14 +24,14 @@ export const ORGANIZATION_SECTIONS: readonly OrganizationSectionDefinition[] = [
   {
     id: "projects",
     title: "Projects",
-    description: "Projects in this workspace, their apps and environments.",
+    description: "Projects in this organization, their apps and environments.",
     icon: "project",
     href: (slug) => routes.projects(slug),
   },
   {
     id: "members",
     title: "Members",
-    description: "People in this workspace and their organization roles.",
+    description: "People in this organization and their roles.",
     icon: "member",
     href: (slug) => routes.orgSection(slug, "members"),
   },
@@ -59,7 +59,7 @@ export const ORGANIZATION_SECTIONS: readonly OrganizationSectionDefinition[] = [
   {
     id: "settings",
     title: "Settings",
-    description: "Profile, slug, and danger zone for this workspace.",
+    description: "Profile, slug, and danger zone for this organization.",
     icon: "settings",
     href: (slug) => routes.orgSection(slug, "settings"),
   },

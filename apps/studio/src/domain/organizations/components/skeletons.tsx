@@ -40,7 +40,7 @@ export function OrganizationsPageSkeleton() {
   return (
     <DashboardSection
       title="Organizations"
-      description="Workspaces you belong to, with members, teams, and access settings."
+      description="Organizations you belong to, with members, teams, and access settings."
       back={false}
       actionPlacement="header"
       descriptionGapClassName="gap-y-1"

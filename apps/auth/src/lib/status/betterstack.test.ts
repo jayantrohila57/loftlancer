@@ -19,7 +19,10 @@ describe("status helpers", () => {
   it("names the four public surfaces", () => {
     assert.equal(monitorName("https://loftlancer.com", null), "Landing");
     assert.equal(monitorName("https://loftlancer.com/", null), "Landing");
-    assert.equal(monitorName("https://loftlancer.com/studio", null), "Studio");
+    assert.equal(
+      monitorName("https://loftlancer.com/studio", null),
+      "Dashboard",
+    );
     assert.equal(monitorName("https://loftlancer.com/x", "X"), "X");
   });
 
