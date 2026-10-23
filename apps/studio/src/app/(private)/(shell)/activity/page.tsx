@@ -6,7 +6,7 @@ import { isActionsAuditEnabledOnServer } from "@/lib/actions-audit-enabled";
 import { guardAuthenticatedPage, guardPageAction } from "@/lib/page-guards";
 
 export const metadata: Metadata = {
-  title: "My activity",
+  title: "Activity",
   description: "Your activity across organizations.",
 };
 
@@ -16,7 +16,7 @@ export default async function ActivityPage() {
     await guardPageAction("audit.timeline.view.org");
     return (
       <DashboardSection
-        title="My activity"
+        title="Activity"
         description="Activity from your projects across organizations."
         back={false}
       >
@@ -28,7 +28,7 @@ export default async function ActivityPage() {
   await guardAuthenticatedPage();
   return (
     <DashboardSection
-      title="My activity"
+      title="Activity"
       description="Everything you did, across all your organizations."
       back={false}
     >

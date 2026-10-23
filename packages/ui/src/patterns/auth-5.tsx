@@ -217,7 +217,7 @@ export function Auth5Frame({
             {brandContent}
           </div>
         ) : (
-          <div className="z-10 mt-auto">
+          <div className="relative z-10 mt-auto max-w-xl rounded-xl bg-background/95 p-4 shadow-lg ring-1 ring-border/60 backdrop-blur-sm">
             <blockquote className="space-y-2">
               <p className="text-xl">
                 &ldquo;Loftlancer keeps our organizations, projects and

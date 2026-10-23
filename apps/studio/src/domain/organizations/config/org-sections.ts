@@ -66,7 +66,7 @@ export const ORGANIZATION_SECTIONS: readonly OrganizationSectionDefinition[] = [
   {
     id: "timeline",
     title: "Activity",
-    description: "Organization activity and audit history.",
+    description: "Recent changes across this organization.",
     icon: "activity",
     href: (slug) => routes.orgSection(slug, "activity"),
   },
