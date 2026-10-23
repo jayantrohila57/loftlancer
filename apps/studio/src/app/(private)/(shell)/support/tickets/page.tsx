@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import DashboardSection from "@/components/section-dashboard";
+import { appIcons } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 
@@ -76,6 +77,18 @@ export default function SupportTicketsPage() {
         data={tickets.data?.items ?? []}
         isLoading={tickets.isLoading}
         isError={tickets.isError}
+        empty={{
+          empty: {
+            icon: appIcons.support,
+            title: "No tickets yet",
+            description: "Support requests you create will appear here.",
+            action: (
+              <Button render={<Link href={routes.supportNewTicket()} />}>
+                New ticket
+              </Button>
+            ),
+          },
+        }}
       />
     </DashboardSection>
   );
