@@ -24,6 +24,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Aligned the public Documentation labels, defined DPA on first use, and matched changelog badge names to their headings (#634).
 - Standardized the features page into a three-column card grid and labeled MCP as coming soon (#663).
 - Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).
+- Use the shared breadcrumb trail as navigation instead of duplicating it with back arrows in resource frames (#637).
 - Standardized organization, support-ticket, and invitation lists around the shared search, filter, sort, and pagination toolbar patterns (#658).
 - Keep project navigation tabs consistent across overview, Activity, Environments, and installed app pages (#639).
 - Resolve breadcrumb names from cached organization, project, and team data without exposing team IDs or loading skeletons (#638).

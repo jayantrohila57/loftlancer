@@ -126,7 +126,7 @@ export function SettingsTabs({
 }
 
 export type SettingsFrameProps = {
-  back?: { href: string; label: string };
+  back?: false | { href: string; label: string };
   title: ReactNode;
   description?: ReactNode;
   tabs?: SettingsTab[];
@@ -151,7 +151,12 @@ export function SettingsFrame({
     <div data-testid="settings-frame" className="w-full min-w-0 space-y-6">
       <PageHeaderLayout
         back={
-          <PageHeaderBackLink href={back?.href} LinkComponent={LinkComponent} />
+          back === false ? null : (
+            <PageHeaderBackLink
+              href={back?.href}
+              LinkComponent={LinkComponent}
+            />
+          )
         }
         title={title}
         description={description}

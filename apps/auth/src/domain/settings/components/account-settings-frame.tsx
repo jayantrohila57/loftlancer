@@ -5,12 +5,10 @@ import {
   SettingsFrame,
   type SettingsTab,
 } from "@loftlancer/ui/patterns/settings-frame";
-import { routes } from "@loftlancer/ui/studio-routes";
 import { Bell, Monitor, ShieldAlert, ShieldCheck, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { studioDashboardPath } from "@/lib/studio-url";
 
 const TABS: SettingsTab[] = [
   { href: "/settings/profile", label: "Profile", icon: <User /> },
@@ -43,14 +41,7 @@ export function AccountSettingsFrame({
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={
-        pathname === "/settings"
-          ? {
-              href: studioDashboardPath(routes.home()),
-              label: "Studio",
-            }
-          : { href: "/settings", label: "Account settings" }
-      }
+      back={false}
       title={title}
       description={description}
       tabs={tabs}

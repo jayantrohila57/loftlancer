@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
-import { getProjectFrameBackTarget } from "@/domain/projects/lib/project-frame-back";
 import { getProjectTabs } from "@/domain/projects/lib/project-tabs";
 import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { routes } from "@/utils/navigation";
@@ -30,7 +29,6 @@ export function ProjectLayoutShell({
   });
   const pathname = usePathname() ?? projectHref;
   const isProjectOverview = pathname === projectHref;
-  const backTarget = getProjectFrameBackTarget(pathname, org, slug);
   const tabs = getProjectTabs({
     org,
     project: slug,
@@ -45,7 +43,7 @@ export function ProjectLayoutShell({
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={backTarget}
+      back={false}
       title={project?.name ?? slug}
       description={
         isProjectOverview
