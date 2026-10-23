@@ -15,7 +15,7 @@ const included = [
   "Organizations, projects, teams and email invitations",
   "Owner, manager and member roles with per-project grants",
   "Encryption at rest for every variable",
-  "Audit timeline and in-app notifications",
+  "Activity history and in-app notifications",
 ];
 
 const faq = [

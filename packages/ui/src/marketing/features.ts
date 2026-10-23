@@ -35,7 +35,7 @@ export const marketingFeatures: MarketingFeature[] = [
   },
   {
     icon: Activity,
-    title: "Activity timeline",
+    title: "Activity",
     description:
       "See who changed what with an audit-style feed across your workspace.",
   },

@@ -7,7 +7,7 @@ describe("formatActionLabel", () => {
     assert.equal(formatActionLabel("project.read"), "Read project");
     assert.equal(
       formatActionLabel("audit.timeline.view.org"),
-      "View organization audit timeline",
+      "View organization activity",
     );
   });
 

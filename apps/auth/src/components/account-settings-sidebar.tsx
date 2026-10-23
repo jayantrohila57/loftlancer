@@ -68,7 +68,6 @@ export function AccountSettingsSidebar({
   const canSessions = useCan("session.list");
   const canAccounts = useCan("account.list");
   const canDelete = useCan("account.delete");
-  const canTimeline = useCan("audit.timeline.view.self");
   const canNotifications = useCan("notification.list");
 
   const notificationsEnabled = isNotificationsEnabledOnClient();
@@ -83,8 +82,6 @@ export function AccountSettingsSidebar({
       notificationsEnabled &&
       (canNotifications.allowed || canNotifications.isLoading),
     "/settings/danger": canDelete.allowed || canDelete.isLoading,
-    "/settings/timeline":
-      actionsAudit && (canTimeline.allowed || canTimeline.isLoading),
   };
 
   const studioItems = platformNav.filter((item) => {
@@ -145,23 +142,11 @@ export function AccountSettingsSidebar({
                   <SidebarMenuItem key={item.key}>
                     <SidebarMenuButton
                       isActive={false}
-                      tooltip={
-                        item.key === "activity"
-                          ? nav.organizationSlug
-                            ? "Organization activity"
-                            : "My activity"
-                          : item.label
-                      }
+                      tooltip={item.label}
                       render={<a href={studioDashboardPath(path)} />}
                     >
                       <Icon />
-                      <span>
-                        {item.key === "activity"
-                          ? nav.organizationSlug
-                            ? "Organization activity"
-                            : "My activity"
-                          : item.label}
-                      </span>
+                      <span>{item.label}</span>
                     </SidebarMenuButton>
                     <NavCountBadge
                       count={studioCount(item.key)}

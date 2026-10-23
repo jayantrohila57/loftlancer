@@ -716,14 +716,14 @@ const rows: MatrixRow[] = [
   {
     name: "audit.timeline.view.org",
     scope: "organization",
-    description: "View organization audit timeline",
+    description: "View organization activity",
     manager: "grant",
     entityType: "audit_event",
   },
   {
     name: "audit.timeline.view.project",
     scope: "project",
-    description: "View project audit timeline",
+    description: "View project activity",
     manager: "grant",
     member: "grant",
     entityType: "audit_event",
@@ -732,7 +732,7 @@ const rows: MatrixRow[] = [
   {
     name: "audit.timeline.view.user",
     scope: "organization",
-    description: "View another user audit timeline",
+    description: "View another member's activity",
     owner: true,
     entityType: "audit_event",
     severity: "security",
@@ -740,7 +740,7 @@ const rows: MatrixRow[] = [
   {
     name: "audit.timeline.view.self",
     scope: "user",
-    description: "View own audit timeline",
+    description: "View your activity",
     selfOnly: true,
     entityType: "audit_event",
   },
