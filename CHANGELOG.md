@@ -16,11 +16,14 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Replaced internal product names and engineering terms in user-facing copy (#632).
+
 ## [1.19.2] - 2026-10-23
 
 ### Changed
 
-- Replaced internal product names and engineering terms in user-facing copy (#632).
 - Standardized the features page into a three-column card grid and labeled MCP as coming soon (#663).
 - Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).
 - Standardized organization, support-ticket, and invitation lists around the shared search, filter, sort, and pagination toolbar patterns (#658).
