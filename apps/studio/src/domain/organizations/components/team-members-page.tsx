@@ -149,7 +149,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
                               ? `Remove lead role from ${row.original.name}?`
                               : `Make ${row.original.name} a team lead?`,
                           description:
-                            "Team leads can add and remove members in this team. They cannot change organization settings, project grants, or team roles.",
+                            "Team leads can add and remove members in this team. They cannot change organization settings, project access, or team roles.",
                           confirmLabel:
                             row.original.role === "lead"
                               ? "Make team member"
@@ -176,7 +176,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
                   confirm({
                     title: `Remove ${row.original.name} from the team?`,
                     description:
-                      "They will remain in the organization, but may lose access from this team. Direct grants stay saved, but may need another linked team to remain effective.",
+                      "They will remain in the organization, but may lose access through this team. Individual project access settings stay saved and apply while at least one team has access.",
                     confirmLabel: "Remove from team",
                     variant: "destructive",
                     onConfirm: async () => {

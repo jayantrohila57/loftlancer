@@ -13,7 +13,7 @@ import {
 
 function cellLabel(cell: MatrixCell): string {
   if (cell === "Y") return "Yes";
-  if (cell === "G") return "Granted";
+  if (cell === "G") return "Access configured";
   return "—";
 }
 
@@ -23,9 +23,9 @@ export function OrganizationPermissionsMatrix() {
       title="Permission matrix"
       description={
         <>
-          Canonical actions and how built-in roles map to them.{" "}
-          <strong>G</strong> means project assignment or explicit member grants.
-          Platform <strong>Admin</strong> is reserved for a future console.
+          See what each built-in role can do. <strong>G</strong> means access is
+          set through a project assignment or for an individual member.{" "}
+          <strong>Admin</strong> is not available in organization settings.
         </>
       }
     >
