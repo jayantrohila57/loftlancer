@@ -2,12 +2,8 @@
 
 import { Input } from "@loftlancer/ui/input";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-<<<<<<< HEAD
 import { VersionBadge } from "@loftlancer/ui/patterns/version-badge";
-import { docsSiteUrl } from "@loftlancer/ui/platform-urls";
-=======
-import { docsUrl } from "@loftlancer/ui/platform-urls";
->>>>>>> origin/dev
+import { docsSiteUrl, docsUrl } from "@loftlancer/ui/platform-urls";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
