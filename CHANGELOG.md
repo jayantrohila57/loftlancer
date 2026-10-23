@@ -16,6 +16,19 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.2] - 2026-10-23
+
+### Changed
+
+- Standardized the features page into a three-column card grid and labeled MCP as coming soon (#663).
+- Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).
+- Standardized organization, support-ticket, and invitation lists around the shared search, filter, sort, and pagination toolbar patterns (#658).
+
+### Fixed
+
+- Redirect the account settings landing page to Profile so the tab bar is the single navigation pattern (#641).
+- Show organization, project, and team descriptions only on their overview pages to remove repeated subtitles across management tabs (#640).
+
 ## [1.19.1] - 2026-10-23
 
 ### Changed
@@ -781,7 +794,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.1...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.2...HEAD
+[1.19.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.17.1...v1.18.0
