@@ -4,6 +4,7 @@ import { notification } from "@loftlancer/db/schema/notifications";
 import { organization } from "@loftlancer/db/schema/organization";
 import {
   isNotificationsEnabled,
+  notificationPreferencesSchema,
   resolveNotificationPresentation,
   syncInvitationAcceptedByEmail,
   syncInvitationReceivedByEmail,
@@ -62,6 +63,58 @@ function recipientNotificationConditions(
 }
 
 export const notificationsRouter = router({
+  preferences: protectedProcedure
+    .use(actionGuard("notification.list"))
+    .output(
+      makeResponseSchema(
+        z.object({
+          preferences: notificationPreferencesSchema,
+          emailVerified: z.boolean(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      const [account] = await db
+        .select({
+          preferences: user.notificationPreferences,
+          emailVerified: user.emailVerified,
+        })
+        .from(user)
+        .where(eq(user.id, ctx.session.user.id))
+        .limit(1);
+
+      return respond({
+        message: "Notification preferences fetched",
+        data: {
+          preferences: notificationPreferencesSchema.parse(
+            account?.preferences,
+          ),
+          emailVerified: account?.emailVerified ?? false,
+        },
+      });
+    }),
+
+  updatePreferences: protectedProcedure
+    .input(notificationPreferencesSchema)
+    .use(actionGuard("notification.preferences.update"))
+    .output(makeResponseSchema(notificationPreferencesSchema))
+    .mutation(async ({ ctx, input }) => {
+      const [account] = await db
+        .update(user)
+        .set({ notificationPreferences: input })
+        .where(eq(user.id, ctx.session.user.id))
+        .returning({ preferences: user.notificationPreferences });
+
+      if (!account) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+      }
+
+      return respond({
+        message: "Notification preferences saved",
+        data: account.preferences,
+      });
+    }),
+
   unreadCount: protectedProcedure
     .use(actionGuard("notification.list"))
     .output(makeResponseSchema(z.number()))

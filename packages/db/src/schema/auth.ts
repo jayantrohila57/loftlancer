@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   index,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -17,6 +18,20 @@ export const user = pgTable(
     email: text("email").notNull(),
     emailVerified: boolean("email_verified").default(false).notNull(),
     image: text("image"),
+    notificationPreferences: jsonb("notification_preferences")
+      .$type<{
+        invitations: { inApp: boolean; email: boolean };
+        membership: { inApp: boolean; email: boolean };
+        projectActivity: { inApp: boolean; email: boolean };
+        support: { inApp: boolean; email: boolean };
+      }>()
+      .notNull()
+      .default({
+        invitations: { inApp: true, email: true },
+        membership: { inApp: true, email: false },
+        projectActivity: { inApp: true, email: false },
+        support: { inApp: true, email: false },
+      }),
     /** Better Auth admin plugin — `admin` | `user` */
     role: text("role").default("user").notNull(),
     banned: boolean("banned").default(false).notNull(),

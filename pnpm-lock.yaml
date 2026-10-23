@@ -1049,12 +1049,18 @@ importers:
       '@loftlancer/db':
         specifier: workspace:*
         version: link:../db
+      '@loftlancer/email':
+        specifier: workspace:*
+        version: link:../email
       '@loftlancer/env':
         specifier: workspace:*
         version: link:../env
       drizzle-orm:
         specifier: 'catalog:'
         version: 0.45.4(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.1)
+      react:
+        specifier: ^19.3.1
+        version: 19.3.1
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -1062,6 +1068,9 @@ importers:
       '@loftlancer/config':
         specifier: workspace:*
         version: link:../config
+      '@types/react':
+        specifier: ^19.3.0
+        version: 19.3.0
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
