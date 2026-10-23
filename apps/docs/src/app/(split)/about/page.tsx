@@ -5,7 +5,8 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "About",
-  description: "What Loftlancer is and how the monorepo is structured.",
+  description:
+    "A collaborative workspace for encrypted project configuration and team access.",
   path: "/about",
 });
 
@@ -15,7 +16,7 @@ export default function AboutPage() {
   return (
     <MarketingPage
       title="About Loftlancer"
-      description="A multi-tenant workspace for environment variables, built as a TypeScript monorepo on Vercel and Neon."
+      description="A collaborative workspace for encrypted project configuration and team access."
     >
       <p>
         Loftlancer helps teams store configuration and secrets per project and
@@ -24,10 +25,8 @@ export default function AboutPage() {
         fine-grained project access on top of owner / manager / member roles.
       </p>
       <p>
-        The product ships as several apps: studio (dashboard), auth (SSO),
-        account (user settings), docs (this documentation site), www
-        (marketing), and mcp (agent tools). See the{" "}
-        <a href={docs}>documentation</a> for setup and API details.
+        Manage organizations, projects, teams, and applications together. See
+        the <a href={docs}>documentation</a> to learn how to get started.
       </p>
       <p>
         Source code is open on{" "}

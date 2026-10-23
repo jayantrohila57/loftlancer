@@ -19,7 +19,7 @@ export function SupportFrame({ children }: { children: ReactNode }) {
     ? { href: ticketsHref, label: "Tickets" }
     : isHelpArticle
       ? { href: helpHref, label: "Help center" }
-      : { href: routes.home(), label: "Studio" };
+      : { href: routes.home(), label: "Dashboard" };
 
   return (
     <SettingsFrame

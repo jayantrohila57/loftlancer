@@ -15,7 +15,7 @@ export default function FeaturesPage() {
   return (
     <MarketingPage
       title="Features"
-      description="Everything in the product today — grounded in how the studio app actually behaves."
+      description="Manage organizations, projects, apps, and activity from one dashboard."
     >
       <ul className="not-prose grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {marketingFeatures.map((feature) => (
@@ -32,22 +32,19 @@ export default function FeaturesPage() {
       </ul>
       <h2 className="mt-12">Permissions and audit</h2>
       <p>
-        Every sensitive operation maps to a canonical action in{" "}
-        <code>@loftlancer/actions</code>. The studio API checks{" "}
-        <code>requireAction</code> using organization role, optional project
-        grants, and action blocks. When <code>ACTIONS_AUDIT_ENABLED</code> is
-        on, successful and denied operations can be recorded for the timeline.
+        Your organization roles and project access determine what each person
+        can see and change. Important actions can be recorded for your team to
+        review.
       </p>
       <div className="mt-8 flex flex-wrap items-center gap-2">
-        <h2 className="mt-0!">MCP for agents</h2>
+        <h2 className="mt-0!">Connect your tools</h2>
         <Badge variant="secondary" size="sm">
           Coming soon
         </Badge>
       </div>
       <p>
-        An MCP tool layer (package <code>@loftlancer/mcp</code>) maps the same
-        actions to tools behind OAuth scopes, but no MCP endpoint is deployed on
-        loftlancer.com today.
+        Connect compatible tools and workflows to Loftlancer with the same
+        access controls as your dashboard. This integration is coming soon.
       </p>
     </MarketingPage>
   );

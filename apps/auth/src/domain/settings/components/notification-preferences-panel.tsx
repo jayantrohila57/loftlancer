@@ -12,8 +12,8 @@ export function NotificationPreferencesPanel() {
     <AccordionSection title="Notification preferences">
       <div className="space-y-3">
         <p className="text-muted-foreground text-sm">
-          In-app notifications are managed in Studio. Open your inbox to mark
-          items read or review recent activity.
+          In-app notifications are managed in your dashboard. Open your inbox to
+          mark items as read or review recent activity.
         </p>
         <Button
           type="button"
@@ -21,11 +21,11 @@ export function NotificationPreferencesPanel() {
           variant="outline"
           render={
             <a href={studioNotifications} rel="noopener noreferrer">
-              Open Studio notifications
+              Open notifications
             </a>
           }
         >
-          Open Studio notifications
+          Open notifications
         </Button>
       </div>
     </AccordionSection>

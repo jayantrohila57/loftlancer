@@ -47,7 +47,7 @@ export function AccountSettingsFrame({
         pathname === "/settings"
           ? {
               href: studioDashboardPath(routes.home()),
-              label: "Studio",
+              label: "Dashboard",
             }
           : { href: "/settings", label: "Account settings" }
       }
