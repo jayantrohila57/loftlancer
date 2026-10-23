@@ -77,7 +77,9 @@ function OrganizationFrame({
         label: isOrgHome ? "Organizations" : isTeamDetail ? "Teams" : name,
       }}
       title={name}
-      description="Organization workspace and administration."
+      description={
+        isOrgHome ? "Organization workspace and administration." : undefined
+      }
       tabs={tabs.map((tab) => ({
         href: tab.href ?? "#",
         label: tab.label,
