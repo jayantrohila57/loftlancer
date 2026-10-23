@@ -86,10 +86,9 @@ export function TeamOverviewPage({ teamId }: { teamId: string }) {
         description="Teams connect organization membership to project access."
       >
         <p className="max-w-3xl text-muted-foreground text-sm">
-          Add organization members in Members, then link this team to projects
-          in Projects. Team members receive the project capabilities granted by
-          each link. Project Access shows each person’s effective access and any
-          other source that keeps their access active.
+          Add organization members in Members, then choose which projects this
+          team can access in Projects. Project Access shows what each person can
+          do.
         </p>
       </AccordionSection>
     </section>

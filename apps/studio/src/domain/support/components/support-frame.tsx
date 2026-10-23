@@ -12,19 +12,11 @@ export function SupportFrame({ children }: { children: ReactNode }) {
   const canListTickets = useCan("support.ticket.list");
   const ticketsHref = routes.supportTickets();
   const helpHref = routes.supportHelp();
-  const isTicketDetail =
-    pathname.startsWith(`${ticketsHref}/`) && pathname !== ticketsHref;
-  const isHelpArticle = pathname.startsWith(`${helpHref}/`);
-  const back = isTicketDetail
-    ? { href: ticketsHref, label: "Tickets" }
-    : isHelpArticle
-      ? { href: helpHref, label: "Help center" }
-      : { href: routes.home(), label: "Studio" };
 
   return (
     <SettingsFrame
       LinkComponent={Link as never}
-      back={back}
+      back={false}
       title="Support"
       description="Get help with Loftlancer and track support requests."
       tabs={[

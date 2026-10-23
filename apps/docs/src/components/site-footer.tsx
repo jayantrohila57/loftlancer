@@ -2,7 +2,7 @@ import { VersionBadge } from "@loftlancer/ui/patterns/version-badge";
 import { cn } from "@loftlancer/ui/utils";
 
 const LINKS = [
-  { label: "Docs", href: "/docs" },
+  { label: "Documentation", href: "/docs" },
   { label: "Features", href: "/features" },
   { label: "Pricing", href: "/pricing" },
   { label: "Changelog", href: "/changelog" },

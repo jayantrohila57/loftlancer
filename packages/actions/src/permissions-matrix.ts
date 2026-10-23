@@ -71,7 +71,7 @@ export const PERMISSION_MATRIX_ROWS: PermissionMatrixRow[] = [
   },
   {
     action: "project.permission.grant",
-    label: "Set member project grants",
+    label: "Manage individual project access",
     owner: "Y",
     manager: "G",
     member: "—",
