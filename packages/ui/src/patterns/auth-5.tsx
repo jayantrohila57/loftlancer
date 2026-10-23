@@ -110,6 +110,8 @@ export type Auth5PanelProps = {
   children: ReactNode;
   /** Rendered under the actions (e.g. AuthDivider + secondary links). */
   footer?: ReactNode;
+  /** Use a single-column card for OAuth/device flows outside sign-in. */
+  layout?: "split" | "centered";
   /** Top-left ghost button slot (the block's "Home" link). */
   topLeft?: ReactNode;
   /** Top-right slot (theme toggle). */
@@ -124,6 +126,7 @@ export function Auth5Panel({
   description,
   children,
   footer,
+  layout = "split",
   topLeft,
   topRight,
   showTerms = true,
@@ -138,7 +141,10 @@ export function Auth5Panel({
       ) : null}
 
       <div className="mx-auto space-y-4 sm:w-sm">
-        <Logo href={LOGO_HOME_HREF} className="h-4.5 lg:hidden" />
+        <Logo
+          href={LOGO_HOME_HREF}
+          className={cn("h-4.5", layout === "split" && "lg:hidden")}
+        />
         {title || description ? (
           <div className="flex flex-col space-y-1">
             {title ? (
@@ -176,6 +182,13 @@ export function Auth5Panel({
     </>
   );
   if (useContext(Auth5FrameContext)) return body;
+  if (layout === "centered") {
+    return (
+      <main className="flex min-h-svh items-center justify-center bg-background p-6">
+        {body}
+      </main>
+    );
+  }
   return <Auth5Frame>{body}</Auth5Frame>;
 }
 

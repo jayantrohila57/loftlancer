@@ -31,7 +31,7 @@ function toUrlSearchParams(resolved: SearchParams): URLSearchParams {
 
 function InvalidConsentRequest() {
   return (
-    <Auth5Panel showTerms={false}>
+    <Auth5Panel layout="centered" showTerms={false}>
       <Card className="w-full border-0 bg-transparent shadow-none before:hidden">
         <CardHeader>
           <CardTitle>Authorization request invalid</CardTitle>
