@@ -20,6 +20,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Replaced project access jargon with plain language for team access, individual access, and how access works (#633).
 - Aligned the public Documentation labels, defined DPA on first use, and matched changelog badge names to their headings (#634).
 - Standardized the features page into a three-column card grid and labeled MCP as coming soon (#663).
 - Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).

@@ -53,7 +53,7 @@ export function TeamProjectsPage({
     trpc.projectAccess.assignTeam.mutationOptions({
       onSuccess: () => {
         setProjectId("");
-        toast.success("Team linked to project");
+        toast.success("Team added to project");
         invalidate();
       },
       onError: (error) => toast.error(error.message),
@@ -62,7 +62,7 @@ export function TeamProjectsPage({
   const remove = useMutation(
     trpc.projectAccess.removeTeam.mutationOptions({
       onSuccess: () => {
-        toast.success("Team unlinked from project");
+        toast.success("Team removed from project");
         invalidate();
       },
       onError: (error) => toast.error(error.message),
@@ -110,15 +110,15 @@ export function TeamProjectsPage({
             label={`Actions for ${row.original.name}`}
             actions={[
               {
-                label: "Unlink team",
+                label: "Remove team access",
                 destructive: true,
                 disabled: remove.isPending,
                 onSelect: () =>
                   confirm({
-                    title: `Unlink ${row.original.name}?`,
+                    title: `Remove ${row.original.name} from this project?`,
                     description:
-                      "Team members will lose access from this link. Direct grants stay saved, but need another linked team to be effective. Project manager assignments stay in place.",
-                    confirmLabel: "Unlink project",
+                      "Team members may lose project access. Individual access settings stay saved and apply while at least one team has access. Project managers keep their access.",
+                    confirmLabel: "Remove team",
                     variant: "destructive",
                     onConfirm: async () => {
                       await remove.mutateAsync({
@@ -138,12 +138,13 @@ export function TeamProjectsPage({
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="font-semibold text-xl tracking-tight">Projects</h2>
+        <h2 className="font-semibold text-xl tracking-tight">
+          Projects with access
+        </h2>
         <p className="mt-1 text-muted-foreground text-sm">
-          Linking this team gives its members the default project read grants.
-          Unlinking removes this team as an access source. Direct grants stay
-          saved, but a member needs another linked team for those grants to be
-          effective.
+          A person gets project access through any team that has access to the
+          project. Individual access settings apply only while at least one team
+          has access.
         </p>
       </div>
       {linkable.isError ? (
@@ -159,7 +160,7 @@ export function TeamProjectsPage({
           <SearchableCombobox
             value={projectId}
             onChange={setProjectId}
-            ariaLabel="Project to link"
+            ariaLabel="Project to add"
             placeholder="Select a project"
             searchPlaceholder="Search projects…"
             className="w-full sm:w-64"
@@ -176,14 +177,14 @@ export function TeamProjectsPage({
               disabled={!projectId || assign.isPending}
               onClick={() => assign.mutate({ projectId, teamId })}
             >
-              Link project
+              Add project
             </Button>
           </Can>
         </div>
       ) : null}
       {linked.isError ? (
         <ErrorState
-          title="Could not load linked projects"
+          title="Could not load projects with team access"
           description="Try loading the team projects again."
           onRetry={() => void linked.refetch()}
         />
@@ -197,10 +198,10 @@ export function TeamProjectsPage({
           pageSize={10}
           framed
           compactLayout
-          caption="Projects linked to this team"
+          caption="Projects with team access"
           captionSrOnly
           searchPlaceholder="Search projects…"
-          emptyMessage="This team is not linked to any projects yet."
+          emptyMessage="This team has no project access yet."
         />
       )}
       {ConfirmDialog}

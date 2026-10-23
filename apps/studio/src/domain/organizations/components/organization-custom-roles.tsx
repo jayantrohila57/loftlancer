@@ -80,7 +80,7 @@ export function OrganizationCustomRoles() {
     <>
       <AccordionSection
         title="Custom organization roles"
-        description="Create reusable access roles. Owners retain full control; custom roles can grant only organization actions."
+        description="Create reusable access roles. Owners retain full control; custom roles can control organization actions only."
       >
         <Can action="organization.role.create">
           <form

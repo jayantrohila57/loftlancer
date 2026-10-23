@@ -28,7 +28,7 @@ export function ProjectAccessPage({ slug }: { slug: string }) {
       <div>
         <h2 className="font-semibold text-xl tracking-tight">Access</h2>
         <p className="mt-1 text-muted-foreground text-sm">
-          Manage project managers, linked teams, and direct member grants.
+          Manage project managers, teams with access, and individual access.
         </p>
       </div>
       <ProjectAccessSection project={project} />
