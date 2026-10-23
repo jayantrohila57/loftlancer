@@ -4,10 +4,7 @@ import { Button } from "@loftlancer/ui/button";
 import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
-import {
-  LOCAL_DATE_TIME_FORMAT,
-  LocalDateTime,
-} from "@loftlancer/ui/patterns/local-date-time";
+import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -110,7 +107,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
               Joined{" "}
               <LocalDateTime
                 value={String(row.original.createdAt)}
-                options={LOCAL_DATE_TIME_FORMAT}
+                showTimeOnHover
               />
               {row.original.addedByName
                 ? ` · Added by ${row.original.addedByName}`
@@ -195,7 +192,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
   ];
 
   return (
-    <section className="space-y-4">
+    <section className="min-w-0 space-y-4">
       <div>
         <h2 className="font-semibold text-xl tracking-tight">Members</h2>
         <p className="mt-1 text-muted-foreground text-sm">

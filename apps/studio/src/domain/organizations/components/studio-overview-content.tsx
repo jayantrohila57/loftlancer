@@ -6,6 +6,7 @@ import { Button } from "@loftlancer/ui/button";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
+import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { useQuery } from "@tanstack/react-query";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { Route } from "next";
@@ -183,7 +184,8 @@ export function StudioOverviewContent() {
                   </span>
                 </span>
                 <span className="shrink-0 text-muted-foreground text-xs">
-                  Updated {formatDateTime(project.updatedAt)}
+                  Updated{" "}
+                  <LocalDateTime value={project.updatedAt} showTimeOnHover />
                 </span>
               </Link>
             ))}
@@ -254,7 +256,10 @@ export function StudioOverviewContent() {
                       </p>
                       <p className="text-muted-foreground text-xs">
                         {invitation.role} · Expires{" "}
-                        {formatDateTime(invitation.expiresAt)}
+                        <LocalDateTime
+                          value={invitation.expiresAt}
+                          showTimeOnHover
+                        />
                       </p>
                     </div>
                   </div>

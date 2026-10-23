@@ -13,7 +13,6 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useDeferredValue, useMemo, useState } from "react";
-import { ClientRelativeTime } from "@/components/patterns/client-relative-time";
 import DashboardSection from "@/components/section-dashboard";
 import { useProjectApps } from "@/domain/apps/hooks/use-project-apps";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
@@ -256,7 +255,7 @@ export function TasksPage({ slug }: { slug: string }) {
       meta: { className: "hidden w-28 xl:table-cell" },
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs">
-          <ClientRelativeTime value={row.original.updatedAt} />
+          <LocalDateTime value={row.original.updatedAt} showTimeOnHover />
         </span>
       ),
     },

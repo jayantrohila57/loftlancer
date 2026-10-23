@@ -1,12 +1,14 @@
 "use client";
 
-import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
+import { VersionBadge } from "@loftlancer/ui/patterns/version-badge";
+import { docsSiteUrl, docsUrl } from "@loftlancer/ui/platform-urls";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 import DashboardSection from "@/components/section-dashboard";
+import { SupportTicketCreateAction } from "@/domain/support/components/support-ticket-create-action";
 import { appIcons } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
@@ -41,12 +43,7 @@ export default function SupportHelpPage() {
       description="Search frequently asked questions or open a ticket if you need more help."
       back={false}
       action={
-        <Link
-          href={routes.supportNewTicket()}
-          className="text-primary text-sm underline"
-        >
-          Open a ticket
-        </Link>
+        <SupportTicketCreateAction>Open a ticket</SupportTicketCreateAction>
       }
     >
       <div className="space-y-6">
@@ -89,24 +86,23 @@ export default function SupportHelpPage() {
             description={
               search.trim()
                 ? "Try a different search, or contact support for help."
-                : "Help articles will appear here. Contact support if you need help."
+                : "Browse the Loftlancer documentation or contact support for help."
             }
-            actionLabel={search.trim() ? "Clear search" : "Open a ticket"}
-            actionHref={search.trim() ? undefined : routes.supportNewTicket()}
+            actionLabel={search.trim() ? "Clear search" : "View documentation"}
+            actionHref={search.trim() ? undefined : docsUrl()}
             onAction={search.trim() ? () => setSearch("") : undefined}
             secondaryAction={
               search.trim() ? (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  render={<Link href={routes.supportNewTicket()} />}
-                >
+                <SupportTicketCreateAction>
                   Open a ticket
-                </Button>
+                </SupportTicketCreateAction>
               ) : undefined
             }
           />
         ) : null}
+        <div className="flex justify-end border-t pt-3">
+          <VersionBadge href={`${docsSiteUrl()}/changelog`} />
+        </div>
       </div>
     </DashboardSection>
   );

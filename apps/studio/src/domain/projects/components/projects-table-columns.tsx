@@ -46,6 +46,7 @@ const col = {
 
 export function createProjectsTableColumns(
   org: string,
+  showLinks = true,
 ): DataTableColumnDef<ProjectOutput>[] {
   return [
     columnHelper.accessor("name", {
@@ -130,71 +131,78 @@ export function createProjectsTableColumns(
         </span>
       ),
     }),
-    columnHelper.display({
-      id: "links",
-      meta: { className: col.links },
-      header: "Links",
-      enableSorting: false,
-      cell: ({ row }) => {
-        const project = row.original;
-        return (
-          <div className="flex items-center gap-0.5">
-            {project.repositoryUrl ? (
-              <Tooltip>
-                {/* Icon-only link: the accessible name lives on the anchor
+    ...(showLinks
+      ? [
+          columnHelper.display({
+            id: "links",
+            meta: { className: col.links },
+            header: "Links",
+            enableSorting: false,
+            cell: ({ row }) => {
+              const project = row.original;
+              if (!project.repositoryUrl && !project.websiteUrl) {
+                return <span className="text-muted-foreground">—</span>;
+              }
+              return (
+                <div className="flex items-center gap-0.5">
+                  {project.repositoryUrl ? (
+                    <Tooltip>
+                      {/* Icon-only link: the accessible name lives on the anchor
                     itself (Button renders as the Link), plus a tooltip (#316). */}
-                <TooltipTrigger
-                  render={
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={`GitHub repository for ${project.name} (opens in a new tab)`}
-                      title="GitHub repository"
-                      render={
-                        <Link
-                          href={project.repositoryUrl as Route}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        />
-                      }
-                    />
-                  }
-                >
-                  <AppIcon name="github" />
-                </TooltipTrigger>
-                <TooltipContent>GitHub repository</TooltipContent>
-              </Tooltip>
-            ) : null}
-            {project.websiteUrl ? (
-              <Tooltip>
-                {/* Icon-only link: the accessible name lives on the anchor
+                      <TooltipTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label={`GitHub repository for ${project.name} (opens in a new tab)`}
+                            title="GitHub repository"
+                            render={
+                              <Link
+                                href={project.repositoryUrl as Route}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              />
+                            }
+                          />
+                        }
+                      >
+                        <AppIcon name="github" />
+                      </TooltipTrigger>
+                      <TooltipContent>GitHub repository</TooltipContent>
+                    </Tooltip>
+                  ) : null}
+                  {project.websiteUrl ? (
+                    <Tooltip>
+                      {/* Icon-only link: the accessible name lives on the anchor
                     itself (Button renders as the Link), plus a tooltip (#316). */}
-                <TooltipTrigger
-                  render={
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={`Website for ${project.name} (opens in a new tab)`}
-                      title="Website"
-                      render={
-                        <Link
-                          href={project.websiteUrl as Route}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        />
-                      }
-                    />
-                  }
-                >
-                  <AppIcon name="externalLink" />
-                </TooltipTrigger>
-                <TooltipContent>Website</TooltipContent>
-              </Tooltip>
-            ) : null}
-          </div>
-        );
-      },
-    }),
+                      <TooltipTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label={`Website for ${project.name} (opens in a new tab)`}
+                            title="Website"
+                            render={
+                              <Link
+                                href={project.websiteUrl as Route}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              />
+                            }
+                          />
+                        }
+                      >
+                        <AppIcon name="externalLink" />
+                      </TooltipTrigger>
+                      <TooltipContent>Website</TooltipContent>
+                    </Tooltip>
+                  ) : null}
+                </div>
+              );
+            },
+          }),
+        ]
+      : []),
     columnHelper.display({
       id: "actions",
       header: () => <DataTableActionsColumnHeader />,

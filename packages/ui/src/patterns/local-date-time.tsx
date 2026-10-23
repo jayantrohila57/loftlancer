@@ -28,11 +28,14 @@ export function LocalDateTime({
   options = LOCAL_DATE_FORMAT,
   className,
   fallback = "—",
+  showTimeOnHover = false,
 }: {
   value: Date | string | number | null | undefined;
   options?: Intl.DateTimeFormatOptions;
   className?: string;
   fallback?: string;
+  /** Keep dense list cells date-only while exposing the exact local time on hover. */
+  showTimeOnHover?: boolean;
 }) {
   const hydrated = useHydrated();
   const date = toDate(value);
@@ -44,6 +47,16 @@ export function LocalDateTime({
   return (
     <time
       dateTime={date.toISOString()}
+      title={
+        showTimeOnHover
+          ? formatDate(
+              date,
+              hydrated
+                ? LOCAL_DATE_TIME_FORMAT
+                : { ...LOCAL_DATE_TIME_FORMAT, timeZone: "UTC" },
+            )
+          : undefined
+      }
       className={cn("tabular-nums", !hydrated && "invisible", className)}
     >
       {text}
