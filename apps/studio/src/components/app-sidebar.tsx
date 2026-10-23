@@ -28,7 +28,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  SidebarSeparator,
   useSidebar,
 } from "@loftlancer/ui/sidebar";
 import type { LucideIcon } from "lucide-react";
@@ -156,7 +155,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const showOrganizations = isOrganizationsEnabledOnClient();
   const actionsAudit = isActionsAuditEnabledOnClient();
   const canListOrganizations = useCan("organization.list");
-  const canTimeline = useCan("audit.timeline.view.org");
   const { projects, status, refetch } = useProjects();
   const nav = useSidebarNavigator({
     projectHref,
@@ -335,40 +333,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         {orgSlug ? (
           <>
-            <SidebarNavGroup title="Organization">
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    isActive={pathname === routes.org(orgSlug)}
-                    tooltip="Organization overview"
-                    render={<Link href={routes.org(orgSlug) as Route} />}
-                  >
-                    <Building2 />
-                    <span>Overview</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                {!actionsAudit ||
-                canTimeline.allowed ||
-                canTimeline.isLoading ? (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      isActive={
-                        pathname === routes.orgSection(orgSlug, "activity")
-                      }
-                      tooltip="Activity"
-                      render={
-                        <Link
-                          href={routes.orgSection(orgSlug, "activity") as Route}
-                        />
-                      }
-                    >
-                      <ActivityIcon />
-                      <span>Activity</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ) : null}
-              </SidebarMenu>
-            </SidebarNavGroup>
             <SidebarFavorites
               items={nav.favorites}
               isActive={(href) => isSidebarRouteActive(pathname, href)}
@@ -404,7 +368,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 ))}
               </SidebarMenu>
             </SidebarNavGroup>
-            <SidebarSeparator className="mx-2" />
             <SidebarProjectsGroup
               organizationSlug={orgSlug}
               isPinned={nav.isPinned}
