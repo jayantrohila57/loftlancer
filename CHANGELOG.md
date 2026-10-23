@@ -20,6 +20,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Standardized the features page into a three-column card grid and labeled MCP as coming soon (#663).
 - Standardized Activity labels across account, organization, and project pages; routed the duplicate account-settings entry to the shared Activity page (#630).
 
 ### Fixed
