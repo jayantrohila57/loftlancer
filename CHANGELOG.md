@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.6] - 2026-10-23
+
 ### Changed
 
 - Add account notification delivery preferences and return navigation (#648).
@@ -832,7 +834,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.5...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.6...HEAD
+[1.19.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.5...v1.19.6
 [1.19.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.4...v1.19.5
 [1.19.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.3...v1.19.4
 [1.19.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.2...v1.19.3
