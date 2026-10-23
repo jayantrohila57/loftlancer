@@ -85,7 +85,7 @@ export async function cancelOrganizationInvitation(
   invitationId: string,
 ): Promise<void> {
   if (!client.cancelInvitation) {
-    throw new Error("Revoke is not available for this workspace.");
+    throw new Error("Revoke is not available for this organization.");
   }
   await client.cancelInvitation({ invitationId });
 }

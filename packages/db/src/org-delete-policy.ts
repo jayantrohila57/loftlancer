@@ -27,7 +27,7 @@ export async function assertOrganizationCanBeDeleted(
   const meta = parseMetadata(org.metadata ?? null);
   if (meta.type === "personal") {
     throw new Error(
-      "Your personal workspace cannot be deleted. Create another organization first if you need a separate team space.",
+      "Your personal organization cannot be deleted. Create another organization first if you need a separate team space.",
     );
   }
 

@@ -87,7 +87,7 @@ export function ProjectSettingsSection({
           if (!open) setPendingStatus(null);
         }}
         title="Change project status"
-        description={`Mark "${project.name}" as ${statusLabel}? This updates how the project appears across the workspace.`}
+        description={`Mark "${project.name}" as ${statusLabel}? This updates how the project appears in the organization.`}
         confirmLabel={`Set ${statusLabel}`}
         onConfirm={async () => {
           if (!pendingStatus) return;

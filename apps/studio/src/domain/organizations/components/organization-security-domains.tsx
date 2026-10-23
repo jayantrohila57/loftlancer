@@ -73,7 +73,7 @@ export function OrganizationSecurityDomains() {
           <FormField
             id="organization-domain"
             label="Email domain"
-            hint="Add a domain such as example.com. Workspace-host routing is not configured."
+            hint="Add a domain such as example.com. Organization-host routing is not configured."
           >
             <Input
               id="organization-domain"
@@ -179,7 +179,7 @@ export function OrganizationSecurityDomains() {
           ) : null}
         </div>
         <p className="mt-4 text-muted-foreground text-sm">
-          MFA enforcement, SSO, and custom workspace domains are unavailable
+          MFA enforcement, SSO, and custom organization domains are unavailable
           until the authentication provider and host routing are configured.
           They are not reported as active.
         </p>

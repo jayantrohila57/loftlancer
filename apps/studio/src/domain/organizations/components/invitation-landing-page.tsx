@@ -74,7 +74,7 @@ export function InvitationLandingPage({
     preview.status !== "not_found" ? (
       <div className="space-y-1 text-muted-foreground text-sm">
         <p>
-          Workspace:{" "}
+          Organization:{" "}
           <span className="font-medium text-foreground">
             {preview.organizationName}
           </span>
@@ -151,7 +151,7 @@ export function InvitationLandingPage({
     content = (
       <InvitationState
         title="Invitation already accepted"
-        description="You can open the workspace if it is available to your account."
+        description="You can open the organization if it is available to your account."
         details={metadata}
         action={
           preview.organizationSlug ? (
@@ -175,7 +175,7 @@ export function InvitationLandingPage({
                 ? "Open project"
                 : preview.teamId
                   ? "Open team"
-                  : "Open workspace"}
+                  : "Open organization"}
             </Button>
           ) : undefined
         }

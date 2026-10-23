@@ -18,7 +18,7 @@ export function OrganizationsList() {
       <EmptyState
         icon={appIcons.organization}
         title="No organizations yet"
-        description="Create a workspace to collaborate with your team."
+        description="Create an organization to manage people, teams, and projects."
       />
     );
   }

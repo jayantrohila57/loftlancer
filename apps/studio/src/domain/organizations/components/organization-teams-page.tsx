@@ -26,6 +26,7 @@ import { toast } from "@/lib/toast";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
+import { teamDisplayName } from "../lib/team-display-name";
 import { OrganizationSectionPage } from "./organization-section-page";
 
 export function OrganizationTeamsPage({ slug }: { slug: string }) {
@@ -125,7 +126,7 @@ export function OrganizationTeamsPage({ slug }: { slug: string }) {
                     href={routes.team(slug, row.original.id)}
                     className="font-medium hover:underline"
                   >
-                    {row.original.name}
+                    {teamDisplayName(row.original.name, organization?.name)}
                   </Link>
                   <span className="mt-1 block max-w-md truncate text-muted-foreground text-xs">
                     {row.original.purpose ||

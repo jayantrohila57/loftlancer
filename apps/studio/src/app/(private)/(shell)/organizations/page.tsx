@@ -18,7 +18,7 @@ import { routes } from "@/utils/navigation";
 
 export const metadata: Metadata = {
   title: "Organizations",
-  description: `Manage workspaces and members in ${siteConfig.name}.`,
+  description: `Manage organizations and members in ${siteConfig.name}.`,
 };
 
 export default async function OrganizationsDirectoryPage({

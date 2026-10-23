@@ -14,7 +14,7 @@ export default function OrganizationDetailSegmentError({
       error={error}
       reset={reset}
       title="Organization failed to load"
-      fallbackDescription="We could not load this workspace."
+      fallbackDescription="We could not load this organization."
     />
   );
 }

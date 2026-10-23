@@ -466,11 +466,11 @@ export function AccountSettingsClient({
                 <SettingsPanel className="mt-2">
                   <SettingsSectionHeader
                     title="Organization"
-                    description="Workspace members and profile."
+                    description="Organization members and profile."
                     icon="organization"
                   />
                   <SettingsRow
-                    label="Workspace"
+                    label="Organization"
                     description="Managed in the Organizations module."
                   >
                     <Button
@@ -721,7 +721,7 @@ export function AccountSettingsClient({
                   ) : null}
                   <SettingsRow
                     label="Delete"
-                    description="Type your email to confirm. Your profile will be anonymized; workspace records and activity history remain."
+                    description="Type your email to confirm. Your profile will be anonymized; organization records and activity history remain."
                   >
                     <Button
                       type="button"

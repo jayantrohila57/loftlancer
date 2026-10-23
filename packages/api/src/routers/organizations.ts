@@ -1444,7 +1444,7 @@ export const organizationsRouter = router({
       if (normalizeOrgRole(membership?.role) !== "owner") {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Only organization owners can update workspace defaults.",
+          message: "Only organization owners can update organization defaults.",
         });
       }
       await db

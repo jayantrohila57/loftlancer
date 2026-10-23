@@ -104,7 +104,7 @@ export function EditProject({
           embedded ? (
             <SettingsField
               label="Project name"
-              description="Required. Shown across the workspace."
+              description="Required. Shown across the organization."
             >
               <div className="space-y-1">
                 <Input
