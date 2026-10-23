@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Show organization, project, and team descriptions only on their overview pages to remove repeated subtitles across management tabs (#640).
+
 ## [1.19.1] - 2026-10-23
 
 ### Changed
