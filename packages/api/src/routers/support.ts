@@ -222,7 +222,12 @@ export const supportRouter = router({
         input?.sortBy === "ticketNumber"
           ? supportTicket.ticketNumber
           : input?.sortBy === "priority"
-            ? supportTicket.priority
+            ? sql<number>`case ${supportTicket.priority}
+                when 'urgent' then 4
+                when 'high' then 3
+                when 'normal' then 2
+                else 1
+              end`
             : input?.sortBy === "createdAt"
               ? supportTicket.createdAt
               : supportTicket.updatedAt;
