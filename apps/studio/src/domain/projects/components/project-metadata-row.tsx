@@ -2,10 +2,7 @@
 
 import type { ProjectOutput } from "@loftlancer/api/types";
 import { Button } from "@loftlancer/ui/button";
-import {
-  LOCAL_DATE_TIME_FORMAT,
-  LocalDateTime,
-} from "@loftlancer/ui/patterns/local-date-time";
+import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import {
   Tooltip,
   TooltipContent,
@@ -113,12 +110,7 @@ export function ProjectMetadataRow({
       <MetadataField label="Slug" value={project.slug} mono />
       <MetadataField
         label="Updated"
-        value={
-          <LocalDateTime
-            value={project.updatedAt}
-            options={LOCAL_DATE_TIME_FORMAT}
-          />
-        }
+        value={<LocalDateTime value={project.updatedAt} showTimeOnHover />}
       />
       {project.repositoryUrl ? (
         <MetadataLinkField
