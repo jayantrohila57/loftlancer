@@ -29,6 +29,7 @@ export function ProjectLayoutShell({
     projectId: project?.id,
   });
   const pathname = usePathname() ?? projectHref;
+  const isProjectOverview = pathname === projectHref;
   const backTarget = getProjectFrameBackTarget(pathname, org, slug);
   const tabs = getProjectTabs({
     org,
