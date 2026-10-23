@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the platform follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with one product version for the whole monorepo (root `package.json`).
 
-- `0.x` covers the env-manager and Collidr eras, from the first commit.
+- `0.x` covers releases before the Loftlancer product launch.
 - `1.0.0` is the Loftlancer rebrand on `main`.
 - After that, every `dev` → `main` release bumps the minor version for
   feature releases and the patch version for fix batches.
@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Aligned the public Documentation labels, defined DPA on first use, and matched changelog badge names to their headings (#634).
 - Standardized the features page into a three-column card grid and labeled MCP as coming soon (#663).
 - Removed redundant docs sidebar section headings that duplicated their first folder labels (#665).
 - Standardized organization, support-ticket, and invitation lists around the shared search, filter, sort, and pagination toolbar patterns (#658).
