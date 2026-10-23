@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Fixed
 
 - Hide list pagination when results fit on one page, including empty invitation lists (#659).
+- Standardized support, project invitation, help search, and project overview empty states with clear next actions (#645).
 
 ## [1.19.0] - 2026-10-23
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@loftlancer/ui/button";
+import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -14,6 +15,7 @@ import { OrganizationInvitationsTable } from "@/components/org/organization-invi
 import { ErrorState } from "@/components/patterns/error-state";
 import { BulkInviteDialog } from "@/domain/organizations/components/bulk-invite-dialog";
 import { Can } from "@/domain/permissions/components/can";
+import { appIcons } from "@/lib/icons";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
 
@@ -119,9 +121,15 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
           onRetry={() => void invitations.refetch()}
         />
       ) : invitations.data.items.length === 0 ? (
-        <p className="rounded-xl border bg-card p-4 text-muted-foreground text-sm">
-          No {status === "all" ? "" : `${status} `}invitations for this project.
-        </p>
+        <EmptyState
+          icon={appIcons.invite}
+          title={
+            status === "pending"
+              ? "No pending invitations"
+              : `No ${status === "all" ? "" : `${status} `}invitations`
+          }
+          description="Invitations for this project will appear here after you invite someone."
+        />
       ) : (
         <OrganizationInvitationsTable
           caption="Project invitations"

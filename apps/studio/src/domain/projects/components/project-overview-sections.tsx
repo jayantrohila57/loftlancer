@@ -3,8 +3,9 @@
 import type { ProjectOutput } from "@loftlancer/api/types";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import Link from "next/link";
+import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { InstalledAppsOverview } from "@/domain/apps/components/installed-apps-overview";
+import { appIcons } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
 
 export function ProjectOverviewSectionsSkeleton() {
@@ -74,17 +75,15 @@ export function ProjectOverviewSections({
             ) : null}
           </dl>
         ) : (
-          <p className="text-muted-foreground text-sm">
-            No project details added yet.{" "}
-            {orgSlug ? (
-              <Link
-                className="text-primary underline underline-offset-4"
-                href={routes.projectSection(orgSlug, slug, "settings")}
-              >
-                Add details in Settings
-              </Link>
-            ) : null}
-          </p>
+          <EmptyState
+            icon={appIcons.project}
+            title="No project details yet"
+            description="Add a purpose, schedule, or documentation link in Settings."
+            actionLabel="Edit project details"
+            actionHref={routes.projectSection(orgSlug, slug, "settings")}
+            bare
+            className="min-h-0 items-start p-0 text-left"
+          />
         )}
       </AccordionSection>
       <AccordionSection
