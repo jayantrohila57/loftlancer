@@ -11,11 +11,11 @@ export const metadata = pageMetadata({
 
 /** Everything here exists in the product today. */
 const included = [
-  ...appRegistry.map((app) => `${app.name} app: ${app.description}`),
+  ...appRegistry.map((app) => `Project app — ${app.name}: ${app.description}`),
   "Organizations, projects, teams and email invitations",
   "Owner, manager and member roles with per-project grants",
   "Encryption at rest for every variable",
-  "Activity history and in-app notifications",
+  "Activity history and dashboard notifications",
 ];
 
 const faq = [

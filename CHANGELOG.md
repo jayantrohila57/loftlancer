@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Clarified that project apps are installable project features, distinct from dashboard, sign-in, and documentation surfaces (#631).
 - Replaced internal product names and engineering terms in user-facing copy (#632).
 
 ## [1.19.2] - 2026-10-23
