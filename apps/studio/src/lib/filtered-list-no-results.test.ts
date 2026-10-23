@@ -24,7 +24,7 @@ test("project list content uses the shared no-results empty", () => {
   }
 });
 
-test("organization directory renders responsive cards with favorite controls", () => {
+test("organization directory keeps cards and uses shared search and sort controls", () => {
   const list = readFileSync(
     join(
       root,
@@ -38,6 +38,8 @@ test("organization directory renders responsive cards with favorite controls", (
   );
   assert.match(list, /OrganizationCard/);
   assert.match(list, /xl:grid-cols-4/);
+  assert.match(list, /DataTableToolbar/);
+  assert.match(list, /Search organizations/);
+  assert.match(list, /Sort organizations/);
   assert.match(card, /onToggleFavorite/);
-  assert.doesNotMatch(list, /DataTableToolbar|OrganizationsListFiltersBar/);
 });

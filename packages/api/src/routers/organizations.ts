@@ -19,7 +19,18 @@ import { projectTeam } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
 import { team } from "@loftlancer/db/schema/team";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, gt, isNull, lte, type SQL, sql } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  gt,
+  ilike,
+  isNull,
+  lte,
+  or,
+  type SQL,
+  sql,
+} from "drizzle-orm";
 import { z } from "zod/v3";
 import { actionGuard } from "../actions/action-guard";
 import { isDelegableOrganizationAction } from "../actions/custom-role-permissions";
@@ -719,6 +730,7 @@ export const organizationsRouter = router({
     .input(
       z.object({
         projectId: z.string().min(1),
+        search: z.string().trim().max(120).optional(),
         status: z
           .enum([
             "all",
@@ -751,22 +763,32 @@ export const organizationsRouter = router({
         eq(invitation.projectId, input.projectId),
         isNull(invitation.deletedAt),
       );
+      const search = input.search;
+      const searchableScope = and(
+        scope,
+        search
+          ? or(
+              ilike(invitation.email, `%${search}%`),
+              ilike(user.name, `%${search}%`),
+            )
+          : undefined,
+      );
       const now = new Date();
       const byStatus: Record<string, SQL | undefined> = {
-        all: scope,
+        all: searchableScope,
         pending: and(
-          scope,
+          searchableScope,
           eq(invitation.status, "pending"),
           gt(invitation.expiresAt, now),
         ),
         expired: and(
-          scope,
+          searchableScope,
           eq(invitation.status, "pending"),
           lte(invitation.expiresAt, now),
         ),
-        accepted: and(scope, eq(invitation.status, "accepted")),
-        rejected: and(scope, eq(invitation.status, "rejected")),
-        canceled: and(scope, eq(invitation.status, "canceled")),
+        accepted: and(searchableScope, eq(invitation.status, "accepted")),
+        rejected: and(searchableScope, eq(invitation.status, "rejected")),
+        canceled: and(searchableScope, eq(invitation.status, "canceled")),
       };
       const where = byStatus[input.status];
       const [items, counts] = await Promise.all([
@@ -794,6 +816,7 @@ export const organizationsRouter = router({
         db
           .select({ total: sql<number>`count(*)::int` })
           .from(invitation)
+          .leftJoin(user, eq(invitation.inviterId, user.id))
           .where(where),
       ]);
       return { items, total: counts[0]?.total ?? 0 };
@@ -1794,6 +1817,7 @@ export const organizationsRouter = router({
             "canceled",
           ])
           .default("all"),
+        search: z.string().trim().max(120).optional(),
         limit: z.number().int().min(1).max(200).default(50),
         offset: z.number().int().min(0).default(0),
       }),
@@ -1828,21 +1852,32 @@ export const organizationsRouter = router({
           ? eq(invitation.teamId, input.teamId)
           : isNull(invitation.teamId),
       );
+      const search = input.search;
+      const searchableOrg = and(
+        org,
+        search
+          ? or(
+              ilike(invitation.email, `%${search}%`),
+              ilike(user.name, `%${search}%`),
+              ilike(team.name, `%${search}%`),
+            )
+          : undefined,
+      );
       const byStatus: Record<string, SQL | undefined> = {
-        all: org,
+        all: searchableOrg,
         pending: and(
-          org,
+          searchableOrg,
           eq(invitation.status, "pending"),
           gt(invitation.expiresAt, now),
         ),
         expired: and(
-          org,
+          searchableOrg,
           eq(invitation.status, "pending"),
           lte(invitation.expiresAt, now),
         ),
-        accepted: and(org, eq(invitation.status, "accepted")),
-        rejected: and(org, eq(invitation.status, "rejected")),
-        canceled: and(org, eq(invitation.status, "canceled")),
+        accepted: and(searchableOrg, eq(invitation.status, "accepted")),
+        rejected: and(searchableOrg, eq(invitation.status, "rejected")),
+        canceled: and(searchableOrg, eq(invitation.status, "canceled")),
       };
       const where = byStatus[input.status];
       const [rows, counts] = await Promise.all([
@@ -1874,7 +1909,9 @@ export const organizationsRouter = router({
             canceled: sql<number>`count(*) filter (where ${invitation.status} = 'canceled')::int`,
           })
           .from(invitation)
-          .where(org),
+          .leftJoin(user, eq(invitation.inviterId, user.id))
+          .leftJoin(team, eq(invitation.teamId, team.id))
+          .where(searchableOrg),
       ]);
       const c = counts[0] ?? {
         all: 0,
