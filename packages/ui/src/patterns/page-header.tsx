@@ -5,6 +5,11 @@ import type React from "react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../components/ui/tooltip";
+import {
   pageHeaderActionsClass,
   pageHeaderBackClass,
   pageHeaderDescriptionGridClass,
@@ -41,6 +46,7 @@ export type PageHeaderTabItem = {
   label: ReactNode;
   href?: string;
   disabled?: boolean;
+  disabledReason?: string;
 };
 
 type LinkLike = React.ElementType<{
@@ -50,6 +56,9 @@ type LinkLike = React.ElementType<{
   role?: string;
   "aria-selected"?: boolean;
   "aria-current"?: "page";
+  "aria-disabled"?: boolean;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  tabIndex?: number;
 }>;
 
 export const pageHeaderBackButtonClass = cn(
@@ -139,20 +148,48 @@ export function PageHeaderTabsRow({
               pageHeaderTabClass,
               active ? pageHeaderTabActiveClass : pageHeaderTabInactiveClass,
               "min-h-10 sm:min-h-0",
-              tab.disabled && "pointer-events-none opacity-60",
+              tab.disabled &&
+                (tab.disabledReason
+                  ? "cursor-not-allowed opacity-60"
+                  : "pointer-events-none opacity-60"),
             );
             return tab.href ? (
-              <L
-                key={tab.value}
-                href={tab.href}
-                role="tab"
-                aria-selected={active}
-                aria-current={active ? "page" : undefined}
-                data-tab-value={tab.value}
-                className={className}
-              >
-                {tab.label}
-              </L>
+              tab.disabled && tab.disabledReason ? (
+                <Tooltip key={tab.value}>
+                  <TooltipTrigger
+                    render={
+                      <L
+                        href={tab.href}
+                        role="tab"
+                        aria-selected={active}
+                        aria-current={active ? "page" : undefined}
+                        aria-disabled="true"
+                        data-tab-value={tab.value}
+                        className={className}
+                        onClick={(event: React.MouseEvent<HTMLAnchorElement>) =>
+                          event.preventDefault()
+                        }
+                      />
+                    }
+                  >
+                    {tab.label}
+                  </TooltipTrigger>
+                  <TooltipContent>{tab.disabledReason}</TooltipContent>
+                </Tooltip>
+              ) : (
+                <L
+                  key={tab.value}
+                  href={tab.href}
+                  role="tab"
+                  aria-selected={active}
+                  aria-current={active ? "page" : undefined}
+                  aria-disabled={tab.disabled || undefined}
+                  data-tab-value={tab.value}
+                  className={className}
+                >
+                  {tab.label}
+                </L>
+              )
             ) : (
               <button
                 key={tab.value}
