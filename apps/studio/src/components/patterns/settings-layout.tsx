@@ -53,12 +53,14 @@ export function SettingsSectionHeader({
 export function SettingsRow({
   label,
   description,
+  required = false,
   icon,
   className,
   children,
 }: {
-  label: string;
+  label: ReactNode;
   description?: string;
+  required?: boolean;
   icon?: AppIconName;
   className?: string;
   children: ReactNode;
@@ -73,7 +75,10 @@ export function SettingsRow({
       <div className="flex min-w-0 items-start gap-2">
         {icon ? <AppIcon name={icon} className="mt-0.5" /> : null}
         <div className="min-w-0">
-          <p className="font-medium text-sm">{label}</p>
+          <p className="font-medium text-sm">
+            {label}
+            {required ? <RequiredMarker /> : null}
+          </p>
           {description ? (
             <p className="mt-0.5 text-muted-foreground text-xs">
               {description}
@@ -92,13 +97,15 @@ export function SettingsRow({
 export function SettingsField({
   label,
   description,
+  required = false,
   icon,
   className,
   controlClassName,
   children,
 }: {
-  label: string;
+  label: ReactNode;
   description?: string;
+  required?: boolean;
   icon?: AppIconName;
   className?: string;
   controlClassName?: string;
@@ -114,7 +121,10 @@ export function SettingsField({
       <div className="flex min-w-0 items-start gap-2">
         {icon ? <AppIcon name={icon} className="mt-0.5" /> : null}
         <div className="min-w-0">
-          <p className="font-medium text-sm">{label}</p>
+          <p className="font-medium text-sm">
+            {label}
+            {required ? <RequiredMarker /> : null}
+          </p>
           {description ? (
             <p className="mt-0.5 text-muted-foreground text-xs">
               {description}
@@ -124,6 +134,15 @@ export function SettingsField({
       </div>
       <div className={cn("w-full min-w-0", controlClassName)}>{children}</div>
     </div>
+  );
+}
+
+function RequiredMarker() {
+  return (
+    <span className="text-destructive" aria-hidden="true">
+      {" "}
+      *
+    </span>
   );
 }
 

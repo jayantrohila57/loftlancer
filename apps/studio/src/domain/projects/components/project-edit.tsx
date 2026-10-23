@@ -14,6 +14,7 @@ import { Switch } from "@loftlancer/ui/switch";
 import { Textarea } from "@loftlancer/ui/textarea";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod/v3";
+import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
 import {
   SettingsField,
   SettingsRow,
@@ -97,6 +98,7 @@ export function EditProject({
 
   const formBody = (guardNavigation: (action: () => void) => void) => (
     <>
+      {embedded ? <RequiredFieldsHint /> : null}
       <Controller
         name="name"
         control={form.control}
@@ -104,7 +106,8 @@ export function EditProject({
           embedded ? (
             <SettingsField
               label="Project name"
-              description="Required. Shown across the organization."
+              description="Shown across the organization."
+              required
             >
               <div className="space-y-1">
                 <Input
@@ -309,8 +312,7 @@ export function EditProject({
           ) : (
             <div className="space-y-2">
               <Label htmlFor={field.name} className="font-medium text-sm">
-                Description{" "}
-                <span className="text-muted-foreground">(Optional)</span>
+                Description
               </Label>
               <Textarea
                 {...field}
@@ -406,8 +408,7 @@ export function EditProject({
           ) : (
             <div className="space-y-2">
               <Label htmlFor={field.name} className="font-medium text-sm">
-                Repository URL{" "}
-                <span className="text-muted-foreground">(Optional)</span>
+                Repository URL
               </Label>
               <Input
                 {...field}
@@ -453,8 +454,7 @@ export function EditProject({
           ) : (
             <div className="space-y-2">
               <Label htmlFor={field.name} className="font-medium text-sm">
-                Website URL{" "}
-                <span className="text-muted-foreground">(Optional)</span>
+                Website URL
               </Label>
               <Input
                 {...field}
@@ -475,10 +475,7 @@ export function EditProject({
       />
 
       {embedded ? (
-        <SettingsRow
-          label="Save changes"
-          description="Required fields marked in form."
-        >
+        <SettingsRow label="Save changes">
           <div className="flex flex-wrap justify-end gap-2">
             {onCancel ? (
               <Button

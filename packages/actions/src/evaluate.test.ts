@@ -51,6 +51,15 @@ describe("evaluatePermission", () => {
     assert.equal(result.allowed, true);
   });
 
+  it("allows users to update only their own notification preferences", () => {
+    const result = evaluatePermission({
+      action: "notification.preferences.update",
+      orgRole: null,
+      project: null,
+    });
+    assert.equal(result.allowed, true);
+  });
+
   it("allows members with team link and grant", () => {
     const result = evaluatePermission({
       action: "variable.read",
@@ -128,6 +137,16 @@ describe("roleCapability", () => {
     assert.equal(roleCapability("organization.archive", "owner"), "yes");
     assert.equal(roleCapability("organization.archive", "manager"), "no");
     assert.equal(roleCapability("organization.unarchive", "owner"), "yes");
+    assert.equal(
+      roleCapability("organization.transfer_ownership", "owner"),
+      "yes",
+    );
+    assert.equal(
+      roleCapability("organization.transfer_ownership", "manager"),
+      "no",
+    );
+    assert.equal(roleCapability("organization.delete", "owner"), "yes");
+    assert.equal(roleCapability("organization.delete", "member"), "no");
     assert.equal(roleCapability("member.invite", "manager"), "yes");
     assert.equal(roleCapability("variable.reveal", "owner"), "yes");
     assert.notEqual(roleCapability("variable.reveal", "member"), "yes");
