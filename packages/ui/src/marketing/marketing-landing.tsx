@@ -139,8 +139,8 @@ function CtaSection({ signInHref }: { signInHref: string }) {
               Make your workspace easier to manage
             </CardTitle>
             <CardDescription className="max-w-md text-base">
-              Bring your organization, projects, teams, and apps into one clear
-              workspace. Your environment variables stay encrypted.
+              Bring your organization, projects, teams, and project apps into
+              one clear workspace. Your environment variables stay encrypted.
             </CardDescription>
           </CardHeader>
           <CardPanel className="flex justify-center pb-8">

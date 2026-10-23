@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Features",
   description:
-    "Encryption, organizations, projects, apps and activity in Loftlancer.",
+    "Encryption, organizations, projects, project apps and activity in Loftlancer.",
   path: "/features",
 });
 
@@ -15,7 +15,7 @@ export default function FeaturesPage() {
   return (
     <MarketingPage
       title="Features"
-      description="Manage organizations, projects, apps, and activity from one dashboard."
+      description="Manage organizations, projects, installed project apps, and activity from one dashboard."
     >
       <ul className="not-prose grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {marketingFeatures.map((feature) => (
