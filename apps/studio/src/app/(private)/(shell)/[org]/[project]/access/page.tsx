@@ -3,7 +3,8 @@ import { ProjectAccessPage } from "@/domain/projects/components/project-access-p
 
 export const metadata: Metadata = {
   title: "Project access",
-  description: "Manage project managers, linked teams, and member grants.",
+  description:
+    "Manage project managers, teams with access, and individual access.",
 };
 
 export default async function AccessRoute({
