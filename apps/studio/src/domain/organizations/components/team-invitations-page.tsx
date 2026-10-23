@@ -36,12 +36,14 @@ export function TeamInvitationsPage({
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [resendingId, setResendingId] = useState<string | null>(null);
   const [status, setStatus] = useState<InvitationStatusFilter>("pending");
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const query = useQuery({
     ...trpc.organizations.listInvitations.queryOptions({
       organizationId: organization?.id ?? "",
       teamId,
       status,
+      search: search.trim() || undefined,
       limit: INVITATION_PAGE_SIZE,
       offset: page * INVITATION_PAGE_SIZE,
     }),
@@ -75,6 +77,11 @@ export function TeamInvitationsPage({
         status={status}
         page={page}
         total={query.data?.total ?? 0}
+        search={search}
+        onSearchChange={(next) => {
+          setSearch(next);
+          setPage(0);
+        }}
         onStatusChange={(next) => {
           setStatus(next);
           setPage(0);

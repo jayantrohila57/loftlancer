@@ -4,9 +4,10 @@ import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
 import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
+import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { useEffect, useState } from "react";
 import DashboardSection from "@/components/section-dashboard";
 import { appIcons } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
@@ -21,17 +22,33 @@ type TicketRow = {
   updatedAt: string;
 };
 
+const TICKET_STATUSES = [
+  "all",
+  "open",
+  "pending",
+  "in_progress",
+  "resolved",
+  "closed",
+] as const;
+const TICKET_CATEGORIES = [
+  "all",
+  "bug",
+  "billing",
+  "account",
+  "feature_request",
+  "other",
+] as const;
+const TICKET_PRIORITIES = ["all", "low", "normal", "high", "urgent"] as const;
+
 const columns: DataTableColumnDef<TicketRow>[] = [
   {
     accessorKey: "ticketNumber",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="#" />,
+    header: "#",
     cell: ({ row }) => `#${row.original.ticketNumber}`,
   },
   {
     accessorKey: "subject",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Subject" />
-    ),
+    header: "Subject",
     cell: ({ row }) => (
       <Link
         href={routes.supportTicket(row.original.id)}
@@ -43,23 +60,54 @@ const columns: DataTableColumnDef<TicketRow>[] = [
   },
   {
     accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
+    header: "Status",
     cell: ({ row }) => (
       <Badge variant="outline">{row.original.status.replace("_", " ")}</Badge>
     ),
   },
   {
     accessorKey: "priority",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority" />
-    ),
+    header: "Priority",
   },
 ];
 
 export default function SupportTicketsPage() {
-  const tickets = useQuery(trpc.support.listTickets.queryOptions({}));
+  const [search, setSearch] = useState("");
+  const [querySearch, setQuerySearch] = useState("");
+  const [status, setStatus] = useState<(typeof TICKET_STATUSES)[number]>("all");
+  const [category, setCategory] =
+    useState<(typeof TICKET_CATEGORIES)[number]>("all");
+  const [priority, setPriority] =
+    useState<(typeof TICKET_PRIORITIES)[number]>("all");
+  const [sort, setSort] = useState("updatedAt:desc");
+  const [page, setPage] = useState(0);
+  const pageSize = 25;
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setQuerySearch(search.trim()), 250);
+    return () => window.clearTimeout(timer);
+  }, [search]);
+
+  const [sortBy, sortDir] = sort.split(":") as [
+    "updatedAt" | "createdAt" | "ticketNumber" | "priority",
+    "asc" | "desc",
+  ];
+  const tickets = useQuery(
+    trpc.support.listTickets.queryOptions({
+      limit: pageSize,
+      offset: page * pageSize,
+      search: querySearch || undefined,
+      status: status === "all" ? undefined : status,
+      category: category === "all" ? undefined : category,
+      priority: priority === "all" ? undefined : priority,
+      sortBy,
+      sortDir,
+    }),
+  );
+  const resetPage = (update: () => void) => {
+    setPage(0);
+    update();
+  };
 
   return (
     <DashboardSection
@@ -76,7 +124,89 @@ export default function SupportTicketsPage() {
         columns={columns}
         data={tickets.data?.items ?? []}
         isLoading={tickets.isLoading}
+        isFetching={tickets.isFetching}
         isError={tickets.isError}
+        searchPlaceholder="Search tickets…"
+        searchValue={search}
+        onSearchChange={(value) => resetPage(() => setSearch(value))}
+        filter={
+          <>
+            <SearchableCombobox
+              value={status}
+              onChange={(value) =>
+                resetPage(() =>
+                  setStatus(value as (typeof TICKET_STATUSES)[number]),
+                )
+              }
+              ariaLabel="Filter tickets by status"
+              className="w-40"
+              options={TICKET_STATUSES.map((value) => ({
+                value,
+                label:
+                  value === "all" ? "All statuses" : value.replaceAll("_", " "),
+              }))}
+            />
+            <SearchableCombobox
+              value={category}
+              onChange={(value) =>
+                resetPage(() =>
+                  setCategory(value as (typeof TICKET_CATEGORIES)[number]),
+                )
+              }
+              ariaLabel="Filter tickets by category"
+              className="w-40"
+              options={TICKET_CATEGORIES.map((value) => ({
+                value,
+                label:
+                  value === "all"
+                    ? "All categories"
+                    : value.replaceAll("_", " "),
+              }))}
+            />
+            <SearchableCombobox
+              value={priority}
+              onChange={(value) =>
+                resetPage(() =>
+                  setPriority(value as (typeof TICKET_PRIORITIES)[number]),
+                )
+              }
+              ariaLabel="Filter tickets by priority"
+              className="w-40"
+              options={TICKET_PRIORITIES.map((value) => ({
+                value,
+                label: value === "all" ? "All priorities" : value,
+              }))}
+            />
+          </>
+        }
+        toolbarTrailing={
+          <SearchableCombobox
+            value={sort}
+            onChange={(value) => resetPage(() => setSort(value))}
+            ariaLabel="Sort tickets"
+            className="w-44"
+            options={[
+              { value: "updatedAt:desc", label: "Recently updated" },
+              { value: "createdAt:desc", label: "Newest created" },
+              { value: "createdAt:asc", label: "Oldest created" },
+              { value: "ticketNumber:desc", label: "Ticket number" },
+              { value: "priority:desc", label: "Priority" },
+            ]}
+          />
+        }
+        serverPagination={{
+          pageIndex: page,
+          pageCount: Math.max(
+            1,
+            Math.ceil((tickets.data?.total ?? 0) / pageSize),
+          ),
+          onPageChange: setPage,
+        }}
+        searchable
+        framed
+        compactLayout
+        caption="Support tickets"
+        emptyMessage="No tickets match these filters."
         empty={{
           empty: {
             icon: appIcons.support,
