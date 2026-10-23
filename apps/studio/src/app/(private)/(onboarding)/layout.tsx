@@ -1,4 +1,8 @@
-import { Auth5Content, Auth5Frame } from "@loftlancer/ui/patterns/auth-5";
+import {
+  Auth5Branding,
+  Auth5Content,
+  Auth5Frame,
+} from "@loftlancer/ui/patterns/auth-5";
 import { ActiveOrganizationProvider } from "@/components/org/active-organization-context";
 
 /**
@@ -13,7 +17,7 @@ export default function OnboardingLayout({
 }) {
   return (
     <ActiveOrganizationProvider>
-      <Auth5Frame>
+      <Auth5Frame brandContent={<Auth5Branding />}>
         <Auth5Content>{children}</Auth5Content>
       </Auth5Frame>
     </ActiveOrganizationProvider>

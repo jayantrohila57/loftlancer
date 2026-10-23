@@ -128,6 +128,10 @@ export default function OnboardingClient() {
   const [step, setStep] = useState<StepIndex>(0);
   const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const [orgSlug, setOrgSlug] = useState<string | null>(null);
+  const [orgId, setOrgId] = useState<string | null>(null);
+  const [slugAvailability, setSlugAvailability] = useState<
+    "idle" | "checking" | "available" | "unavailable" | "error"
+  >("idle");
   const startedRef = useRef(false);
 
   // Users who already belong to an org skip onboarding — but never mid-flow.
@@ -153,12 +157,50 @@ export default function OnboardingClient() {
   });
 
   const nameValue = useWatch({ control: orgForm.control, name: "name" });
+  const slugValue = useWatch({ control: orgForm.control, name: "slug" });
   const slugTouched = orgForm.formState.touchedFields.slug;
   useEffect(() => {
     if (slugTouched) return;
     const next = slugifyOrganizationName(nameValue);
     if (next) orgForm.setValue("slug", next, { shouldValidate: true });
   }, [nameValue, slugTouched, orgForm]);
+
+  useEffect(() => {
+    const validSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugValue);
+    if (!validSlug || isReservedOrgSlugForCreation(slugValue)) {
+      setSlugAvailability("idle");
+      return;
+    }
+    if (orgId && slugValue === orgSlug) {
+      setSlugAvailability("available");
+      return;
+    }
+
+    let cancelled = false;
+    setSlugAvailability("checking");
+    const timeout = window.setTimeout(() => {
+      void authClient.organization
+        .checkSlug({ slug: slugValue })
+        .then(({ data, error }) => {
+          if (cancelled) return;
+          if (!error && data?.status) {
+            setSlugAvailability("available");
+          } else if (error?.message?.toLowerCase().includes("slug")) {
+            setSlugAvailability("unavailable");
+          } else {
+            setSlugAvailability("error");
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setSlugAvailability("error");
+        });
+    }, 350);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [orgId, orgSlug, slugValue]);
 
   const createProject = useMutation(
     trpc.projects.create.mutationOptions({
@@ -177,14 +219,20 @@ export default function OnboardingClient() {
     try {
       const created = await actionToast(
         (async () => {
-          const result = await authClient.organization.create({
-            name: data.name,
-            slug: data.slug,
-          });
+          const result = orgId
+            ? await authClient.organization.update({
+                organizationId: orgId,
+                data: { name: data.name, slug: data.slug },
+              })
+            : await authClient.organization.create({
+                name: data.name,
+                slug: data.slug,
+              });
           if (result.error) {
             const message = formatOrganizationCreateError(result.error.message);
             if (message.toLowerCase().includes("slug")) {
               orgForm.setError("slug", { message });
+              setSlugAvailability("unavailable");
             }
             throw new Error(message);
           }
@@ -196,9 +244,16 @@ export default function OnboardingClient() {
           error: "Could not create organization",
         },
       );
-      captureEvent(STUDIO_EVENTS.organizationCreated, { source: "onboarding" });
-      const orgId = created.data?.id;
-      if (orgId) await afterOrganizationCreated(orgId);
+      if (!orgId) {
+        captureEvent(STUDIO_EVENTS.organizationCreated, {
+          source: "onboarding",
+        });
+      }
+      const createdOrgId = created.data?.id ?? orgId;
+      if (!orgId && createdOrgId) {
+        await afterOrganizationCreated(createdOrgId);
+      }
+      if (createdOrgId) setOrgId(createdOrgId);
       setOrgSlug(created.data?.slug ?? data.slug);
       orgForm.reset(data);
       setStep(1);
@@ -268,7 +323,11 @@ export default function OnboardingClient() {
               >
                 <StepHeading
                   title="Create your organization"
-                  description="This name appears in the organization switcher."
+                  description={
+                    orgId
+                      ? "Update your organization name or URL before continuing."
+                      : "This name appears across your workspace."
+                  }
                 />
                 <Controller
                   name="name"
@@ -310,6 +369,20 @@ export default function OnboardingClient() {
                         name={field.name}
                         ref={field.ref}
                       />
+                      <p
+                        aria-live="polite"
+                        className="min-h-4 text-muted-foreground text-xs"
+                      >
+                        {slugAvailability === "checking"
+                          ? "Checking URL availability…"
+                          : slugAvailability === "available"
+                            ? "URL is available."
+                            : slugAvailability === "unavailable"
+                              ? "This URL is already in use. Choose another."
+                              : slugAvailability === "error"
+                                ? "Could not check this URL. Try again in a moment."
+                                : null}
+                      </p>
                     </FormField>
                   )}
                 />
@@ -317,7 +390,10 @@ export default function OnboardingClient() {
                   <SubmitButton
                     isLoading={orgForm.formState.isSubmitting}
                     loadingLabel="Creating organization…"
-                    disabled={!orgForm.formState.isValid}
+                    disabled={
+                      !orgForm.formState.isValid ||
+                      slugAvailability !== "available"
+                    }
                   >
                     Continue
                   </SubmitButton>
@@ -330,7 +406,7 @@ export default function OnboardingClient() {
               >
                 <StepHeading
                   title="Create your first project"
-                  description="Projects hold environments and their variables."
+                  description="Your organization is saved. Projects hold environments and their variables."
                 />
                 <Controller
                   name="name"
@@ -352,6 +428,33 @@ export default function OnboardingClient() {
                   )}
                 />
                 <StepFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setStep(0)}
+                  >
+                    Back
+                  </Button>
+                  <div className="mr-auto flex flex-col items-start">
+                    <Button
+                      variant="ghost"
+                      render={
+                        <Link
+                          href={
+                            orgSlug
+                              ? routes.org(orgSlug)
+                              : routes.organizationsDirectory()
+                          }
+                        />
+                      }
+                    >
+                      Exit setup
+                    </Button>
+                    <span className="text-muted-foreground text-xs">
+                      Your organization is saved; the unfinished project name
+                      will be lost.
+                    </span>
+                  </div>
                   <SubmitButton
                     isLoading={createProject.isPending}
                     loadingLabel="Creating project…"
