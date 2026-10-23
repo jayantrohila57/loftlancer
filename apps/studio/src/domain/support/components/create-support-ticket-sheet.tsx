@@ -96,9 +96,10 @@ export function CreateSupportTicketSheet({
             <div className="space-y-2">
               <Label htmlFor="support-ticket-subject">
                 Subject{" "}
-                <span className="text-destructive" aria-hidden="true">
+                <span aria-hidden="true" className="text-destructive">
                   *
                 </span>
+                <span className="sr-only"> (required)</span>
               </Label>
               <Input
                 id="support-ticket-subject"
@@ -152,9 +153,10 @@ export function CreateSupportTicketSheet({
             <div className="space-y-2">
               <Label htmlFor="support-ticket-description">
                 Description{" "}
-                <span className="text-destructive" aria-hidden="true">
+                <span aria-hidden="true" className="text-destructive">
                   *
                 </span>
+                <span className="sr-only"> (required)</span>
               </Label>
               <Textarea
                 id="support-ticket-description"
