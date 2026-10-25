@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Security
+
+- Bumped Next.js from 16.4.0 to 16.4.3 across www, auth, studio, and docs via `next upgrade --agent=security` (#819).
+
 ## [1.19.9] - 2026-10-25
 
 ### Fixed
