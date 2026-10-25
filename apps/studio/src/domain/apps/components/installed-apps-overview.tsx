@@ -37,12 +37,12 @@ export function InstalledAppsOverview({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
       {installed.map((app) => (
         <Link
           key={app.id}
           href={routes.app(org, slug, app.nav[0]?.path ?? app.id)}
-          className="flex min-h-28 flex-col gap-2 rounded-xl bg-card p-4 ring-1 ring-border/60 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex min-h-28 flex-col gap-2 rounded-md bg-card p-4 ring-1 ring-border/60 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <div className="flex items-center gap-3">
             <AppGlyph icon={app.icon} />

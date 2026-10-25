@@ -46,7 +46,7 @@ export function AppCard({
 
   return (
     <div
-      className="flex min-h-36 flex-col gap-3 rounded-xl bg-card p-4 ring-1 ring-border/60"
+      className="flex min-h-36 flex-col gap-3 rounded-md bg-card p-4 ring-1 ring-border/60"
       data-testid={`app-card-${app.id}`}
     >
       <div className="flex items-start gap-3">

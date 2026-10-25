@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Standardized project and app cards on the compact grid and surface scale (#827).
+
 ## [1.19.12] - 2026-10-25
 
 ### Changed
