@@ -3,6 +3,7 @@
 import { errorAttributes, logger } from "@loftlancer/logger";
 import { resolveAuthAppOrigin } from "@loftlancer/ui/auth-links";
 import { Badge, type BadgeProps } from "@loftlancer/ui/badge";
+import { Button } from "@loftlancer/ui/button";
 import type {
   MonitorState,
   OverallState,
@@ -17,11 +18,12 @@ import {
   TooltipTrigger,
 } from "@loftlancer/ui/tooltip";
 import { cn } from "@loftlancer/ui/utils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 /** Monitored services with fixed rows so the status table does not shift. */
-const SURFACES = ["Documentation", "Dashboard", "Sign-in"] as const;
+const SURFACES = ["Landing", "Documentation", "Dashboard", "Sign-in"] as const;
 const REFRESH_MS = 60_000;
+const STALE_AFTER_MS = 15 * 60_000;
 
 const OVERALL: Record<
   OverallState,
@@ -100,6 +102,17 @@ function duration(startIso: string, endIso: string | null, now: number) {
   if (minutes < 60) return `${minutes} min`;
   const hours = Math.floor(minutes / 60);
   return `${hours} h ${minutes % 60} min`;
+}
+
+function isMonitorStale(monitor: PlatformMonitor, now: number): boolean {
+  if (!monitor.lastCheckedAt) return true;
+  const checkedAt = Date.parse(monitor.lastCheckedAt);
+  if (Number.isNaN(checkedAt)) return true;
+  const expectedInterval = Math.max(
+    STALE_AFTER_MS,
+    (monitor.checkFrequency ?? 0) * 3_000,
+  );
+  return now - checkedAt > expectedInterval;
 }
 
 /** Fixed-height placeholder text: same box as the loaded value. */
@@ -245,35 +258,52 @@ function IncidentList({
 export function StatusBoard() {
   const [state, setState] = useState<LoadState>({ phase: "loading" });
   const [now, setNow] = useState(() => Date.now());
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback(async (isActive: () => boolean = () => true) => {
+    setRefreshing(true);
+    try {
+      const res = await fetch(`${resolveAuthAppOrigin()}/api/status`, {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const status = (await res.json()) as PlatformStatus;
+      if (isActive()) setState({ phase: "ready", status });
+    } catch (error) {
+      // Status fetch failures reach Sentry Logs from the browser (#355).
+      logger.warn("Status board fetch failed", errorAttributes(error));
+      if (isActive()) setState({ phase: "error" });
+    } finally {
+      if (isActive()) {
+        setNow(Date.now());
+        setRefreshing(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     let alive = true;
-    const url = `${resolveAuthAppOrigin()}/api/status`;
-    const load = async () => {
-      try {
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error(String(res.status));
-        const status = (await res.json()) as PlatformStatus;
-        if (alive) setState({ phase: "ready", status });
-      } catch (error) {
-        // Status fetch failures reach Sentry Logs from the browser (#355).
-        logger.warn("Status board fetch failed", errorAttributes(error));
-        if (alive) setState({ phase: "error" });
-      }
-      if (alive) setNow(Date.now());
-    };
-    void load();
-    const timer = window.setInterval(load, REFRESH_MS);
+    const isActive = () => alive;
+    void load(isActive);
+    const timer = window.setInterval(() => {
+      if (alive) void load(isActive);
+    }, REFRESH_MS);
     return () => {
       alive = false;
       window.clearInterval(timer);
     };
-  }, []);
+  }, [load]);
 
   const loading = state.phase === "loading";
   const status = state.phase === "ready" ? state.status : null;
   const available = status?.available === true ? status : null;
   const overall = available ? OVERALL[available.overall] : null;
+  const stale = available?.monitors.some((monitor) =>
+    isMonitorStale(monitor, now),
+  );
+  const banner = stale
+    ? { label: "Monitoring data may be stale", dot: "bg-warning" }
+    : overall;
   const byName = new Map(available?.monitors.map((m) => [m.name, m]) ?? []);
   const extra =
     available?.monitors.filter(
@@ -292,26 +322,38 @@ export function StatusBoard() {
             aria-hidden
             className={cn(
               "size-2.5 shrink-0 rounded-full",
-              overall?.dot ?? "bg-muted-foreground/40",
+              banner?.dot ?? "bg-muted-foreground/40",
             )}
           />
           {loading ? (
             <Skeleton className="h-5 w-44 rounded-sm" />
           ) : (
             <span className="truncate font-medium text-sm">
-              {overall?.label ?? "Status unavailable"}
+              {banner?.label ?? "Status unavailable"}
             </span>
           )}
         </div>
-        <span className="shrink-0 text-muted-foreground text-xs tabular-nums">
-          {loading ? (
-            <Skeleton className="h-4 w-24 rounded-sm" />
-          ) : available ? (
-            `Updated ${relative(available.generatedAt, now)}`
-          ) : (
-            "Try again in a minute"
-          )}
-        </span>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="text-muted-foreground text-xs tabular-nums">
+            {loading ? (
+              <Skeleton className="h-4 w-24 rounded-sm" />
+            ) : available ? (
+              `Updated ${relative(available.generatedAt, now)}`
+            ) : (
+              "Try again in a minute"
+            )}
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-7 px-2 text-xs"
+            disabled={refreshing}
+            onClick={() => void load()}
+          >
+            {refreshing ? "Refreshing" : "Refresh"}
+          </Button>
+        </div>
       </section>
 
       {/* Monitors */}
