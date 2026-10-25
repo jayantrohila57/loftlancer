@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Standardized shared cards, frames, and table density on the compact layout scale (#824).
+
 ## [1.19.11] - 2026-10-25
 
 ### Changed
