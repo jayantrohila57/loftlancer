@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Added real-product workflow, access, connection, and FAQ sections to the public landing page (#806).
+
 ## [1.19.9] - 2026-10-25
 
 ### Fixed
