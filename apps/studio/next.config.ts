@@ -26,6 +26,9 @@ const nextConfig: NextConfig = withServiceBasePath("studio", {
     NEXT_PUBLIC_APP_VERSION: appVersion,
     NEXT_PUBLIC_GOOGLE_SIGN_IN: googleSignIn,
   },
+  experimental: {
+    agentUpgrade: "security" as const,
+  },
   typedRoutes: true,
   reactCompiler: true,
 });
