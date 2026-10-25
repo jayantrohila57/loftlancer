@@ -16,6 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.11] - 2026-10-25
+
+### Changed
+
+- Clarified the current free early-access offering and linked Pricing directly to sign-in (#808).
+
 ## [1.19.10] - 2026-10-25
 
 ### Security
@@ -24,6 +30,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Added an authentic Studio overview image to the responsive public landing hero (#805).
 - Added real-product workflow, access, connection, and FAQ sections to the public landing page (#806).
 - Clarified the available project apps, access model, activity history, and planned connections on Features (#807).
 - Standardized the public marketing shell with responsive navigation, grouped footer links, and shared cross-app routes (#804).
@@ -873,7 +880,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.10...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.11...HEAD
+[1.19.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.10...v1.19.11
 [1.19.10]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.9...v1.19.10
 [1.19.9]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.8...v1.19.9
 [1.19.8]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.7...v1.19.8
