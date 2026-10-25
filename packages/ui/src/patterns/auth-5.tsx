@@ -3,8 +3,8 @@
 import { LayersIcon } from "lucide-react";
 import type React from "react";
 import { createContext, type ReactNode, useContext } from "react";
-
 import { cn } from "../lib/utils";
+import { marketingFeatures } from "../marketing/features";
 
 /**
  * Full-page layout from the shadcn registry block `@efferd/auth-5`
@@ -284,6 +284,42 @@ export function Auth5Frame({
         </Auth5FrameContext.Provider>
       </div>
     </main>
+  );
+}
+
+/** Shared product-brand panel used by sign-in and first-run onboarding. */
+export function Auth5Branding() {
+  return (
+    <section
+      aria-label="Loftlancer features"
+      className="mx-auto w-full max-w-lg space-y-6"
+    >
+      <div className="space-y-3">
+        <h2 className="font-heading font-semibold text-2xl tracking-tight xl:text-3xl">
+          One workspace for your team and your agents.
+        </h2>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          Bring your projects, people, and environments together with clear
+          access and a shared history of changes.
+        </p>
+      </div>
+      <ul className="space-y-3">
+        {marketingFeatures.map(({ icon: Icon, title, description }) => (
+          <li key={title} className="flex gap-3">
+            <Icon
+              aria-hidden="true"
+              className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+            />
+            <div className="space-y-1">
+              <h3 className="font-medium text-sm">{title}</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {description}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
