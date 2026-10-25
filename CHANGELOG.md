@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Fixed
 
 - Enforced the built-in Owner, Manager, and Member organization-role policy (#753).
+- Deferred account settings requests until their section is opened (#747).
 
 ## [1.19.17] - 2026-10-25
 

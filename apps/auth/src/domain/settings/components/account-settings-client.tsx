@@ -133,13 +133,16 @@ export function AccountSettingsClient({
     setProfileDirty(false);
   }, [user]);
 
-  const connectedQuery = useQuery(
-    trpc.account.listConnectedAccounts.queryOptions(),
-  );
+  const activeSection = forcedSection ?? activeTab;
+  const connectedQuery = useQuery({
+    ...trpc.account.listConnectedAccounts.queryOptions(),
+    enabled: activeSection === "accounts",
+  });
   const sidebarContext = useQuery(trpc.sidebar.navigator.queryOptions());
-  const deleteBlockersQuery = useQuery(
-    trpc.account.getDeleteBlockers.queryOptions(),
-  );
+  const deleteBlockersQuery = useQuery({
+    ...trpc.account.getDeleteBlockers.queryOptions(),
+    enabled: activeSection === "delete",
+  });
   const exportMutation = useMutation(trpc.account.exportData.mutationOptions());
 
   const [providerPending, setProviderPending] = useState<string | null>(null);
