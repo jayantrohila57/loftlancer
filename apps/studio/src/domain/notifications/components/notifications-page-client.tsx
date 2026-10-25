@@ -168,7 +168,7 @@ export function NotificationsPageClient() {
         ) : listQuery.isError ? (
           <div
             className={cn(
-              "flex flex-col items-center justify-center gap-3 rounded-xl border bg-card p-6 text-center",
+              "flex flex-col items-center justify-center gap-3 rounded-md border bg-card p-4 text-center",
               LIST_MIN_H,
             )}
           >
@@ -192,7 +192,7 @@ export function NotificationsPageClient() {
         ) : items.length === 0 ? (
           <EmptyState
             bare
-            className={cn("rounded-xl border bg-card", LIST_MIN_H)}
+            className={cn("rounded-md border bg-card", LIST_MIN_H)}
             data-testid="notifications-empty"
             icon={unreadOnly ? appIcons.markAllRead : appIcons.bell}
             title={unreadOnly ? "You're all caught up" : "No notifications yet"}

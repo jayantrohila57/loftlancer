@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Aligned notification and project-access states with the compact page layout scale (#826).
+
 ## [1.19.12] - 2026-10-25
 
 ### Changed
