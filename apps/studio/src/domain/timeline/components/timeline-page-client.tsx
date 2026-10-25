@@ -117,7 +117,6 @@ export function TimelinePageClient({
 
   return (
     <ActivityTimeline
-      filtersInHeader
       items={items}
       loading={query.isLoading}
       actionOptions={actionOptions}
