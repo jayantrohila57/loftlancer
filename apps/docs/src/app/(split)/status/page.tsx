@@ -5,7 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Status",
   description:
-    "Live status and uptime for Loftlancer documentation, dashboard and sign-in services, from our Better Stack monitors.",
+    "Live status and uptime for Loftlancer, documentation, dashboard and sign-in services, from our Better Stack monitors.",
   path: "/status",
 });
 
