@@ -17,7 +17,7 @@
     "@loftlancer/api": "workspace:*",
     "@loftlancer/logger": "workspace:*",
     "@loftlancer/ui": "workspace:*",
-    "@next/third-parties": "^16.4.2",
+    "@next/third-parties": "^16.4.3",
     "@sentry/nextjs": "^11.8.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",

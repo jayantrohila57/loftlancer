@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Security
+
+- Bumped Next.js from 16.4.0 to 16.4.3 across www, auth, studio, and docs via `next upgrade --agent=security` (#819).
+
 ### Changed
 
 - Added real-product workflow, access, connection, and FAQ sections to the public landing page (#806).
