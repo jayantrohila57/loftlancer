@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Restored the active Teams tab for organization team routes (#745).
+
 ## [1.19.16] - 2026-10-25
 
 ### Fixed
