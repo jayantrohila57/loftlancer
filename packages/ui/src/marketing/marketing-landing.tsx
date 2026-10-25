@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { Badge } from "../components/ui/badge";
@@ -41,7 +42,7 @@ function HeroSection({ signInHref }: { signInHref: string }) {
       <div
         className={cn(
           marketingContainerClass,
-          "relative flex flex-col items-center py-20 text-center md:py-28",
+          "relative flex flex-col items-center pt-20 pb-14 text-center md:pt-28 md:pb-16",
         )}
       >
         <Badge variant="outline" className="mb-6">
@@ -75,6 +76,19 @@ function HeroSection({ signInHref }: { signInHref: string }) {
             View on GitHub
           </MarketingLinkButton>
         </div>
+      </div>
+      <div className={cn(marketingContainerClass, "relative pb-16 md:pb-24")}>
+        <figure className="overflow-hidden rounded-xl border bg-muted/30 shadow-sm">
+          <Image
+            alt="Loftlancer Studio organization overview showing navigation, projects, and workspace settings."
+            className="h-auto w-full"
+            height={1108}
+            priority
+            sizes="(max-width: 767px) calc(100vw - 2rem), (max-width: 1200px) calc(100vw - 3rem), 1152px"
+            src="/studio-overview.jpg"
+            width={2010}
+          />
+        </figure>
       </div>
     </section>
   );

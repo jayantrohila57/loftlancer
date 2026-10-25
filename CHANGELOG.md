@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Added an authentic Studio overview image to the responsive public landing hero (#805).
+
 ## [1.19.9] - 2026-10-25
 
 ### Fixed
