@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Added a root canonical URL and reduced-motion fallbacks to public marketing interactions (#815).
+
 ## [1.19.13] - 2026-10-25
 
 ### Changed
