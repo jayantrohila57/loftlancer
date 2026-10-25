@@ -104,7 +104,7 @@ export function ConsentScreen({
         </CardHeader>
         <CardPanel className="flex flex-col gap-3">
           {!isPending && !session?.user ? (
-            <div className="flex flex-col gap-3 rounded-xl p-4 ring-1 ring-border/60">
+            <div className="flex flex-col gap-3 rounded-md p-4 ring-1 ring-border/60">
               <p className="text-muted-foreground text-sm">
                 Sign in to approve access for this application.
               </p>
