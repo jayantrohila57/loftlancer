@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Changed
 
 - Added an authentic Studio overview image to the responsive public landing hero (#805).
+- Standardized the public marketing shell with responsive navigation, grouped footer links, and shared cross-app routes (#804).
 
 ## [1.19.9] - 2026-10-25
 
