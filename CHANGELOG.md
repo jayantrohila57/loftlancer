@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Restored repository formatting required by the main CI quality gate.
+
 ## [1.19.14] - 2026-10-25
 
 ### Changed
