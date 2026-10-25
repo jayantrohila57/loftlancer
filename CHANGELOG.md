@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.8] - 2026-10-25
+
 ### Changed
 
 - Clarified onboarding navigation and organization slug availability (#664).
@@ -850,7 +852,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.7...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.8...HEAD
+[1.19.8]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.7...v1.19.8
 [1.19.7]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.6...v1.19.7
 [1.19.6]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.5...v1.19.6
 [1.19.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.4...v1.19.5
