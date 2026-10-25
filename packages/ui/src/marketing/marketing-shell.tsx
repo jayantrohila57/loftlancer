@@ -1,6 +1,6 @@
 "use client";
 
-import { LayersIcon } from "lucide-react";
+import { LayersIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
@@ -22,16 +22,47 @@ const primaryNav: MarketingNavItem[] = [
   { label: "About", href: "/about" },
 ];
 
-const footerNav: MarketingNavItem[] = [
-  { label: "Features", href: "/features" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "About", href: "/about" },
-  { label: "Changelog", href: "/changelog" },
-  { label: "Docs", href: "/docs" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
-  { label: "GitHub", href: marketingSiteConfig.links.github, external: true },
-];
+const footerNav = [
+  {
+    label: "Product",
+    items: [
+      { label: "Features", href: "/features" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "Status", href: "/status" },
+    ],
+  },
+  {
+    label: "Resources",
+    items: [
+      { label: "Documentation", href: "/docs" },
+      { label: "Changelog", href: "/changelog" },
+      {
+        label: "GitHub",
+        href: marketingSiteConfig.links.github,
+        external: true,
+      },
+    ],
+  },
+  {
+    label: "Company",
+    items: [
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/legal/contact" },
+      { label: "Security", href: "/legal/security" },
+    ],
+  },
+  {
+    label: "Legal",
+    items: [
+      { label: "Privacy", href: "/privacy" },
+      { label: "Terms", href: "/terms" },
+      { label: "Cookies", href: "/legal/cookies" },
+    ],
+  },
+] satisfies ReadonlyArray<{
+  label: string;
+  items: readonly MarketingNavItem[];
+}>;
 
 type MarketingLinkButtonProps = ComponentProps<"a"> & {
   variant?: "default" | "outline" | "ghost";
@@ -60,7 +91,7 @@ function NavLink({
   pagesBaseUrl?: string;
 }) {
   const className =
-    "text-sm text-muted-foreground transition-colors hover:text-foreground";
+    "inline-flex min-h-8 items-center rounded-sm px-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
   if (item.external) {
     return (
       <a
@@ -93,6 +124,19 @@ function NavLink({
   );
 }
 
+function MarketingLogo() {
+  return (
+    <>
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+        <LayersIcon aria-hidden className="size-4" />
+      </span>
+      <span className="truncate font-semibold text-sm tracking-tight">
+        {marketingSiteConfig.name}
+      </span>
+    </>
+  );
+}
+
 export type MarketingSiteHeaderProps = {
   signInHref: string;
   pagesBaseUrl?: string;
@@ -116,12 +160,7 @@ export function MarketingSiteHeader({
           href="/"
           className="flex min-w-0 items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <LayersIcon aria-hidden className="size-4" />
-          </span>
-          <span className="truncate font-semibold text-sm tracking-tight">
-            {marketingSiteConfig.name}
-          </span>
+          <MarketingLogo />
         </Link>
         <nav className="flex items-center gap-2 sm:gap-3" aria-label="Primary">
           <div className="hidden items-center gap-4 md:flex">
@@ -141,6 +180,24 @@ export function MarketingSiteHeader({
           >
             Sign in
           </MarketingLinkButton>
+          <details className="group relative md:hidden">
+            <summary className="flex size-8 cursor-pointer list-none items-center justify-center rounded-md border text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
+              <MenuIcon aria-hidden className="size-4" />
+              <span className="sr-only">Open navigation</span>
+            </summary>
+            <nav
+              className="absolute top-[calc(100%+0.5rem)] right-0 grid w-56 gap-1 rounded-lg border bg-background p-2 shadow-lg"
+              aria-label="Mobile navigation"
+            >
+              {primaryNav.map((item) => (
+                <NavLink
+                  key={item.href}
+                  item={item}
+                  pagesBaseUrl={pagesBaseUrl}
+                />
+              ))}
+            </nav>
+          </details>
         </nav>
       </div>
     </header>
@@ -154,15 +211,33 @@ export function MarketingSiteFooter({
 } = {}) {
   return (
     <footer className="border-t">
-      <div className={cn(marketingContainerClass, "py-10")}>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 text-muted-foreground text-sm">
-          {footerNav.map((item) => (
-            <span key={item.href}>
-              <NavLink item={item} pagesBaseUrl={pagesBaseUrl} />
-            </span>
+      <div className={cn(marketingContainerClass, "py-10 md:py-12")}>
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Link
+              href="/"
+              className="flex w-fit items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <MarketingLogo />
+            </Link>
+            <p className="mt-3 max-w-xs text-muted-foreground text-sm leading-relaxed">
+              {marketingSiteConfig.description}
+            </p>
+          </div>
+          {footerNav.map((group) => (
+            <nav key={group.label} aria-label={group.label}>
+              <h2 className="font-medium text-sm">{group.label}</h2>
+              <ul className="mt-3 grid gap-2">
+                {group.items.map((item) => (
+                  <li key={item.href}>
+                    <NavLink item={item} pagesBaseUrl={pagesBaseUrl} />
+                  </li>
+                ))}
+              </ul>
+            </nav>
           ))}
         </div>
-        <p className="mt-6 text-muted-foreground text-sm">
+        <p className="mt-10 border-t pt-6 text-muted-foreground text-sm">
           © {new Date().getFullYear()} {marketingSiteConfig.name}
         </p>
       </div>
@@ -192,7 +267,7 @@ export function MarketingPageShell({
         headerActions={headerActions}
       />
       <main className="flex-1">{children}</main>
-      <MarketingSiteFooter />
+      <MarketingSiteFooter pagesBaseUrl={pagesBaseUrl} />
     </div>
   );
 }

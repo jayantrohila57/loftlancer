@@ -20,6 +20,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 - Bumped Next.js from 16.4.0 to 16.4.3 across www, auth, studio, and docs via `next upgrade --agent=security` (#819).
 
+### Changed
+
+- Added real-product workflow, access, connection, and FAQ sections to the public landing page (#806).
+- Clarified the available project apps, access model, activity history, and planned connections on Features (#807).
+- Standardized the public marketing shell with responsive navigation, grouped footer links, and shared cross-app routes (#804).
+
 ## [1.19.9] - 2026-10-25
 
 ### Fixed
