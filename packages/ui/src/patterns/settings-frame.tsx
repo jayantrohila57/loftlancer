@@ -148,7 +148,7 @@ export function SettingsFrame({
   const pathname = usePathname() ?? "";
   const activeTabHref = resolveSettingsTabHref(pathname, tabs ?? []);
   return (
-    <div data-testid="settings-frame" className="w-full min-w-0 space-y-6">
+    <div data-testid="settings-frame" className="w-full min-w-0 space-y-4">
       <PageHeaderLayout
         back={
           back === false ? null : (
@@ -181,7 +181,7 @@ export function SettingsFrame({
           )
         }
       />
-      <div className="min-w-0 space-y-8">{children}</div>
+      <div className="min-w-0 space-y-4">{children}</div>
     </div>
   );
 }
@@ -216,7 +216,7 @@ export function SettingsSection({
       {bare ? (
         children
       ) : (
-        <div className="divide-y rounded-xl border bg-card text-card-foreground">
+        <div className="divide-y rounded-md border bg-card text-card-foreground">
           {children}
         </div>
       )}
@@ -234,7 +234,7 @@ export function SettingsRow({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-6">
+    <div className="flex flex-col gap-1.5 p-4 sm:flex-row sm:items-center sm:gap-4">
       <div className="min-w-0 sm:w-55 sm:shrink-0">
         <div className="font-medium text-sm">{label}</div>
         {helper ? (
