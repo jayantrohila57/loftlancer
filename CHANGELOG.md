@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Added a clear, public-first getting-started path to the documentation entry page (#812).
+
 ## [1.19.11] - 2026-10-25
 
 ### Changed
