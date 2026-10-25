@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.12] - 2026-10-25
+
 ### Changed
 
 - Applied the compact layout scale to team loading and shared settings panels (#825).
@@ -888,7 +890,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.11...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.12...HEAD
+[1.19.12]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.11...v1.19.12
 [1.19.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.10...v1.19.11
 [1.19.10]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.9...v1.19.10
 [1.19.9]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.8...v1.19.9
