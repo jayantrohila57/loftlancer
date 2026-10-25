@@ -16,6 +16,13 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Matched organization Settings loading geometry to its full settings page (#740).
+- Unified project Settings loading states and removed the duplicate transition (#741).
+- Aligned the organization Overview navigation row with every organization tab (#742).
+- Kept Activity filters in the page content so they no longer appear late or shift the layout (#743).
+
 ## [1.19.8] - 2026-10-25
 
 ### Changed
