@@ -4,7 +4,6 @@ import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 import { BASE_PATH } from "@/lib/base-path";
-import { routes } from "@/utils/navigation";
 import {
   type OrganizationDetail,
   useOrganizationBySlug,
@@ -60,14 +59,11 @@ function OrganizationFrame({
   const { tabs, activeTab } = useOrganizationTabs(slug);
   const pathname = usePathname() ?? "";
   const name = organization?.name ?? listItem?.name ?? slug;
-  const isOrgHome = pathname === routes.org(slug);
-
   return (
     <SettingsFrame
       LinkComponent={Link as never}
       back={false}
       title={name}
-      description={isOrgHome ? "Organization settings and members." : undefined}
       tabs={tabs.map((tab) => ({
         href: tab.href ?? "#",
         label: tab.label,
