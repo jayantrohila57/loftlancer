@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Tightened project access navigation-state spacing to match the compact Studio layout scale (#831).
+
 ## [1.19.13] - 2026-10-25
 
 ### Changed
