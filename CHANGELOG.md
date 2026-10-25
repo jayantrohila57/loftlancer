@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Fixed
 
+- Kept Teams and Projects navigation visible on global notification routes (#746).
 - Restored the active Teams tab for organization team routes (#745).
 
 ## [1.19.16] - 2026-10-25
