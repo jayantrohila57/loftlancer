@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Standardized the public marketing shell with responsive navigation, grouped footer links, and shared cross-app routes (#804).
+
 ## [1.19.9] - 2026-10-25
 
 ### Fixed
