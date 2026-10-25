@@ -11,7 +11,7 @@ export function ProjectAccessPage({ slug }: { slug: string }) {
   const projectQuery = useQuery(trpc.projects.getBySlug.queryOptions({ slug }));
   const project = projectQuery.data?.data?.project;
 
-  if (projectQuery.isPending) return <Skeleton className="h-80 rounded-xl" />;
+  if (projectQuery.isPending) return <Skeleton className="h-80 rounded-md" />;
   if (projectQuery.isError) {
     return (
       <ErrorState
