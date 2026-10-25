@@ -1,10 +1,7 @@
 import { Skeleton } from "../components/ui/skeleton";
 
 export function AccordionSectionSkeleton({ rows = 2 }: { rows?: number }) {
-  const rowSlots = ["name", "description", "status", "scope", "actions"].slice(
-    0,
-    rows,
-  );
+  const rowSlots = Array.from({ length: rows }, (_, index) => `row-${index}`);
   return (
     <details
       open

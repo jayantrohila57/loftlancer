@@ -1,6 +1,6 @@
 import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
-import { ProjectDetailSkeleton } from "@/domain/environments/components/skeletons";
+import { ProjectSettingsPageSkeleton } from "@/domain/projects/components/project-settings-skeleton";
 
 export default function EditProjectLoading() {
-  return <DelayedPageLoading fallback={<ProjectDetailSkeleton />} />;
+  return <DelayedPageLoading fallback={<ProjectSettingsPageSkeleton />} />;
 }

@@ -1,33 +1,13 @@
 "use client";
 
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { useQuery } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
+import { EditProject } from "@/domain/projects/components/project-edit";
 import { ProjectSettingsSection } from "@/domain/projects/components/project-settings-section";
+import { ProjectSettingsPageSkeleton } from "@/domain/projects/components/project-settings-skeleton";
 import { trpc } from "@/utils/trpc";
-
-function ProjectSettingsSkeleton() {
-  return (
-    <div className="flex min-w-0 flex-col gap-4" role="status" aria-busy="true">
-      <AccordionSectionSkeleton rows={5} />
-      <AccordionSectionSkeleton rows={1} />
-      <AccordionSectionSkeleton rows={2} />
-    </div>
-  );
-}
-
-const EditProject = dynamic(
-  () =>
-    import("@/domain/projects/components/project-edit").then(
-      (mod) => mod.EditProject,
-    ),
-  {
-    loading: () => <ProjectSettingsSkeleton />,
-  },
-);
 
 interface EditProjectClientProps {
   slug: string;
@@ -46,16 +26,7 @@ export default function EditProjectClient({ slug }: EditProjectClientProps) {
 
   const project = projectBySlug?.data?.project;
   if (isPending) {
-    return (
-      <DashboardSection
-        title="Project settings"
-        description="Update project information and settings."
-        back={false}
-        hideTabs
-      >
-        <ProjectSettingsSkeleton />
-      </DashboardSection>
-    );
+    return <ProjectSettingsPageSkeleton />;
   }
 
   if (isError) {
