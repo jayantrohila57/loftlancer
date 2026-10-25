@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Clarified the available project apps, access model, activity history, and planned connections on Features (#807).
+
 ## [1.19.9] - 2026-10-25
 
 ### Fixed
