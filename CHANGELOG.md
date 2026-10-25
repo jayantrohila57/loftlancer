@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Changed
 
 - Added a clear, public-first getting-started path to the documentation entry page (#812).
+- Clarified Loftlancer's mission, access, configuration, documentation, and open-source links on About (#809).
 
 ## [1.19.11] - 2026-10-25
 
