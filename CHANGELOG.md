@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.17] - 2026-10-25
+
 ### Fixed
 
 - Kept Teams and Projects navigation visible on global notification routes (#746).
@@ -926,7 +928,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.16...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.17...HEAD
+[1.19.17]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.16...v1.19.17
 [1.19.16]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.15...v1.19.16
 [1.19.15]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.14...v1.19.15
 [1.19.14]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.13...v1.19.14
