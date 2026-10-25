@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Enforced the built-in Owner, Manager, and Member organization-role policy (#753).
+
 ## [1.19.17] - 2026-10-25
 
 ### Fixed

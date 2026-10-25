@@ -255,27 +255,10 @@ export function OrganizationMemberProfiles({
                               {normalizedRole}
                             </span>
                           </p>
-                          {member.access?.customRole ? (
-                            <>
-                              <p>
-                                Additional organization access:{" "}
-                                <span className="font-medium">
-                                  {member.access.customRole.name}
-                                </span>
-                              </p>
-                              <p className="text-muted-foreground">
-                                Grants {member.access.customRole.actions.length}{" "}
-                                organization permissions. Project and app access
-                                still follows project and team assignments.
-                              </p>
-                            </>
-                          ) : (
-                            <p className="text-muted-foreground">
-                              No additional organization role is assigned.
-                              Project and app access follows project and team
-                              assignments.
-                            </p>
-                          )}
+                          <p className="text-muted-foreground">
+                            Project and app access follows project and team
+                            assignments.
+                          </p>
                           {member.suspendedAt ? (
                             <p className="text-muted-foreground">
                               Suspended:{" "}

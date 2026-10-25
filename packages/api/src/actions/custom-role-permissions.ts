@@ -3,13 +3,6 @@ import {
   actionNames,
   getActionDefinition,
 } from "@loftlancer/actions";
-import { db } from "@loftlancer/db";
-import {
-  member,
-  memberOrganizationRole,
-  organizationRolePermission,
-} from "@loftlancer/db/schema/organization";
-import { and, eq, isNull } from "drizzle-orm";
 
 const DELEGABLE_ORGANIZATION_ACTIONS = new Set<ActionName>(
   actionNames.filter((action) => {
@@ -33,35 +26,10 @@ export async function loadCustomOrganizationActions(
   userId: string,
   organizationId: string,
 ): Promise<ActionName[]> {
-  const rows = await db
-    .select({ actionName: organizationRolePermission.actionName })
-    .from(memberOrganizationRole)
-    .innerJoin(
-      member,
-      and(
-        eq(member.id, memberOrganizationRole.memberId),
-        eq(member.organizationId, memberOrganizationRole.organizationId),
-      ),
-    )
-    .innerJoin(
-      organizationRolePermission,
-      and(
-        eq(organizationRolePermission.roleId, memberOrganizationRole.roleId),
-        eq(
-          organizationRolePermission.organizationId,
-          memberOrganizationRole.organizationId,
-        ),
-      ),
-    )
-    .where(
-      and(
-        eq(memberOrganizationRole.organizationId, organizationId),
-        eq(member.userId, userId),
-        isNull(member.deletedAt),
-        isNull(member.suspendedAt),
-      ),
-    );
-  return rows
-    .map((row) => row.actionName)
-    .filter(isDelegableOrganizationAction);
+  // Built-in Owner, Manager, and Member roles are the only organization roles
+  // supported by the product. Ignore legacy custom-role records so they can
+  // never grant effective authorization.
+  void userId;
+  void organizationId;
+  return [];
 }
