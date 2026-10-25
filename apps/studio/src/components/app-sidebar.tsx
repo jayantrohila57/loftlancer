@@ -49,6 +49,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
+import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
 import { useOrganizationFavorites } from "@/components/org/use-organization-favorites";
 import { useSidebarNavigator } from "@/components/sidebar/use-sidebar-navigator";
 import { SidebarProjectsGroup } from "@/components/sidebar-projects-group";
@@ -61,7 +62,6 @@ import { withBasePath } from "@/lib/base-path";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
 import { isSidebarRouteActive } from "@/lib/sidebar-project-nav";
 import { platformNavHref, routes } from "@/utils/navigation";
-import { useRouteScope } from "@/utils/use-route-scope";
 
 const accountSettingsHref = accountSettingsUrl();
 const orgListLimit = 4;
@@ -141,7 +141,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const searchParams = useSearchParams();
   const { isMobile, setOpenMobile } = useSidebar();
   const router = useRouter();
-  const scope = useRouteScope();
   const { orgs, initialLoadDone } = useActiveOrganization();
   const {
     favorites: favoriteOrganizationIds,
@@ -149,7 +148,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     retainOrganizations,
     favoriteLimit: organizationFavoriteLimit,
   } = useOrganizationFavorites();
-  const orgSlug = scope.org;
+  const orgSlug = useCurrentOrgSlug();
   const showOrganizations = isOrganizationsEnabledOnClient();
   const actionsAudit = isActionsAuditEnabledOnClient();
   const canListOrganizations = useCan("organization.list");
@@ -189,7 +188,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           !canListOrganizations.isLoading))
     )
       return [];
-    const href = platformNavHref(item.key, scope.org);
+    const href = platformNavHref(item.key, orgSlug ?? undefined);
     if (!href) return [];
     return [
       {

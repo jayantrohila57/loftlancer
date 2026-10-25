@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Kept Teams and Projects navigation visible on global notification routes (#746).
+
 ## [1.19.16] - 2026-10-25
 
 ### Fixed
