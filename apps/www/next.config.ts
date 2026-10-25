@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   typedRoutes: true,
   transpilePackages: ["@loftlancer/ui"],
+  experimental: {
+    agentUpgrade: "security" as const,
+  },
 };
 
 export default nextConfig;
