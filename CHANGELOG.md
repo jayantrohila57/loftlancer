@@ -19,6 +19,9 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Changed
 
 - Added a root canonical URL and reduced-motion fallbacks to public marketing interactions (#815).
+- Matched shared loading and error-state surfaces to compact page spacing and radii (#834).
+- Applied compact responsive spacing and surface radii to public invitation and OAuth screens (#833).
+- Tightened project access navigation-state spacing to match the compact Studio layout scale (#831).
 
 ## [1.19.13] - 2026-10-25
 
