@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Added stale-status warnings, manual refresh, and full public-surface monitoring to Status (#811).
+
 ## [1.19.11] - 2026-10-25
 
 ### Changed
