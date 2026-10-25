@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Standardized dialogs and sheets on the compact overlay spacing and radius scale (#830).
+
 ## [1.19.12] - 2026-10-25
 
 ### Changed
