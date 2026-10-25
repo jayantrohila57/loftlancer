@@ -16,6 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Clarified onboarding navigation and organization slug availability (#664).
+- Added an inventory for additional UX audit states and roles (PR 724).
+- Increased shared sidebar action targets to 24 × 24 px (PR 732).
+
 ## [1.19.7] - 2026-10-23
 
 ### Changed
