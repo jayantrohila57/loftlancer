@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.10] - 2026-10-25
+
 ### Security
 
 - Bumped Next.js from 16.4.0 to 16.4.3 across www, auth, studio, and docs via `next upgrade --agent=security` (#819).
@@ -871,7 +873,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.9...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.10...HEAD
+[1.19.10]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.9...v1.19.10
 [1.19.9]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.8...v1.19.9
 [1.19.8]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.7...v1.19.8
 [1.19.7]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.6...v1.19.7
