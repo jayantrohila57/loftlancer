@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckIcon } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
@@ -138,6 +138,167 @@ function FeaturesSection() {
   );
 }
 
+const workflowSteps = [
+  {
+    label: "01",
+    title: "Create an organization",
+    description:
+      "Set up the workspace where members, roles, and shared administration belong.",
+  },
+  {
+    label: "02",
+    title: "Add a project",
+    description:
+      "Group the apps, people, and access rules that support a piece of work.",
+  },
+  {
+    label: "03",
+    title: "Use project apps",
+    description:
+      "Install the available project apps, including environments and tasks, when your project needs them.",
+  },
+] as const;
+
+function WorkflowSection() {
+  return (
+    <section
+      className="border-y bg-muted/20"
+      aria-labelledby="workflow-heading"
+    >
+      <div className={cn(marketingContainerClass, "py-16 md:py-24")}>
+        <div className="max-w-2xl">
+          <p className="font-medium text-muted-foreground text-sm">Workflow</p>
+          <h2
+            id="workflow-heading"
+            className="mt-2 font-semibold text-2xl tracking-tight md:text-3xl"
+          >
+            A clear path from workspace to project work
+          </h2>
+        </div>
+        <ol className="mt-10 grid gap-4 md:grid-cols-3">
+          {workflowSteps.map((step) => (
+            <li
+              key={step.label}
+              className="rounded-xl border bg-background p-5"
+            >
+              <span className="font-medium text-muted-foreground text-sm tabular-nums">
+                {step.label}
+              </span>
+              <h3 className="mt-6 font-medium text-base">{step.title}</h3>
+              <p className="mt-2 text-muted-foreground text-sm leading-relaxed">
+                {step.description}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function IntegrationsSection() {
+  return (
+    <section className={cn(marketingContainerClass, "py-16 md:py-24")}>
+      <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+        <div>
+          <p className="font-medium text-muted-foreground text-sm">
+            Connections
+          </p>
+          <h2 className="mt-2 font-semibold text-2xl tracking-tight md:text-3xl">
+            Keep access connected to your workspace
+          </h2>
+          <p className="mt-3 max-w-xl text-muted-foreground leading-relaxed">
+            Sign in with GitHub, Google, or an email link. More compatible tool
+            connections are planned and will use the same workspace access
+            controls.
+          </p>
+        </div>
+        <ul
+          className="grid gap-3"
+          aria-label="Available and planned connections"
+        >
+          <li className="flex items-center gap-3 rounded-lg border bg-card p-4">
+            <span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <CheckIcon aria-hidden className="size-4" />
+            </span>
+            <div>
+              <p className="font-medium text-sm">GitHub sign-in</p>
+              <p className="text-muted-foreground text-sm">Available today</p>
+            </div>
+          </li>
+          <li className="flex items-center gap-3 rounded-lg border bg-card p-4">
+            <span className="flex size-8 items-center justify-center rounded-full border text-muted-foreground">
+              <span aria-hidden className="size-1.5 rounded-full bg-current" />
+            </span>
+            <div>
+              <p className="font-medium text-sm">Compatible tool connections</p>
+              <p className="text-muted-foreground text-sm">Planned</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+const faq = [
+  {
+    question: "Where do I start?",
+    answer:
+      "Sign in, then create or join an organization. From there, you can create projects and add members.",
+  },
+  {
+    question: "How does access work?",
+    answer:
+      "Organization roles set workspace access. Project grants and teams can add access for the projects where people need to work.",
+  },
+  {
+    question: "How are environment variables protected?",
+    answer:
+      "Variables are encrypted at rest and masked in the interface until an authorized person chooses to reveal them.",
+  },
+  {
+    question: "Can I connect other tools?",
+    answer:
+      "More compatible tool connections are planned. They are not available as product integrations today.",
+  },
+] as const;
+
+function FaqSection() {
+  return (
+    <section className="border-t bg-muted/20" aria-labelledby="faq-heading">
+      <div className={cn(marketingContainerClass, "py-16 md:py-24")}>
+        <div className="mx-auto max-w-2xl">
+          <h2
+            id="faq-heading"
+            className="font-semibold text-2xl tracking-tight md:text-3xl"
+          >
+            Questions, answered clearly
+          </h2>
+          <div className="mt-8 divide-y rounded-xl border bg-background">
+            {faq.map((item) => (
+              <details key={item.question} className="group px-4 py-3">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
+                  {item.question}
+                  <span
+                    aria-hidden
+                    className="text-muted-foreground transition-transform group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="pt-3 text-muted-foreground text-sm leading-relaxed">
+                  {item.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CtaSection({ signInHref }: { signInHref: string }) {
   return (
     <section className="border-t bg-muted/30">
@@ -208,6 +369,9 @@ export function MarketingLanding({
       <main className="flex-1">
         <HeroSection signInHref={signInHref} />
         <FeaturesSection />
+        <WorkflowSection />
+        <IntegrationsSection />
+        <FaqSection />
         <CtaSection signInHref={signInHref} />
       </main>
       <MarketingSiteFooter pagesBaseUrl={pagesBaseUrl} />
