@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: { default: "Loftlancer", template: "%s | Loftlancer" },
   description,
   applicationName: "Loftlancer",
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: "Loftlancer",

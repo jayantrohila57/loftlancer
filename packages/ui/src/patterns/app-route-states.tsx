@@ -149,7 +149,7 @@ export function AppGlobalErrorPage({
         className={
           frame
             ? "bg-background font-sans text-foreground antialiased"
-            : "flex min-h-svh items-center justify-center bg-background p-6 font-sans text-foreground antialiased"
+            : "flex min-h-svh items-center justify-center bg-background p-4 font-sans text-foreground antialiased sm:p-6"
         }
       >
         {frame ? frame(card) : card}

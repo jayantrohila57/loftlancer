@@ -91,7 +91,7 @@ function NavLink({
   pagesBaseUrl?: string;
 }) {
   const className =
-    "inline-flex min-h-8 items-center rounded-sm px-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+    "inline-flex min-h-8 items-center rounded-sm px-1 text-sm text-muted-foreground transition-colors motion-reduce:transition-none hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
   if (item.external) {
     return (
       <a
@@ -181,7 +181,7 @@ export function MarketingSiteHeader({
             Sign in
           </MarketingLinkButton>
           <details className="group relative md:hidden">
-            <summary className="flex size-8 cursor-pointer list-none items-center justify-center rounded-md border text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
+            <summary className="flex size-8 cursor-pointer list-none items-center justify-center rounded-md border text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none [&::-webkit-details-marker]:hidden">
               <MenuIcon aria-hidden className="size-4" />
               <span className="sr-only">Open navigation</span>
             </summary>

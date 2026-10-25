@@ -121,7 +121,7 @@ function FeaturesSection() {
           const Icon = feature.icon;
           return (
             <li key={feature.title} className="lg:col-span-2">
-              <Card className="h-full transition-colors hover:bg-muted/30">
+              <Card className="h-full transition-colors hover:bg-muted/30 motion-reduce:transition-none">
                 <CardHeader>
                   <div className="mb-2 flex size-9 items-center justify-center rounded-lg border bg-muted/40">
                     <Icon className="size-4 text-muted-foreground" />
@@ -282,7 +282,7 @@ function FaqSection() {
                   {item.question}
                   <span
                     aria-hidden
-                    className="text-muted-foreground transition-transform group-open:rotate-45"
+                    className="text-muted-foreground transition-transform group-open:rotate-45 motion-reduce:transition-none"
                   >
                     +
                   </span>
