@@ -11,7 +11,7 @@ export function AccountSettingsSkeleton() {
         </div>
         <Skeleton className="h-9 w-full max-w-xl md:hidden" />
       </div>
-      <div className="rounded-xl border bg-card">
+      <div className="rounded-md border bg-card">
         <div className="space-y-3 border-b px-4 py-3">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-3 w-48" />
