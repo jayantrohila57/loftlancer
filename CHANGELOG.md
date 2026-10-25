@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Applied compact table-state and app-directory spacing to invitations and project apps (#829).
+
 ## [1.19.12] - 2026-10-25
 
 ### Changed

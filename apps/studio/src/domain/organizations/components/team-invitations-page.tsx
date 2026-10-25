@@ -97,7 +97,7 @@ export function TeamInvitationsPage({
         onPageChange={setPage}
       />
       {query.isPending ? (
-        <Skeleton className="h-36 rounded-xl" />
+        <Skeleton className="h-36 rounded-md" />
       ) : query.isError ? (
         <ErrorState
           title="Could not load team invitations"
@@ -105,7 +105,7 @@ export function TeamInvitationsPage({
           onRetry={() => void query.refetch()}
         />
       ) : invitations.length === 0 ? (
-        <p className="rounded-xl border bg-card p-4 text-muted-foreground text-sm">
+        <p className="rounded-md border bg-card p-4 text-muted-foreground text-sm">
           No {status === "all" ? "" : `${status} `}invitations for this team.
         </p>
       ) : (
