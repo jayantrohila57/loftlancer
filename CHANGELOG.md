@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Changed
 
 - Clarified Loftlancer's mission, access, configuration, documentation, and open-source links on About (#809).
+- Clarified the current free early-access offering and linked Pricing directly to sign-in (#808).
 
 ## [1.19.10] - 2026-10-25
 
