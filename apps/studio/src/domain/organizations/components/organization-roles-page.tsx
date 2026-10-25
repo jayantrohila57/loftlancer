@@ -7,7 +7,6 @@ import { ErrorState } from "@/components/patterns/error-state";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { orgSectionAction } from "@/domain/permissions/org-section-actions";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
-import { OrganizationCustomRoles } from "./organization-custom-roles";
 import { OrganizationPermissionsMatrix } from "./organization-permissions-matrix";
 import { OrganizationRoleCards } from "./organization-role-cards";
 import { OrganizationSectionPage } from "./organization-section-page";
@@ -54,7 +53,6 @@ export function OrganizationRolesPage({ slug }: { slug: string }) {
   } else {
     body = (
       <div className="flex flex-col gap-4">
-        <OrganizationCustomRoles />
         <OrganizationRoleCards />
         <OrganizationPermissionsMatrix />
       </div>

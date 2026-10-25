@@ -83,6 +83,14 @@ async function requireOrganizationOwner(
     });
 }
 
+function customRolesDisabled(): void {
+  throw new TRPCError({
+    code: "FORBIDDEN",
+    message:
+      "Custom organization roles are not available. Use Owner, Manager, or Member.",
+  });
+}
+
 export const organizationsRouter = router({
   updateMemberProfile: orgProcedure
     .input(
@@ -220,6 +228,7 @@ export const organizationsRouter = router({
   listCustomRoles: orgProcedure
     .use(actionGuard("member.list"))
     .query(async ({ ctx }) => {
+      customRolesDisabled();
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId)
         throw new TRPCError({
@@ -295,6 +304,7 @@ export const organizationsRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      customRolesDisabled();
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId)
         throw new TRPCError({
@@ -357,6 +367,7 @@ export const organizationsRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      customRolesDisabled();
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId)
         throw new TRPCError({
@@ -459,6 +470,7 @@ export const organizationsRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      customRolesDisabled();
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId)
         throw new TRPCError({
@@ -532,6 +544,7 @@ export const organizationsRouter = router({
       })),
     )
     .mutation(async ({ ctx, input }) => {
+      customRolesDisabled();
       const organizationId = ctx.activeOrganizationId;
       if (!organizationId)
         throw new TRPCError({
