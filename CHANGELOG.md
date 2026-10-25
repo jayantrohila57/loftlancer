@@ -16,6 +16,16 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.13] - 2026-10-25
+
+### Changed
+
+- Standardized dialogs and sheets on the compact overlay spacing and radius scale (#830).
+- Applied compact table-state and app-directory spacing to invitations and project apps (#829).
+- Standardized organization, project, and account settings frames on the compact spacing scale (#828).
+- Standardized project and app cards on the compact grid and surface scale (#827).
+- Aligned notification and project-access states with the compact page layout scale (#826).
+
 ## [1.19.12] - 2026-10-25
 
 ### Changed
@@ -890,7 +900,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.12...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.13...HEAD
+[1.19.13]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.12...v1.19.13
 [1.19.12]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.11...v1.19.12
 [1.19.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.10...v1.19.11
 [1.19.10]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.9...v1.19.10

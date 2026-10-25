@@ -13,12 +13,12 @@ const SKELETON_KEYS = ["a", "b", "c", "d", "e", "f"];
 export function AppGridSkeleton({ count = 2 }: { count?: number }) {
   return (
     <div
-      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3"
       role="status"
       aria-busy="true"
     >
       {SKELETON_KEYS.slice(0, count).map((k) => (
-        <Skeleton key={k} className="min-h-36 rounded-xl" />
+        <Skeleton key={k} className="min-h-36 rounded-md" />
       ))}
     </div>
   );
@@ -64,7 +64,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
           description="There are no apps available to add to this project."
         />
       ) : (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           {installedApps.length > 0 ? (
             <section
               aria-labelledby="installed-apps-heading"
@@ -78,7 +78,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
                   Apps currently available to this project.
                 </p>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
                 {installedApps.map((app) => (
                   <AppCard
                     key={app.id}
@@ -107,7 +107,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
                   Install an app to add its tools to this project.
                 </p>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
                 {availableApps.map((app) => (
                   <AppCard
                     key={app.id}
@@ -140,7 +140,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
                   data.
                 </p>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
                 {recentlyUninstalledApps.map((app) => (
                   <AppCard
                     key={app.id}

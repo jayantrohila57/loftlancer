@@ -99,7 +99,7 @@ export function SheetPopup({
             side === "right" &&
               "col-start-2 w-[calc(100%-(--spacing(12)))] max-w-md border-s data-ending-style:translate-x-8 data-starting-style:translate-x-8 rtl:data-ending-style:-translate-x-8 rtl:data-starting-style:-translate-x-8",
             variant === "inset" &&
-              "before:hidden sm:rounded-2xl sm:border sm:before:rounded-[calc(var(--radius-2xl)-1px)] sm:**:data-[slot=sheet-footer]:rounded-b-[calc(var(--radius-2xl)-1px)]",
+              "before:hidden sm:rounded-lg sm:border sm:before:rounded-[calc(var(--radius-lg)-1px)] sm:**:data-[slot=sheet-footer]:rounded-b-[calc(var(--radius-lg)-1px)]",
             className,
           )}
           data-slot="sheet-popup"
@@ -129,7 +129,7 @@ export function SheetHeader({
 }: useRender.ComponentProps<"div">): React.ReactElement {
   const defaultProps = {
     className: cn(
-      "flex flex-col gap-2 p-6 in-[[data-slot=sheet-popup]:has([data-slot=sheet-panel])]:pb-3 max-sm:pb-4",
+      "flex flex-col gap-2 p-4 in-[[data-slot=sheet-popup]:has([data-slot=sheet-panel])]:pb-3",
       className,
     ),
     "data-slot": "sheet-header",
@@ -152,10 +152,10 @@ export function SheetFooter({
 }): React.ReactElement {
   const defaultProps = {
     className: cn(
-      "flex flex-col-reverse gap-2 px-6 sm:flex-row sm:justify-end",
+      "flex flex-col-reverse gap-2 px-4 sm:flex-row sm:justify-end",
       variant === "default" && "border-t bg-muted/72 py-4",
       variant === "bare" &&
-        "in-[[data-slot=sheet-popup]:has([data-slot=sheet-panel])]:pt-3 pt-4 pb-6",
+        "in-[[data-slot=sheet-popup]:has([data-slot=sheet-panel])]:pt-3 pt-4 pb-4",
       className,
     ),
     "data-slot": "sheet-footer",
@@ -204,7 +204,7 @@ export function SheetPanel({
 }): React.ReactElement {
   const defaultProps = {
     className: cn(
-      "p-6 in-[[data-slot=sheet-popup]:has([data-slot=sheet-header])]:pt-1 in-[[data-slot=sheet-popup]:has([data-slot=sheet-footer]:not(.border-t))]:pb-1",
+      "p-4 in-[[data-slot=sheet-popup]:has([data-slot=sheet-header])]:pt-1 in-[[data-slot=sheet-popup]:has([data-slot=sheet-footer]:not(.border-t))]:pb-1",
       className,
     ),
     "data-slot": "sheet-panel",
