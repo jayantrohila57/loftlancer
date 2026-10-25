@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Changed
 
 - Clarified the current free early-access offering and linked Pricing directly to sign-in (#808).
+- Standardized the public marketing shell with responsive navigation, grouped footer links, and shared cross-app routes (#804).
 
 ## [1.19.9] - 2026-10-25
 
