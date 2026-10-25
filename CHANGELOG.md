@@ -19,6 +19,9 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Changed
 
 - Applied the compact layout scale to team loading and shared settings panels (#825).
+- Standardized shared cards, frames, and table density on the compact layout scale (#824).
+- Added a clear, public-first getting-started path to the documentation entry page (#812).
+- Added stale-status warnings, manual refresh, and full public-surface monitoring to Status (#811).
 - Clarified Loftlancer's mission, access, configuration, documentation, and open-source links on About (#809).
 
 ## [1.19.11] - 2026-10-25
