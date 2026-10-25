@@ -19,6 +19,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 ### Changed
 
 - Standardized shared cards, frames, and table density on the compact layout scale (#824).
+- Clarified Loftlancer's mission, access, configuration, documentation, and open-source links on About (#809).
 
 ## [1.19.11] - 2026-10-25
 
