@@ -5,7 +5,7 @@ export function AccordionSectionSkeleton({ rows = 2 }: { rows?: number }) {
   return (
     <details
       open
-      className="min-w-0 rounded-xl border bg-card"
+      className="min-w-0 rounded-md border bg-card"
       role="status"
       aria-busy="true"
       aria-live="polite"
@@ -21,7 +21,7 @@ export function AccordionSectionSkeleton({ rows = 2 }: { rows?: number }) {
         {rowSlots.map((slot) => (
           <div
             key={slot}
-            className="grid gap-2 sm:grid-cols-[minmax(0,13.75rem)_minmax(0,1fr)] sm:items-center sm:gap-6"
+            className="grid gap-2 sm:grid-cols-[minmax(0,13.75rem)_minmax(0,1fr)] sm:items-center sm:gap-4"
           >
             <div className="space-y-2">
               <Skeleton className="h-4 w-24" />

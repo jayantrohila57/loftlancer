@@ -12,7 +12,7 @@ export function SettingsPanelSkeleton({
 
   return (
     <div
-      className={cn("divide-y rounded-xl border bg-card", className)}
+      className={cn("divide-y rounded-md border bg-card", className)}
       role="status"
       aria-busy="true"
       aria-live="polite"
@@ -24,7 +24,7 @@ export function SettingsPanelSkeleton({
       {rowSlots.map((slot) => (
         <div
           key={slot}
-          className="grid gap-4 px-4 py-4 md:grid-cols-[13.75rem_minmax(0,1fr)] md:gap-6"
+          className="grid gap-4 px-4 py-4 md:grid-cols-[13.75rem_minmax(0,1fr)] md:gap-4"
         >
           <div className="space-y-2">
             <Skeleton className="h-4 w-24" />

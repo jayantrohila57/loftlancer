@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Matched shared loading and error-state surfaces to compact page spacing and radii (#834).
+
 ## [1.19.13] - 2026-10-25
 
 ### Changed

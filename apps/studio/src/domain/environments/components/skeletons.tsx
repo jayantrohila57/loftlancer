@@ -183,7 +183,7 @@ export function ProjectEnvironmentsSkeleton() {
       >
         <span className="sr-only">Loading environments…</span>
         <div className="flex min-w-0 flex-col gap-3">
-          <div className="rounded-xl border bg-card">
+          <div className="rounded-md border bg-card">
             <div className="flex min-h-12 items-center justify-between px-4 py-3">
               <Skeleton className="h-4 w-28" />
               <Skeleton className="size-4 rounded" />
@@ -195,7 +195,7 @@ export function ProjectEnvironmentsSkeleton() {
               <VariablesTableSkeleton />
             </div>
           </div>
-          <div className="rounded-xl border bg-card">
+          <div className="rounded-md border bg-card">
             <div className="flex min-h-12 items-center justify-between px-4 py-3">
               <Skeleton className="h-4 w-20" />
               <Skeleton className="size-4 rounded" />
