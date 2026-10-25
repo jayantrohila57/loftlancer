@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.13] - 2026-10-25
+
 ### Changed
 
 - Standardized dialogs and sheets on the compact overlay spacing and radius scale (#830).
@@ -898,7 +900,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.12...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.13...HEAD
+[1.19.13]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.12...v1.19.13
 [1.19.12]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.11...v1.19.12
 [1.19.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.10...v1.19.11
 [1.19.10]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.9...v1.19.10
