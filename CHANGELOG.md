@@ -16,6 +16,12 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.16] - 2026-10-25
+
+### Fixed
+
+- Normalized release-file line endings so the CI formatter passes consistently.
+
 ## [1.19.15] - 2026-10-25
 
 ### Fixed
@@ -915,7 +921,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.15...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.16...HEAD
+[1.19.16]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.15...v1.19.16
 [1.19.15]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.14...v1.19.15
 [1.19.14]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.13...v1.19.14
 [1.19.13]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.12...v1.19.13
