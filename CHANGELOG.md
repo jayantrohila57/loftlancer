@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.14] - 2026-10-25
+
 ### Changed
 
 - Added a root canonical URL and reduced-motion fallbacks to public marketing interactions (#815).
@@ -907,7 +909,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.13...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.14...HEAD
+[1.19.14]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.13...v1.19.14
 [1.19.13]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.12...v1.19.13
 [1.19.12]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.11...v1.19.12
 [1.19.11]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.10...v1.19.11
