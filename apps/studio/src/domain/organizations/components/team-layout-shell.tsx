@@ -28,7 +28,7 @@ export function TeamLayoutShell({
   const canListInvitations = useCan("member.list");
   const pathname = usePathname() ?? "";
   const root = routes.team(slug, teamId);
-  if (teamsQuery.isPending) return <Skeleton className="h-64 rounded-xl" />;
+  if (teamsQuery.isPending) return <Skeleton className="h-64 rounded-md" />;
   if (teamsQuery.isError) {
     return (
       <ErrorState

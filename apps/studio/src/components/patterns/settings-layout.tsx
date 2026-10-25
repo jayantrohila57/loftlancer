@@ -13,7 +13,7 @@ export function SettingsPanel({
   return (
     <div
       className={cn(
-        "divide-y divide-border/60 rounded-xl border border-border/60 bg-card text-card-foreground",
+        "divide-y divide-border/60 rounded-md border border-border/60 bg-card text-card-foreground",
         className,
       )}
     >
@@ -68,7 +68,7 @@ export function SettingsRow({
   return (
     <div
       className={cn(
-        "grid gap-1.5 px-4 py-2.5 md:grid-cols-[13.75rem_minmax(0,1fr)] md:items-center md:gap-6",
+        "grid gap-1.5 px-4 py-2.5 md:grid-cols-[13.75rem_minmax(0,1fr)] md:items-center md:gap-4",
         className,
       )}
     >
@@ -114,7 +114,7 @@ export function SettingsField({
   return (
     <div
       className={cn(
-        "grid gap-1.5 px-4 py-2.5 md:grid-cols-[13.75rem_minmax(0,1fr)] md:items-center md:gap-6",
+        "grid gap-1.5 px-4 py-2.5 md:grid-cols-[13.75rem_minmax(0,1fr)] md:items-center md:gap-4",
         className,
       )}
     >

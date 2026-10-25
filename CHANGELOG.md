@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Applied the compact layout scale to team loading and shared settings panels (#825).
+
 ## [1.19.11] - 2026-10-25
 
 ### Changed
