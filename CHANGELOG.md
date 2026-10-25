@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Standardized organization, project, and account settings frames on the compact spacing scale (#828).
+
 ## [1.19.12] - 2026-10-25
 
 ### Changed
