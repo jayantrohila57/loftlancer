@@ -16,7 +16,12 @@ export function useOrganizationTabs(slug: string) {
   const canViewRoles = useCan("organization.settings.view").allowed;
   const canViewSettings = useCan("organization.settings.view").allowed;
   const canViewActivity = useCan("audit.timeline.view.org").allowed;
-  const peopleSections: OrgSection[] = ["members", "invitations", "roles"];
+  const peopleSections: OrgSection[] = [
+    "members",
+    "teams",
+    "invitations",
+    "roles",
+  ];
   const tabs: PageHeaderTab[] = [
     { value: base, label: "Overview", href: base },
     ...(canViewMembers
@@ -28,6 +33,11 @@ export function useOrganizationTabs(slug: string) {
           },
         ]
       : []),
+    {
+      value: routes.orgSection(slug, "teams"),
+      label: "Teams",
+      href: routes.orgSection(slug, "teams"),
+    },
     ...(canInvite
       ? [
           {
