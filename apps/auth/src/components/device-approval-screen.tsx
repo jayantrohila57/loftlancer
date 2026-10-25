@@ -133,7 +133,7 @@ export function DeviceApprovalScreen({ userCode }: DeviceApprovalScreenProps) {
             readOnly
           />
           {doneMessage ? (
-            <div className="flex items-center gap-2 rounded-xl p-4 text-sm ring-1 ring-border/60">
+            <div className="flex items-center gap-2 rounded-md p-4 text-sm ring-1 ring-border/60">
               <CircleCheckIcon aria-hidden className="size-4 text-primary" />
               {doneMessage}
             </div>

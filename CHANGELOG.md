@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Applied compact responsive spacing and surface radii to public invitation and OAuth screens (#833).
+
 ## [1.19.13] - 2026-10-25
 
 ### Changed

@@ -31,7 +31,7 @@ export function OAuthScopeCard({
   const initial = appName?.trim().charAt(0).toUpperCase() || "?";
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl p-4 ring-1 ring-border/60">
+    <div className="flex flex-col gap-3 rounded-md p-4 ring-1 ring-border/60">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5">
           <span
