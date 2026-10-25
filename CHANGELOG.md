@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Clarified the available project apps, access model, activity history, and planned connections on Features (#807).
 - Standardized the public marketing shell with responsive navigation, grouped footer links, and shared cross-app routes (#804).
 
 ## [1.19.9] - 2026-10-25
