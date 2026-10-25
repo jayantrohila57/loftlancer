@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Clarified Loftlancer's mission, access, configuration, documentation, and open-source links on About (#809).
+
 ## [1.19.10] - 2026-10-25
 
 ### Security
