@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Standardized dialogs and sheets on the compact overlay spacing and radius scale (#830).
 - Applied compact table-state and app-directory spacing to invitations and project apps (#829).
 - Standardized organization, project, and account settings frames on the compact spacing scale (#828).
 - Standardized project and app cards on the compact grid and surface scale (#827).

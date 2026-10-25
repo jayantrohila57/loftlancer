@@ -10,9 +10,9 @@ import {
 } from "@/components/patterns/guarded-sheet";
 import { cn } from "@/lib/utils";
 
-/** Matches coss `SheetPanel` padding (aligned with header/footer `px-6`). */
+/** Matches coss `SheetPanel` padding (aligned with header/footer `px-4`). */
 export const formSheetPanelPaddingClass =
-  "p-6 in-[[data-slot=sheet-popup]:has([data-slot=sheet-header])]:pt-1 in-[[data-slot=sheet-popup]:has([data-slot=sheet-footer]:not(.border-t))]:pb-1";
+  "p-4 in-[[data-slot=sheet-popup]:has([data-slot=sheet-header])]:pt-1 in-[[data-slot=sheet-popup]:has([data-slot=sheet-footer]:not(.border-t))]:pb-1";
 
 /** Full-height inset sheet shell (viewport minus inset margin). */
 export const formSheetPopupClassName =
@@ -21,7 +21,7 @@ export const formSheetPopupClassName =
 /** Form column between header and footer. */
 export const formSheetFormClassName = "flex min-h-0 flex-1 flex-col";
 
-/** Scrollable panel region — uses coss `SheetPanel` horizontal padding (`px-6`). */
+/** Scrollable panel region — uses coss `SheetPanel` horizontal padding (`px-4`). */
 export const formSheetPanelClassName = "min-h-0 flex-1";
 
 /** Vertical stack for fields inside the panel (no extra horizontal padding). */
