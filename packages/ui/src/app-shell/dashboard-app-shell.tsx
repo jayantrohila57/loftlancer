@@ -7,7 +7,7 @@ import { DashboardPageHeaderBar, DashboardPageHeaderRow } from "./page-chrome";
 import { DashboardShellMain } from "./shell-main";
 
 export const dashboardSidebarInsetClassName =
-  "flex h-svh max-h-svh min-h-0 flex-col overflow-hidden md:h-[calc(100svh-1rem)] md:max-h-[calc(100svh-1rem)]";
+  "flex h-svh max-h-svh min-h-0 flex-col overflow-hidden md:h-[calc(100svh-0.5rem)] md:max-h-[calc(100svh-0.5rem)]";
 
 export type DashboardShellUiComponents = {
   SidebarInset: ComponentType<{
