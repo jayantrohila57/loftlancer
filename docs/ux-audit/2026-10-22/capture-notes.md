@@ -40,11 +40,11 @@ values, invitation tokens, OAuth codes, or device codes in a screenshot.
 | S67 | Populated task list | Project Tasks; include varied statuses and assignees | `studio-tasks-populated.jpg` | Not captured |
 | S68 | Populated invitations | Organization and project Invitations; use synthetic addresses | `studio-invitations-populated.jpg` | Not captured |
 | S69 | Invitation acceptance | Open a disposable, valid test invitation in a separate test account | `studio-invitation-accept.jpg` | Not captured |
-| S70 | Not-found state | Visit a deliberately nonexistent public docs path | `docs-not-found.jpg` | Not captured |
+| S70 | Not-found state | Visit a deliberately nonexistent public docs path | `docs-not-found.jpg` | Captured 2026-10-26 |
 | S71 | Server-error state | Use an approved non-production error fixture; never trigger production failure | `studio-server-error.jpg` | Not captured |
 | S72 | MCP connection flow | Open the documented MCP connect flow with a test client | `auth-mcp-connect.jpg` | Not captured |
 | S73 | OAuth consent | `/consent` with a valid test authorization request and synthetic client | `auth-oauth-consent.jpg` | Not captured |
-| S74 | Device sign-in entry | `/device` before entering a code | `auth-device-entry.jpg` | Not captured |
+| S74 | Device sign-in entry | `/device` before entering a code | `auth-device-entry.jpg` | Captured 2026-10-26 |
 | S75 | Secret reveal | Reveal a synthetic environment value; mask/replace it before saving evidence | `studio-env-reveal.jpg` | Not captured |
 
 ### Capture protocol
