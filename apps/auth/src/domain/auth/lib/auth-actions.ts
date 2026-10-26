@@ -4,6 +4,7 @@ import { performPlatformSignOut } from "@loftlancer/ui/platform-sign-out";
 import type { QueryClient } from "@tanstack/react-query";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { authClient } from "@/lib/auth-client";
+import { withBasePath } from "@/lib/base-path";
 
 /**
  * Get current session with loading state
@@ -56,11 +57,24 @@ export async function updateProfile(input: { name?: string; image?: string }) {
 }
 
 export async function listAuthSessions() {
-  const result = await authClient.listSessions();
-  if (result.error) {
-    throw new Error(result.error.message ?? "Could not load sessions");
+  const response = await fetch(withBasePath("/api/account/sessions"), {
+    credentials: "include",
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as {
+      error?: string;
+    } | null;
+    throw new Error(body?.error ?? "Could not load sessions");
   }
-  return result.data ?? [];
+  return (await response.json()) as Array<{
+    id: string;
+    token: string;
+    ipAddress: string | null;
+    userAgent: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }>;
 }
 
 export async function revokeAuthSession(token: string) {
