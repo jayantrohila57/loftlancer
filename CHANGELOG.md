@@ -16,16 +16,6 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
-## [1.19.19] - 2026-10-26
-
-### Changed
-
-- Tightened shared sidebar and dashboard-inset spacing for a more compact Studio shell (follow-up to #825).
-
-### Fixed
-
-- Expanded shared checkbox and switch hit targets for keyboard and pointer accessibility (#669).
-
 ## [1.19.18] - 2026-10-26
 
 ### Fixed
@@ -945,8 +935,7 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.19...HEAD
-[1.19.19]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.18...v1.19.19
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.18...HEAD
 [1.19.18]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.17...v1.19.18
 [1.19.17]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.16...v1.19.17
 [1.19.16]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.15...v1.19.16
