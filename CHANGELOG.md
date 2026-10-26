@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Expanded shared checkbox and switch hit targets for keyboard and pointer accessibility (#669).
+
 ## [1.19.18] - 2026-10-26
 
 ### Fixed
