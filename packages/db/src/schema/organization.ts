@@ -9,6 +9,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
@@ -231,7 +232,7 @@ export const member = pgTable(
       "member_suspension_reason_length_check",
       sql`${table.suspensionReason} IS NULL OR length(${table.suspensionReason}) <= 250`,
     ),
-    uniqueIndex("member_org_id_uidx").on(table.organizationId, table.id),
+    unique("member_organization_id_uq").on(table.organizationId, table.id),
     uniqueIndex("member_organization_user_active_uidx")
       .on(table.organizationId, table.userId)
       .where(sql`${table.deletedAt} IS NULL`),
@@ -313,7 +314,7 @@ export const organizationRole = pgTable(
       table.organizationId,
       table.name,
     ),
-    uniqueIndex("organization_role_org_id_uidx").on(
+    unique("organization_role_organization_id_uq").on(
       table.organizationId,
       table.id,
     ),
