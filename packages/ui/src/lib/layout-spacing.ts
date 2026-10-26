@@ -11,7 +11,7 @@ export const layoutGutterClass = "p-2";
  * Dashboard inset horizontal padding — aligns header and scrollable main.
  * Only use via `layoutChromeClass`, `layoutDashboardScrollClass`, or marketing/sign-in shells.
  */
-export const layoutInsetXClass = "px-4 md:px-6";
+export const layoutInsetXClass = "px-4 md:px-4";
 
 /** Vertical gap between dashboard page blocks (title → stats → body). */
 export const layoutDashboardSectionGapClass = "gap-4";

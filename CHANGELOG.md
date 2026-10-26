@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Tightened shared sidebar and dashboard-inset spacing for a more compact Studio shell (follow-up to #825).
+
 ### Fixed
 
 - Expanded shared checkbox and switch hit targets for keyboard and pointer accessibility (#669).
