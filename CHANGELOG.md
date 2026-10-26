@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Added responsive public error and device sign-in QA captures (#670).
+
 ## [1.19.19] - 2026-10-26
 
 ### Changed
