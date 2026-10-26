@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.19.20] - 2026-10-26
+
 ### Changed
 
 - Added responsive public error and device sign-in QA captures (#670).
@@ -949,7 +951,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.19...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.20...HEAD
+[1.19.20]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.19...v1.19.20
 [1.19.19]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.18...v1.19.19
 [1.19.18]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.17...v1.19.18
 [1.19.17]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.16...v1.19.17
