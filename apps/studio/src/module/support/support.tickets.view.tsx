@@ -1,5 +1,5 @@
 import DashboardSection from "@/components/section-dashboard";
-import { SupportTicketCreateAction } from "@/domain/support/components/support-ticket-create-action";
+import { SupportTicketCreateAction } from "@/module/support/support.ticket.create-action";
 import type { SupportTickets } from "./support.ticket.service";
 import { SupportTicketsPage } from "./support.tickets.content";
 
