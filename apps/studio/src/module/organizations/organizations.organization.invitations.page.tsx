@@ -20,7 +20,6 @@ import {
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { ErrorState } from "@/components/patterns/error-state";
-import { Can } from "@/domain/permissions/components/can";
 import {
   type OrganizationInvitationRow,
   pendingOrganizationInvitations,
@@ -30,6 +29,7 @@ import { toast } from "@/lib/toast";
 import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
 import { OrganizationSectionPage } from "@/module/organizations/organizations.section";
 import { useOrganizationBySlug } from "@/module/organizations/organizations.use.organization.by.slug";
+import { Can } from "@/shared/permissions/shared.permissions.can";
 import { trpc } from "@/utils/trpc";
 
 export function OrganizationInvitationsPage({ slug }: { slug: string }) {

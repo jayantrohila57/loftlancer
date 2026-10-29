@@ -3,11 +3,11 @@
 import { Spinner } from "@loftlancer/ui/spinner";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSession } from "@/domain/auth/lib/auth-actions";
 import { authClient } from "@/lib/auth-client";
 import { isOnboardingRoute } from "@/lib/is-onboarding-route";
 import { isOrganizationOptionalRoute } from "@/lib/is-organization-optional-route";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
+import { useSession } from "@/module/auth/auth.auth.actions";
 
 import { routes } from "@/utils/navigation";
 

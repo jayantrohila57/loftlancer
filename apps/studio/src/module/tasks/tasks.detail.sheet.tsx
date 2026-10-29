@@ -17,13 +17,13 @@ import { Skeleton } from "@loftlancer/ui/skeleton";
 import { Textarea } from "@loftlancer/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { actionToast } from "@/lib/action-toast";
 import { TaskCommentItem } from "@/module/tasks/tasks.comment.item";
 import {
   TASK_PRIORITY_OPTIONS,
   TASK_STATUS_OPTIONS,
 } from "@/module/tasks/tasks.meta";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { FieldSelect } from "@/shared/shared.field-select";
 import { trpc } from "@/utils/trpc";
 

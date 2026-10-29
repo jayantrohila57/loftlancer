@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TimelinePageClient } from "@/domain/timeline/components/timeline-page-client";
 import { isActionsAuditEnabledOnServer } from "@/lib/actions-audit-enabled";
 import { guardPageAction, guardProjectSlugPage } from "@/lib/page-guards";
+import { TimelinePageClient } from "@/module/activity/activity.timeline.page.client";
 import { ProjectSection } from "@/module/projects/projects.section";
 
 export const metadata: Metadata = {

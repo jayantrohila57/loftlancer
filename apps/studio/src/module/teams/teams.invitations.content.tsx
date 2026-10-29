@@ -11,7 +11,6 @@ import {
 } from "@/components/org/invitation-list-controls";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { ErrorState } from "@/components/patterns/error-state";
-import { Can } from "@/domain/permissions/components/can";
 import { authClient } from "@/lib/auth-client";
 import {
   cancelOrganizationInvitation,
@@ -20,6 +19,7 @@ import {
 import { toast } from "@/lib/toast";
 import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
 import { useOrganizationBySlug } from "@/module/organizations/organizations.use.organization.by.slug";
+import { Can } from "@/shared/permissions/shared.permissions.can";
 import { trpc } from "@/utils/trpc";
 
 export function TeamInvitationsPage({

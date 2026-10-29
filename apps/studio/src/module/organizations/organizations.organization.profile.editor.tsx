@@ -8,8 +8,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { FormField } from "@/components/patterns/form-field";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { toast } from "@/lib/toast";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { trpc } from "@/utils/trpc";
 
 type Field = readonly [

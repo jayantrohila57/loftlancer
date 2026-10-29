@@ -4,7 +4,7 @@ import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
-import { ProjectAccessSection } from "@/domain/projects/components/project-access-section";
+import { ProjectAccessSection } from "@/module/projects/projects.project.access.section";
 import { trpc } from "@/utils/trpc";
 
 export function ProjectAccessPage({ slug }: { slug: string }) {

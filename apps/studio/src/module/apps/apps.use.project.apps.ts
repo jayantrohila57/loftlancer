@@ -3,9 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { actionToast } from "@/lib/action-toast";
 import { useEnvironments } from "@/module/environments/environments.use.environments";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 

@@ -13,7 +13,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useDeferredValue, useMemo, useState } from "react";
 import DashboardSection from "@/components/section-dashboard";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { withBasePath } from "@/lib/base-path";
 import { ListTodo, Plus } from "@/lib/icons";
 import { initialsFromLabel } from "@/lib/initials";
@@ -30,6 +29,7 @@ import {
   type TaskPriority,
   type TaskStatus,
 } from "@/module/tasks/tasks.meta";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { FieldSelect } from "@/shared/shared.field-select";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";

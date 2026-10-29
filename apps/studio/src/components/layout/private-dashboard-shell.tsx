@@ -6,9 +6,9 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ActiveOrganizationProvider } from "@/components/org/active-organization-context";
 import { OrgOnboardingGate } from "@/components/org/org-onboarding-gate";
-import { UserMenu } from "@/domain/auth/components/user-menu";
-import { NotificationBell } from "@/domain/notifications/components/notification-bell";
-import { NotificationPoller } from "@/domain/notifications/components/notification-poller";
+import { UserMenu } from "@/module/auth/auth.user.menu";
+import { NotificationBell } from "@/module/notifications/notifications.notification.bell";
+import { NotificationPoller } from "@/module/notifications/notifications.notification.poller";
 
 export function PrivateDashboardShell({
   children,

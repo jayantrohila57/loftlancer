@@ -3,8 +3,8 @@
 import { resolveAuthAppOrigin, studioHomeUrl } from "@loftlancer/ui/auth-links";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useSession } from "@/domain/auth/lib/auth-actions";
 import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/module/auth/auth.auth.actions";
 import {
   classifyInvitationAccessFailure,
   getInvitationSignInUrl,

@@ -11,9 +11,9 @@ import { useEffect, useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
 import { SettingsRow } from "@/components/patterns/settings-layout";
-import { Can } from "@/domain/permissions/components/can";
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
+import { Can } from "@/shared/permissions/shared.permissions.can";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 

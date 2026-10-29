@@ -4,7 +4,7 @@ import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { routes } from "@/utils/navigation";
 
 export function SupportFrame({ children }: { children: ReactNode }) {

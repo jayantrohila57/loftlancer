@@ -12,11 +12,11 @@ import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { RoleBadge, StatusBadge } from "@/components/patterns/status-badge";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import {
   isPendingInvitationStatus,
   type OrganizationInvitationRow,
 } from "@/lib/organization-invitations";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 
 const columnHelper = legacyCreateColumnHelper<OrganizationInvitationRow>();
 

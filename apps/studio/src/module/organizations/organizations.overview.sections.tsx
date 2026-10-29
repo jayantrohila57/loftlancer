@@ -8,11 +8,11 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
-import { orgHubSectionActions } from "@/domain/permissions/org-section-actions";
-import { ProjectsTableView } from "@/domain/projects/components/projects-table-view";
 import { useOrgQueryEnabled } from "@/hooks/use-org-query-enabled";
 import { useOrganizationBySlug } from "@/module/organizations/organizations.use.organization.by.slug";
+import { ProjectsTableView } from "@/module/projects/projects.projects.table.view";
+import { orgHubSectionActions } from "@/shared/permissions/shared.permissions.org.section.actions";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 
