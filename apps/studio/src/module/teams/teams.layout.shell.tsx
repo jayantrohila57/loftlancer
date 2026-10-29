@@ -7,8 +7,8 @@ import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { ErrorState } from "@/components/patterns/error-state";
-import { teamDisplayName } from "@/domain/organizations/lib/team-display-name";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
+import { teamDisplayName } from "@/module/organizations/organizations.team.display.name";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 

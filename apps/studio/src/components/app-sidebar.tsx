@@ -53,7 +53,6 @@ import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
 import { useOrganizationFavorites } from "@/components/org/use-organization-favorites";
 import { useSidebarNavigator } from "@/components/sidebar/use-sidebar-navigator";
 import { SidebarProjectsGroup } from "@/components/sidebar-projects-group";
-import { teamDisplayName } from "@/domain/organizations/lib/team-display-name";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useProjects } from "@/domain/projects/hooks/use-projects";
 import { accountSettingsUrl } from "@/lib/account-url";
@@ -61,6 +60,7 @@ import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
 import { withBasePath } from "@/lib/base-path";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
 import { isSidebarRouteActive } from "@/lib/sidebar-project-nav";
+import { teamDisplayName } from "@/module/organizations/organizations.team.display.name";
 import { platformNavHref, routes } from "@/utils/navigation";
 
 const accountSettingsHref = accountSettingsUrl();

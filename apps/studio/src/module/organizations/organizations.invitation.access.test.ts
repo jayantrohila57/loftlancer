@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import {
   classifyInvitationAccessFailure,
   getInvitationSignInUrl,
-} from "./invitation-access";
+} from "./organizations.invitation.access";
 
 describe("invitation access", () => {
   it("identifies wrong-account and verification failures", () => {

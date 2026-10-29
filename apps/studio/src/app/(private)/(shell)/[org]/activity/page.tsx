@@ -2,10 +2,10 @@ import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import AuditLogs from "@/domain/audit/components/audit-logs";
-import { OrganizationsFeatureGate } from "@/domain/organizations/components/organizations-feature-gate";
 import { TimelinePageClient } from "@/domain/timeline/components/timeline-page-client";
 import { isActionsAuditEnabledOnServer } from "@/lib/actions-audit-enabled";
 import { guardOrganizationSlugPage } from "@/lib/page-guards";
+import { OrganizationsFeatureGate } from "@/module/organizations/organizations.organizations.feature.gate";
 import { OrganizationSectionPage } from "@/module/organizations/organizations.section";
 import { routes } from "@/utils/navigation";
 

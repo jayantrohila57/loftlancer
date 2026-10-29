@@ -3,8 +3,8 @@
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { appIcons } from "@/lib/icons";
-import { OrganizationsListContent } from "./organizations-list-content";
-import { OrganizationsListBodySkeleton } from "./skeletons";
+import { OrganizationsListContent } from "@/module/organizations/organizations.organizations.list.content";
+import { OrganizationsListBodySkeleton } from "@/module/organizations/organizations.skeletons";
 
 export function OrganizationsList() {
   const { orgs, loading, initialLoadDone } = useActiveOrganization();

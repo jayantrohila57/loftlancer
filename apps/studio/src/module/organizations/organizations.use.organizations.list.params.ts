@@ -7,7 +7,7 @@ import { useDebouncedUrlParam } from "@/hooks/use-debounced-url-param";
 import type {
   OrganizationsSort,
   OrganizationsTypeFilter,
-} from "../lib/filter-organizations";
+} from "@/module/organizations/organizations.filter.organizations";
 
 function parseType(value: string | null): OrganizationsTypeFilter {
   if (value === "personal" || value === "team") return value;

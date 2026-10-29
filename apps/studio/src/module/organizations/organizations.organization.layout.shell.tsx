@@ -4,13 +4,13 @@ import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 import { BASE_PATH } from "@/lib/base-path";
+import { OrganizationIdentityProvider } from "@/module/organizations/organizations.organization.identity.context";
+import { isOrganizationShellRoute } from "@/module/organizations/organizations.organization.layout";
 import {
   type OrganizationDetail,
   useOrganizationBySlug,
-} from "../hooks/use-organization-by-slug";
-import { useOrganizationTabs } from "../hooks/use-organization-tabs";
-import { isOrganizationShellRoute } from "../lib/organization-layout";
-import { OrganizationIdentityProvider } from "./organization-identity-context";
+} from "@/module/organizations/organizations.use.organization.by.slug";
+import { useOrganizationTabs } from "@/module/organizations/organizations.use.organization.tabs";
 
 /** Stable organization identity and navigation shared by every org route. */
 export function OrganizationLayoutShell({

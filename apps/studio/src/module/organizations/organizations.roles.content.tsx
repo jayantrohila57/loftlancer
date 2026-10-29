@@ -4,11 +4,11 @@ import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-sect
 import type { ReactNode } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { ErrorState } from "@/components/patterns/error-state";
-import { OrganizationPermissionsMatrix } from "@/domain/organizations/components/organization-permissions-matrix";
-import { OrganizationRoleCards } from "@/domain/organizations/components/organization-role-cards";
-import { useOrganizationBySlug } from "@/domain/organizations/hooks/use-organization-by-slug";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { orgSectionAction } from "@/domain/permissions/org-section-actions";
+import { OrganizationPermissionsMatrix } from "@/module/organizations/organizations.organization.permissions.matrix";
+import { OrganizationRoleCards } from "@/module/organizations/organizations.organization.role.cards";
+import { useOrganizationBySlug } from "@/module/organizations/organizations.use.organization.by.slug";
 
 export function OrganizationRolesPage({ slug }: { slug: string }) {
   const { organization, status, error } = useOrganizationBySlug(slug);

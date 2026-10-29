@@ -20,9 +20,9 @@ import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useOrgQueryEnabled } from "@/hooks/use-org-query-enabled";
 import { formatDateTime } from "@/lib/format";
 import { appIcons } from "@/lib/icons";
+import { OrganizationCard } from "@/module/organizations/organizations.organization.card";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { OrganizationCard } from "./organization-card";
 
 type InvitationItem =
   inferRouterOutputs<StudioRouter>["organizations"]["listMyInvitations"]["items"][number];
