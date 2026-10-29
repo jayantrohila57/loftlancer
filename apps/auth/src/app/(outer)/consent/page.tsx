@@ -1,17 +1,8 @@
-import { Button } from "@loftlancer/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardPanel,
-  CardTitle,
-} from "@loftlancer/ui/card";
-import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ConsentScreen } from "@/components/consent-screen";
 import { authAppReturnTo } from "@/lib/auth-return-to";
-import { verifyOAuthConsentSearchParams } from "@/lib/oauth-consent-query";
+import { InvalidConsentRequest } from "@/module/authorization/authorization.consent.invalid";
+import { ConsentScreen } from "@/module/authorization/authorization.consent.screen";
+import { verifyOAuthConsentSearchParams } from "@/module/authorization/authorization.consent.service";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -27,25 +18,6 @@ function toUrlSearchParams(resolved: SearchParams): URLSearchParams {
     }
   }
   return params;
-}
-
-function InvalidConsentRequest() {
-  return (
-    <Auth5Panel layout="centered" showTerms={false}>
-      <Card className="w-full border-0 bg-transparent shadow-none before:hidden">
-        <CardHeader>
-          <CardTitle>Authorization request invalid</CardTitle>
-          <CardDescription>
-            This link is missing, expired, or was modified. Start again from the
-            application that sent you here.
-          </CardDescription>
-        </CardHeader>
-        <CardPanel>
-          <Button render={<Link href="/settings" />}>Back to account</Button>
-        </CardPanel>
-      </Card>
-    </Auth5Panel>
-  );
 }
 
 export const metadata: Metadata = { title: "Authorize access" };

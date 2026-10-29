@@ -2,8 +2,8 @@ import { getAppManifest } from "@loftlancer/actions";
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { AppSettingsPage } from "@/domain/apps/components/app-settings-page";
 import { loadProjectPageDataOrNotFound } from "@/lib/page-guards";
+import { AppSettingsPage } from "@/module/apps/apps.app.settings.page";
 
 export const metadata: Metadata = {
   title: "App settings",

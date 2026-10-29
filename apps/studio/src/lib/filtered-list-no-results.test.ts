@@ -17,7 +17,7 @@ test("filtered list no-results empty state has no clear-filters action (issue #6
 });
 
 test("project list content uses the shared no-results empty", () => {
-  for (const rel of ["domain/projects/components/projects-list-content.tsx"]) {
+  for (const rel of ["module/projects/projects.projects.list.content.tsx"]) {
     const source = readFileSync(join(root, rel), "utf8");
     assert.match(source, /FilteredListNoResultsEmpty/);
     assert.doesNotMatch(source, /actionLabel="Clear filters"/);
@@ -28,12 +28,12 @@ test("organization directory keeps cards and uses shared search and sort control
   const list = readFileSync(
     join(
       root,
-      "domain/organizations/components/organizations-list-content.tsx",
+      "module/organizations/organizations.organizations.list.content.tsx",
     ),
     "utf8",
   );
   const card = readFileSync(
-    join(root, "domain/organizations/components/organization-card.tsx"),
+    join(root, "module/organizations/organizations.organization.card.tsx"),
     "utf8",
   );
   assert.match(list, /OrganizationCard/);

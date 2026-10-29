@@ -1,9 +1,9 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import ProjectDetailPage from "@/domain/projects/components/project-detail-page";
 import { loadProjectPageDataOrNotFound } from "@/lib/page-guards";
 import { NOT_FOUND_DOCUMENT_TITLE } from "@/lib/siteConfig";
+import { ProjectOverviewView } from "@/module/projects/projects.overview.view";
 import ProjectDetailLoading from "./loading";
 
 interface ProjectPageProps {
@@ -35,7 +35,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <HydrationBoundary state={data.dehydratedState}>
       <Suspense fallback={<ProjectDetailLoading />}>
-        <ProjectDetailPage slug={slug} />
+        <ProjectOverviewView slug={slug} />
       </Suspense>
     </HydrationBoundary>
   );

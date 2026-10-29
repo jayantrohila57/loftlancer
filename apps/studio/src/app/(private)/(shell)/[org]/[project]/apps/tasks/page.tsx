@@ -1,11 +1,9 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { AppGate } from "@/domain/apps/components/app-gate";
-import {
-  TasksPage,
-  TasksPageSkeleton,
-} from "@/domain/tasks/components/tasks-page";
 import { loadProjectPageDataOrNotFound } from "@/lib/page-guards";
+import { AppGate } from "@/module/apps/apps.app.gate";
+import { TasksPage } from "@/module/tasks/tasks.list.content";
+import { TasksPageSkeleton } from "@/module/tasks/tasks.list.skeleton";
 
 export const metadata: Metadata = {
   title: "Tasks",

@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
+import type { AppIconName } from "@/lib/icons";
 import type {
   ProjectsSort,
   ProjectsStatusFilter,
   ProjectsVisibilityFilter,
-} from "@/domain/projects/lib/filter-projects";
-import type { AppIconName } from "@/lib/icons";
+} from "@/module/projects/projects.filter.projects";
 
 export type FacetOptionWithIcon<T extends string> = {
   value: T;

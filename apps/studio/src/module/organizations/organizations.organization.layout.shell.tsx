@@ -1,0 +1,76 @@
+"use client";
+
+import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
+import Link from "next/link";
+import { notFound, usePathname } from "next/navigation";
+import { BASE_PATH } from "@/lib/base-path";
+import { OrganizationIdentityProvider } from "@/module/organizations/organizations.organization.identity.context";
+import { isOrganizationShellRoute } from "@/module/organizations/organizations.organization.layout";
+import {
+  type OrganizationDetail,
+  useOrganizationBySlug,
+} from "@/module/organizations/organizations.use.organization.by.slug";
+import { useOrganizationTabs } from "@/module/organizations/organizations.use.organization.tabs";
+
+/** Stable organization identity and navigation shared by every org route. */
+export function OrganizationLayoutShell({
+  slug,
+  initialOrganization,
+  children,
+}: {
+  slug: string;
+  initialOrganization: Pick<OrganizationDetail, "id" | "name" | "slug">;
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname() ?? "";
+  const showFrame = isOrganizationShellRoute(pathname, slug, BASE_PATH);
+
+  return (
+    <OrganizationIdentityProvider organization={initialOrganization}>
+      {showFrame ? (
+        <OrganizationFrame
+          key={slug}
+          slug={slug}
+          initialOrganization={initialOrganization}
+        >
+          {children}
+        </OrganizationFrame>
+      ) : (
+        children
+      )}
+    </OrganizationIdentityProvider>
+  );
+}
+
+function OrganizationFrame({
+  slug,
+  initialOrganization,
+  children,
+}: {
+  slug: string;
+  initialOrganization: Pick<OrganizationDetail, "id" | "name" | "slug">;
+  children: React.ReactNode;
+}) {
+  const { organization, listItem, status } = useOrganizationBySlug(
+    slug,
+    initialOrganization,
+  );
+  if (status === "not-found") notFound();
+  const { tabs, activeTab } = useOrganizationTabs(slug);
+  const pathname = usePathname() ?? "";
+  const name = organization?.name ?? listItem?.name ?? slug;
+  return (
+    <SettingsFrame
+      LinkComponent={Link as never}
+      back={false}
+      title={name}
+      tabs={tabs.map((tab) => ({
+        href: tab.href ?? "#",
+        label: tab.label,
+        active: tab.value === activeTab || pathname === tab.href,
+      }))}
+    >
+      {children}
+    </SettingsFrame>
+  );
+}

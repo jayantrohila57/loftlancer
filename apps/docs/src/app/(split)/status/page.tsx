@@ -1,6 +1,5 @@
-import { MarketingPage } from "@/components/marketing-page";
-import { StatusBoard } from "@/components/status-board";
 import { pageMetadata } from "@/lib/seo";
+import { StatusView } from "@/module/status/status.view";
 
 export const metadata = pageMetadata({
   title: "Status",
@@ -11,12 +10,5 @@ export const metadata = pageMetadata({
 
 /** loftlancer.com/status (#369): Better Stack monitors on our own domain. */
 export default function StatusPage() {
-  return (
-    <MarketingPage
-      title="Status"
-      description="Live checks of our monitored services, refreshed every minute."
-    >
-      <StatusBoard />
-    </MarketingPage>
-  );
+  return <StatusView />;
 }

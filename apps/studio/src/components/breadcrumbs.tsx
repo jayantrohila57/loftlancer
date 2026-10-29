@@ -4,13 +4,13 @@ import { BreadcrumbTrail } from "@loftlancer/ui/patterns/breadcrumb-trail";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
-import { useProjects } from "@/domain/projects/hooks/use-projects";
 import {
   type BreadcrumbCrumb,
   generateBreadcrumbs,
   resolveBreadcrumbLabel,
 } from "@/lib/breadcrumbs";
 import { useRouteNotFoundDepth } from "@/lib/route-not-found-store";
+import { useProjects } from "@/module/projects/projects.use.projects";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 

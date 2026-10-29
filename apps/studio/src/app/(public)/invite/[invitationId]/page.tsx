@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/siteConfig";
 
 const InvitationLandingPage = dynamic(
   () =>
-    import("@/domain/organizations/components/invitation-landing-page").then(
+    import("@/module/organizations/organizations.invitation.landing.page").then(
       (module) => module.InvitationLandingPage,
     ),
   {

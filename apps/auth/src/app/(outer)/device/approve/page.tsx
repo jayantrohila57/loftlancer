@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { DeviceApprovalScreen } from "@/components/device-approval-screen";
-import { formatDeviceUserCode } from "@/lib/format-user-code";
+import { DeviceApprovalScreen } from "@/module/authorization/authorization.device.approval";
+import { formatDeviceUserCode } from "@/module/authorization/authorization.device.utils";
 
 export const metadata: Metadata = { title: "Approve device" };
 

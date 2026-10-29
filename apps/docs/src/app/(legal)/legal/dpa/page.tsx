@@ -1,5 +1,5 @@
-import { LegalPage } from "@/components/legal-page";
 import { pageMetadata } from "@/lib/seo";
+import DpaPage from "@/module/legal/legal.dpa.view";
 
 export const metadata = {
   ...pageMetadata({
@@ -12,14 +12,6 @@ export const metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function DpaPage() {
-  return (
-    <LegalPage title="Data processing agreement (DPA)">
-      <p>
-        Data processing terms for enterprise customers will be published here.
-        Self-hosted operators remain responsible for their own data processing
-        agreement obligations.
-      </p>
-    </LegalPage>
-  );
+export default function DpaPageRoute() {
+  return <DpaPage />;
 }
