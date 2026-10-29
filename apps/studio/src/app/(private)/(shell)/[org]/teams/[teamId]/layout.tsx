@@ -1,5 +1,7 @@
-import { TeamLayoutShell } from "@/domain/organizations/components/team-layout-shell";
+import { HydrationBoundary } from "@tanstack/react-query";
 import { guardOrganizationSlugPage } from "@/lib/page-guards";
+import { TeamLayoutShell } from "@/module/teams/teams.layout.shell";
+import { hydrateTeamOverview } from "@/module/teams/teams.overview.service";
 
 export default async function TeamLayout({
   children,
@@ -9,10 +11,16 @@ export default async function TeamLayout({
   params: Promise<{ org: string; teamId: string }>;
 }) {
   const { org, teamId } = await params;
-  await guardOrganizationSlugPage(org, "teams");
+  const { session, org: organization } = await guardOrganizationSlugPage(
+    org,
+    "teams",
+  );
+  const state = await hydrateTeamOverview(session, organization.id, teamId);
   return (
-    <TeamLayoutShell slug={org} teamId={teamId}>
-      {children}
-    </TeamLayoutShell>
+    <HydrationBoundary state={state}>
+      <TeamLayoutShell slug={org} teamId={teamId}>
+        {children}
+      </TeamLayoutShell>
+    </HydrationBoundary>
   );
 }

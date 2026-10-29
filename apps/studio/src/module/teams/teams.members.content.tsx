@@ -192,16 +192,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
   ];
 
   return (
-    <section className="min-w-0 space-y-4">
-      <div>
-        <h2 className="font-semibold text-xl tracking-tight">Members</h2>
-        <p className="mt-1 text-muted-foreground text-sm">
-          Add existing organization members here. Members gain access to
-          projects assigned to this team based on each project’s access rules.
-          Use Team invitations for people who have not joined the organization
-          yet.
-        </p>
-      </div>
+    <>
       {members.isError || availableMembers.isError ? (
         <ErrorState
           title="Could not load team members"
@@ -260,6 +251,6 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
         </>
       )}
       {ConfirmDialog}
-    </section>
+    </>
   );
 }
