@@ -16,11 +16,11 @@ import {
   OAuthDecisionButtons,
   OAuthScopeCard,
 } from "@/components/oauth-scope-card";
-import { SegmentedCodeInput } from "@/components/segmented-code-input";
 import { authClient } from "@/lib/auth-client";
 import { authAppReturnTo } from "@/lib/auth-return-to";
 import { withBasePath } from "@/lib/base-path";
-import { formatDeviceUserCode } from "@/lib/format-user-code";
+import { SegmentedCodeInput } from "@/module/authorization/authorization.device.code-input";
+import { formatDeviceUserCode } from "@/module/authorization/authorization.device.utils";
 
 type DeviceRequest = {
   client_id?: string;

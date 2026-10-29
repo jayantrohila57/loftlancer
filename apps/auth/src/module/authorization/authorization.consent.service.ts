@@ -1,3 +1,5 @@
+import "server-only";
+
 import { verifyOAuthQueryParams } from "@better-auth/oauth-provider";
 import { platformAuth } from "@/lib/platform-auth";
 

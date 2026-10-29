@@ -1,15 +1,8 @@
-import { createRelativeLink } from "fumadocs-ui/mdx";
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-} from "fumadocs-ui/page";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getMDXComponents } from "@/components/mdx";
 import { pageMetadata } from "@/lib/seo";
 import { source } from "@/lib/source";
+import { DocumentationPageView } from "@/module/documentation/documentation.page.view";
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;
@@ -20,20 +13,7 @@ export default async function Page(props: PageProps) {
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
-  const MDX = page.data.body;
-  const components = getMDXComponents({
-    a: createRelativeLink(source, page),
-  });
-
-  return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
-      <DocsBody>
-        <MDX components={components} />
-      </DocsBody>
-    </DocsPage>
-  );
+  return <DocumentationPageView page={page} />;
 }
 
 export async function generateStaticParams() {

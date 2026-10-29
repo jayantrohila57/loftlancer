@@ -13,18 +13,16 @@ import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
 import { SignInOptions } from "@loftlancer/ui/patterns/sign-in-options";
 import type { Route } from "next";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { SegmentedCodeInput } from "@/components/segmented-code-input";
 import { authClient } from "@/lib/auth-client";
 import { authAppReturnTo } from "@/lib/auth-return-to";
 import { withBasePath } from "@/lib/base-path";
-import { formatDeviceUserCode } from "@/lib/format-user-code";
+import { SegmentedCodeInput } from "@/module/authorization/authorization.device.code-input";
+import { formatDeviceUserCode } from "@/module/authorization/authorization.device.utils";
 
-export function DeviceCodeForm() {
+export function DeviceCodeForm({ initialCode }: { initialCode: string }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const initialCode = searchParams.get("user_code") ?? "";
   const [userCode, setUserCode] = useState(initialCode);
   const [error, setError] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
