@@ -27,10 +27,10 @@ import {
   sortOrganizationInvitations,
 } from "@/lib/organization-invitations";
 import { toast } from "@/lib/toast";
+import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
 import { OrganizationSectionPage } from "@/module/organizations/organizations.section";
+import { useOrganizationBySlug } from "@/module/organizations/organizations.use.organization.by.slug";
 import { trpc } from "@/utils/trpc";
-import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
-import { BulkInviteDialog } from "./bulk-invite-dialog";
 
 export function OrganizationInvitationsPage({ slug }: { slug: string }) {
   const queryClient = useQueryClient();

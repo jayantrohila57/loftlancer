@@ -7,8 +7,8 @@ import type { ReactNode } from "react";
 import { useConfirm } from "@/hooks/use-confirm";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/lib/toast";
+import { useInvitationLanding } from "@/module/organizations/organizations.use.invitation.landing";
 import { routes } from "@/utils/navigation";
-import { useInvitationLanding } from "../hooks/use-invitation-landing";
 
 export function InvitationLandingPage({
   invitationId,

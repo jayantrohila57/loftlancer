@@ -8,9 +8,9 @@ import { useMemo, useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { useOrganizationFavorites } from "@/components/org/use-organization-favorites";
 import { appIcons } from "@/lib/icons";
+import { OrganizationCard } from "@/module/organizations/organizations.organization.card";
+import { OrganizationsListBodySkeleton } from "@/module/organizations/organizations.skeletons";
 import { trpc } from "@/utils/trpc";
-import { OrganizationCard } from "./organization-card";
-import { OrganizationsListBodySkeleton } from "./skeletons";
 
 export function OrganizationsListContent() {
   const { orgs, activeOrganizationId } = useActiveOrganization();

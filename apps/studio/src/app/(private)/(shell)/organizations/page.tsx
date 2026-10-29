@@ -3,9 +3,6 @@ import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
-import { OrganizationsFeatureGate } from "@/domain/organizations/components/organizations-feature-gate";
-import { OrganizationsPageClient } from "@/domain/organizations/components/organizations-page-client";
-import { OrganizationsPageSkeleton } from "@/domain/organizations/components/skeletons";
 import { PermissionGate } from "@/domain/permissions/components/permission-gate";
 import {
   guardAuthenticatedPage,
@@ -14,6 +11,9 @@ import {
   guardPageAction,
 } from "@/lib/page-guards";
 import { siteConfig } from "@/lib/siteConfig";
+import { OrganizationsFeatureGate } from "@/module/organizations/organizations.organizations.feature.gate";
+import { OrganizationsPageClient } from "@/module/organizations/organizations.organizations.page.client";
+import { OrganizationsPageSkeleton } from "@/module/organizations/organizations.skeletons";
 import { routes } from "@/utils/navigation";
 
 export const metadata: Metadata = {

@@ -3,7 +3,7 @@
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
 import type { OrgListItem } from "@/components/org/active-organization-context";
-import { createOrganizationsTableColumns } from "./organizations-table-columns";
+import { createOrganizationsTableColumns } from "@/module/organizations/organizations.organizations.table.columns";
 
 export function OrganizationsTableView({
   orgs,

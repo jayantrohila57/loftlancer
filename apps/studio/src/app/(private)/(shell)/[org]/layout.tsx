@@ -1,10 +1,10 @@
 import { isReservedOrgSlug } from "@loftlancer/ui/studio-routes";
 import { notFound } from "next/navigation";
-import { OrganizationLayoutShell } from "@/domain/organizations/components/organization-layout-shell";
 import {
   guardOrganizationSlugMembership,
   preflightOrgSubtree,
 } from "@/lib/page-guards";
+import { OrganizationLayoutShell } from "@/module/organizations/organizations.organization.layout.shell";
 
 /**
  * ORG SCOPE (/studio/[org]). Members only (the guard 404s otherwise). The

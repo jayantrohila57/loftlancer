@@ -74,9 +74,9 @@ import {
   resendOrganizationInvitation,
 } from "@/lib/organization-invitations";
 import { toast } from "@/lib/toast";
+import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { BulkInviteDialog } from "./bulk-invite-dialog";
 
 type MemberRow = {
   id: string;

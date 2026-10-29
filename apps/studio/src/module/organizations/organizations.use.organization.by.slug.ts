@@ -8,7 +8,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { isBenignClientError } from "@/lib/errors/client-errors";
 import { countPendingInvitations } from "@/lib/organization-invitations";
-import { useOrganizationIdentity } from "../components/organization-identity-context";
+import { useOrganizationIdentity } from "@/module/organizations/organizations.organization.identity.context";
 
 export type OrganizationDetail = {
   id: string;

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { teamDisplayName } from "./team-display-name";
+import { teamDisplayName } from "./organizations.team.display.name";
 
 test("marks a team as default when its name matches its organization", () => {
   assert.equal(teamDisplayName("Lucsum", "Lucsum"), "Lucsum (Default)");

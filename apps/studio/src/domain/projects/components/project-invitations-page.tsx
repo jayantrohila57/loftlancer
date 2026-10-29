@@ -13,10 +13,10 @@ import {
 } from "@/components/org/invitation-list-controls";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { ErrorState } from "@/components/patterns/error-state";
-import { BulkInviteDialog } from "@/domain/organizations/components/bulk-invite-dialog";
 import { Can } from "@/domain/permissions/components/can";
 import { appIcons } from "@/lib/icons";
 import { toast } from "@/lib/toast";
+import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
 import { trpc } from "@/utils/trpc";
 
 export function ProjectInvitationsPage({ slug }: { slug: string }) {

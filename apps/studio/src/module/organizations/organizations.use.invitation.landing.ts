@@ -5,11 +5,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useSession } from "@/domain/auth/lib/auth-actions";
 import { authClient } from "@/lib/auth-client";
-import { trpc } from "@/utils/trpc";
 import {
   classifyInvitationAccessFailure,
   getInvitationSignInUrl,
-} from "../lib/invitation-access";
+} from "@/module/organizations/organizations.invitation.access";
+import { trpc } from "@/utils/trpc";
 
 export function useInvitationLanding(invitationId: string) {
   const queryClient = useQueryClient();

@@ -12,7 +12,7 @@ import {
   countOrganizationsByType,
   type OrganizationsSort,
   type OrganizationsTypeFilter,
-} from "../lib/filter-organizations";
+} from "@/module/organizations/organizations.filter.organizations";
 
 type OrganizationsListFiltersBarProps = {
   orgs: OrgListItem[];

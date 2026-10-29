@@ -6,10 +6,10 @@ import { useCallback, useState } from "react";
 import { PageHeaderActionButton } from "@/components/layout/app-layout";
 import DashboardSection from "@/components/section-dashboard";
 import { Can } from "@/domain/permissions/components/can";
+import { CreateOrganizationSheet } from "@/module/organizations/organizations.create.organization.sheet";
+import { OrganizationsList } from "@/module/organizations/organizations.organizations.list";
+import { OrganizationsListInvitations } from "@/module/organizations/organizations.organizations.list.invitations";
 import { routes } from "@/utils/navigation";
-import { CreateOrganizationSheet } from "./create-organization-sheet";
-import { OrganizationsList } from "./organizations-list";
-import { OrganizationsListInvitations } from "./organizations-list-invitations";
 
 /**
  * Organization directory. `/new` opens the creation sheet; closing it returns

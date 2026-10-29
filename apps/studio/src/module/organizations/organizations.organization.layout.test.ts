@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { isOrganizationShellRoute } from "./organization-layout";
+import { isOrganizationShellRoute } from "./organizations.organization.layout";
 
 describe("isOrganizationShellRoute", () => {
   it("keeps the organization shell for the organization and its sections", () => {
