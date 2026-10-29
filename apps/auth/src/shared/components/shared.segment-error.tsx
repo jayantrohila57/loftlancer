@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { ErrorState } from "@/components/patterns/error-state";
 import { getClientErrorMessage } from "@/lib/errors/client-errors";
+import { ErrorState } from "@/shared/components/shared.error-state";
 
 interface SegmentErrorProps {
   error: Error & { digest?: string };

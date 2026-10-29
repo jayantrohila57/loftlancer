@@ -1,6 +1,6 @@
 "use client";
 
-import { SegmentError } from "@/components/patterns/segment-error";
+import { SegmentError } from "@/shared/components/shared.segment-error";
 
 export default function SettingsSegmentError({
   error,

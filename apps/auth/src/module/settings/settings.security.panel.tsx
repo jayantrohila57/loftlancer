@@ -1,31 +1,25 @@
-"use client";
-
 import { Button } from "@loftlancer/ui/button";
 import type { Route } from "next";
 import Link from "next/link";
-import {
-  SettingsPanel,
-  SettingsRow,
-} from "@/components/patterns/settings-layout";
-import { useSession } from "@/domain/auth/lib/auth-actions";
 import { sessionDeviceLabel } from "@/lib/session-device";
+import { SettingsPanel, SettingsRow } from "@/module/settings/settings.layout";
 
-export function SecuritySettingsPanel() {
-  const { data: session } = useSession();
-  const user = session?.user;
-  const current = session?.session;
-
-  if (!user) {
-    return null;
-  }
-
+export function SecuritySettingsPanel({
+  email,
+  userAgent,
+  ipAddress,
+}: {
+  email: string;
+  userAgent: string | null;
+  ipAddress: string | null;
+}) {
   return (
     <SettingsPanel>
       <SettingsRow
         label="Sign-in email"
         description="Used for authentication and account recovery."
       >
-        <span className="text-sm">{user.email}</span>
+        <span className="text-sm">{email}</span>
       </SettingsRow>
       <SettingsRow
         label="This device"
@@ -33,10 +27,10 @@ export function SecuritySettingsPanel() {
       >
         <span className="flex min-w-0 flex-col gap-0.5">
           <span className="truncate text-sm">
-            {sessionDeviceLabel(current?.userAgent)}
+            {sessionDeviceLabel(userAgent)}
           </span>
           <span className="text-muted-foreground text-xs tabular-nums">
-            {current?.ipAddress ?? "IP unknown"}
+            {ipAddress ?? "IP unknown"}
           </span>
         </span>
       </SettingsRow>

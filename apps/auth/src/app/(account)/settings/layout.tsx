@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { AccountSettingsFrame } from "@/domain/settings/components/account-settings-frame";
+import { AccountSettingsFrame } from "@/module/settings/settings.frame";
 
 /** Keep account identity and settings navigation mounted across section routes. */
 export default function AccountSettingsLayout({

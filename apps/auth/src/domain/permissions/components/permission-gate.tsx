@@ -2,7 +2,7 @@
 
 import type { ActionName } from "@loftlancer/actions";
 import { Spinner } from "@loftlancer/ui/spinner";
-import { ErrorState } from "@/components/patterns/error-state";
+import { ErrorState } from "@/shared/components/shared.error-state";
 import { useCan } from "../hooks/use-permissions";
 
 type PermissionGateProps = {

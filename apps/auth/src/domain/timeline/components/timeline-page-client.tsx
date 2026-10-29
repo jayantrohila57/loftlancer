@@ -17,8 +17,8 @@ import {
 import { routes } from "@loftlancer/ui/studio-routes";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { ErrorState } from "@/components/patterns/error-state";
 import { studioDashboardPath } from "@/lib/studio-url";
+import { ErrorState } from "@/shared/components/shared.error-state";
 import { trpc } from "@/utils/trpc";
 
 type TimelinePageClientProps = {
