@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import type { PageHeaderTab } from "@/components/layout/page-header";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { isActionsAuditEnabledOnClient } from "@/lib/actions-audit-enabled";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import type { OrgSection } from "@/utils/navigation";
 import { routes } from "@/utils/navigation";
 

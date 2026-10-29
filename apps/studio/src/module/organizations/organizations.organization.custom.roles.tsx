@@ -10,9 +10,9 @@ import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Can } from "@/domain/permissions/components/can";
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
+import { Can } from "@/shared/permissions/shared.permissions.can";
 import { trpc } from "@/utils/trpc";
 
 export function OrganizationCustomRoles() {

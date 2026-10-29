@@ -55,8 +55,6 @@ import {
   SettingsSectionHeader,
 } from "@/components/patterns/settings-layout";
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
-import { useSession } from "@/domain/auth/lib/auth-actions";
-import { useNotificationMutations } from "@/domain/notifications/hooks/use-notifications";
 import { authClient, MEMBER_PAGE_LIMIT } from "@/lib/auth-client";
 import { isOrganizationProfileEditDirty } from "@/lib/form-dirty";
 import { invalidateAfterOrganizationChange } from "@/lib/invalidate-org-queries";
@@ -74,6 +72,8 @@ import {
   resendOrganizationInvitation,
 } from "@/lib/organization-invitations";
 import { toast } from "@/lib/toast";
+import { useSession } from "@/module/auth/auth.auth.actions";
+import { useNotificationMutations } from "@/module/notifications/notifications.use.notifications";
 import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";

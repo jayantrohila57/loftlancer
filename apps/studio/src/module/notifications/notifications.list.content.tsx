@@ -8,18 +8,18 @@ import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMemo, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
+import { accountSettingsUrl } from "@/lib/account-url";
+import { appIcons } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 import {
   NotificationListItem,
   type NotificationListItemData,
-} from "@/domain/notifications/components/notification-list-item";
+} from "@/module/notifications/notifications.notification.list.item";
 import {
   useNotificationMutations,
   useNotificationsList,
   useNotificationsUnreadCount,
-} from "@/domain/notifications/hooks/use-notifications";
-import { accountSettingsUrl } from "@/lib/account-url";
-import { appIcons } from "@/lib/icons";
-import { cn } from "@/lib/utils";
+} from "@/module/notifications/notifications.use.notifications";
 
 const LIST_MIN_H = "min-h-[22rem]";
 

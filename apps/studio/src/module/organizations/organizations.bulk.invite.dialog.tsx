@@ -19,9 +19,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { GuardedDialog } from "@/components/patterns/guarded-dialog";
-import { useSession } from "@/domain/auth/lib/auth-actions";
-import { useNotificationMutations } from "@/domain/notifications/hooks/use-notifications";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { authClient } from "@/lib/auth-client";
 import {
   assignableInviteRoles,
@@ -33,6 +30,9 @@ import { isNotificationsEnabledOnClient } from "@/lib/notifications-enabled";
 import { captureEvent, STUDIO_EVENTS } from "@/lib/posthog";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/module/auth/auth.auth.actions";
+import { useNotificationMutations } from "@/module/notifications/notifications.use.notifications";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { trpc } from "@/utils/trpc";
 
 const STATUS_LABEL: Record<ParsedInviteEmail["status"], string | null> = {

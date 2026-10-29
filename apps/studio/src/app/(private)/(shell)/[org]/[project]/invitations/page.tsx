@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { ProjectInvitationsPage } from "@/domain/projects/components/project-invitations-page";
 import { guardPageAction, guardProjectSlugPage } from "@/lib/page-guards";
+import { ProjectInvitationsPage } from "@/module/projects/projects.project.invitations.page";
 
 export const metadata: Metadata = {
   title: "Project invitations",

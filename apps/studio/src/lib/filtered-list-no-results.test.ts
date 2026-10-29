@@ -17,7 +17,7 @@ test("filtered list no-results empty state has no clear-filters action (issue #6
 });
 
 test("project list content uses the shared no-results empty", () => {
-  for (const rel of ["domain/projects/components/projects-list-content.tsx"]) {
+  for (const rel of ["module/projects/projects.projects.list.content.tsx"]) {
     const source = readFileSync(join(root, rel), "utf8");
     assert.match(source, /FilteredListNoResultsEmpty/);
     assert.doesNotMatch(source, /actionLabel="Clear filters"/);

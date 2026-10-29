@@ -12,10 +12,10 @@ import { useState } from "react";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
 import { ErrorState } from "@/components/patterns/error-state";
-import { Can } from "@/domain/permissions/components/can";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "@/lib/toast";
+import { Can } from "@/shared/permissions/shared.permissions.can";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 

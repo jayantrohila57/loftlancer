@@ -5,8 +5,8 @@ import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { toast } from "@/lib/toast";
+import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { trpc } from "@/utils/trpc";
 
 export function OrganizationLifecycleSection() {

@@ -1,6 +1,6 @@
 import { HydrationBoundary } from "@tanstack/react-query";
-import { ProjectLayoutShell } from "@/domain/projects/components/project-layout-shell";
 import { loadProjectPageDataOrNotFound } from "@/lib/page-guards";
+import { ProjectLayoutShell } from "@/module/projects/projects.project.layout.shell";
 
 export default async function ProjectSlugLayout({
   children,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActiveOrganization } from "@/components/org/active-organization-context";
-import { useSession } from "@/domain/auth/lib/auth-actions";
+import { useSession } from "@/module/auth/auth.auth.actions";
 import { useRouteScope } from "@/utils/use-route-scope";
 import { isOrgScopedQueryReady } from "./org-scoped-query-ready";
 

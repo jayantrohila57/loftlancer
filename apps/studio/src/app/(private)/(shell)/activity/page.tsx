@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import DashboardSection from "@/components/section-dashboard";
-import AuditLogs from "@/domain/audit/components/audit-logs";
-import { TimelinePageClient } from "@/domain/timeline/components/timeline-page-client";
 import { isActionsAuditEnabledOnServer } from "@/lib/actions-audit-enabled";
 import { guardAuthenticatedPage, guardPageAction } from "@/lib/page-guards";
+import AuditLogs from "@/module/activity/activity.audit.logs";
+import { TimelinePageClient } from "@/module/activity/activity.timeline.page.client";
 
 export const metadata: Metadata = {
   title: "Activity",

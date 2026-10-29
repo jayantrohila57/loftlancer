@@ -7,7 +7,7 @@ import { ErrorState } from "@/components/patterns/error-state";
 import {
   ProjectOverviewSections,
   ProjectOverviewSectionsSkeleton,
-} from "@/domain/projects/components/project-overview-sections";
+} from "@/module/projects/projects.project.overview.sections";
 import { trpc } from "@/utils/trpc";
 
 interface ProjectDetailPageProps {

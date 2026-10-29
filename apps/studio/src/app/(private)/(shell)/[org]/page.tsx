@@ -3,7 +3,6 @@ import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { PermissionGate } from "@/domain/permissions/components/permission-gate";
 import {
   guardOrganizationSlugMembership,
   guardOrganizationSlugPage,
@@ -12,6 +11,7 @@ import { NOT_FOUND_DOCUMENT_TITLE } from "@/lib/siteConfig";
 import { OrganizationsFeatureGate } from "@/module/organizations/organizations.organizations.feature.gate";
 import { OrganizationOverview } from "@/module/organizations/organizations.overview";
 import { OrganizationDetailPageSkeleton } from "@/module/organizations/organizations.skeletons";
+import { PermissionGate } from "@/shared/permissions/shared.permissions.permission.gate";
 import { routes } from "@/utils/navigation";
 
 interface OrganizationHubPageProps {
