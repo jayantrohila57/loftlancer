@@ -1,5 +1,8 @@
+import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { TeamOverviewPage } from "@/domain/organizations/components/team-overview-page";
+import { guardOrganizationSlugPage } from "@/lib/page-guards";
+import { hydrateTeamOverview } from "@/module/teams/teams.overview.service";
+import { TeamOverviewView } from "@/module/teams/teams.overview.view";
 
 export const metadata: Metadata = {
   title: "Team overview",
@@ -11,6 +14,12 @@ export default async function OrganizationTeamRoute({
 }: {
   params: Promise<{ org: string; teamId: string }>;
 }) {
-  const { teamId } = await params;
-  return <TeamOverviewPage teamId={teamId} />;
+  const { org: slug, teamId } = await params;
+  const { session, org } = await guardOrganizationSlugPage(slug, "teams");
+  const state = await hydrateTeamOverview(session, org.id, teamId);
+  return (
+    <HydrationBoundary state={state}>
+      <TeamOverviewView teamId={teamId} />
+    </HydrationBoundary>
+  );
 }
