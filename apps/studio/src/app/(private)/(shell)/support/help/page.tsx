@@ -1,7 +1,7 @@
 import DashboardSection from "@/components/section-dashboard";
-import { SupportTicketCreateAction } from "@/domain/support/components/support-ticket-create-action";
 import { getSupportArticles } from "@/module/support/support.article.service";
 import { SupportHelpSearch } from "@/module/support/support.help.search";
+import { SupportTicketCreateAction } from "@/module/support/support.ticket.create-action";
 
 export default async function SupportHelpPage() {
   const articles = await getSupportArticles();
