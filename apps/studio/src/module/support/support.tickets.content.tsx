@@ -8,12 +8,12 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import DashboardSection from "@/components/section-dashboard";
+import { CreateSupportTicketSheet } from "@/domain/support/components/create-support-ticket-sheet";
+import { SupportTicketCreateAction } from "@/domain/support/components/support-ticket-create-action";
 import { appIcons } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { CreateSupportTicketSheet } from "./create-support-ticket-sheet";
-import { SupportTicketCreateAction } from "./support-ticket-create-action";
+import type { SupportTickets } from "./support.ticket.service";
 
 type TicketRow = {
   id: string;
@@ -75,8 +75,10 @@ const columns: DataTableColumnDef<TicketRow>[] = [
 
 export function SupportTicketsPage({
   createRoute = false,
+  initialTickets,
 }: {
   createRoute?: boolean;
+  initialTickets: SupportTickets;
 }) {
   const router = useRouter();
   const [createOpen, setCreateOpen] = useState(createRoute);
@@ -107,8 +109,8 @@ export function SupportTicketsPage({
     "updatedAt" | "createdAt" | "ticketNumber" | "priority",
     "asc" | "desc",
   ];
-  const tickets = useQuery(
-    trpc.support.listTickets.queryOptions({
+  const tickets = useQuery({
+    ...trpc.support.listTickets.queryOptions({
       limit: pageSize,
       offset: page * pageSize,
       search: querySearch || undefined,
@@ -118,19 +120,23 @@ export function SupportTicketsPage({
       sortBy,
       sortDir,
     }),
-  );
+    initialData:
+      page === 0 &&
+      !querySearch &&
+      status === "all" &&
+      category === "all" &&
+      priority === "all" &&
+      sort === "updatedAt:desc"
+        ? initialTickets
+        : undefined,
+  });
   const resetPage = (update: () => void) => {
     setPage(0);
     update();
   };
 
   return (
-    <DashboardSection
-      title="Tickets"
-      description="Create and track support requests."
-      back={false}
-      action={<SupportTicketCreateAction>New ticket</SupportTicketCreateAction>}
-    >
+    <>
       <DataTable
         columns={columns}
         data={tickets.data?.items ?? []}
@@ -230,6 +236,6 @@ export function SupportTicketsPage({
         }}
       />
       <CreateSupportTicketSheet open={createOpen} onOpenChange={closeCreate} />
-    </DashboardSection>
+    </>
   );
 }

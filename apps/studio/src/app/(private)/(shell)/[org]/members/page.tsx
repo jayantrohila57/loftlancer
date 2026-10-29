@@ -1,9 +1,9 @@
 import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { OrganizationMembersPage } from "@/domain/organizations/components/organization-members-page";
 import { OrganizationsFeatureGate } from "@/domain/organizations/components/organizations-feature-gate";
 import { guardOrganizationSlugPage } from "@/lib/page-guards";
+import { OrganizationMembersPageView } from "@/module/organizations/organizations.members.view";
 import { routes } from "@/utils/navigation";
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default async function OrganizationMembersRoute({
   await guardOrganizationSlugPage(slug, "members");
   return (
     <OrganizationsFeatureGate>
-      <OrganizationMembersPage slug={slug} />
+      <OrganizationMembersPageView slug={slug} />
     </OrganizationsFeatureGate>
   );
 }

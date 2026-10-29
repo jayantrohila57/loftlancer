@@ -6,21 +6,22 @@ import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
+import { useOrganizationBySlug } from "@/domain/organizations/hooks/use-organization-by-slug";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { orgHubSectionActions } from "@/domain/permissions/org-section-actions";
 import { ProjectsTableView } from "@/domain/projects/components/projects-table-view";
 import { useOrgQueryEnabled } from "@/hooks/use-org-query-enabled";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 
 export function OrganizationOverviewSectionsSkeleton() {
   return <AccordionSectionSkeleton rows={3} />;
 }
 
 export function OrganizationOverviewSections({ slug }: { slug: string }) {
-  const { organization, status } = useOrganizationBySlug(slug);
+  const { organization, status, error, reload } = useOrganizationBySlug(slug);
   const queryEnabled = useOrgQueryEnabled();
   const { allowed, isLoading: permissionLoading } = useCan(
     orgHubSectionActions.projects,
@@ -37,6 +38,18 @@ export function OrganizationOverviewSections({ slug }: { slug: string }) {
     ...trpc.organizations.getBySlug.queryOptions({ slug }),
     enabled: queryEnabled && status === "success" && Boolean(organization?.id),
   });
+
+  if (status === "not-found") notFound();
+
+  if (status === "error") {
+    return (
+      <ErrorState
+        title="Organization unavailable"
+        description={error?.message ?? "Could not load this organization."}
+        onRetry={() => void reload()}
+      />
+    );
+  }
 
   if (status === "loading" || permissionLoading) {
     return <OrganizationOverviewSectionsSkeleton />;

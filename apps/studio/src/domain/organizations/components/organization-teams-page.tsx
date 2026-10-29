@@ -24,11 +24,11 @@ import { Can } from "@/domain/permissions/components/can";
 import { isTeamCreateFormDirty } from "@/lib/form-dirty";
 import { appIcons } from "@/lib/icons";
 import { toast } from "@/lib/toast";
+import { OrganizationSectionPage } from "@/module/organizations/organizations.section";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
 import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
 import { teamDisplayName } from "../lib/team-display-name";
-import { OrganizationSectionPage } from "./organization-section-page";
 
 export function OrganizationTeamsPage({ slug }: { slug: string }) {
   const {

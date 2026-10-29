@@ -3,10 +3,9 @@
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
-import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
-import { OrganizationMemberProfiles } from "./organization-member-profile";
-import { OrganizationSectionPage } from "./organization-section-page";
-import { OrganizationSettingsForm } from "./organization-settings-form";
+import { OrganizationMemberProfiles } from "@/domain/organizations/components/organization-member-profile";
+import { OrganizationSettingsForm } from "@/domain/organizations/components/organization-settings-form";
+import { useOrganizationBySlug } from "@/domain/organizations/hooks/use-organization-by-slug";
 
 export function OrganizationMembersPage({ slug }: { slug: string }) {
   const { organization, status, error, reload } = useOrganizationBySlug(slug);
@@ -20,11 +19,7 @@ export function OrganizationMembersPage({ slug }: { slug: string }) {
       : null;
 
   return (
-    <OrganizationSectionPage
-      slug={slug}
-      title="Members"
-      description="Invite teammates and manage organization roles."
-    >
+    <>
       {status === "error" ? (
         <ErrorState
           title="Could not load organization"
@@ -52,6 +47,6 @@ export function OrganizationMembersPage({ slug }: { slug: string }) {
           ) : null}
         </div>
       )}
-    </OrganizationSectionPage>
+    </>
   );
 }

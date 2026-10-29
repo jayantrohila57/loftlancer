@@ -4,8 +4,8 @@ import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-sect
 import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import DashboardSection from "@/components/section-dashboard";
-import { OrganizationOverviewSectionsSkeleton } from "./organization-overview-sections";
-import { OrganizationSectionPage } from "./organization-section-page";
+import { OrganizationOverviewSectionsSkeleton } from "@/module/organizations/organizations.overview.sections";
+import { OrganizationSectionPage } from "@/module/organizations/organizations.section";
 
 const organizationsPageActionSkeleton = (
   <Skeleton className="size-8 rounded-md sm:h-8 sm:w-auto sm:min-w-[8.5rem]" />
