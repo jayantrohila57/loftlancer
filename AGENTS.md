@@ -31,7 +31,7 @@ This repository uses **`dev`** for integration and **`main`** for production. Al
 | Topic | Document |
 |-------|----------|
 | Monorepo & run locally | [README.md](./README.md) |
-| UI architecture & domains | [UI.md](./UI.md) |
+| UI architecture & modules | [UI.md](./UI.md), [docs/MODULE_ARCHITECTURE.md](./docs/MODULE_ARCHITECTURE.md) |
 | Spacing, coss ui, layout tokens | [docs/DESIGN_SYSTEM.md](./docs/DESIGN_SYSTEM.md) |
 | Roles, actions, audit | [docs/ACTIONS_PERMISSIONS_AUDIT.md](./docs/ACTIONS_PERMISSIONS_AUDIT.md) |
 | Soft deletes | [docs/SOFT_DELETES.md](./docs/SOFT_DELETES.md) |

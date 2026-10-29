@@ -5,11 +5,12 @@ import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { routes } from "@loftlancer/ui/studio-routes";
 import { Switch } from "@loftlancer/ui/switch";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ErrorState } from "@/components/patterns/error-state";
 import { studioDashboardPath } from "@/lib/studio-url";
 import { toast } from "@/lib/toast";
+import { ErrorState } from "@/shared/components/shared.error-state";
 import { trpc } from "@/utils/trpc";
-import { NotificationPreferencesSkeleton } from "./notification-preferences-skeleton";
+import { NotificationPreferencesSkeleton } from "./settings.notifications.skeleton";
+import type { SettingsNotificationPreferences } from "./settings.types";
 
 const EVENT_GROUPS = [
   { key: "invitations", label: "Invitations" },
@@ -18,11 +19,17 @@ const EVENT_GROUPS = [
   { key: "support", label: "Support replies" },
 ] as const;
 
-export function NotificationPreferencesPanel() {
+export function NotificationPreferencesPanel({
+  initialPreferences,
+}: {
+  initialPreferences: SettingsNotificationPreferences;
+}) {
   const queryClient = useQueryClient();
-  const preferencesQuery = useQuery(
-    trpc.notifications.preferences.queryOptions(),
-  );
+  const preferencesQuery = useQuery({
+    ...trpc.notifications.preferences.queryOptions(),
+    initialData: initialPreferences,
+    staleTime: 30_000,
+  });
   const preferences = preferencesQuery.data?.data.preferences;
   const emailVerified = preferencesQuery.data?.data.emailVerified ?? false;
   const studioNotifications = studioDashboardPath(routes.notifications());
@@ -132,11 +139,11 @@ export function NotificationPreferencesPanel() {
           </Button>
         </div>
       ) : (
-        <div role="status" aria-busy="true" className="space-y-3">
-          <p className="text-muted-foreground text-sm">
-            Loading notification preferences…
-          </p>
-        </div>
+        <ErrorState
+          title="Notification preferences are unavailable"
+          description="Try loading your notification settings again."
+          onRetry={() => void preferencesQuery.refetch()}
+        />
       )}
     </AccordionSection>
   );

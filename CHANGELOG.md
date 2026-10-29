@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Organized account settings into a server-first module with route states, typed services, and focused interactive components (#887).
+
 ## [1.19.20] - 2026-10-26
 
 ### Changed
