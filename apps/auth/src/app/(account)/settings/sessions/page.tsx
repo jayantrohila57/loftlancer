@@ -1,29 +1,20 @@
-import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { SettingsSectionShell } from "@/app/(account)/settings/_components/settings-section-shell";
-import { AccountSettingsClient } from "@/domain/settings/components/account-settings-client";
-import { AccountSettingsSkeleton } from "@/domain/settings/components/account-settings-skeleton";
 import { guardPageAction } from "@/lib/page-guards";
+import { getActiveSessions } from "@/module/settings/settings.sessions.service";
+import { SessionsSettingsView } from "@/module/settings/settings.sessions.view";
 
 export const metadata: Metadata = {
   title: "Sessions",
   description: "Active sign-in sessions.",
 };
 
-export default async function SessionsSettingsPage() {
-  await guardPageAction("session.list");
-
+export default async function SessionsSettingsViewPage() {
+  const session = await guardPageAction("session.list");
+  const data = await getActiveSessions(session.user.id);
   return (
-    <SettingsSectionShell
-      title="Sessions"
-      description="Devices and browsers signed in to your account."
-    >
-      <Suspense
-        fallback={<DelayedPageLoading fallback={<AccountSettingsSkeleton />} />}
-      >
-        <AccountSettingsClient section="sessions" />
-      </Suspense>
-    </SettingsSectionShell>
+    <SessionsSettingsView
+      sessions={data}
+      currentToken={session.session.token}
+    />
   );
 }

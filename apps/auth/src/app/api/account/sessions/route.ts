@@ -1,6 +1,6 @@
-import { listActiveUserSessions } from "@loftlancer/auth/session-list";
 import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/server-auth";
+import { getActiveSessions } from "@/module/settings/settings.sessions.service";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const sessions = await listActiveUserSessions(current.user.id);
+  const sessions = await getActiveSessions(current.user.id);
   return NextResponse.json(sessions, {
     headers: { "Cache-Control": "private, no-store" },
   });

@@ -1,6 +1,14 @@
-import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
-import { AccountSettingsSkeleton } from "@/domain/settings/components/account-settings-skeleton";
+import { Skeleton } from "@loftlancer/ui/skeleton";
+import { AccountSettingsSkeleton } from "@/module/settings/settings.skeleton";
 
 export default function SettingsLoading() {
-  return <DelayedPageLoading fallback={<AccountSettingsSkeleton />} />;
+  return (
+    <section className="min-w-0 space-y-4">
+      <div aria-hidden="true">
+        <Skeleton className="h-7 w-32" />
+        <Skeleton className="mt-1 h-5 w-64 max-w-full" />
+      </div>
+      <AccountSettingsSkeleton />
+    </section>
+  );
 }

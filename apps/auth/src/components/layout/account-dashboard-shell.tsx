@@ -1,5 +1,3 @@
-"use client";
-
 import { AppShell } from "@loftlancer/ui/patterns/app-shell";
 import { ModeToggle } from "@loftlancer/ui/patterns/mode-toggle";
 import { AccountSettingsSidebar } from "@/components/account-settings-sidebar";
