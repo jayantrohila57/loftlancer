@@ -31,7 +31,7 @@ export function AccountSettingsTabs() {
           </>
         ),
       }))}
-      activeTab={resolveSettingsTabHref(pathname, TABS)}
+      activeTab={resolveSettingsTabHref(pathname, TABS) ?? ""}
     />
   );
 }
