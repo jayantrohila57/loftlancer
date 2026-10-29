@@ -8,20 +8,18 @@ import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMemo, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
-import DashboardSection from "@/components/section-dashboard";
-import { accountSettingsUrl } from "@/lib/account-url";
-import { appIcons } from "@/lib/icons";
-import { cn } from "@/lib/utils";
-import { routes } from "@/utils/navigation";
+import {
+  NotificationListItem,
+  type NotificationListItemData,
+} from "@/domain/notifications/components/notification-list-item";
 import {
   useNotificationMutations,
   useNotificationsList,
   useNotificationsUnreadCount,
-} from "../hooks/use-notifications";
-import {
-  NotificationListItem,
-  type NotificationListItemData,
-} from "./notification-list-item";
+} from "@/domain/notifications/hooks/use-notifications";
+import { accountSettingsUrl } from "@/lib/account-url";
+import { appIcons } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
 const LIST_MIN_H = "min-h-[22rem]";
 
@@ -90,11 +88,7 @@ export function NotificationsPageClient() {
   const refetching = listQuery.isPlaceholderData;
 
   return (
-    <DashboardSection
-      title="Notifications"
-      description="Updates about invitations, your organizations, and project activity."
-      back={routes.home()}
-    >
+    <>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div
           role="group"
@@ -259,6 +253,6 @@ export function NotificationsPageClient() {
           </div>
         )}
       </div>
-    </DashboardSection>
+    </>
   );
 }

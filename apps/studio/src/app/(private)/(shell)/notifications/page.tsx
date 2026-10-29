@@ -1,8 +1,10 @@
 import { env } from "@loftlancer/env/server";
+import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { NotificationsPageClient } from "@/domain/notifications/components/notifications-page-client";
 import { guardPageAction } from "@/lib/page-guards";
+import { hydrateNotificationsList } from "@/module/notifications/notifications.list.service";
+import { NotificationsListView } from "@/module/notifications/notifications.list.view";
 import { routes } from "@/utils/navigation";
 
 export const metadata: Metadata = {
@@ -11,10 +13,15 @@ export const metadata: Metadata = {
 };
 
 export default async function NotificationsPage() {
-  await guardPageAction("notification.list");
+  const session = await guardPageAction("notification.list");
   if (env.NOTIFICATIONS_ENABLED !== "true") {
     redirect(routes.home());
   }
 
-  return <NotificationsPageClient />;
+  const state = await hydrateNotificationsList(session);
+  return (
+    <HydrationBoundary state={state}>
+      <NotificationsListView />
+    </HydrationBoundary>
+  );
 }

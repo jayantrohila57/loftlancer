@@ -18,7 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
-- Started moving Studio organization and support views into server-first feature modules (#891).
+- Started moving Studio organization, support, and notifications views into server-first feature modules (#891).
 
 ## [1.19.21] - 2026-10-29
 
