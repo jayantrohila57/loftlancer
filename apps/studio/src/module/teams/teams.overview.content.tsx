@@ -7,10 +7,17 @@ import {
   LocalDateTime,
 } from "@loftlancer/ui/patterns/local-date-time";
 import { useQuery } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { trpc } from "@/utils/trpc";
 
-export function TeamOverviewPage({ teamId }: { teamId: string }) {
+export function TeamOverviewContent({
+  teamId,
+  children,
+}: {
+  teamId: string;
+  children: ReactNode;
+}) {
   const query = useQuery(trpc.teams.get.queryOptions({ teamId }));
   if (query.isPending)
     return (
@@ -81,16 +88,7 @@ export function TeamOverviewPage({ teamId }: { teamId: string }) {
           </p>
         )}
       </AccordionSection>
-      <AccordionSection
-        title="How team access works"
-        description="Teams connect organization membership to project access."
-      >
-        <p className="max-w-3xl text-muted-foreground text-sm">
-          Add organization members in Members, then choose which projects this
-          team can access in Projects. Project Access shows what each person can
-          do.
-        </p>
-      </AccordionSection>
+      {children}
     </section>
   );
 }
