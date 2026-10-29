@@ -1,5 +1,3 @@
-"use client";
-
 type OrganizationSectionPageProps = {
   slug: string;
   title: string;
