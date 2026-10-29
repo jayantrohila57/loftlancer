@@ -1,5 +1,5 @@
 import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
-import { ProjectEnvironmentsLoadingSection } from "@/domain/projects/components/project-environments-page";
+import { ProjectEnvironmentsLoadingSection } from "@/module/environments/environments.page.skeleton";
 
 export default function ProjectEnvironmentsLoading() {
   return (

@@ -1,7 +1,7 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { AppSettingsPage } from "@/domain/apps/components/app-settings-page";
 import { loadProjectPageDataOrNotFound } from "@/lib/page-guards";
+import { AppSettingsPage } from "@/module/apps/apps.app.settings.page";
 
 export const metadata: Metadata = {
   title: "Environments settings",

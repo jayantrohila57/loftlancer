@@ -16,14 +16,14 @@ import { Textarea } from "@loftlancer/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { actionToast } from "@/lib/action-toast";
-import { trpc } from "@/utils/trpc";
 import {
   TASK_PRIORITY_OPTIONS,
   TASK_STATUS_OPTIONS,
   type TaskPriority,
   type TaskStatus,
-} from "../hooks/task-meta";
-import { FieldSelect } from "./field-select";
+} from "@/module/tasks/tasks.meta";
+import { FieldSelect } from "@/shared/shared.field-select";
+import { trpc } from "@/utils/trpc";
 
 export function CreateTaskSheet({
   open,

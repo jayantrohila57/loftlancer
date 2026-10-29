@@ -17,13 +17,13 @@ import { looksLikeDotenv } from "@/lib/dotenv";
 import { CheckIcon } from "@/lib/icons";
 import { toast } from "@/lib/toast";
 import { isVariablesV2EnabledOnClient } from "@/lib/variables-v2-enabled";
-import { AddVariableSheet } from "./add-variable-sheet";
-import { EditVariableSheet } from "./edit-variable-sheet";
-import { ImportEnvDialog } from "./import-env-dialog";
+import { AddVariableSheet } from "@/module/environments/environments.add.variable.sheet";
+import { EditVariableSheet } from "@/module/environments/environments.edit.variable.sheet";
+import { ImportEnvDialog } from "@/module/environments/environments.import.env.dialog";
 import {
   VARIABLES_SEARCH_PLACEHOLDER,
   variableColumnClassNames,
-} from "./variables-table-columns";
+} from "@/module/environments/environments.variables.table.columns";
 
 interface Variable {
   id: string;

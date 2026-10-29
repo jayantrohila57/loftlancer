@@ -4,8 +4,8 @@ import type { ProjectOutput } from "@loftlancer/api/types";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { InstalledAppsOverview } from "@/domain/apps/components/installed-apps-overview";
 import { appIcons } from "@/lib/icons";
+import { InstalledAppsOverview } from "@/module/apps/apps.installed.apps.overview";
 import { routes } from "@/utils/navigation";
 
 export function ProjectOverviewSectionsSkeleton() {

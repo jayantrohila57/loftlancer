@@ -4,11 +4,11 @@ import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import Link from "next/link";
 import { ErrorState } from "@/components/patterns/error-state";
 import { LayoutGrid } from "@/lib/icons";
+import { AppGlyph } from "@/module/apps/apps.app.glyph";
+import { AppGridSkeleton } from "@/module/apps/apps.grid.skeleton";
+import { useProjectApps } from "@/module/apps/apps.use.project.apps";
 import { routes } from "@/utils/navigation";
 import { useOrgSlug } from "@/utils/use-route-scope";
-import { useProjectApps } from "../hooks/use-project-apps";
-import { AppGlyph } from "./app-glyph";
-import { AppGridSkeleton } from "./project-apps-directory";
 
 /** Project overview body: the project's installed apps. */
 export function InstalledAppsOverview({ slug }: { slug: string }) {

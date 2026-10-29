@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
 import { LayoutGrid } from "@/lib/icons";
-import { useProjectApps } from "../hooks/use-project-apps";
+import { useProjectApps } from "@/module/apps/apps.use.project.apps";
 
 /** Renders an app route only when the app is installed on the project. */
 export function AppGate({

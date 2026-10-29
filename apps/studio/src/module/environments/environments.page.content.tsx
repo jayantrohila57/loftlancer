@@ -1,12 +1,15 @@
 "use client";
 
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
-import { CreateEnvironmentSheet } from "@/domain/environments/components/create-environment-sheet";
-import { ProjectEnvironmentsSkeleton } from "@/domain/environments/components/skeletons";
-import { useEnvironments } from "@/domain/environments/hooks/use-environments";
-import ProjectDetail from "./project-detail";
+import { CreateEnvironmentSheet } from "@/module/environments/environments.create.environment.sheet";
+import {
+  ENVIRONMENTS_DESCRIPTION,
+  ENVIRONMENTS_TITLE,
+} from "@/module/environments/environments.page.constants";
+import { ProjectEnvironmentsLoadingSection } from "@/module/environments/environments.page.skeleton";
+import ProjectDetail from "@/module/environments/environments.project.detail";
+import { useEnvironments } from "@/module/environments/environments.use.environments";
 
 interface ProjectEnvironmentsPageProps {
   slug: string;
@@ -26,31 +29,6 @@ function AddEnvironmentHeaderAction({
       triggerText="Add environment"
       compactOnMobile
     />
-  );
-}
-
-const ENVIRONMENTS_TITLE = "Environments";
-const ENVIRONMENTS_DESCRIPTION = "Variables and secrets per deployment target.";
-
-/**
- * Loading state for the environments page, used by the route `loading.tsx`,
- * the Suspense/app-gate fallbacks and the first client load. Same header as
- * the loaded page (project tabs, back to the project, action slot) and a body
- * that mirrors the env tab rail + variables table (#326).
- */
-export function ProjectEnvironmentsLoadingSection() {
-  return (
-    <DashboardSection
-      title={ENVIRONMENTS_TITLE}
-      description={ENVIRONMENTS_DESCRIPTION}
-      back={false}
-      hideTabs
-      action={
-        <Skeleton className="size-8 rounded-md sm:h-8 sm:w-auto sm:min-w-[8.5rem]" />
-      }
-    >
-      <ProjectEnvironmentsSkeleton />
-    </DashboardSection>
   );
 }
 

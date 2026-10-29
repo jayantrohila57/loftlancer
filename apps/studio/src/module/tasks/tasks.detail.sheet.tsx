@@ -19,10 +19,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { actionToast } from "@/lib/action-toast";
+import { TaskCommentItem } from "@/module/tasks/tasks.comment.item";
+import {
+  TASK_PRIORITY_OPTIONS,
+  TASK_STATUS_OPTIONS,
+} from "@/module/tasks/tasks.meta";
+import { FieldSelect } from "@/shared/shared.field-select";
 import { trpc } from "@/utils/trpc";
-import { TASK_PRIORITY_OPTIONS, TASK_STATUS_OPTIONS } from "../hooks/task-meta";
-import { FieldSelect } from "./field-select";
-import { TaskCommentItem } from "./task-comment-item";
 
 type Person = {
   id: string;
