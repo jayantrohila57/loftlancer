@@ -11,13 +11,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
-import { FieldSelect } from "@/domain/tasks/components/field-select";
 import { actionToast } from "@/lib/action-toast";
 import { LayoutGrid } from "@/lib/icons";
+import { AppAccessSection } from "@/module/apps/apps.app.access.section";
+import { AppGlyph } from "@/module/apps/apps.app.glyph";
+import { useProjectApps } from "@/module/apps/apps.use.project.apps";
+import { FieldSelect } from "@/shared/shared.field-select";
 import { trpc } from "@/utils/trpc";
-import { useProjectApps } from "../hooks/use-project-apps";
-import { AppAccessSection } from "./app-access-section";
-import { AppGlyph } from "./app-glyph";
 
 /** /[org]/[project]/[app]/settings — details, real manifest settings, uninstall (#258). */
 export function AppSettingsPage({

@@ -19,7 +19,7 @@ import { isVariablesV2EnabledOnClient } from "@/lib/variables-v2-enabled";
 import {
   VARIABLES_SEARCH_PLACEHOLDER,
   variableColumnClassNames,
-} from "./variables-table-columns";
+} from "@/module/environments/environments.variables.table.columns";
 
 type VariableSkeletonRow = { id: string };
 

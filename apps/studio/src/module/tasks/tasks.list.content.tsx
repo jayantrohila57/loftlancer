@@ -8,20 +8,18 @@ import {
   type DataTableColumnDef,
 } from "@loftlancer/ui/data-table/data-table";
 import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useDeferredValue, useMemo, useState } from "react";
 import DashboardSection from "@/components/section-dashboard";
-import { useProjectApps } from "@/domain/apps/hooks/use-project-apps";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { withBasePath } from "@/lib/base-path";
 import { ListTodo, Plus } from "@/lib/icons";
 import { initialsFromLabel } from "@/lib/initials";
-import { routes } from "@/utils/navigation";
-import { trpc } from "@/utils/trpc";
-import { useOrgSlug } from "@/utils/use-route-scope";
+import { useProjectApps } from "@/module/apps/apps.use.project.apps";
+import { CreateTaskSheet } from "@/module/tasks/tasks.create.sheet";
+import { TaskDetailSheet } from "@/module/tasks/tasks.detail.sheet";
 import {
   priorityBadgeVariant,
   priorityLabel,
@@ -31,27 +29,13 @@ import {
   TASK_STATUS_OPTIONS,
   type TaskPriority,
   type TaskStatus,
-} from "../hooks/task-meta";
-import { CreateTaskSheet } from "./create-task-sheet";
-import { FieldSelect } from "./field-select";
-import { TaskDetailSheet } from "./task-detail-sheet";
+} from "@/module/tasks/tasks.meta";
+import { FieldSelect } from "@/shared/shared.field-select";
+import { routes } from "@/utils/navigation";
+import { trpc } from "@/utils/trpc";
+import { useOrgSlug } from "@/utils/use-route-scope";
 
 const PAGE_SIZE = 50;
-
-export function TasksPageSkeleton() {
-  return (
-    <DashboardSection
-      title="Tasks"
-      description="Track work for this project."
-      hideTabs
-    >
-      <div className="flex flex-col gap-3" role="status" aria-busy="true">
-        <Skeleton className="h-8 w-full rounded-md" />
-        <Skeleton className="h-96 w-full rounded-xl" />
-      </div>
-    </DashboardSection>
-  );
-}
 
 export function TasksPage({ slug }: { slug: string }) {
   const pathname = usePathname();

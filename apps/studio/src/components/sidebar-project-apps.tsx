@@ -5,8 +5,8 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
-import { AppGlyph } from "@/domain/apps/components/app-glyph";
-import { useProjectApps } from "@/domain/apps/hooks/use-project-apps";
+import { AppGlyph } from "@/module/apps/apps.app.glyph";
+import { useProjectApps } from "@/module/apps/apps.use.project.apps";
 import { routes } from "@/utils/navigation";
 
 /** Installed apps nested under the active project (apps system, #245). */

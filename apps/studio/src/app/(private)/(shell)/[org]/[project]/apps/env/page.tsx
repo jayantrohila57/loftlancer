@@ -1,10 +1,9 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { AppGate } from "@/domain/apps/components/app-gate";
-import ProjectEnvironmentsPage, {
-  ProjectEnvironmentsLoadingSection,
-} from "@/domain/projects/components/project-environments-page";
 import { loadProjectPageDataOrNotFound } from "@/lib/page-guards";
+import { AppGate } from "@/module/apps/apps.app.gate";
+import ProjectEnvironmentsPage from "@/module/environments/environments.page.content";
+import { ProjectEnvironmentsLoadingSection } from "@/module/environments/environments.page.skeleton";
 
 export const metadata: Metadata = {
   title: "Environments",

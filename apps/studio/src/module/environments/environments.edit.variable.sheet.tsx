@@ -23,7 +23,7 @@ import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon"
 import {
   type VariableType,
   VariableTypeSegmented,
-} from "./variable-type-segmented";
+} from "@/module/environments/environments.variable.type.segmented";
 
 interface EditVariableSheetProps {
   open: boolean;

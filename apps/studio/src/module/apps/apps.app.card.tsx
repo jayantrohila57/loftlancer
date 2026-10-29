@@ -5,10 +5,10 @@ import { Button } from "@loftlancer/ui/button";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import Link from "next/link";
 import { useState } from "react";
+import { AppGlyph } from "@/module/apps/apps.app.glyph";
+import type { ProjectAppItem } from "@/module/apps/apps.use.project.apps";
 import { routes } from "@/utils/navigation";
 import { useOrgSlug } from "@/utils/use-route-scope";
-import type { ProjectAppItem } from "../hooks/use-project-apps";
-import { AppGlyph } from "./app-glyph";
 
 function daysLeft(date: Date | string | null) {
   if (!date) return null;

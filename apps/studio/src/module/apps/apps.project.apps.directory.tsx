@@ -1,28 +1,11 @@
 "use client";
 
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { Skeleton } from "@loftlancer/ui/skeleton";
 import { ErrorState } from "@/components/patterns/error-state";
-import DashboardSection from "@/components/section-dashboard";
 import { LayoutGrid } from "@/lib/icons";
-import { useProjectApps } from "../hooks/use-project-apps";
-import { AppCard } from "./app-card";
-
-const SKELETON_KEYS = ["a", "b", "c", "d", "e", "f"];
-
-export function AppGridSkeleton({ count = 2 }: { count?: number }) {
-  return (
-    <div
-      className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3"
-      role="status"
-      aria-busy="true"
-    >
-      {SKELETON_KEYS.slice(0, count).map((k) => (
-        <Skeleton key={k} className="min-h-36 rounded-md" />
-      ))}
-    </div>
-  );
-}
+import { AppCard } from "@/module/apps/apps.app.card";
+import { AppGridSkeleton } from "@/module/apps/apps.grid.skeleton";
+import { useProjectApps } from "@/module/apps/apps.use.project.apps";
 
 /** /[org]/[project]/apps — app directory for one project. */
 export function ProjectAppsDirectory({ slug }: { slug: string }) {
@@ -43,12 +26,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
     (app) => app.status === "uninstalled",
   );
   return (
-    <DashboardSection
-      title="Apps"
-      description="Install apps to add features to this project. Apps are per project."
-      back={false}
-      hideTabs
-    >
+    <>
       {isLoading ? (
         <AppGridSkeleton />
       ) : isError || !project ? (
@@ -158,6 +136,6 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
           ) : null}
         </div>
       )}
-    </DashboardSection>
+    </>
   );
 }

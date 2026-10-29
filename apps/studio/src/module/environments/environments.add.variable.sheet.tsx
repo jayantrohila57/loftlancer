@@ -23,11 +23,11 @@ import {
 } from "@/components/patterns/form-sheet";
 import { GuardedSheet } from "@/components/patterns/guarded-sheet";
 import { SheetTitleWithIcon } from "@/components/patterns/sheet-title-with-icon";
-import { EnvironmentMultiSelect } from "./environment-multi-select";
+import { EnvironmentMultiSelect } from "@/module/environments/environments.environment.multi.select";
 import {
   type VariableType,
   VariableTypeSegmented,
-} from "./variable-type-segmented";
+} from "@/module/environments/environments.variable.type.segmented";
 
 export type VariableDraftRow = {
   id: string;

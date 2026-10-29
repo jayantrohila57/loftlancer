@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useVariables } from "../hooks/use-variables";
-import { VariablesTableView } from "./variables-table-view";
+import { useVariables } from "@/module/environments/environments.use.variables";
+import { VariablesTableView } from "@/module/environments/environments.variables.table.view";
 
 interface Variable {
   id: string;

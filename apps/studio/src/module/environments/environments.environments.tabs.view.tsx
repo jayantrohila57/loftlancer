@@ -14,9 +14,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { appIcons } from "@/lib/icons";
-import { CreateEnvironmentSheet } from "./create-environment-sheet";
-import { DeleteEnvironmentDialog } from "./delete-environment-dialog";
-import { EditEnvironmentSheet } from "./edit-environment-sheet";
+import { CreateEnvironmentSheet } from "@/module/environments/environments.create.environment.sheet";
+import { DeleteEnvironmentDialog } from "@/module/environments/environments.delete.environment.dialog";
+import { EditEnvironmentSheet } from "@/module/environments/environments.edit.environment.sheet";
 
 interface Environment {
   id: string;

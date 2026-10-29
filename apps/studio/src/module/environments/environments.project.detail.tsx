@@ -2,11 +2,11 @@
 
 import type { ProjectOutput } from "@loftlancer/api/types";
 import { PageStack } from "@/components/layout/app-layout";
+import { EnvironmentPanel } from "@/module/environments/environments.environment.panel";
+import { EnvironmentsTabsView } from "@/module/environments/environments.environments.tabs.view";
+import { useEnvironments } from "@/module/environments/environments.use.environments";
 import { routes } from "@/utils/navigation";
 import { useOrgSlug } from "@/utils/use-route-scope";
-import { EnvironmentPanel } from "../../environments/components/environment-panel";
-import { EnvironmentsTabsView } from "../../environments/components/environments-tabs-view";
-import { useEnvironments } from "../../environments/hooks/use-environments";
 
 interface ProjectDetailProps {
   projectSlug: string;

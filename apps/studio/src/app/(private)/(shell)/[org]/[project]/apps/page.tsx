@@ -1,7 +1,7 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { ProjectAppsDirectory } from "@/domain/apps/components/project-apps-directory";
 import { loadProjectPageDataOrNotFound } from "@/lib/page-guards";
+import { AppsDirectoryView } from "@/module/apps/apps.directory.view";
 
 export const metadata: Metadata = {
   title: "Apps",
@@ -17,7 +17,7 @@ export default async function ProjectAppsRoute({
   const data = await loadProjectPageDataOrNotFound(slug);
   return (
     <HydrationBoundary state={data.dehydratedState}>
-      <ProjectAppsDirectory slug={slug} />
+      <AppsDirectoryView slug={slug} />
     </HydrationBoundary>
   );
 }
