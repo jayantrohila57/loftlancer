@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TeamInvitationsPage } from "@/domain/organizations/components/team-invitations-page";
+import { TeamInvitationsPage } from "@/module/teams/teams.invitations.content";
 
 export const metadata: Metadata = {
   title: "Team invitations",

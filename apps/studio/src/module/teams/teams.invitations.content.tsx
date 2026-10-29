@@ -11,6 +11,8 @@ import {
 } from "@/components/org/invitation-list-controls";
 import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
 import { ErrorState } from "@/components/patterns/error-state";
+import { BulkInviteDialog } from "@/domain/organizations/components/bulk-invite-dialog";
+import { useOrganizationBySlug } from "@/domain/organizations/hooks/use-organization-by-slug";
 import { Can } from "@/domain/permissions/components/can";
 import { authClient } from "@/lib/auth-client";
 import {
@@ -19,8 +21,6 @@ import {
 } from "@/lib/organization-invitations";
 import { toast } from "@/lib/toast";
 import { trpc } from "@/utils/trpc";
-import { useOrganizationBySlug } from "../hooks/use-organization-by-slug";
-import { BulkInviteDialog } from "./bulk-invite-dialog";
 
 export function TeamInvitationsPage({
   slug,

@@ -4,8 +4,8 @@ import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
+import { ProjectAccessSection } from "@/domain/projects/components/project-access-section";
 import { trpc } from "@/utils/trpc";
-import { ProjectAccessSection } from "./project-access-section";
 
 export function ProjectAccessPage({ slug }: { slug: string }) {
   const projectQuery = useQuery(trpc.projects.getBySlug.queryOptions({ slug }));
@@ -23,15 +23,5 @@ export function ProjectAccessPage({ slug }: { slug: string }) {
   }
   if (!project) notFound();
 
-  return (
-    <section className="space-y-3">
-      <div>
-        <h2 className="font-semibold text-xl tracking-tight">Access</h2>
-        <p className="mt-1 text-muted-foreground text-sm">
-          Manage project managers, teams with access, and individual access.
-        </p>
-      </div>
-      <ProjectAccessSection project={project} />
-    </section>
-  );
+  return <ProjectAccessSection project={project} />;
 }

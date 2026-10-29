@@ -136,17 +136,7 @@ export function TeamProjectsPage({
   ];
 
   return (
-    <section className="space-y-4">
-      <div>
-        <h2 className="font-semibold text-xl tracking-tight">
-          Projects with access
-        </h2>
-        <p className="mt-1 text-muted-foreground text-sm">
-          A person gets project access through any team that has access to the
-          project. Individual access settings apply only while at least one team
-          has access.
-        </p>
-      </div>
+    <>
       {linkable.isError ? (
         <ErrorState
           title="Could not load available projects"
@@ -205,6 +195,6 @@ export function TeamProjectsPage({
         />
       )}
       {ConfirmDialog}
-    </section>
+    </>
   );
 }

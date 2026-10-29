@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { TeamSettingsPage } from "@/domain/organizations/components/team-settings-page";
+import { TeamSection } from "@/module/teams/teams.section";
+import { TeamSettingsPage } from "@/module/teams/teams.settings.content";
 
 export const metadata: Metadata = {
   title: "Team settings",
@@ -12,5 +13,12 @@ export default async function TeamSettingsRoute({
   params: Promise<{ org: string; teamId: string }>;
 }) {
   const { org, teamId } = await params;
-  return <TeamSettingsPage slug={org} teamId={teamId} />;
+  return (
+    <TeamSection
+      title="Team settings"
+      description="Manage this team’s identity and lifecycle."
+    >
+      <TeamSettingsPage slug={org} teamId={teamId} />
+    </TeamSection>
+  );
 }

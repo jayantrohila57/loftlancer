@@ -7,10 +7,10 @@ import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { ErrorState } from "@/components/patterns/error-state";
+import { teamDisplayName } from "@/domain/organizations/lib/team-display-name";
 import { useCan } from "@/domain/permissions/hooks/use-permissions";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
-import { teamDisplayName } from "../lib/team-display-name";
 
 export function TeamLayoutShell({
   slug,
