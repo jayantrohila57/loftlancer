@@ -6,7 +6,7 @@ import {
   pgTable,
   text,
   timestamp,
-  uniqueIndex,
+  unique,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { organization } from "./organization";
@@ -45,10 +45,7 @@ export const team = pgTable(
       sql`${table.purpose} IS NULL OR length(${table.purpose}) <= 250`,
     ),
     index("team_organization_id_idx").on(table.organizationId),
-    uniqueIndex("team_id_organization_id_uidx").on(
-      table.id,
-      table.organizationId,
-    ),
+    unique("team_id_organization_id_uq").on(table.id, table.organizationId),
   ],
 );
 

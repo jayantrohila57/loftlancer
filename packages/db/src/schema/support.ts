@@ -3,6 +3,7 @@ import {
   boolean,
   index,
   integer,
+  pgSequence,
   pgTable,
   text,
   timestamp,
@@ -11,6 +12,11 @@ import {
 import { user } from "./auth";
 import { organization } from "./organization";
 import { project } from "./projects";
+
+export const supportTicketNumberSequence = pgSequence(
+  "support_ticket_number_seq",
+  { startWith: 1001 },
+);
 
 export const platformSupportManager = pgTable("platform_support_manager", {
   userId: text("user_id")
