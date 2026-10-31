@@ -11,3 +11,32 @@
 :root:not(.dark) {
   --color-fd-muted-foreground: var(--muted-foreground);
 }
+
+/* Keep the shared marketing header across the docs shell; the reading sidebar
+   and table of contents begin below it and remain visible while scrolling. */
+#nd-docs-layout {
+  --fd-header-height: 4.5rem;
+  --fd-docs-layout-columns: minmax(min-content, 1fr) var(--fd-sidebar-col)
+    minmax(
+      0,
+      calc(
+        var(--fd-layout-width, 97rem) -
+        var(--fd-sidebar-width) -
+        var(--fd-toc-width)
+      )
+    )
+    var(--fd-toc-width) minmax(min-content, 1fr);
+}
+
+#nd-docs-layout [data-sidebar-placeholder],
+#nd-docs-layout #nd-toc {
+  top: var(--fd-docs-row-2);
+  height: calc(var(--fd-docs-height) - var(--fd-docs-row-2));
+}
+
+@media (max-width: 767px) {
+  #nd-docs-layout {
+    --fd-header-height: 4.25rem;
+    --fd-docs-layout-columns: 0 0 minmax(0, 1fr) 0 0;
+  }
+}

@@ -1,5 +1,6 @@
+import { MarketingLanding } from "@loftlancer/ui/marketing";
 import { HomeJsonLd } from "@/components/json-ld";
-import { Landing } from "@/components/landing";
+import { ModeToggle } from "@/components/mode-toggle";
 import { pageMetadata, siteDescription } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -13,7 +14,7 @@ export default function HomePage() {
   return (
     <>
       <HomeJsonLd />
-      <Landing />
+      <MarketingLanding signInHref="/sign-in" headerActions={<ModeToggle />} />
     </>
   );
 }

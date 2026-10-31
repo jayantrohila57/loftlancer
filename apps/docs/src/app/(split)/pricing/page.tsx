@@ -1,5 +1,6 @@
 import { appRegistry } from "@loftlancer/actions/apps";
-import { buildSignInUrl } from "@loftlancer/ui/auth-links";
+import { Button } from "@loftlancer/ui/button";
+import { FAQSection } from "@loftlancer/ui/marketing";
 import { MarketingPage } from "@/components/marketing-page";
 import { pageMetadata } from "@/lib/seo";
 
@@ -10,19 +11,10 @@ export const metadata = pageMetadata({
   path: "/pricing",
 });
 
-/** Everything here exists in the product today. */
-const included = [
-  ...appRegistry.map((app) => `Project app — ${app.name}: ${app.description}`),
-  "Organizations, projects, teams and email invitations",
-  "Owner, manager and member roles with per-project grants",
-  "Encryption at rest for every variable",
-  "Activity history and dashboard notifications",
-];
-
 const faq = [
   {
     q: "Is there a paid plan?",
-    a: "No. Billing isn't built yet, so there is nothing to buy and no card is asked for. If that changes, this page and the docs will change before any charge applies.",
+    a: "No. Billing is not available, so there is nothing to buy and no card is requested. If plans change, this page and the docs will be updated before any charge applies.",
   },
   {
     q: "Are there usage limits?",
@@ -30,90 +22,110 @@ const faq = [
   },
   {
     q: "Can I self-host?",
-    a: "Yes. The source is public on GitHub, and the docs cover deploying it on Vercel with a Neon Postgres database.",
+    a: "Yes. The source is public on GitHub, and the documentation covers deploying it with Vercel and Neon Postgres.",
   },
   {
     q: "How do I sign in?",
-    a: "With GitHub, Google or a one-time email link. There are no passwords. Your account is created on first sign-in.",
+    a: "Use GitHub, Google, or a one-time email link. Your account is created when you sign in for the first time.",
+  },
+];
+
+const included = [
+  {
+    area: "Workspace",
+    description: "Organizations, projects, teams, and email invitations.",
+  },
+  {
+    area: "Access",
+    description: "Owner, manager, and member roles with per-project grants.",
+  },
+  {
+    area: "Configuration",
+    description: "Encrypted-at-rest variables with separate environments.",
+  },
+  {
+    area: "Activity",
+    description: "Activity history and dashboard notifications.",
   },
 ];
 
 export default function PricingPage() {
   return (
     <MarketingPage
-      title="Pricing"
-      description="One plan, free during early access. No paid tiers exist yet."
+      eyebrow="Product / Pricing"
+      title="Free during early access."
+      description="Every current feature is available at no cost. Billing and paid plans are not available today."
     >
-      <section className="not-prose flex flex-col gap-3 rounded-xl bg-card p-4 text-card-foreground ring-1 ring-border/60">
-        <div className="flex items-center justify-between gap-2">
-          <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-            Current offering
-          </p>
-          <span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
-            Free during early access
-          </span>
-        </div>
-        <div className="flex items-baseline justify-between gap-1.5">
-          <div className="flex flex-col gap-0.5">
-            <h2 className="mt-0! font-medium text-sm">Early access</h2>
-            <p className="text-muted-foreground text-xs">
-              Everything Loftlancer does today.
+      <section aria-labelledby="early-access-title" className="scroll-mt-28">
+        <div className="grid gap-8 border-foreground/15 border-y py-7 md:grid-cols-[1fr_auto] md:items-center md:py-9">
+          <div>
+            <p className="mb-3 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.12em]">
+              Current offer
+            </p>
+            <h2
+              id="early-access-title"
+              className="mt-0! border-0! pb-0! text-3xl! tracking-[-0.05em]! md:text-4xl!"
+            >
+              Early access
+            </h2>
+            <p className="mt-3 max-w-2xl text-muted-foreground leading-7">
+              Full access to Loftlancer&apos;s current product while it remains
+              in early access. No payment details required.
             </p>
           </div>
-          <p className="font-semibold text-2xl tabular-nums">
-            $0
-            <span className="font-normal text-muted-foreground text-xs">
-              {" "}
-              / month
-            </span>
-          </p>
+          <div className="flex flex-wrap items-end gap-x-4 gap-y-3 border-border/70 border-t pt-5 md:min-w-64 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+            <div>
+              <p className="font-medium text-6xl tracking-[-0.08em]">$0</p>
+              <p className="mt-1 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.1em]">
+                during early access
+              </p>
+            </div>
+            <Button className="ml-auto" render={<a href="/sign-in" />}>
+              Get started
+            </Button>
+          </div>
         </div>
-        <ul className="flex flex-col gap-1.5 border-border/60 border-t pt-3">
-          {included.map((item) => (
-            <li key={item} className="flex items-start gap-2 text-sm">
-              <svg
-                viewBox="0 0 24 24"
-                aria-hidden
-                className="mt-0.5 size-3.5 shrink-0 fill-none stroke-2 stroke-primary"
+        <div className="grid gap-6 border-foreground/15 border-b py-7 md:grid-cols-[0.58fr_1.42fr] md:gap-12 md:py-9">
+          <div>
+            <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.12em]">
+              Included today
+            </p>
+            <h3 className="mt-3 font-medium text-xl tracking-[-0.04em]">
+              What comes with early access
+            </h3>
+          </div>
+          <ul className="divide-y divide-border/70 border-border/70 border-y">
+            {included.map((item, index) => (
+              <li
+                key={item.area}
+                className="grid gap-1.5 py-3 sm:grid-cols-[2rem_0.45fr_1.55fr] sm:gap-4"
               >
-                <path d="M20 6 9 17l-5-5" />
-              </svg>
-              {item}
-            </li>
-          ))}
-        </ul>
-        <a
-          href={buildSignInUrl()}
-          className="no-underline! inline-flex h-8 w-full items-center justify-center rounded-lg bg-primary px-3 font-medium text-primary-foreground! text-sm transition-colors hover:bg-primary/90"
-        >
-          Get started free
-        </a>
+                <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="font-medium text-sm">{item.area}</span>
+                <span className="text-muted-foreground text-sm leading-6">
+                  {item.description}
+                  {item.area === "Workspace" ? (
+                    <span className="block pt-1">
+                      Project apps include{" "}
+                      {appRegistry.map((app) => app.name).join(", ")}.
+                    </span>
+                  ) : null}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
-      <section className="not-prose mt-12" aria-labelledby="pricing-questions">
-        <h2
-          id="pricing-questions"
-          className="font-semibold text-xl tracking-tight"
-        >
-          Questions
-        </h2>
-        <div className="not-prose flex flex-col divide-y divide-border/60 rounded-xl ring-1 ring-border/60">
-          {faq.map((item) => (
-            <details key={item.q} className="group px-3 py-2">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-1.5 font-medium text-sm">
-                {item.q}
-                <span
-                  aria-hidden
-                  className="text-muted-foreground transition-transform group-open:rotate-45"
-                >
-                  +
-                </span>
-              </summary>
-              <p className="pt-1.5 text-muted-foreground text-sm">{item.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <div className="mt-2">
+        <FAQSection
+          title="Pricing questions"
+          description="Clear answers about the current offer and what exists in the product today."
+          items={faq.map((item) => ({ question: item.q, answer: item.a }))}
+        />
+      </div>
     </MarketingPage>
   );
 }

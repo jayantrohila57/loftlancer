@@ -146,7 +146,7 @@ function MonitorRow({
 }) {
   const state = monitor ? MONITOR[monitor.status] : null;
   return (
-    <li className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1.5 px-4 py-3 sm:grid-cols-[1fr_4.5rem_4.5rem_5.5rem_5.5rem]">
+    <li className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1.5 py-3 sm:grid-cols-[1fr_4.5rem_4.5rem_5.5rem_5.5rem]">
       <div className="flex min-w-0 items-center gap-2">
         <span
           aria-hidden
@@ -209,7 +209,7 @@ function IncidentList({
 }) {
   if (incidents.length === 0) {
     return (
-      <p className="px-4 py-3 text-muted-foreground text-sm">
+      <p className="py-3 text-muted-foreground text-sm">
         No incidents in the last 90 days.
       </p>
     );
@@ -219,7 +219,7 @@ function IncidentList({
       {incidents.map((incident) => (
         <li
           key={incident.id}
-          className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 px-4 py-3"
+          className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 py-3"
         >
           <div className="flex min-w-0 flex-col gap-0.5">
             <span className="font-medium text-sm">
@@ -311,11 +311,11 @@ export function StatusBoard() {
     ) ?? [];
 
   return (
-    <div className="not-prose flex flex-col gap-4" data-testid="status-board">
+    <div className="not-prose flex flex-col" data-testid="status-board">
       {/* Overall */}
       <section
         aria-live="polite"
-        className="flex items-center justify-between gap-4 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/10"
+        className="grid gap-2 border-foreground/15 border-y py-4 sm:flex sm:items-center sm:justify-between sm:gap-4"
       >
         <div className="flex min-w-0 items-center gap-2">
           <span
@@ -333,7 +333,7 @@ export function StatusBoard() {
             </span>
           )}
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex w-full shrink-0 items-center justify-between gap-2 sm:w-auto sm:justify-end">
           <span className="text-muted-foreground text-xs tabular-nums">
             {loading ? (
               <Skeleton className="h-4 w-24 rounded-sm" />
@@ -357,15 +357,15 @@ export function StatusBoard() {
       </section>
 
       {/* Monitors */}
-      <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
-        <div className="hidden grid-cols-[1fr_4.5rem_4.5rem_5.5rem_5.5rem] gap-x-4 border-border/60 border-b bg-muted/40 px-4 py-2 text-muted-foreground text-xs sm:grid">
+      <section className="mt-8 overflow-hidden border-foreground/15 border-b">
+        <div className="hidden grid-cols-[1fr_4.5rem_4.5rem_5.5rem_5.5rem] gap-x-4 border-border/70 border-b py-2 text-[10px] text-muted-foreground uppercase tracking-[0.08em] sm:grid">
           <span>Service</span>
           <span className="text-right">30 days</span>
           <span className="text-right">90 days</span>
           <span className="text-right">Checked</span>
           <span className="text-right">Status</span>
         </div>
-        <ul className="divide-y divide-border/60">
+        <ul className="divide-y divide-border/70">
           {SURFACES.map((name) => (
             <MonitorRow
               key={name}
@@ -388,14 +388,14 @@ export function StatusBoard() {
       </section>
 
       {/* Incidents */}
-      <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
-        <h2 className="mt-0! border-border/60 border-b bg-muted/40 px-4 py-2 font-normal! text-muted-foreground! text-xs! tracking-normal!">
+      <section className="mt-8 overflow-hidden border-foreground/15 border-b">
+        <h2 className="mt-0! border-border/70 border-b pb-2 font-mono! font-normal! text-[10px]! text-muted-foreground! uppercase tracking-[0.08em]!">
           Recent incidents
         </h2>
         {available ? (
           <IncidentList incidents={available.incidents} now={now} />
         ) : (
-          <div className="px-4 py-3">
+          <div className="py-3">
             {loading ? (
               <Skeleton className="h-5 w-56 rounded-sm" />
             ) : (

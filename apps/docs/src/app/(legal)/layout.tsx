@@ -1,9 +1,14 @@
-import { PublicLegalShell } from "@/components/public-legal-shell";
+import { MarketingPageShell } from "@loftlancer/ui/marketing";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function LegalLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <PublicLegalShell>{children}</PublicLegalShell>;
+  return (
+    <MarketingPageShell signInHref="/sign-in" headerActions={<ModeToggle />}>
+      {children}
+    </MarketingPageShell>
+  );
 }
