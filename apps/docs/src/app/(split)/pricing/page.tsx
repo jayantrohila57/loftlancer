@@ -1,5 +1,4 @@
 import { appRegistry } from "@loftlancer/actions/apps";
-import { buildSignInUrl } from "@loftlancer/ui/auth-links";
 import { Button } from "@loftlancer/ui/button";
 import { FAQSection } from "@loftlancer/ui/marketing";
 import { MarketingPage } from "@/components/marketing-page";
@@ -81,7 +80,7 @@ export default function PricingPage() {
                 during early access
               </p>
             </div>
-            <Button className="ml-auto" render={<a href={buildSignInUrl()} />}>
+            <Button className="ml-auto" render={<a href="/sign-in" />}>
               Get started
             </Button>
           </div>

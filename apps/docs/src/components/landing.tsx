@@ -21,6 +21,7 @@ export function Landing() {
         >
           {/* Passwordless only (#373): GitHub, Google and an email magic link. */}
           <SignInOptions
+            errorPath="/sign-in"
             onProviderClick={(provider) =>
               trackEvent("sign_in_click", { method: provider })
             }

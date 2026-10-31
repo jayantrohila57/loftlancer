@@ -1,4 +1,3 @@
-import { buildSignInUrl } from "@loftlancer/ui/auth-links";
 import { MarketingLanding } from "@loftlancer/ui/marketing";
 import { HomeJsonLd } from "@/components/json-ld";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -15,10 +14,7 @@ export default function HomePage() {
   return (
     <>
       <HomeJsonLd />
-      <MarketingLanding
-        signInHref={buildSignInUrl()}
-        headerActions={<ModeToggle />}
-      />
+      <MarketingLanding signInHref="/sign-in" headerActions={<ModeToggle />} />
     </>
   );
 }

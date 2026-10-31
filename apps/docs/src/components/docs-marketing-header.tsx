@@ -1,6 +1,5 @@
 "use client";
 
-import { buildSignInUrl } from "@loftlancer/ui/auth-links";
 import { MarketingSiteHeader } from "@loftlancer/ui/marketing";
 import { MenuItem } from "@loftlancer/ui/menu";
 import { useDocsLayout } from "fumadocs-ui/layouts/docs";
@@ -13,7 +12,7 @@ export function DocsMarketingHeader() {
   return (
     <div className="[grid-area:header]">
       <MarketingSiteHeader
-        signInHref={buildSignInUrl()}
+        signInHref="/sign-in"
         headerActions={<ModeToggle />}
         mobileMenuActions={
           <MenuItem

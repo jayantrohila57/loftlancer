@@ -1,7 +1,6 @@
 "use client";
 
 import { logger } from "@loftlancer/logger";
-import { buildSignInUrl } from "@loftlancer/ui/auth-links";
 import { MarketingPageShell } from "@loftlancer/ui/marketing";
 import { useEffect } from "react";
 import { MarketingRouteState } from "@/components/marketing-route-state";
@@ -20,10 +19,7 @@ export default function RouteError({
   }, [error]);
 
   return (
-    <MarketingPageShell
-      signInHref={buildSignInUrl()}
-      headerActions={<ModeToggle />}
-    >
+    <MarketingPageShell signInHref="/sign-in" headerActions={<ModeToggle />}>
       <MarketingRouteState
         code="500"
         title="We couldn’t load this page."

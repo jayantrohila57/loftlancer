@@ -20,6 +20,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 - Rebuilt the public marketing system and applied distinct editorial layouts across product, pricing, docs, status, changelog, and legal routes (#893).
 
+### Fixed
+
+- Kept Google and email magic-link sign-in available from public page calls to action (#893).
+
 ## [1.19.21] - 2026-10-29
 
 ### Changed

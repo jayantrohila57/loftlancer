@@ -1,14 +1,10 @@
-import { buildSignInUrl } from "@loftlancer/ui/auth-links";
 import { MarketingPageShell } from "@loftlancer/ui/marketing";
 import { MarketingRouteState } from "@/components/marketing-route-state";
 import { ModeToggle } from "@/components/mode-toggle";
 
 export default function NotFound() {
   return (
-    <MarketingPageShell
-      signInHref={buildSignInUrl()}
-      headerActions={<ModeToggle />}
-    >
+    <MarketingPageShell signInHref="/sign-in" headerActions={<ModeToggle />}>
       <MarketingRouteState
         code="404"
         title="This page isn’t here."
