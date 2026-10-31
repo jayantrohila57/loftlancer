@@ -40,6 +40,7 @@
     "./input": "./src/components/ui/input.tsx",
     "./separator": "./src/components/ui/separator.tsx",
     "./menu": "./src/components/ui/menu.tsx",
+    "./accordion": "./src/components/ui/accordion.tsx",
     "./dialog": "./src/components/ui/dialog.tsx",
     "./patterns/app-shell": "./src/patterns/app-shell.tsx",
     "./patterns/sidebar-kit": "./src/patterns/sidebar-kit.tsx",

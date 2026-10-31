@@ -1,5 +1,5 @@
 import { validateReturnTo } from "@loftlancer/auth/return-to";
-import { studioHomeUrl } from "@loftlancer/ui/auth-links";
+import { landingUrl, studioHomeUrl } from "@loftlancer/ui/auth-links";
 import { type NextRequest, NextResponse } from "next/server";
 import { appUrl } from "@/lib/base-path";
 import { platformAuth } from "@/lib/platform-auth";
@@ -25,13 +25,20 @@ export async function GET(
 ) {
   const { provider } = await params;
   const home = new URL("/", request.nextUrl.origin);
+  const requestedErrorPath = request.nextUrl.searchParams.get("error_path");
+  const errorPath =
+    requestedErrorPath?.startsWith("/") &&
+    !requestedErrorPath.startsWith("//") &&
+    !requestedErrorPath.includes("\\")
+      ? requestedErrorPath
+      : "/";
+  const errorUrl = new URL(errorPath, requestedErrorPath ? landingUrl() : home);
   if (
     !PROVIDERS.has(provider) ||
     (provider === "google" && !googleConfigured())
   ) {
     return NextResponse.redirect(home);
   }
-  const errorUrl = new URL(home);
   errorUrl.searchParams.set("auth_error", "oauth");
 
   const returnTo = validateReturnTo(

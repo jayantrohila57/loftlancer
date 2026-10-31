@@ -38,6 +38,8 @@ export type SignInOptionsProps = {
   authOrigin?: string;
   /** Where to land after sign-in (validated by the auth app). Default: /studio. */
   returnTo?: string;
+  /** Where sign-in errors should return. Defaults to the current site root. */
+  errorPath?: string;
   /** Override the build-time Google flag (tests, previews). */
   googleEnabled?: boolean;
   onProviderClick?: (provider: SignInProvider) => void;
@@ -48,6 +50,7 @@ export type SignInOptionsProps = {
 export function SignInOptions({
   authOrigin,
   returnTo,
+  errorPath = "/",
   googleEnabled = isGoogleSignInEnabled(),
   onProviderClick,
   onMagicLinkSubmit,
@@ -70,8 +73,12 @@ export function SignInOptions({
   }, []);
 
   const providerHref = (provider: SignInProvider) => {
-    const url = `${auth}/api/sign-in/${provider}`;
-    return returnTo ? `${url}?return_to=${encodeURIComponent(returnTo)}` : url;
+    const query = new URLSearchParams();
+    if (returnTo) query.set("return_to", returnTo);
+    if (errorPath !== "/") query.set("error_path", errorPath);
+    const queryString = query.toString();
+    const suffix = queryString ? `?${queryString}` : "";
+    return `${auth}/api/sign-in/${provider}${suffix}`;
   };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
@@ -82,7 +89,7 @@ export function SignInOptions({
     setMagic({ status: "sending" });
     const finish = new URL(`${auth}/api/auth/cross-app/finish`);
     finish.searchParams.set("return_to", returnTo ?? studioHomeUrl());
-    const errorUrl = new URL("/", window.location.origin);
+    const errorUrl = new URL(errorPath, window.location.origin);
     errorUrl.searchParams.set("auth_error", "magic_link");
     try {
       const res = await fetch(`${auth}/api/auth/sign-in/magic-link`, {

@@ -1,4 +1,3 @@
-import { Badge, type BadgeProps } from "@loftlancer/ui/badge";
 import { cn } from "@loftlancer/ui/utils";
 import { Fragment, type ReactNode } from "react";
 
@@ -15,25 +14,7 @@ export const metadata = pageMetadata({
 
 const REPO = "https://github.com/jayantrohila57/loftlancer";
 
-/** Keep changelog badges aligned with their Keep a Changelog headings. */
-const GROUP_TAGS: Record<
-  string,
-  { label: string; variant: BadgeProps["variant"] }
-> = {
-  Added: { label: "Added", variant: "success" },
-  Changed: { label: "Changed", variant: "info" },
-  Fixed: { label: "Fixed", variant: "warning" },
-  Security: { label: "Security", variant: "error" },
-  Removed: { label: "Removed", variant: "secondary" },
-  Deprecated: { label: "Deprecated", variant: "secondary" },
-};
-
-function groupTag(label: string) {
-  return GROUP_TAGS[label] ?? { label, variant: "outline" as const };
-}
-
 function formatDate(date: string): string {
-  // Dates are calendar days (IST); format without shifting time zones.
   return new Intl.DateTimeFormat("en", {
     month: "short",
     day: "numeric",
@@ -49,7 +30,7 @@ function renderInline(text: string): ReactNode {
     const key = `${index}-${part}`;
     if (part.startsWith("`") && part.endsWith("`")) {
       return (
-        <code key={key} className="rounded bg-muted px-1 text-xs">
+        <code key={key} className="rounded-sm bg-muted px-1 font-mono text-xs">
           {part.slice(1, -1)}
         </code>
       );
@@ -90,122 +71,93 @@ function ReleaseItem({
   return (
     <li
       id={id}
-      className="relative grid scroll-mt-8 gap-1.5 pb-8 last:pb-0 sm:grid-cols-[7rem_1fr] sm:gap-4"
+      className="grid scroll-mt-28 gap-3 border-border/70 border-b py-7 last:border-b-0 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-8 md:py-9"
     >
-      {/* Date rail */}
-      <div className="flex items-center gap-1.5 text-muted-foreground text-xs sm:block sm:pt-0.5 sm:text-right">
+      <div className="font-mono text-[11px] text-muted-foreground tabular-nums sm:pt-1">
         {release.date ? (
-          <time dateTime={release.date} className="tabular-nums">
-            {formatDate(release.date)}
-          </time>
+          <time dateTime={release.date}>{formatDate(release.date)}</time>
         ) : (
           <span>Next release</span>
         )}
       </div>
-
-      {/* Node + connector + content */}
-      <div className="relative border-border/60 border-l pl-5 sm:pb-0">
-        <span
-          aria-hidden
-          className={cn(
-            "absolute top-1 -left-[5px] size-2.5 rounded-full border-2 bg-background",
-            latest || unreleased ? "border-primary" : "border-border",
-          )}
-        />
-        <div className="flex flex-wrap items-center gap-1.5">
-          <h2 className="font-semibold text-sm">
+      <article>
+        <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h2 className="mt-0! border-0! pb-0! font-medium! text-2xl! tracking-[-0.05em]! md:text-3xl!">
             {unreleased ? (
               title
             ) : (
               <a
                 href={`${REPO}/releases/tag/${id}`}
-                className="hover:underline"
+                className="decoration-border underline-offset-4 hover:underline"
               >
                 {title}
               </a>
             )}
           </h2>
           {latest ? (
-            <Badge variant="default" size="sm">
-              Latest
-            </Badge>
+            <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.1em]">
+              Latest release
+            </span>
           ) : null}
-          {release.groups.map((group) => {
-            const tag = groupTag(group.label);
-            return (
-              <Badge key={group.label} variant={tag.variant} size="sm">
-                {tag.label}
-                <span className="tabular-nums">{group.items.length}</span>
-              </Badge>
-            );
-          })}
-        </div>
+        </header>
         {release.summary ? (
-          <p className="mt-1 text-muted-foreground text-sm">
+          <p className="mt-2 max-w-3xl text-muted-foreground leading-6">
             {renderInline(release.summary)}
           </p>
         ) : null}
-        <div className="mt-3 flex flex-col gap-3">
-          {release.groups.map((group) => {
-            const tag = groupTag(group.label);
-            return (
-              <section key={group.label} className="flex flex-col gap-1.5">
-                <h3 className="font-medium text-muted-foreground text-xs">
-                  {group.label}
-                </h3>
-                <ul className="flex flex-col gap-1">
-                  {group.items.map((item) => (
-                    <li
-                      key={item}
-                      className="flex gap-2 text-foreground/90 text-sm leading-relaxed"
-                    >
-                      <span
-                        aria-hidden
-                        className={cn(
-                          "mt-2 size-1.5 shrink-0 rounded-full",
-                          tag.variant === "success" && "bg-success",
-                          tag.variant === "info" && "bg-info",
-                          tag.variant === "warning" && "bg-warning",
-                          tag.variant === "error" && "bg-destructive",
-                          (tag.variant === "secondary" ||
-                            tag.variant === "outline") &&
-                            "bg-muted-foreground",
-                        )}
-                      />
-                      <span className="min-w-0">{renderInline(item)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          })}
+        <div
+          className={cn(
+            "mt-6 grid gap-x-8 gap-y-5",
+            release.groups.length > 1 && "sm:grid-cols-2",
+          )}
+        >
+          {release.groups.map((group) => (
+            <section
+              key={group.label}
+              className="border-border/70 border-t pt-3"
+            >
+              <h3 className="mt-0! mb-2! border-0! pb-0! font-mono! text-[10px]! text-muted-foreground! uppercase tracking-[0.1em]!">
+                {group.label}{" "}
+                <span className="tabular-nums">/ {group.items.length}</span>
+              </h3>
+              <ul className="flex flex-col gap-2">
+                {group.items.map((item) => (
+                  <li
+                    key={item}
+                    className="grid grid-cols-[0.5rem_minmax(0,1fr)] gap-2 text-foreground/90 text-sm leading-6"
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-[0.65rem] size-1 rounded-full bg-muted-foreground/60"
+                    />
+                    <span className="min-w-0">{renderInline(item)}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
         </div>
-      </div>
+      </article>
     </li>
   );
 }
 
-/**
- * Release history rendered from CHANGELOG.md at build time (#368), laid out
- * after ReUI timeline-5 (Release Changelog): a date rail, one timeline node
- * per version, type tags with counts, then Added / Changed / Fixed groups.
- */
 export default async function ChangelogPage() {
-  // Only dated releases; [Unreleased] is folded into a version at release time.
-  const releases = (await loadChangelog()).filter((r) => r.date);
+  const releases = (await loadChangelog()).filter((release) => release.date);
   const latestVersion = releases[0]?.version;
 
   return (
     <MarketingPage
-      title="Changelog"
-      description="Every Loftlancer release since the first commit. Versions 0.x cover earlier product names; 1.0.0 marks the Loftlancer name."
+      eyebrow="Product / Release notes"
+      title="Release notes"
+      description="A dated record of product releases, with additions, changes, and fixes from the project history."
     >
       {releases.length === 0 ? (
-        <p className="not-prose text-muted-foreground text-sm">
+        <p className="text-muted-foreground text-sm">
           Release notes are on <a href={`${REPO}/releases`}>GitHub Releases</a>.
         </p>
       ) : (
-        <ol className="not-prose" data-testid="changelog-timeline">
+        <ol data-testid="changelog-timeline">
           {releases.map((release) => (
             <ReleaseItem
               key={release.version}

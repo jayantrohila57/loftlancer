@@ -14,7 +14,11 @@ export const metadata = {
 
 export default function DpaPage() {
   return (
-    <LegalPage title="Data processing agreement (DPA)">
+    <LegalPage
+      title="Data processing agreement (DPA)"
+      description="Data processing terms for the hosted Loftlancer service. Publication is pending legal review."
+      href="/legal/dpa"
+    >
       <p>
         Data processing terms for enterprise customers will be published here.
         Self-hosted operators remain responsible for their own data processing
