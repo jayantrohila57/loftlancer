@@ -16,6 +16,8 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.20.0] - 2026-10-31
+
 ### Changed
 
 - Rebuilt the public marketing system and applied distinct editorial layouts across product, pricing, docs, status, changelog, and legal routes (#893).
@@ -965,7 +967,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.21...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.20.0...HEAD
+[1.20.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.21...v1.20.0
 [1.19.21]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.20...v1.19.21
 [1.19.20]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.19...v1.19.20
 [1.19.19]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.18...v1.19.19
