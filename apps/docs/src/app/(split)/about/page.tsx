@@ -1,3 +1,4 @@
+import { Button } from "@loftlancer/ui/button";
 import { docsUrl } from "@loftlancer/ui/platform-urls";
 
 import { MarketingPage } from "@/components/marketing-page";
@@ -10,59 +11,117 @@ export const metadata = pageMetadata({
   path: "/about",
 });
 
+const principles = [
+  {
+    number: "01",
+    title: "Keep the structure visible",
+    description:
+      "Organizations, teams, projects, and project apps form a hierarchy people can understand and manage.",
+  },
+  {
+    number: "02",
+    title: "Put access near the work",
+    description:
+      "Roles and project grants make it possible to give people access at the level where they need to contribute.",
+  },
+  {
+    number: "03",
+    title: "Treat configuration as part of the project",
+    description:
+      "Environment values live alongside project access and are encrypted at rest, with their values masked in the interface.",
+  },
+];
+
 export default function AboutPage() {
   const docs = docsUrl();
 
   return (
     <MarketingPage
+      eyebrow="Company / About"
       title="About Loftlancer"
-      description="A collaborative workspace for encrypted project configuration and team access."
+      description="Loftlancer brings project structure, team access, and encrypted configuration into one shared place."
     >
-      <section aria-labelledby="mission">
-        <h2 id="mission">One workspace for project operations</h2>
-        <p>
-          Loftlancer helps teams manage organizations, projects, people, and
-          installable project apps together. It keeps the structure around work
-          clear before people start managing the details.
+      <section className="grid gap-5 border-foreground/15 border-b pb-10 md:grid-cols-[0.6fr_1.4fr] md:gap-12 md:pb-14">
+        <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.12em]">
+          Why Loftlancer exists
         </p>
-      </section>
-
-      <section
-        className="not-prose mt-8 grid gap-4 sm:grid-cols-2"
-        aria-label="What Loftlancer manages"
-      >
-        <div className="rounded-xl border bg-card p-5 text-card-foreground">
-          <h2 className="font-medium text-base">
-            Access that follows the workspace
-          </h2>
-          <p className="mt-2 text-muted-foreground text-sm leading-relaxed">
-            Organizations add members and teams, while roles and project access
-            define what each person can view or change.
+        <div className="max-w-3xl">
+          <p className="text-pretty font-medium text-2xl leading-snug tracking-[-0.04em] md:text-3xl">
+            Project work touches people, permissions, environments, and tools.
+            Loftlancer gives those pieces a shared home.
           </p>
-        </div>
-        <div className="rounded-xl border bg-card p-5 text-card-foreground">
-          <h2 className="font-medium text-base">Protected configuration</h2>
-          <p className="mt-2 text-muted-foreground text-sm leading-relaxed">
-            Environment values are encrypted at rest and masked until an
-            authorized person chooses to reveal them.
+          <p className="mt-5 max-w-2xl text-muted-foreground leading-7">
+            The product is built for teams that want to keep operational context
+            close to the projects they work on, with clear ownership and access
+            along the way.
           </p>
         </div>
       </section>
 
-      <section>
-        <h2>Learn and contribute</h2>
-        <p>
-          Read the <a href={docs}>documentation</a> to get started, or explore
-          the open source code on{" "}
-          <a
-            href="https://github.com/jayantrohila57/loftlancer"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
-          .
+      <section className="mt-10 md:mt-14" aria-labelledby="principles-heading">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="mb-2 font-mono text-[10px] text-muted-foreground uppercase tracking-[0.12em]">
+              Product principles
+            </p>
+            <h2
+              id="principles-heading"
+              className="mt-0! border-0! pb-0! text-3xl! tracking-[-0.05em]! md:text-4xl!"
+            >
+              How the product is organized
+            </h2>
+          </div>
+          <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+            03 / PRINCIPLES
+          </span>
+        </div>
+        <ol className="divide-y divide-border/70 border-foreground/15 border-y">
+          {principles.map((item) => (
+            <li
+              key={item.number}
+              className="grid gap-2 py-5 sm:grid-cols-[3rem_0.8fr_1.2fr] sm:gap-4 md:py-6"
+            >
+              <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                {item.number}
+              </span>
+              <h3 className="mt-0! font-medium text-base tracking-tight">
+                {item.title}
+              </h3>
+              <p className="max-w-xl text-muted-foreground text-sm leading-6">
+                {item.description}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="mt-10 grid gap-5 border-foreground/15 border-t pt-8 sm:grid-cols-[0.6fr_1.4fr] sm:items-center md:mt-14 md:pt-10">
+        <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.12em]">
+          Learn and contribute
         </p>
+        <div className="flex flex-wrap items-center justify-between gap-5">
+          <p className="max-w-2xl text-muted-foreground leading-7">
+            Read the product documentation or explore the open source project on
+            GitHub.
+          </p>
+          <div className="flex flex-wrap gap-2.5">
+            <Button variant="outline" render={<a href={docs} />}>
+              Documentation
+            </Button>
+            <Button
+              variant="outline"
+              render={
+                <a
+                  href="https://github.com/jayantrohila57/loftlancer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              }
+            >
+              GitHub
+            </Button>
+          </div>
+        </div>
       </section>
     </MarketingPage>
   );

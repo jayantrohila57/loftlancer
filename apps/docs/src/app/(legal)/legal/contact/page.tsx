@@ -14,7 +14,11 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <LegalPage title="Contact">
+    <LegalPage
+      title="Contact"
+      description="How to reach Loftlancer for product support, legal, and privacy requests."
+      href="/legal/contact"
+    >
       <p>
         For product support, sign in to your dashboard and open a ticket under
         Help. For legal or privacy requests, contact the repository owner listed

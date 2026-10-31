@@ -13,6 +13,7 @@ export const metadata = pageMetadata({
 export default function StatusPage() {
   return (
     <MarketingPage
+      eyebrow="Platform / Status"
       title="Status"
       description="Live checks of our monitored services, refreshed every minute."
     >

@@ -14,7 +14,11 @@ export const metadata = {
 
 export default function CookiesPage() {
   return (
-    <LegalPage title="Cookie policy">
+    <LegalPage
+      title="Cookie policy"
+      description="How Loftlancer uses cookies and remembers your analytics choice."
+      href="/legal/cookies"
+    >
       <p>
         Loftlancer uses cookies and local storage to keep you signed in and
         remember your analytics choice.

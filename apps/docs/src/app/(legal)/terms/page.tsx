@@ -1,3 +1,4 @@
+import { LegalPolicyNav } from "@/components/legal-page";
 import { MarketingPage } from "@/components/marketing-page";
 import { pageMetadata } from "@/lib/seo";
 
@@ -10,8 +11,10 @@ export const metadata = pageMetadata({
 export default function TermsPage() {
   return (
     <MarketingPage
+      eyebrow="Trust / Terms"
       title="Terms of use"
       description="Last updated October 2026."
+      aside={<LegalPolicyNav currentHref="/terms" />}
     >
       <h2>Service</h2>
       <p>

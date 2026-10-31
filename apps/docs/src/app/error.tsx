@@ -1,9 +1,11 @@
 "use client";
 
 import { logger } from "@loftlancer/logger";
-import { AppRouteErrorPage } from "@loftlancer/ui/patterns/app-route-states";
-import { Auth5Content, Auth5Frame } from "@loftlancer/ui/patterns/auth-5";
+import { buildSignInUrl } from "@loftlancer/ui/auth-links";
+import { MarketingPageShell } from "@loftlancer/ui/marketing";
 import { useEffect } from "react";
+import { MarketingRouteState } from "@/components/marketing-route-state";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function RouteError({
   error,
@@ -18,10 +20,19 @@ export default function RouteError({
   }, [error]);
 
   return (
-    <Auth5Frame>
-      <Auth5Content>
-        <AppRouteErrorPage error={error} reset={reset} />
-      </Auth5Content>
-    </Auth5Frame>
+    <MarketingPageShell
+      signInHref={buildSignInUrl()}
+      headerActions={<ModeToggle />}
+    >
+      <MarketingRouteState
+        code="500"
+        title="We couldn’t load this page."
+        description="Something interrupted the page. Try again, or return to the Loftlancer home page."
+        actionHref="/"
+        actionLabel="Back to home"
+        secondaryLabel="Try again"
+        secondaryAction={reset}
+      />
+    </MarketingPageShell>
   );
 }

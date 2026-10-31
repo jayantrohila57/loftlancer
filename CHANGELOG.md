@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Rebuilt the public marketing system and applied distinct editorial layouts across product, pricing, docs, status, changelog, and legal routes (#893).
+
 ## [1.19.21] - 2026-10-29
 
 ### Changed
