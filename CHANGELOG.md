@@ -23,6 +23,8 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 - Removed obsolete root planning docs and `scripts/commit-workflow.md`; slimmed [AGENTS.md](./AGENTS.md) (#911).
 - Moved integrations inventory; removed historical `docs/archive/` (#911).
 - Merged reset-seed into [docs/database.md](./docs/database.md); replaced product specs with [docs/product.md](./docs/product.md) recipe (#911).
+- Mounted production MCP HTTP at `loftlancer.com/api/mcp` on the docs app; MCP org mutations audit once with `source: mcp` (#760).
+- Added oRPC parallel-surface regression tests and tightened MCP allowlist tests (#758).
 
 ### Removed
 

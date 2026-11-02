@@ -1,8 +1,10 @@
+import type { ActionName } from "@loftlancer/actions";
 import {
   canAssignOrganizationInviteRole,
   DEFAULT_TEAM_PROJECT_GRANTS,
   mergeProjectMemberGrants,
 } from "@loftlancer/actions";
+import type { WriteAuthAuditEventInput } from "@loftlancer/auth/audit-event";
 import { writeAuthAuditEvent } from "@loftlancer/auth/audit-event";
 import {
   getOwnerMutationBlockReason,
@@ -35,10 +37,51 @@ import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
 import { and, eq, gt, inArray, isNull, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import { requireAction } from "../actions/require-action";
+import { writeAuditEvent } from "../actions/audit-event-writer";
+import {
+  type RequireActionContext,
+  requireAction,
+} from "../actions/require-action";
+import { getMcpAuditContext } from "../mcp-audit-context";
 import { transferOrganizationOwnership } from "../organization-ownership";
 import { safeHttpUrlSchema } from "../organization-profile-validation";
 import { resolveOrganizationIdForUser } from "./resolve-organization";
+
+async function requireOrgAction(
+  action: ActionName,
+  ctx: RequireActionContext,
+): Promise<void> {
+  const mcp = getMcpAuditContext();
+  await requireAction(action, {
+    ...ctx,
+    audit: mcp ? false : ctx.audit,
+  });
+}
+
+async function recordMutationAudit(
+  input: WriteAuthAuditEventInput,
+): Promise<void> {
+  if (getMcpAuditContext()) {
+    await writeAuditEvent({
+      action: input.action,
+      result: input.result,
+      actorUserId: input.actorUserId,
+      organizationId: input.organizationId,
+      projectId: input.projectId,
+      entityId: input.entityId,
+      targetUserId: input.targetUserId,
+      denialReason: input.denialReason,
+      payload: {
+        ...input.payload,
+        ...(input.entitySlug ? { entitySlug: input.entitySlug } : {}),
+      },
+      ipAddress: input.ipAddress,
+      userAgent: input.userAgent,
+    });
+    return;
+  }
+  await writeAuthAuditEvent(input);
+}
 
 type OrganizationMutationTx = Parameters<
   Parameters<typeof db.transaction>[0]
@@ -143,7 +186,7 @@ export async function mcpOrganizationCreate(
   userId: string,
   input: { name: string; slug?: string },
 ) {
-  await requireAction("organization.create", { userId });
+  await requireOrgAction("organization.create", { userId });
   const name = input.name.trim();
   if (!name) {
     throw new Error("invalid_input: name");
@@ -169,7 +212,7 @@ export async function mcpOrganizationCreate(
     });
   });
 
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "organization.create",
     result: "success",
     actorUserId: userId,
@@ -190,7 +233,7 @@ export async function mcpOrganizationUpdate(
     | "organization.update"
     | "organization.settings.update" = "organization.update",
 ) {
-  await requireAction(action, { userId, organizationId });
+  await requireOrgAction(action, { userId, organizationId });
   const update: Record<string, unknown> = {};
   if (input.name !== undefined) update.name = input.name.trim();
   if (input.logo !== undefined) {
@@ -217,7 +260,7 @@ export async function mcpOrganizationUpdate(
   if (!row) {
     throw new Error("organization_not_found");
   }
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "organization.update",
     result: "success",
     actorUserId: userId,
@@ -233,7 +276,7 @@ export async function mcpOrganizationDelete(
   userId: string,
   organizationId: string,
 ) {
-  await requireAction("organization.delete", { userId, organizationId });
+  await requireOrgAction("organization.delete", { userId, organizationId });
   const [org] = await db
     .select()
     .from(organization)
@@ -254,7 +297,7 @@ export async function mcpOrganizationDelete(
   } else {
     await db.delete(organization).where(eq(organization.id, organizationId));
   }
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "organization.delete",
     result: "success",
     actorUserId: userId,
@@ -270,7 +313,7 @@ export async function mcpOrganizationRestore(
   userId: string,
   organizationId: string,
 ) {
-  await requireAction("organization.restore", { userId, organizationId });
+  await requireOrgAction("organization.restore", { userId, organizationId });
   if (!isSoftDeletesEnabled()) {
     throw new Error("soft_deletes_disabled");
   }
@@ -282,7 +325,7 @@ export async function mcpOrganizationRestore(
   if (!row) {
     throw new Error("organization_not_found");
   }
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "organization.restore",
     result: "success",
     actorUserId: userId,
@@ -297,7 +340,7 @@ export async function mcpOrganizationView(
   userId: string,
   organizationId: string,
 ) {
-  await requireAction("organization.view", { userId, organizationId });
+  await requireOrgAction("organization.view", { userId, organizationId });
   const [row] = await db
     .select({
       id: organization.id,
@@ -329,7 +372,7 @@ export async function mcpOrganizationTransferOwnership(
   organizationId: string,
   targetUserId: string,
 ) {
-  await requireAction("organization.transfer_ownership", {
+  await requireOrgAction("organization.transfer_ownership", {
     userId,
     organizationId,
     targetUserId,
@@ -342,7 +385,7 @@ export async function mcpOrganizationTransferOwnership(
 }
 
 export async function mcpMembersList(userId: string, organizationId: string) {
-  await requireAction("member.list", { userId, organizationId });
+  await requireOrgAction("member.list", { userId, organizationId });
   const inviter = alias(user, "member_inviter");
   const updater = alias(user, "member_updater");
   const [rows, roleAssignments, rolePermissions] = await Promise.all([
@@ -435,7 +478,7 @@ export async function mcpMemberSetSuspended(
   suspended: boolean,
   reason?: string,
 ) {
-  await requireAction("member.suspend", {
+  await requireOrgAction("member.suspend", {
     userId,
     organizationId,
     entityId: memberId,
@@ -490,7 +533,7 @@ export async function mcpMemberSetSuspended(
     return { changed: true };
   });
   if (result.changed) {
-    await writeAuthAuditEvent({
+    await recordMutationAudit({
       action: "member.suspend",
       result: "success",
       actorUserId: userId,
@@ -509,17 +552,17 @@ export async function mcpMemberInvite(
   options?: { alreadyAuthorized?: boolean; audit?: boolean },
 ) {
   if (!options?.alreadyAuthorized) {
-    await requireAction("member.invite", { userId, organizationId });
+    await requireOrgAction("member.invite", { userId, organizationId });
   }
   if (input.projectId && !options?.alreadyAuthorized) {
-    await requireAction("project.permission.grant", {
+    await requireOrgAction("project.permission.grant", {
       userId,
       organizationId,
       projectId: input.projectId,
     });
   }
   if (input.teamId) {
-    await requireAction("team.member.add", {
+    await requireOrgAction("team.member.add", {
       userId,
       organizationId,
       teamId: input.teamId,
@@ -690,7 +733,7 @@ export async function mcpMemberInvite(
     throw error;
   }
   if (options?.audit !== false) {
-    await writeAuthAuditEvent({
+    await recordMutationAudit({
       action: "member.invite",
       result: "success",
       actorUserId: userId,
@@ -714,7 +757,7 @@ export async function mcpMemberRemove(
   targetUserId: string,
   reason?: string,
 ) {
-  await requireAction("member.remove", {
+  await requireOrgAction("member.remove", {
     userId,
     organizationId,
     targetUserId,
@@ -826,7 +869,7 @@ export async function mcpMemberRemove(
     }
     return { memberId: target.id };
   });
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "member.remove",
     result: "success",
     actorUserId: userId,
@@ -846,7 +889,7 @@ export async function mcpMemberUpdateRole(
   targetUserId: string,
   role: string,
 ) {
-  await requireAction("member.role.update", {
+  await requireOrgAction("member.role.update", {
     userId,
     organizationId,
     targetUserId,
@@ -900,7 +943,7 @@ export async function mcpMemberUpdateRole(
     if (!updated) throw new Error("member_not_found");
     return { member: updated, previousRole };
   });
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "member.role.update",
     result: "success",
     actorUserId: userId,
@@ -916,7 +959,7 @@ export async function mcpInvitationsList(
   userId: string,
   organizationId: string,
 ) {
-  await requireAction("member.list", { userId, organizationId });
+  await requireOrgAction("member.list", { userId, organizationId });
   const rows = await db
     .select()
     .from(invitation)
@@ -930,7 +973,7 @@ export async function mcpInvitationCancel(
   organizationId: string,
   invitationId: string,
 ) {
-  await requireAction("invitation.cancel", { userId, organizationId });
+  await requireOrgAction("invitation.cancel", { userId, organizationId });
   const [row] = await db
     .update(invitation)
     .set({ status: "cancelled" })
@@ -945,7 +988,7 @@ export async function mcpInvitationCancel(
   if (!row) {
     throw new Error("invitation_not_found");
   }
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "invitation.cancel",
     result: "success",
     actorUserId: userId,
@@ -989,7 +1032,7 @@ export async function mcpInvitationAccept(
   ) {
     throw new Error("invitation_email_mismatch");
   }
-  await requireAction("invitation.accept", {
+  await requireOrgAction("invitation.accept", {
     userId,
     targetUserId: userId,
   });
@@ -1182,7 +1225,7 @@ export async function mcpInvitationAccept(
     return { memberId, organizationId: invite.organizationId };
   });
 
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "invitation.accept",
     result: "success",
     actorUserId: userId,
@@ -1231,7 +1274,7 @@ export async function mcpInvitationReject(
     throw new Error("invitation_email_mismatch");
   }
 
-  await requireAction("invitation.reject", {
+  await requireOrgAction("invitation.reject", {
     userId,
     targetUserId: userId,
   });
@@ -1258,7 +1301,7 @@ export async function mcpInvitationReject(
       organizationId: invitation.organizationId,
     });
   if (!rejected) throw new Error("invitation_not_pending");
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "invitation.reject",
     result: "success",
     actorUserId: userId,
@@ -1271,7 +1314,7 @@ export async function mcpInvitationReject(
 }
 
 export async function mcpTeamsList(userId: string, organizationId: string) {
-  await requireAction("member.list", { userId, organizationId });
+  await requireOrgAction("member.list", { userId, organizationId });
   const rows = await db
     .select()
     .from(team)
@@ -1285,7 +1328,11 @@ export async function teamMembersList(
   organizationId: string,
   teamId: string,
 ) {
-  await requireAction("team.member.list", { userId, organizationId, teamId });
+  await requireOrgAction("team.member.list", {
+    userId,
+    organizationId,
+    teamId,
+  });
   const [row] = await db
     .select({ id: team.id })
     .from(team)
@@ -1336,7 +1383,7 @@ export async function teamEligibleMembersList(
   organizationId: string,
   teamId: string,
 ) {
-  await requireAction("team.member.add", {
+  await requireOrgAction("team.member.add", {
     userId,
     organizationId,
     teamId,
@@ -1379,7 +1426,7 @@ export async function mcpTeamCreate(
   name: string,
   details: { description?: string | null; purpose?: string | null } = {},
 ) {
-  await requireAction("team.create", { userId, organizationId });
+  await requireOrgAction("team.create", { userId, organizationId });
   const normalizedName = name.trim();
   if (!normalizedName) throw new Error("invalid_team_name");
   const teamId = crypto.randomUUID();
@@ -1405,7 +1452,7 @@ export async function mcpTeamCreate(
       updatedBy: userId,
     });
   });
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "team.create",
     result: "success",
     actorUserId: userId,
@@ -1423,7 +1470,7 @@ export async function mcpTeamUpdate(
   name: string,
   details: { description?: string | null; purpose?: string | null } = {},
 ) {
-  await requireAction("team.update", { userId, organizationId });
+  await requireOrgAction("team.update", { userId, organizationId });
   const normalizedName = name.trim();
   if (!normalizedName) throw new Error("invalid_team_name");
   const values: {
@@ -1458,7 +1505,7 @@ export async function mcpTeamUpdate(
   if (!row) {
     throw new Error("team_not_found");
   }
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "team.update",
     result: "success",
     actorUserId: userId,
@@ -1474,7 +1521,7 @@ export async function mcpTeamDelete(
   organizationId: string,
   teamId: string,
 ) {
-  await requireAction("team.delete", { userId, organizationId });
+  await requireOrgAction("team.delete", { userId, organizationId });
   await db.transaction(async (tx) => {
     const [activeOrganization] = await tx
       .select({ id: organization.id })
@@ -1529,7 +1576,7 @@ export async function mcpTeamDelete(
         );
     }
   });
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "team.delete",
     result: "success",
     actorUserId: userId,
@@ -1544,7 +1591,7 @@ export async function mcpTeamRestore(
   organizationId: string,
   teamId: string,
 ) {
-  await requireAction("team.restore", { userId, organizationId });
+  await requireOrgAction("team.restore", { userId, organizationId });
   if (!isSoftDeletesEnabled()) {
     throw new Error("soft_deletes_disabled");
   }
@@ -1556,7 +1603,7 @@ export async function mcpTeamRestore(
   if (!row) {
     throw new Error("team_not_found");
   }
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "team.restore",
     result: "success",
     actorUserId: userId,
@@ -1572,7 +1619,7 @@ export async function mcpTeamAddMember(
   teamId: string,
   targetUserId: string,
 ) {
-  await requireAction("team.member.add", { userId, organizationId, teamId });
+  await requireOrgAction("team.member.add", { userId, organizationId, teamId });
   await db.transaction(async (tx) => {
     const [activeMember] = await tx
       .select({ id: member.id, role: member.role })
@@ -1633,7 +1680,7 @@ export async function mcpTeamAddMember(
       .set({ memberCount: count?.count ?? 0 })
       .where(eq(team.id, teamId));
   });
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "team.member.add",
     result: "success",
     actorUserId: userId,
@@ -1650,7 +1697,11 @@ export async function mcpTeamRemoveMember(
   teamId: string,
   targetUserId: string,
 ) {
-  await requireAction("team.member.remove", { userId, organizationId, teamId });
+  await requireOrgAction("team.member.remove", {
+    userId,
+    organizationId,
+    teamId,
+  });
   await db.transaction(async (tx) => {
     const [teamRow] = await tx
       .select({ id: team.id })
@@ -1694,7 +1745,7 @@ export async function mcpTeamRemoveMember(
       .set({ memberCount: count?.count ?? 0 })
       .where(eq(team.id, teamId));
   });
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "team.member.remove",
     result: "success",
     actorUserId: userId,
@@ -1712,7 +1763,7 @@ export async function mcpTeamChangeMemberRole(
   targetUserId: string,
   role: "lead" | "member",
 ) {
-  await requireAction("team.member.role.change", {
+  await requireOrgAction("team.member.role.change", {
     userId,
     organizationId,
     teamId,
@@ -1765,7 +1816,7 @@ export async function mcpTeamChangeMemberRole(
       .set({ role, updatedAt: new Date(), updatedBy: userId })
       .where(eq(teamMember.id, row.membershipId));
   });
-  await writeAuthAuditEvent({
+  await recordMutationAudit({
     action: "team.member.role.change",
     result: "success",
     actorUserId: userId,

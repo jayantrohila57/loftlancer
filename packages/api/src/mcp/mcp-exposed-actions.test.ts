@@ -25,7 +25,12 @@ describe("MCP exposed actions", () => {
     assert.ok(exposed.has("variable.reveal"));
   });
 
-  it("exposes organization member suspension through the shared MCP guards", () => {
-    assert.ok(listMcpExposedActions().includes("member.suspend"));
+  it("does not register notification tools (user-scoped; studio UI only)", () => {
+    const exposed = new Set(listMcpExposedActions());
+    for (const name of Object.keys(mcpActionHandlers)) {
+      if (name.startsWith("notification.")) {
+        assert.ok(!exposed.has(name));
+      }
+    }
   });
 });
