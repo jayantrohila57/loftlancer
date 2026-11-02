@@ -17,6 +17,7 @@ export async function teamMemberRoleChangeController({
         ...ctx,
         teamId: parsed.data.teamId,
         entityId: parsed.data.teamId,
+        payload: { role: parsed.data.role },
         targetUserId: parsed.data.userId,
       }
     : ctx;

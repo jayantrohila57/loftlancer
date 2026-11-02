@@ -28,6 +28,7 @@ const ctx = {
   orgId: "org",
   ip: "127.0.0.1",
   userAgent: "test",
+  payload: { name: "Platform" },
 };
 test("mutations audit the terminal outcome once and preserve safe response contracts", async () => {
   audit.length = 0;
@@ -45,6 +46,7 @@ test("mutations audit the terminal outcome once and preserve safe response contr
   assert.equal(audit[0]?.result, "success");
   assert.equal(audit[0]?.entityId, "new-team");
   assert.equal(audit[0]?.ipAddress, ctx.ip);
+  assert.deepEqual(audit[0]?.payload, ctx.payload);
   audit.length = 0;
   let called = false;
   deny = "FORBIDDEN";

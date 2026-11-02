@@ -23,6 +23,7 @@ export type RunActionContext = {
   entityId?: string | null;
   ip?: string | null;
   userAgent?: string | null;
+  payload?: Record<string, unknown>;
 };
 export type RunActionInput<T> = {
   action: ActionName;
@@ -105,6 +106,7 @@ export async function runAction<T>(
         ipAddress: input.ctx.ip,
         userAgent: input.ctx.userAgent,
         durationMs: Date.now() - started,
+        payload: input.ctx.payload,
         ...(result === "denied" ? { denialReason: response.message } : {}),
       });
     } catch (error) {

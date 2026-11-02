@@ -13,7 +13,12 @@ export async function teamUpdateController({
 }) {
   const parsed = teamUpdateInputSchema.safeParse(input);
   const scoped = parsed.success
-    ? { ...ctx, teamId: parsed.data.teamId, entityId: parsed.data.teamId }
+    ? {
+        ...ctx,
+        teamId: parsed.data.teamId,
+        entityId: parsed.data.teamId,
+        payload: { name: parsed.data.name },
+      }
     : ctx;
   return runAction({
     action: "team.update",

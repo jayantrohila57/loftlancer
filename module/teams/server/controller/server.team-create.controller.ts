@@ -14,14 +14,14 @@ export async function teamCreateController({
   input?: unknown;
   ctx: RunActionContext;
 }) {
+  const parsed = teamCreateInputSchema.safeParse(input);
   const response = await runAction<TeamDto>({
     action: "team.create",
-    ctx,
+    ctx: parsed.success ? { ...ctx, payload: { name: parsed.data.name } } : ctx,
     audit: true,
     validate: (response) =>
       serviceResponseSchema(teamDtoSchema).parse(response),
     handler: async () => {
-      const parsed = teamCreateInputSchema.safeParse(input);
       if (!parsed.success)
         return {
           kind: "failed" as const,
