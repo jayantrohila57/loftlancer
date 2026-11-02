@@ -26,6 +26,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 - Mounted production MCP HTTP at `loftlancer.com/api/mcp` on the docs app; MCP org mutations audit once with `source: mcp` (#760).
 - Added oRPC parallel-surface regression tests and tightened MCP allowlist tests (#758).
 - Added project agent skills (COSS, shadcn, Neon/Drizzle, design/UX, Vercel React/Turborepo, composition patterns) under `.agents/skills/` with `skills-lock.json`.
+- Added AI SDK, oRPC, Better Auth, TypeScript, and web-design agent skills to `.agents/skills/`.
 - Regenerated public MCP tool docs for `member.suspend` and organization archive/unarchive actions.
 
 ### Removed
