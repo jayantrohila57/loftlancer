@@ -1,0 +1,13 @@
+{
+  "extends": "@loftlancer/config/tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "paths": {
+      "@module/*": ["./*"]
+    }
+  },
+  "include": ["./**/*.ts", "./**/*.tsx"],
+  "exclude": ["./node_modules"]
+}

@@ -709,6 +709,22 @@ importers:
         specifier: 'catalog:'
         version: 7.0.2
 
+  module:
+    dependencies:
+      '@loftlancer/actions':
+        specifier: workspace:*
+        version: link:../packages/actions
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      '@loftlancer/config':
+        specifier: workspace:*
+        version: link:../packages/config
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
   packages/actions:
     dependencies:
       better-auth:

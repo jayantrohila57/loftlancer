@@ -79,7 +79,7 @@ export function resolveDatabaseConnectionString(
   return finalizeConnectionString(raw);
 }
 
-/** Warn on production DATABASE_URL values with absent or weak sslmode. */
+/** Warn on production DATABASE_URL values that stay weak after sslmode normalization. */
 export function warnOnWeakDatabaseSslMode(
   connectionString: string,
   environment: string,
@@ -87,13 +87,18 @@ export function warnOnWeakDatabaseSslMode(
 ): boolean {
   if (environment !== "production") return false;
   try {
-    const url = new URL(connectionString.trim());
+    const trimmed = connectionString.trim();
+    const url = new URL(trimmed);
     if (!url.hostname.includes(".neon.tech")) return false;
-    const sslmode = url.searchParams.get("sslmode")?.toLowerCase();
-    if (sslmode === "verify-full") return false;
+    const normalized = normalizeDatabaseSslModeInUrl(trimmed);
+    const normalizedSslmode = new URL(normalized).searchParams
+      .get("sslmode")
+      ?.toLowerCase();
+    if (normalizedSslmode === "verify-full") return false;
+    const rawSslmode = url.searchParams.get("sslmode")?.toLowerCase();
     warn("database connection URL should use sslmode=verify-full", {
       host: url.hostname,
-      sslmode: sslmode ?? "missing",
+      sslmode: rawSslmode ?? "missing",
     });
     return true;
   } catch {

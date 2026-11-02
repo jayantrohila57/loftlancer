@@ -79,7 +79,7 @@ describe("warnOnWeakDatabaseSslMode", () => {
     assert.equal(JSON.stringify(messages).includes("password"), false);
   });
 
-  it("ignores local, non-Neon, and verify-full URLs", () => {
+  it("ignores local, non-Neon, verify-full, and legacy modes normalized to verify-full", () => {
     const warn = () => assert.fail("unexpected warning");
     assert.equal(
       warnOnWeakDatabaseSslMode(
@@ -92,6 +92,14 @@ describe("warnOnWeakDatabaseSslMode", () => {
     assert.equal(
       warnOnWeakDatabaseSslMode(
         "postgresql://ep-test.neon.tech/db?sslmode=verify-full",
+        "production",
+        warn,
+      ),
+      false,
+    );
+    assert.equal(
+      warnOnWeakDatabaseSslMode(
+        "postgresql://ep-test.neon.tech/db?sslmode=require",
         "production",
         warn,
       ),

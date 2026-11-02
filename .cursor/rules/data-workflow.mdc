@@ -1,0 +1,40 @@
+---
+description: ServiceResponse success|failed|error; controller validates; UI toast + boundary
+globs: module/**/server/**,module/**/client/hooks/**,module/shared/utils/**,packages/api/**
+alwaysApply: false
+---
+
+# Data workflow
+
+Full spec: **[docs/data-workflow.md](../docs/data-workflow.md)**
+
+## ServiceResponse (all APIs)
+
+Every controller exit (oRPC, actions, routes, MCP, loaders) returns:
+
+```text
+{ status: success | failed | error, data, message, error? }
+```
+
+- **`success`** — done; `data` may be null/[] → UI **empty state**
+- **`failed`** — validation, business rules, expected deny — **not** system fault
+- **`error`** — system/unexpected failures only
+
+Validate with **`module/shared/utils/validation`** schema before return.
+
+## Flow
+
+`service` → `controller` (map + parse) → transport → hook/loader → **toast** + **component**
+
+## UI
+
+1. **Toast** (mutations/refetch): success=green, failed=yellow/warn, error=red
+2. **Body**: success+data=content; success+no data=empty; failed=validation message; error=error box
+
+Components render props only — no mixed fetch/logic. **`loading`** is UI pending, not a response status.
+
+## Forbidden
+
+- Throwing for expected validation to the client without `failed` response
+- Different JSON shapes per endpoint
+- Using `error` for fixable validation

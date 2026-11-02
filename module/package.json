@@ -1,0 +1,16 @@
+{
+  "name": "@loftlancer/module-shared",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@loftlancer/actions": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@loftlancer/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

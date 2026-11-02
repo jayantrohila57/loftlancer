@@ -25,6 +25,7 @@
       "!**/.wrangler",
       "!**/.alchemy",
       "!**/.svelte-kit",
+      "!**/.agents",
       "!**/wrangler.jsonc",
       "!**/.source",
       "!**/convex/_generated",
@@ -48,10 +49,7 @@
       "nursery": {
         "useSortedClasses": {
           "level": "warn",
-          "fix": "safe",
-          "options": {
-            "functions": ["clsx", "cva", "cn"]
-          }
+          "fix": "safe"
         }
       },
       "style": {
