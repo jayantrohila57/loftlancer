@@ -25,6 +25,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 - Merged reset-seed into [docs/database.md](./docs/database.md); replaced product specs with [docs/product.md](./docs/product.md) recipe (#911).
 - Mounted production MCP HTTP at `loftlancer.com/api/mcp` on the docs app; MCP org mutations audit once with `source: mcp` (#760).
 - Added oRPC parallel-surface regression tests and tightened MCP allowlist tests (#758).
+- Added project agent skills (COSS, shadcn, Vercel React/Turborepo, composition patterns) under `.agents/skills/` with `skills-lock.json`.
 
 ### Removed
 
