@@ -43,7 +43,7 @@ export async function getPrivateFile(input: {
     audit: false,
   });
   const result = await get(file.pathname, { access: "private", token });
-  if (!result || result.statusCode !== 200 || !result.stream) {
+  if (result?.statusCode !== 200 || !result.stream) {
     throw new TRPCError({
       code: "NOT_FOUND",
       message: "File object not found.",
