@@ -17,20 +17,21 @@ import {
   mcpTeamDelete,
   mcpTeamRemoveMember,
   mcpTeamRestore,
-  mcpTeamsList,
   mcpTeamUpdate,
   teamEligibleMembersList,
   teamMembersList,
 } from "../mcp/organization-ops";
+import { getTeams } from "../modules/teams/api/api.get-teams";
 
 export const teamsRouter = router({
-  list: orgProcedure.use(actionGuard("member.list")).query(async ({ ctx }) => {
-    const organizationId = ctx.activeOrganizationId;
-    if (!organizationId) {
-      return { items: [] };
-    }
-    return mcpTeamsList(ctx.session.user.id, organizationId);
-  }),
+  list: orgProcedure.query(({ ctx }) =>
+    getTeams({
+      userId: ctx.session.user.id,
+      organizationId: ctx.activeOrganizationId ?? null,
+      ipAddress: ctx.ipAddress,
+      userAgent: ctx.userAgent,
+    }),
+  ),
 
   members: orgProcedure
     .input(z.object({ teamId: z.string().min(1) }))
