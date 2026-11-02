@@ -4,6 +4,7 @@ export * from "./audit-event";
 export * from "./auth";
 export * from "./device-code";
 export * from "./jwks";
+export * from "./mail";
 export * from "./notifications";
 export * from "./oauth";
 export * from "./organization";

@@ -941,6 +941,8 @@ export const organizationsRouter = router({
         invitationId: row.id,
         email: row.email,
         role: row.role,
+        organizationId,
+        inviterUserId: ctx.session.user.id,
         organizationName: `project ${row.projectName} in ${row.organizationName}`,
         inviterName: ctx.session.user.name || ctx.session.user.email,
       });
@@ -1023,6 +1025,8 @@ export const organizationsRouter = router({
         invitationId: row.id,
         email: row.email,
         role: row.role,
+        organizationId,
+        inviterUserId: ctx.session.user.id,
         organizationName: row.organizationName,
         inviterName: ctx.session.user.name || ctx.session.user.email,
       });

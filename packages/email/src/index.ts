@@ -1,4 +1,5 @@
 export {
+  type EmailContext,
   type EmailRecorder,
   isEmailConfigured,
   type RecordedEmail,

@@ -1,0 +1,23 @@
+{
+  "name": "@loftlancer/mail",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test node --import tsx --test src/recorder.test.ts"
+  },
+  "dependencies": {
+    "@loftlancer/db": "workspace:*",
+    "@loftlancer/email": "workspace:*",
+    "drizzle-orm": "catalog:"
+  },
+  "devDependencies": {
+    "@loftlancer/config": "workspace:*",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

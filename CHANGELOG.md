@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Added the persisted Mail foundation for shared-sender messages, recipients, and delivery state (#344).
 - Put the public documentation reader inside the shared public sidebar and header while preserving its document content and table of contents (#221).
 - Moved Studio, authorization, documentation, and public feature ownership into server-first modules, keeping routes focused on guards and composition (#891).
 
