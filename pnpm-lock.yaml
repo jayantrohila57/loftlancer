@@ -266,6 +266,9 @@ importers:
       '@loftlancer/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@loftlancer/mail':
+        specifier: workspace:*
+        version: link:../../packages/mail
       '@loftlancer/notifications':
         specifier: workspace:*
         version: link:../../packages/notifications
@@ -514,6 +517,9 @@ importers:
       '@loftlancer/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@loftlancer/mail':
+        specifier: workspace:*
+        version: link:../../packages/mail
       '@loftlancer/notifications':
         specifier: workspace:*
         version: link:../../packages/notifications
@@ -991,6 +997,28 @@ importers:
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  packages/mail:
+    dependencies:
+      '@loftlancer/db':
+        specifier: workspace:*
+        version: link:../db
+      '@loftlancer/email':
+        specifier: workspace:*
+        version: link:../email
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 0.45.4(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.1)
+    devDependencies:
+      '@loftlancer/config':
+        specifier: workspace:*
+        version: link:../config
       tsx:
         specifier: ^4.23.15
         version: 4.23.15

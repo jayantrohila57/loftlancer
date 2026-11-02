@@ -99,6 +99,13 @@
       "when": 1792745373404,
       "tag": "0028_user_notification_preferences",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1793615563517,
+      "tag": "0029_mailbox",
+      "breakpoints": true
     }
   ]
 }

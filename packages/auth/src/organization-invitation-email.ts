@@ -42,8 +42,10 @@ export async function sendOrganizationInvitationEmail(input: {
   invitationId: string;
   email: string;
   role: string;
+  organizationId: string;
   organizationName: string;
   inviterName: string;
+  inviterUserId?: string;
 }) {
   if (!(await maySendInvitationEmail(input.email))) return;
 
@@ -60,6 +62,13 @@ export async function sendOrganizationInvitationEmail(input: {
       acceptUrl: `${studioUrl}/invite/${encodeURIComponent(input.invitationId)}`,
     }),
     tags: [{ name: "type", value: "org-invite" }],
+    context: {
+      category: "work",
+      organizationId: input.organizationId,
+      senderUserId: input.inviterUserId,
+      entity: { type: "organization-invitation", id: input.invitationId },
+      templateKey: "organization-invitation",
+    },
   });
   if (result.status === "skipped") {
     throw new Error(

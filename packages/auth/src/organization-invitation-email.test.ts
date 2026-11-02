@@ -21,6 +21,7 @@ test("organization invitations use the verified sender and fail when email is un
         invitationId: "invite-id",
         email: "member@example.com",
         role: "member",
+        organizationId: "org-id",
         organizationName: "Example",
         inviterName: "Owner",
       }),

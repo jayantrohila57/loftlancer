@@ -216,8 +216,10 @@ export function organizationPlugin() {
           invitationId: id,
           email,
           role,
+          organizationId: org.id,
           organizationName: org.name,
           inviterName: inviter.user.name || inviter.user.email,
+          inviterUserId: inviter.user.id,
         });
       },
       organizationHooks: {
