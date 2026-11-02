@@ -235,6 +235,28 @@ const rows: MatrixRow[] = [
     entityType: "organization",
   },
   {
+    name: "ai.policy.view",
+    scope: "organization",
+    description: "View organization AI policy and usage",
+    manager: true,
+    entityType: "organization_ai_policy",
+  },
+  {
+    name: "ai.policy.update",
+    scope: "organization",
+    description: "Update organization AI model policy and token budget",
+    owner: true,
+    entityType: "organization_ai_policy",
+    severity: "security",
+  },
+  {
+    name: "ai.generation.create",
+    scope: "organization",
+    description: "Run an organization AI generation",
+    member: true,
+    entityType: "ai_usage",
+  },
+  {
     name: "organization.archive",
     scope: "organization",
     description: "Archive organization",

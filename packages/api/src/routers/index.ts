@@ -1,5 +1,6 @@
 import { publicProcedure, router } from "../index";
 import { accountRouter } from "./account";
+import { aiRouter } from "./ai";
 import { auditLogsRouter } from "./audit";
 import { auditEventsRouter } from "./audit-events";
 import { dashboardRouter } from "./dashboard";
@@ -24,6 +25,7 @@ export const appRouter = router({
   projects: projectsRouter,
   environments: environmentsRouter,
   environmentVariables: environmentVariablesRouter,
+  ai: aiRouter,
   auditLogs: auditLogsRouter,
   auditEvents: auditEventsRouter,
   notifications: notificationsRouter,
