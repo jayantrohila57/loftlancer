@@ -45,24 +45,24 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "production", "test"])
       .default("development"),
-    /** Set to "true" only after DB migration 0004 + schema patch (see docs/ORGANIZATION_MIGRATION.md) */
+    /** Set to "true" only after DB migration 0004 + schema patch (see docs/database.md) */
     ORGANIZATIONS_ENABLED: z
       .enum(["true", "false"])
       .default("false")
       .optional(),
-    /** Enable after DB migration 0005 (see docs/PLATFORM_MIGRATION_0005.md) */
+    /** Enable after DB migration 0005 (see docs/database.md) */
     NOTIFICATIONS_ENABLED: z
       .enum(["true", "false"])
       .default("false")
       .optional(),
     /** Enable after DB migration 0005 variables section */
     VARIABLES_V2_ENABLED: z.enum(["true", "false"]).default("false").optional(),
-    /** Enable after DB migration 0006 (see docs/PLATFORM_MIGRATION_0006.md) */
+    /** Enable after DB migration 0006 (see docs/database.md) */
     ACTIONS_AUDIT_ENABLED: z
       .enum(["true", "false"])
       .default("false")
       .optional(),
-    /** Enable after soft-delete columns are applied (see docs/SOFT_DELETES.md) */
+    /** Enable after soft-delete columns are applied (see docs/product.md) */
     SOFT_DELETES_ENABLED: z.enum(["true", "false"]).default("false").optional(),
   },
   runtimeEnv: process.env,

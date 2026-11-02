@@ -6,7 +6,7 @@ Security fixes are applied on the **`main`** branch and released via Vercel depl
 
 | Version (package.json) | Supported |
 | ---------------------- | --------- |
-| 1.11.x (current)       | Yes       |
+| 1.22.x (current)       | Yes       |
 | Older tagged releases  | No        |
 
 ## Reporting a vulnerability
@@ -29,5 +29,5 @@ Out of scope: third-party services (GitHub OAuth, Neon, Vercel) except where thi
 ## Secure development practices
 
 - Secrets live in environment variables — never commit `.env` files or real `ENCRYPTION_KEY` / `BETTER_AUTH_SECRET` values.
-- Production schema changes require reviewed SQL, Neon backup branches, and explicit approval before `db:reset-seed` ([docs/DB_RESET.md](./docs/DB_RESET.md)).
+- Production schema changes require reviewed SQL, Neon backup branches, and explicit approval before `db:reset-seed` ([docs/database.md](./docs/database.md)).
 - Deploy only from **`main`** after review ([AGENTS.md](./AGENTS.md)).

@@ -69,7 +69,7 @@ flowchart LR
 | **Organizations** | `/dashboard/organizations` hub (members, teams, invitations, roles, settings, timeline) |
 | **Account settings** | `/dashboard/settings/*` — profile, sessions, accounts, export, delete, personal timeline |
 
-Deep specs: [docs/ACTIONS_PERMISSIONS_AUDIT.md](./docs/ACTIONS_PERMISSIONS_AUDIT.md), [docs/SOFT_DELETES.md](./docs/SOFT_DELETES.md), [UI.md](./UI.md), [docs/DESIGN_SYSTEM.md](./docs/DESIGN_SYSTEM.md).
+Deep specs: [docs/index.md](./docs/index.md), [docs/product.md](./docs/product.md), [docs/database.md](./docs/database.md).
 
 ## Prerequisites
 
@@ -131,9 +131,9 @@ pnpm db:push
 | `pnpm db:migrate` | Drizzle migrate (journal-based workflows) |
 | `pnpm db:generate` | Generate migration SQL |
 | `pnpm db:studio` | Drizzle Studio |
-| `pnpm db:reset-seed` | **Destructive** wipe + sample seed — [docs/DB_RESET.md](./docs/DB_RESET.md) |
+| `pnpm db:reset-seed` | **Destructive** wipe + sample seed — [docs/database.md](./docs/database.md#reset-and-sample-seed-dbreset-seed) |
 
-Production uses **reviewed SQL / push**, not automatic migrate on deploy — [packages/db/DATABASE.md](./packages/db/DATABASE.md). Major platform cut: [docs/PLATFORM_MIGRATION_COMBINED.md](./docs/PLATFORM_MIGRATION_COMBINED.md) (Neon backup → migrate → flags → optional reset-seed with owner retention).
+Production uses **reviewed SQL / push**, not automatic migrate on deploy — see [docs/database.md](./docs/database.md) (Neon backup, reviewed SQL under `packages/db/src/migrations/`, optional reset-seed).
 
 ## Run & build
 
@@ -162,13 +162,9 @@ Optional Postgres integration tests (for example `packages/api` `*.integration.t
 
 | Doc | Topic |
 | --- | ----- |
+| [docs/index.md](./docs/index.md) | **Full doc map** |
 | [AGENTS.md](./AGENTS.md) | Issues, git, agent rules |
-| [UI.md](./UI.md) | Domain architecture & page patterns |
-| [docs/DESIGN_SYSTEM.md](./docs/DESIGN_SYSTEM.md) | coss ui, spacing tokens, components |
-| [docs/DB_RESET.md](./docs/DB_RESET.md) | Reset-seed policy |
-| [docs/PLAN_PLATFORM_APPS.md](./docs/PLAN_PLATFORM_APPS.md) | Multi-app + SSO decision §14 |
-| [docs/PLAN_MCP_AND_CONSOLE.md](./docs/PLAN_MCP_AND_CONSOLE.md) | MCP & console research |
-| [docs/PRODUCTION_DEPLOY.md](./docs/PRODUCTION_DEPLOY.md) | Production deploy checklist & Vercel limits |
+| [docs/releasing.md](./docs/releasing.md) | Versioning & releases |
 | [SECURITY.md](./SECURITY.md) | Vulnerability reporting |
 
 ## Security

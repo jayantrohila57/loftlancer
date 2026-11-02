@@ -22,44 +22,15 @@ This repository uses **`dev`** for integration and **`main`** for production. Al
 
 ## Versioning & releases
 
-- One product version in the root `package.json` (semver). Every `dev` → `main` release bumps it (minor for features, patch for fix batches), adds a dated `CHANGELOG.md` entry, and after the merge gets a `vX.Y.Z` tag and a GitHub Release (`pnpm release:publish`).
-- Add a line under `## [Unreleased]` in `CHANGELOG.md` with every change you merge into `dev`.
-- Full procedure: [docs/RELEASING.md](./docs/RELEASING.md).
+- Add a line under `## [Unreleased]` in [CHANGELOG.md](./CHANGELOG.md) for every change merged into **`dev`**.
+- Release procedure: [docs/releasing.md](./docs/releasing.md).
 
-## What to read before coding
+## Documentation
 
-| Topic | Document |
-|-------|----------|
-| Monorepo & run locally | [README.md](./README.md) |
-| UI architecture & modules | [UI.md](./UI.md), [docs/MODULE_ARCHITECTURE.md](./docs/MODULE_ARCHITECTURE.md) |
-| Spacing, coss ui, layout tokens | [docs/DESIGN_SYSTEM.md](./docs/DESIGN_SYSTEM.md) |
-| Roles, actions, audit | [docs/ACTIONS_PERMISSIONS_AUDIT.md](./docs/ACTIONS_PERMISSIONS_AUDIT.md) |
-| Soft deletes | [docs/SOFT_DELETES.md](./docs/SOFT_DELETES.md) |
-| DB reset + seed (prod) | [docs/DB_RESET.md](./docs/DB_RESET.md) |
-| Platform apps & SSO | [docs/PLAN_PLATFORM_APPS.md](./docs/PLAN_PLATFORM_APPS.md) |
-| Future MCP / console | [docs/PLAN_MCP_AND_CONSOLE.md](./docs/PLAN_MCP_AND_CONSOLE.md) |
-| Production deploy (Vercel, flags, rate limits) | [docs/PRODUCTION_DEPLOY.md](./docs/PRODUCTION_DEPLOY.md) |
+Product, UI, permissions, deploy, and database rules are **not** duplicated here.
 
-## Product rules (short)
-
-- **Organizations:** Multi-tenant workspaces with **Owner / Manager / Member** (legacy DB `admin` → Manager). **Platform Admin** is reserved in `@loftlancer/actions` but not enabled in production UI.
-- **Teams** and **per-project CRUD grants** (`project_manager`, `project_team`, `project_member_grant`) layer on org roles.
-- **Canonical actions** in `@loftlancer/actions` drive `requireAction`, blocks, audit, and UI gates.
-- **Audit:** Prefer `audit_event` + Timeline routes when `ACTIONS_AUDIT_ENABLED=true`.
-- **Soft deletes:** When `SOFT_DELETES_ENABLED=true`, user-facing deletes set `deleted_at` / `deleted_by`.
-- **Notifications:** `@loftlancer/notifications` when `NOTIFICATIONS_ENABLED=true`.
-- **Account settings** (`/dashboard/settings/*`): user scope only. **Org administration** lives under **`/dashboard/organizations`**.
-
-## UI rule for agents
-
-- **shadcn / coss ui primitives** live only in `packages/ui/src/components/ui/` (imported as `@loftlancer/ui/<name>`; apps keep no `components/ui` copies). Shared patterns (empty/page states, shell pieces, guards) live in `packages/ui/src/patterns/` (`@loftlancer/ui/patterns/<name>`). They are the single source of truth for spacing and layout; compose via [docs/DESIGN_SYSTEM.md](./docs/DESIGN_SYSTEM.md) tokens (`layout-spacing.ts`, `PageHeaderBar`, `FormSheet`, etc.).
-- **Do not edit `packages/ui/src/components/ui/*`** except via the documented shadcn/coss CLI workflow.
-- After UI changes, **verify in a running dev build** (`pnpm dev:web`) — layout, empty/error states, and org/project gates.
-
-## Database / production schema
-
-- Major schema changes ship as **reviewed SQL** (e.g. `0007_platform_combined_for_prod.sql`). See [docs/PLATFORM_MIGRATION_COMBINED.md](./docs/PLATFORM_MIGRATION_COMBINED.md).
-- On intentional prod schema cut: **Neon backup branch first**, apply migration, enable flags, then optional **`pnpm db:reset-seed`** per [docs/DB_RESET.md](./docs/DB_RESET.md) (keeps owner account; requires explicit `RESET_CONFIRM`).
+- **Doc map:** [docs/index.md](./docs/index.md)
+- **Run locally:** [README.md](./README.md)
 
 ## Commands (root)
 
@@ -69,7 +40,7 @@ pnpm dev:web
 pnpm build
 pnpm check-types
 pnpm db:push
-pnpm db:reset-seed   # destructive — see docs/DB_RESET.md
+pnpm db:reset-seed   # destructive — see docs/database.md
 ```
 
 <!-- BEGIN:turborepo-agent-rules -->

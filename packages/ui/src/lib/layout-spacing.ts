@@ -1,7 +1,7 @@
 /**
  * Canonical layout spacing for Loftlancer UI apps (coss / shadcn sidebar scale).
  *
- * Documented in `docs/DESIGN_SYSTEM.md` (Spacing) and `docs/REDESIGN.md`.
+ * Documented in `packages/ui/src/lib/layout-spacing.ts` (Spacing).
  */
 
 /** Inset padding (gutter) — SidebarHeader / SidebarGroup */

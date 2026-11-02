@@ -74,15 +74,6 @@ fi
 print_status "Git status:"
 git status --short
 
-# Check if plan.md is updated
-print_warning "Have you updated plan.md to reflect the latest changes?"
-read -p "Press 'y' to confirm you have checked plan.md, or any other key to abort: " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    print_status "Commit cancelled. Please update plan.md first."
-    exit 0
-fi
-
 # Confirm commit
 echo
 read -p "Do you want to commit these changes? (y/n): " -n 1 -r
