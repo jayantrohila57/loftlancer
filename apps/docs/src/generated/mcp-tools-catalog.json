@@ -2,7 +2,7 @@
   {
     "action": "audit.timeline.view.org",
     "toolName": "audit_timeline_view_org",
-    "description": "View organization audit timeline",
+    "description": "View organization activity",
     "scopes": [
       "mcp:tools",
       "audit:read"
@@ -50,7 +50,7 @@
   {
     "action": "audit.timeline.view.project",
     "toolName": "audit_timeline_view_project",
-    "description": "View project audit timeline",
+    "description": "View project activity",
     "scopes": [
       "mcp:tools",
       "audit:read"
@@ -100,7 +100,7 @@
   {
     "action": "audit.timeline.view.user",
     "toolName": "audit_timeline_view_user",
-    "description": "View another user audit timeline",
+    "description": "View another member's activity",
     "scopes": [
       "mcp:tools",
       "audit:read"
@@ -459,40 +459,6 @@
     "requiresProjectGrant": true
   },
   {
-    "action": "invitation.accept",
-    "toolName": "invitation_accept",
-    "description": "Accept invitation",
-    "scopes": [
-      "mcp:tools",
-      "organizations:write"
-    ],
-    "inputSchema": {
-      "$ref": "#/definitions/invitation_accept",
-      "definitions": {
-        "invitation_accept": {
-          "type": "object",
-          "properties": {
-            "invitationId": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "invitationId"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "orgRoles": [
-      "owner",
-      "manager",
-      "member"
-    ],
-    "requiresProjectGrant": false
-  },
-  {
     "action": "invitation.cancel",
     "toolName": "invitation_cancel",
     "description": "Cancel invitation",
@@ -529,40 +495,6 @@
     },
     "orgRoles": [
       "owner"
-    ],
-    "requiresProjectGrant": false
-  },
-  {
-    "action": "invitation.reject",
-    "toolName": "invitation_reject",
-    "description": "Reject invitation",
-    "scopes": [
-      "mcp:tools",
-      "organizations:read"
-    ],
-    "inputSchema": {
-      "$ref": "#/definitions/invitation_reject",
-      "definitions": {
-        "invitation_reject": {
-          "type": "object",
-          "properties": {
-            "invitationId": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "invitationId"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "orgRoles": [
-      "owner",
-      "manager",
-      "member"
     ],
     "requiresProjectGrant": false
   },
@@ -733,6 +665,87 @@
     "requiresProjectGrant": false
   },
   {
+    "action": "member.suspend",
+    "toolName": "member_suspend",
+    "description": "Suspend or reactivate organization member",
+    "scopes": [
+      "mcp:tools",
+      "organizations:read"
+    ],
+    "inputSchema": {
+      "$ref": "#/definitions/member_suspend",
+      "definitions": {
+        "member_suspend": {
+          "type": "object",
+          "properties": {
+            "organizationId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "organizationSlug": {
+              "type": "string",
+              "minLength": 1
+            },
+            "memberId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "suspended": {
+              "type": "boolean"
+            },
+            "reason": {
+              "type": "string",
+              "maxLength": 250
+            }
+          },
+          "required": [
+            "memberId",
+            "suspended"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "orgRoles": [
+      "owner"
+    ],
+    "requiresProjectGrant": false
+  },
+  {
+    "action": "organization.archive",
+    "toolName": "organization_archive",
+    "description": "Archive organization",
+    "scopes": [
+      "mcp:tools",
+      "organizations:write"
+    ],
+    "inputSchema": {
+      "$ref": "#/definitions/organization_archive",
+      "definitions": {
+        "organization_archive": {
+          "type": "object",
+          "properties": {
+            "organizationId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "organizationSlug": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "orgRoles": [
+      "owner"
+    ],
+    "requiresProjectGrant": false
+  },
+  {
     "action": "organization.delete",
     "toolName": "organization_delete",
     "description": "Delete organization",
@@ -787,32 +800,6 @@
           "required": [
             "organizationSlug"
           ],
-          "additionalProperties": false
-        }
-      },
-      "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "orgRoles": [
-      "owner",
-      "manager",
-      "member"
-    ],
-    "requiresProjectGrant": false
-  },
-  {
-    "action": "organization.list",
-    "toolName": "organization_list",
-    "description": "List organizations",
-    "scopes": [
-      "mcp:tools",
-      "organizations:read"
-    ],
-    "inputSchema": {
-      "$ref": "#/definitions/organization_list",
-      "definitions": {
-        "organization_list": {
-          "type": "object",
-          "properties": {},
           "additionalProperties": false
         }
       },
@@ -884,9 +871,199 @@
               "minLength": 1
             },
             "logo": {
-              "type": [
-                "string",
-                "null"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "legalName": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "websiteUrl": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "industry": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sizeBand": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "1-10",
+                    "11-50",
+                    "51-200",
+                    "201-1000",
+                    "1001+"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "foundedYear": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1000,
+                  "maximum": 2026
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "contactEmail": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email",
+                  "maxLength": 320
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "contactPhone": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "supportUrl": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "countryCode": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z]{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "region": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "city": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "postalCode": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "addressLine1": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "addressLine2": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
               ]
             }
           },
@@ -975,6 +1152,39 @@
     "requiresProjectGrant": false
   },
   {
+    "action": "organization.unarchive",
+    "toolName": "organization_unarchive",
+    "description": "Restore archived organization",
+    "scopes": [
+      "mcp:tools",
+      "organizations:write"
+    ],
+    "inputSchema": {
+      "$ref": "#/definitions/organization_unarchive",
+      "definitions": {
+        "organization_unarchive": {
+          "type": "object",
+          "properties": {
+            "organizationId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "organizationSlug": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "orgRoles": [
+      "owner"
+    ],
+    "requiresProjectGrant": false
+  },
+  {
     "action": "organization.update",
     "toolName": "organization_update",
     "description": "Update organization",
@@ -1001,9 +1211,15 @@
               "minLength": 1
             },
             "logo": {
-              "type": [
-                "string",
-                "null"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uri",
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
               ]
             }
           },
@@ -1214,6 +1430,66 @@
             "description": {
               "type": "string",
               "maxLength": 500
+            },
+            "purpose": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "documentationUrl": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "not": {}
+                    },
+                    {
+                      "type": "string",
+                      "format": "uri",
+                      "maxLength": 2048
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "const": ""
+                }
+              ]
+            },
+            "startDate": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "not": {}
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "const": ""
+                }
+              ]
+            },
+            "targetDate": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "not": {}
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "const": ""
+                }
+              ]
             },
             "repositoryUrl": {
               "anyOf": [
@@ -1615,6 +1891,101 @@
               "type": "string",
               "maxLength": 500
             },
+            "purpose": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "not": {}
+                    },
+                    {
+                      "type": "string",
+                      "maxLength": 500
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "documentationUrl": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "not": {}
+                        },
+                        {
+                          "type": "string",
+                          "format": "uri",
+                          "maxLength": 2048
+                        }
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "const": ""
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "startDate": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "not": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "const": ""
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "targetDate": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "not": {}
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "const": ""
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
             "repositoryUrl": {
               "anyOf": [
                 {
@@ -1697,6 +2068,28 @@
             "name": {
               "type": "string",
               "minLength": 1
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "purpose": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 250
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           "required": [
@@ -1916,6 +2309,28 @@
             "name": {
               "type": "string",
               "minLength": 1
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "purpose": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 250
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           "required": [
