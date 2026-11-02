@@ -7,6 +7,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -73,10 +74,7 @@ export const project = pgTable(
       .where(sql`${table.deletedAt} IS NULL`),
     // Access links reference this pair so their organization must match the
     // project even when writes bypass the application layer.
-    uniqueIndex("project_id_organization_id_uidx").on(
-      table.id,
-      table.organizationId,
-    ),
+    unique("project_id_organization_id_uq").on(table.id, table.organizationId),
     index("project_userId_idx").on(table.userId),
     index("project_slug_idx").on(table.slug),
     index("project_status_idx").on(table.status),
