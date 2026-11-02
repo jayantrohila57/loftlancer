@@ -18,6 +18,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ### Changed
 
+- Document mandatory **`dev` first, `main` release-only** branch policy in [AGENTS.md](./AGENTS.md), [CONTRIBUTING.md](./CONTRIBUTING.md), [README.md](./README.md), and `.cursor/rules/git-branches.mdc`.
 - Consolidated documentation into flat `docs/` (`database.md`, `integrations.md`, `product.md`, `releasing.md`, `index.md`) and updated links (#911).
 - Moved the release procedure doc while keeping `CHANGELOG.md` at the repo root (#911).
 - Removed obsolete root planning docs and `scripts/commit-workflow.md`; slimmed [AGENTS.md](./AGENTS.md) (#911).

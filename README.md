@@ -33,7 +33,7 @@ flowchart LR
 ## Workflow & contributions
 
 - Track work in [GitHub issues](https://github.com/jayantrohila57/loftlancer/issues). Every commit references its issue with **`Fixes #N`**.
-- Delivery: feature branch → `dev` → `main`. Only `main` deploys (one Vercel production deploy per push). See [AGENTS.md](./AGENTS.md).
+- Delivery: feature branch → **`dev`** → **`main`** only (no direct commits on **`main`**, including small tasks). Only **`main`** deploys. See [AGENTS.md](./AGENTS.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Monorepo layout
 

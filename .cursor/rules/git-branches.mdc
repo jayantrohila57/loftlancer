@@ -1,0 +1,30 @@
+---
+description: Branch policy — all work lands on dev first; main is release-only
+alwaysApply: true
+---
+
+# Git branches (mandatory)
+
+**Never integrate work directly on `main`.** No exceptions for small fixes, docs-only changes, or CI tweaks.
+
+## Allowed flow
+
+1. Open or use a GitHub issue.
+2. Branch from **`dev`** (e.g. `fix/…`, `feat/…`, `chore/…`).
+3. Implement, test, update **`CHANGELOG.md`** `[Unreleased]` when merging to **`dev`**.
+4. Merge the branch into **`dev`** (PR or merge on GitHub).
+5. Ship to production only by merging **`dev` → `main`** (release PR or documented release workflow).
+
+## Forbidden
+
+- Committing on **`main`** locally for feature/fix/docs work.
+- Pushing commits directly to **`origin/main`** (bypassing **`dev`**).
+- Opening PRs **into `main`** except **`dev` → `main`** release promotion (and hotfix process if the repo documents one — default is still **dev first**, then **main**).
+
+## Agents & automation
+
+- Default checkout base: **`dev`**, not **`main`**.
+- Do not suggest `git push origin main` to land ordinary work.
+- Production deploy follows **`main`**; integration and CI integration branch is **`dev`**.
+
+See [AGENTS.md](../AGENTS.md) and [CONTRIBUTING.md](../CONTRIBUTING.md).
