@@ -16,6 +16,13 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.23.0] - 2026-11-02
+
+### Added
+
+- Added organization controlled AI Gateway access with usage metering and limits (#765).
+- Added private file uploads with organization storage quotas and authorized downloads (#766).
+
 ## [1.22.0] - 2026-11-02
 
 ### Added
@@ -981,7 +988,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.22.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.23.0...HEAD
+[1.23.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.21.0...v1.22.0
 [1.21.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.21...v1.20.0

@@ -112,6 +112,7 @@
     "./patterns/version-badge": "./src/patterns/version-badge.tsx",
     "./platform-status": "./src/lib/platform-status.ts",
     "./patterns/sign-in-options": "./src/patterns/sign-in-options.tsx",
+    "./patterns/ai-stream-state": "./src/patterns/ai-stream-state.tsx",
     "./patterns/sentry-test-panel": "./src/patterns/sentry-test-panel.tsx"
   },
   "scripts": {

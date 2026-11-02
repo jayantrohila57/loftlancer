@@ -1,8 +1,10 @@
 import { publicProcedure, router } from "../index";
+import { aiRouter } from "./ai";
 import { auditLogsRouter } from "./audit";
 import { auditEventsRouter } from "./audit-events";
 import { dashboardRouter } from "./dashboard";
 import { environmentsRouter } from "./environments";
+import { filesRouter } from "./files";
 import { mailboxRouter } from "./mailbox";
 import { notificationsRouter } from "./notifications";
 import { organizationsRouter } from "./organizations";
@@ -22,7 +24,9 @@ export const studioRouter = router({
   dashboard: dashboardRouter,
   projects: projectsRouter,
   environments: environmentsRouter,
+  files: filesRouter,
   environmentVariables: environmentVariablesRouter,
+  ai: aiRouter,
   auditLogs: auditLogsRouter,
   auditEvents: auditEventsRouter,
   notifications: notificationsRouter,
