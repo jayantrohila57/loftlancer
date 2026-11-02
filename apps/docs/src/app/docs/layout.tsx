@@ -1,27 +1,32 @@
-import { VersionBadge } from "@loftlancer/ui/patterns/version-badge";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
-import type { ReactNode } from "react";
-import { DocsMarketingHeader } from "@/components/docs-marketing-header";
+import type { CSSProperties, ReactNode } from "react";
+import { PublicDocsShell } from "@/components/public-docs-shell";
 import { baseOptions } from "@/lib/layout.shared";
 import { source } from "@/lib/source";
 
+/**
+ * Fumadocs continues to own document rendering and the in-page table of
+ * contents. The shared public app shell owns all site-level navigation.
+ */
 export default function DocsRootLayout({ children }: { children: ReactNode }) {
   return (
-    <DocsLayout
-      tree={source.pageTree}
-      {...baseOptions()}
-      containerProps={{
-        style: {
-          gridTemplate: `"header header header header header"
-            "sidebar sidebar toc-popover toc toc"
-            "sidebar sidebar tabs toc toc"
-            "sidebar sidebar main toc toc" 1fr / var(--fd-docs-layout-columns)`,
-        },
-      }}
-      sidebar={{ footer: <VersionBadge /> }}
-      slots={{ header: DocsMarketingHeader }}
-    >
-      {children}
-    </DocsLayout>
+    <PublicDocsShell>
+      <DocsLayout
+        tree={source.pageTree}
+        {...baseOptions()}
+        nav={{ enabled: false }}
+        sidebar={{ enabled: false }}
+        tabs={false}
+        containerProps={{
+          className: "min-h-full",
+          style: {
+            gridTemplate: '"main toc" 1fr / minmax(0, 1fr) var(--fd-toc-width)',
+            "--fd-docs-height": "100%",
+          } as CSSProperties,
+        }}
+      >
+        {children}
+      </DocsLayout>
+    </PublicDocsShell>
   );
 }

@@ -18,6 +18,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ### Changed
 
+- Put the public documentation reader inside the shared public sidebar and header while preserving its document content and table of contents (#221).
 - Moved Studio, authorization, documentation, and public feature ownership into server-first modules, keeping routes focused on guards and composition (#891).
 
 ## [1.20.0] - 2026-10-31
