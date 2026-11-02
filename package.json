@@ -27,6 +27,7 @@
     "lint": "biome lint .",
     "lint:ci": "biome ci --error-on-warnings .",
     "check-routes": "bash scripts/check-route-literals.sh",
+    "audit:api-entrypoints": "node scripts/generate-api-entrypoint-inventory.mjs",
     "fix": "biome check --write --unsafe .",
     "prepare": "husky",
     "version-check": "node -p \"require('./package.json').version\"",
