@@ -11,13 +11,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { useSession } from "@/domain/auth/lib/auth-actions";
 import { authClient } from "@/lib/auth-client";
 import { invalidateAfterOrganizationChange } from "@/lib/invalidate-org-queries";
 import { shouldBootstrapSessionActiveOrganization } from "@/lib/org-session-bootstrap";
 import { pathAfterOrganizationSwitch } from "@/lib/org-switch-redirect";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";
 import { toast } from "@/lib/toast";
+import { useSession } from "@/module/auth/auth.auth.actions";
 import { trpc } from "@/utils/trpc";
 
 export type OrgListItem = {

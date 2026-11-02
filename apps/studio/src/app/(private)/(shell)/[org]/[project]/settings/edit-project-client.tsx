@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";
-import { EditProject } from "@/domain/projects/components/project-edit";
-import { ProjectSettingsSection } from "@/domain/projects/components/project-settings-section";
-import { ProjectSettingsPageSkeleton } from "@/domain/projects/components/project-settings-skeleton";
+import { EditProject } from "@/module/projects/projects.project.edit";
+import { ProjectSettingsSection } from "@/module/projects/projects.project.settings.section";
+import { ProjectSettingsPageSkeleton } from "@/module/projects/projects.project.settings.skeleton";
 import { trpc } from "@/utils/trpc";
 
 interface EditProjectClientProps {

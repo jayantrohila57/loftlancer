@@ -16,6 +16,10 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Moved Studio, authorization, documentation, and public feature ownership into server-first modules, keeping routes focused on guards and composition (#891).
+
 ## [1.20.0] - 2026-10-31
 
 ### Changed

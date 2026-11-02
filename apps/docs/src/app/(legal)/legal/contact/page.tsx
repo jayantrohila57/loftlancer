@@ -1,5 +1,5 @@
-import { LegalPage } from "@/components/legal-page";
 import { pageMetadata } from "@/lib/seo";
+import ContactPage from "@/module/legal/legal.contact.view";
 
 export const metadata = {
   ...pageMetadata({
@@ -12,18 +12,6 @@ export const metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function ContactPage() {
-  return (
-    <LegalPage
-      title="Contact"
-      description="How to reach Loftlancer for product support, legal, and privacy requests."
-      href="/legal/contact"
-    >
-      <p>
-        For product support, sign in to your dashboard and open a ticket under
-        Help. For legal or privacy requests, contact the repository owner listed
-        on GitHub.
-      </p>
-    </LegalPage>
-  );
+export default function ContactPageRoute() {
+  return <ContactPage />;
 }

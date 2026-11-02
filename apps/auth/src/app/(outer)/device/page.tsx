@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { DeviceCodeForm } from "@/components/device-code-form";
+import { DeviceCodeForm } from "@/module/authorization/authorization.device.form";
 
 export const metadata: Metadata = { title: "Connect a device" };
 
-export default function DevicePage() {
-  return (
-    <Suspense fallback={null}>
-      <DeviceCodeForm />
-    </Suspense>
-  );
+export default async function DevicePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ user_code?: string | string[] }>;
+}) {
+  const { user_code } = await searchParams;
+  const initialCode = Array.isArray(user_code)
+    ? (user_code[0] ?? "")
+    : (user_code ?? "");
+  return <DeviceCodeForm initialCode={initialCode} />;
 }

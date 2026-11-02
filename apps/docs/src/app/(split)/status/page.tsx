@@ -1,6 +1,6 @@
 import { MarketingPage } from "@/components/marketing-page";
-import { StatusBoard } from "@/components/status-board";
 import { pageMetadata } from "@/lib/seo";
+import { StatusBoard } from "@/module/status/status.board";
 
 export const metadata = pageMetadata({
   title: "Status",

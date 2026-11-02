@@ -16,6 +16,7 @@ export type ResolvedOrganization = {
   id: string;
   slug: string;
   name: string;
+  metadata: string | null;
 };
 
 export async function resolveOrganizationForPage(
@@ -27,6 +28,7 @@ export async function resolveOrganizationForPage(
       id: organization.id,
       slug: organization.slug,
       name: organization.name,
+      metadata: organization.metadata,
     })
     .from(member)
     .innerJoin(organization, eq(member.organizationId, organization.id))
