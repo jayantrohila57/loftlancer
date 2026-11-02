@@ -18,6 +18,21 @@ const actionRegistrySource = readFileSync(
   "utf8",
 );
 
+const teamAddSource = readFileSync(
+  join(
+    sourceDir,
+    "../../../module/teams/server/service/server.team-member-add.service.ts",
+  ),
+  "utf8",
+);
+const teamDefaultsSource = readFileSync(
+  join(
+    sourceDir,
+    "../../../module/teams/server/service/server.team-project-defaults.service.ts",
+  ),
+  "utf8",
+);
+
 describe("organization ownership mutations", () => {
   it("transfers ownership within a locked database transaction and records the audit event", () => {
     assert.match(ownershipSource, /db\.transaction\(async \(tx\)/);
@@ -81,26 +96,14 @@ describe("organization ownership mutations", () => {
   });
 
   it("validates team membership against the organization and repairs cached counts", () => {
-    const start = mcpSource.indexOf("export async function mcpTeamAddMember");
-    const end = mcpSource.indexOf(
-      "export async function mcpTeamRemoveMember",
-      start,
-    );
-    const block = mcpSource.slice(start, end);
+    const block = teamAddSource;
     assert.match(block, /eq\(team\.organizationId, organizationId\)/);
     assert.match(block, /organization_member_not_found/);
     assert.match(block, /count\(\*\)::int/);
   });
 
   it("applies linked-project defaults when an invited or existing member joins a team", () => {
-    const helperStart = mcpSource.indexOf(
-      "async function applyTeamProjectDefaults",
-    );
-    const helperEnd = mcpSource.indexOf(
-      "function slugifyOrganizationName",
-      helperStart,
-    );
-    const helper = mcpSource.slice(helperStart, helperEnd);
+    const helper = teamDefaultsSource;
     assert.match(
       helper,
       /eq\(projectTeam\.organizationId, input\.organizationId\)/,
@@ -124,16 +127,6 @@ describe("organization ownership mutations", () => {
       /applyTeamProjectDefaults\(tx/,
     );
 
-    const addStart = mcpSource.indexOf(
-      "export async function mcpTeamAddMember",
-    );
-    const addEnd = mcpSource.indexOf(
-      "export async function mcpTeamRemoveMember",
-      addStart,
-    );
-    assert.match(
-      mcpSource.slice(addStart, addEnd),
-      /applyTeamProjectDefaults\(tx/,
-    );
+    assert.match(teamAddSource, /applyTeamProjectDefaults\(tx/);
   });
 });

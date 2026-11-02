@@ -1,13 +1,18 @@
 {
   "extends": "@loftlancer/config/tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "noEmit": true,
     "paths": {
       "@module/*": ["./*"]
     }
   },
-  "include": ["./**/*.ts", "./**/*.tsx"],
+  "include": [
+    "shared/**/*.ts",
+    "teams/utils/**/*.ts",
+    "teams/server/controller/**/*.ts",
+    "teams/server/service/**/*.ts"
+  ],
   "exclude": ["./node_modules"]
 }

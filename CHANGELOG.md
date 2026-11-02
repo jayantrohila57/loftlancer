@@ -16,6 +16,10 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Move the teams pilot into root `module/teams` with shared section navigation, server-loaded list/overview, native oRPC controllers, and permission/audit-backed team mutations (#916).
+
 ## [1.24.0] - 2026-11-03
 
 ### Changed

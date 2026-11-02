@@ -11,7 +11,7 @@
     "dev": "turbo dev",
     "build": "NODE_OPTIONS='--max-old-space-size=6144' turbo build --concurrency=2",
     "check-types": "turbo check-types",
-    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test turbo test && pnpm --filter studio exec node --import tsx --test ../../scripts/pwa-manifest.test.ts",
+    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test turbo test && pnpm --filter studio exec node --import tsx --test ../../scripts/pwa-manifest.test.ts && pnpm test:teams",
     "dev:docs": "turbo -F docs dev",
     "dev:www": "turbo -F www dev",
     "dev:auth": "turbo -F auth dev",
@@ -36,7 +36,9 @@
     "release:notes": "node scripts/release/notes.mjs",
     "release:publish": "bash scripts/release/publish.sh",
     "generate:pwa-maskable-icons": "pnpm --filter studio exec tsx ../../scripts/generate-pwa-maskable-icons.mts",
-    "capture:pwa-screenshots": "pnpm --filter studio exec tsx ../../scripts/capture-pwa-screenshots.mts"
+    "capture:pwa-screenshots": "pnpm --filter studio exec tsx ../../scripts/capture-pwa-screenshots.mts",
+    "test:teams": "SKIP_ENV_VALIDATION=1 pnpm --filter @loftlancer/api exec node --experimental-test-module-mocks --import tsx --test ../../module/shared/server/run-action.test.ts ../../module/shared/utils/validation/utils.service-response.validation.test.ts ../../module/teams/server/controller/server.team-create.controller.test.ts",
+    "test:teams:integration": "SKIP_ENV_VALIDATION=1 ORGANIZATIONS_ENABLED=true SOFT_DELETES_ENABLED=true pnpm --filter @loftlancer/api exec node --import tsx --test ../../module/teams/server/service/server.teams.integration.test.ts"
   },
   "dependencies": {
     "@loftlancer/env": "workspace:*",

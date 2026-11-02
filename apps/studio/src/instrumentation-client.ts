@@ -11,3 +11,14 @@ if (options.dsn) {
 }
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+
+window.addEventListener("loftlancer.action.intent", (event) => {
+  const action = (event as CustomEvent<{ action?: unknown }>).detail?.action;
+  if (typeof action === "string")
+    Sentry.addBreadcrumb({
+      category: "action",
+      message: action,
+      level: "info",
+      data: { "loftlancer.action": action },
+    });
+});
