@@ -3,6 +3,7 @@ import { auditLogsRouter } from "./audit";
 import { auditEventsRouter } from "./audit-events";
 import { dashboardRouter } from "./dashboard";
 import { environmentsRouter } from "./environments";
+import { mailboxRouter } from "./mailbox";
 import { notificationsRouter } from "./notifications";
 import { organizationsRouter } from "./organizations";
 import { permissionsRouter } from "./permissions";
@@ -25,6 +26,7 @@ export const studioRouter = router({
   auditLogs: auditLogsRouter,
   auditEvents: auditEventsRouter,
   notifications: notificationsRouter,
+  mailbox: mailboxRouter,
   sidebar: sidebarRouter,
   permissions: permissionsRouter,
   organizations: organizationsRouter,
