@@ -24,6 +24,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
     /** Resend API key; email (incl. magic links) is skipped when unset. */
     RESEND_API_KEY: z.string().min(1).optional(),
+    /** Vercel AI Gateway key. Keep server-only; unset disables AI generation. */
+    AI_GATEWAY_API_KEY: z.string().min(1).optional(),
     /** Upstash REST credentials for shared serverless auth rate limits. */
     KV_REST_API_URL: z.string().url().optional(),
     KV_REST_API_TOKEN: z.string().min(1).optional(),
