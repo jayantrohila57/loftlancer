@@ -4,6 +4,10 @@
     {
       "path": "/studio/api/cron/purge-apps",
       "schedule": "30 21 * * *"
+    },
+    {
+      "path": "/studio/api/cron/cleanup-file-uploads",
+      "schedule": "45 21 * * *"
     }
   ],
   "regions": ["sin1"],
