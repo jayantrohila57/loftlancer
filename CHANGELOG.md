@@ -35,6 +35,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 - Retired `UI.md`, `plan.md`, and `summary.md` from the documentation index (#911).
 - Removed `scripts/README.md` (script index; can be restored under `docs/` later) (#911).
+- Removed obsolete `artifacts/screenshots/redesign-after/` captures.
 
 ## [1.23.0] - 2026-11-02
 
