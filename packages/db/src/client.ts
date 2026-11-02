@@ -22,9 +22,18 @@ import * as schema from "./schema";
 type DbGlobal = typeof globalThis & { __loftlancerPgPool?: Pool };
 const g = globalThis as DbGlobal;
 
+const weakSslWarnedHosts = new Set<string>();
+
 function createPool(): Pool {
-  warnOnWeakDatabaseSslMode(env.DATABASE_URL, env.NODE_ENV, (message, attrs) =>
-    logger.warn(message, attrs),
+  warnOnWeakDatabaseSslMode(
+    env.DATABASE_URL,
+    env.NODE_ENV,
+    (message, attrs) => {
+      const key = `${attrs.host}:${attrs.sslmode}`;
+      if (weakSslWarnedHosts.has(key)) return;
+      weakSslWarnedHosts.add(key);
+      logger.warn(message, attrs);
+    },
   );
   const connectionString = resolveDatabaseConnectionString(
     env.DATABASE_URL,

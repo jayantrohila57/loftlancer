@@ -10,15 +10,16 @@ This repository uses **`dev`** for integration and **`main`** for production. Al
 
 ## Git & deploy
 
-| Rule | Detail |
-|------|--------|
-| Branches | Feature branch (e.g. `chore/…`, `fix/…`) → merge into **`dev`** → merge **`dev`** into **`main`** |
-| Integration | **`dev`** holds merged work; push `dev` after feature merges (no Vercel production deploy) |
-| Production | **`main` only** — Vercel production deploys when `main` is pushed |
-| Vercel | Per-app `vercel.json` sets `git.deploymentEnabled` so only **`main`** builds; `ignoreCommand` skips non-`main` refs |
-| Before push | `git pull --rebase` on the branch you are updating |
-| Forbidden | Force-push, `git commit --amend` on shared history |
-| PRs | Optional; merges may be direct on GitHub or locally |
+| Rule        | Detail                                                                                                              |
+| ----------- | ------------------------------------------------------------------------------------------------------------------- |
+| Branches    | Feature branch (e.g. `chore/…`, `fix/…`) → merge into **`dev`** → merge **`dev`** into **`main`**                   |
+| **`main`**  | **Release-only.** No direct commits or pushes for ordinary work — not for small tasks, docs, or CI-only edits       |
+| Integration | **`dev`** holds merged work; push `dev` after feature merges (no Vercel production deploy)                          |
+| Production  | **`main` only** — Vercel production deploys when `main` is pushed (via **`dev` → `main`** merge)                  |
+| Vercel      | Per-app `vercel.json` sets `git.deploymentEnabled` so only **`main`** builds; `ignoreCommand` skips non-`main` refs |
+| Before push | `git pull --rebase` on the branch you are updating                                                                  |
+| Forbidden   | Direct commits on **`main`**; push to **`origin/main`** except **`dev` → `main`** release; force-push; `git commit --amend` on shared history |
+| PRs         | Target **`dev`**. **`main`** PRs only for promoting **`dev`** (release). Merges may be on GitHub or locally on those branches |
 
 ## Versioning & releases
 

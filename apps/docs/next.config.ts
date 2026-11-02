@@ -22,7 +22,7 @@ const googleSignIn =
 const docsBasePath = process.env.NEXT_BASE_PATH ?? "";
 
 const config: NextConfig = {
-  output: "export" as const,
+  // Serverless Next on Vercel (MCP at /api/mcp, health probe). Not `output: "export"` — API routes need a Node runtime.
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,
     NEXT_PUBLIC_GOOGLE_SIGN_IN: googleSignIn,

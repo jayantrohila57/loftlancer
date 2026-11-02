@@ -16,8 +16,11 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.24.0] - 2026-11-03
+
 ### Changed
 
+- Document mandatory **`dev` first, `main` release-only** branch policy in [AGENTS.md](./AGENTS.md), [CONTRIBUTING.md](./CONTRIBUTING.md), [README.md](./README.md), and `.cursor/rules/git-branches.mdc`.
 - Added [docs/ui-ux-skills.md](./docs/ui-ux-skills.md) and `.cursor/rules/ui-ux.mdc` — mandatory agent skill map for UI/UX (shadcn, coss, ui-ux-pro-max, impeccable, etc.).
 - Added [docs/naming.md](./docs/naming.md) and `.cursor/rules/naming.mdc` (layer prefix, role postfix, folder rules); aligned module/reference docs to `server.*.controller.ts` and `client.use-*.hook.ts` patterns.
 - Added prescriptive architecture gap docs under [docs/gaps/](./docs/gaps/), [docs/architecture-gaps.md](./docs/architecture-gaps.md), [docs/new-feature-checklist.md](./docs/new-feature-checklist.md), [docs/reference-module-teams.md](./docs/reference-module-teams.md), and [docs/tooling.md](./docs/tooling.md); ServiceResponse and runAction stubs in `module/shared/`; Cursor rules for access-control, rendering, and app-states.
@@ -47,6 +50,13 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 - Retired `UI.md`, `plan.md`, and `summary.md` from the documentation index (#911).
 - Removed `scripts/README.md` (script index; can be restored under `docs/` later) (#911).
 - Removed obsolete `artifacts/screenshots/redesign-after/` captures.
+
+### Fixed
+
+- CI: run `pnpm check-routes` in the quality job; run CI on pushes to `dev` as well as `main`.
+- Docs production build: remove `output: "export"` so `/api/mcp` and `/api/health` run on the Next serverless runtime.
+- Biome: drop invalid `useSortedClasses` options so `biome ci` runs on CI.
+- Neon SSL warnings during `next build`: only warn when normalized URL is not `verify-full`; dedupe per host in the DB pool; align [docs/database.md](./docs/database.md).
 
 ## [1.23.0] - 2026-11-02
 
@@ -1020,7 +1030,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.23.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.24.0...HEAD
+[1.24.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.21.0...v1.22.0
 [1.21.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.20.0...v1.21.0
