@@ -1,9 +1,9 @@
 import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { OrganizationInvitationsPage } from "@/domain/organizations/components/organization-invitations-page";
-import { OrganizationsFeatureGate } from "@/domain/organizations/components/organizations-feature-gate";
 import { guardOrganizationSlugPage } from "@/lib/page-guards";
+import { OrganizationInvitationsPage } from "@/module/organizations/organizations.organization.invitations.page";
+import { OrganizationsFeatureGate } from "@/module/organizations/organizations.organizations.feature.gate";
 import { routes } from "@/utils/navigation";
 
 export const metadata: Metadata = {

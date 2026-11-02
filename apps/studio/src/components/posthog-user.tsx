@@ -2,7 +2,6 @@
 
 import { useAnalyticsConsent } from "@loftlancer/ui/patterns/analytics-consent";
 import { useEffect, useRef } from "react";
-import { useSession } from "@/domain/auth/lib/auth-actions";
 import {
   identifyUser,
   loadPostHog,
@@ -10,6 +9,7 @@ import {
   resetPostHog,
   setOrganizationGroup,
 } from "@/lib/posthog";
+import { useSession } from "@/module/auth/auth.auth.actions";
 
 /**
  * PostHog identify + organization group, ids only (#353). Mirrors

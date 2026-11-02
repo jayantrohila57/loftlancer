@@ -3,15 +3,15 @@ import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import OrganizationDetailPage from "@/domain/organizations/components/organization-detail-page";
-import { OrganizationsFeatureGate } from "@/domain/organizations/components/organizations-feature-gate";
-import { OrganizationDetailPageSkeleton } from "@/domain/organizations/components/skeletons";
-import { PermissionGate } from "@/domain/permissions/components/permission-gate";
 import {
   guardOrganizationSlugMembership,
   guardOrganizationSlugPage,
 } from "@/lib/page-guards";
 import { NOT_FOUND_DOCUMENT_TITLE } from "@/lib/siteConfig";
+import { OrganizationsFeatureGate } from "@/module/organizations/organizations.organizations.feature.gate";
+import { OrganizationOverview } from "@/module/organizations/organizations.overview";
+import { OrganizationDetailPageSkeleton } from "@/module/organizations/organizations.skeletons";
+import { PermissionGate } from "@/shared/permissions/shared.permissions.permission.gate";
 import { routes } from "@/utils/navigation";
 
 interface OrganizationHubPageProps {
@@ -37,7 +37,7 @@ export default async function OrganizationHubPage({
   params,
 }: OrganizationHubPageProps) {
   const { org: slug } = await params;
-  await guardOrganizationSlugPage(slug);
+  const { org } = await guardOrganizationSlugPage(slug);
 
   if (!isOrganizationsEnabled()) {
     redirect(routes.home());
@@ -54,7 +54,7 @@ export default async function OrganizationHubPage({
             <DelayedPageLoading fallback={<OrganizationDetailPageSkeleton />} />
           }
         >
-          <OrganizationDetailPage slug={slug} />
+          <OrganizationOverview slug={slug} metadata={org.metadata} />
         </Suspense>
       </PermissionGate>
     </OrganizationsFeatureGate>

@@ -108,6 +108,13 @@ export async function notify(input: NotifyInput): Promise<number> {
           ? `${input.idempotencyKey}:email:${userId}`
           : undefined,
         tags: [{ name: "type", value: "notification" }],
+        context: {
+          category: "work",
+          organizationId: input.organizationId ?? undefined,
+          senderUserId: input.actorUserId ?? undefined,
+          entity: input.entity,
+          templateKey: "notification",
+        },
       });
     }
 

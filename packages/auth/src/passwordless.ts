@@ -83,6 +83,10 @@ export function magicLinkPlugin() {
           expiresInMinutes: MAGIC_LINK_EXPIRES_IN_SECONDS / 60,
         }),
         tags: [{ name: "category", value: "magic-link" }],
+        context: {
+          category: "personal",
+          templateKey: "magic-link",
+        },
       });
       if (result.status !== "sent") {
         // Surface as an error so the UI shows "couldn't send" instead of "sent".

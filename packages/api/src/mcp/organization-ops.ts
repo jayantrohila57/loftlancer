@@ -668,6 +668,8 @@ export async function mcpMemberInvite(
       invitationId: inviteId,
       email,
       role,
+      organizationId,
+      inviterUserId: userId,
       organizationName: projectName
         ? `project ${projectName} in ${org.name}`
         : org.name,

@@ -16,6 +16,14 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.21.0] - 2026-11-02
+
+### Changed
+
+- Added the persisted Mail foundation for shared-sender messages, recipients, and delivery state (#344).
+- Put the public documentation reader inside the shared public sidebar and header while preserving its document content and table of contents (#221).
+- Moved Studio, authorization, documentation, and public feature ownership into server-first modules, keeping routes focused on guards and composition (#891).
+
 ## [1.20.0] - 2026-10-31
 
 ### Changed
@@ -967,7 +975,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.20.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.21.0...HEAD
+[1.21.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.21...v1.20.0
 [1.19.21]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.20...v1.19.21
 [1.19.20]: https://github.com/jayantrohila57/loftlancer/compare/v1.19.19...v1.19.20

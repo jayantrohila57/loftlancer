@@ -2,7 +2,7 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
-import { useSession } from "@/domain/auth/lib/auth-actions";
+import { useSession } from "@/module/auth/auth.auth.actions";
 
 /**
  * Browser Sentry user + `org_id` tag, ids only (#354). Mirrors the server

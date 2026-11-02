@@ -4,12 +4,24 @@ import { render } from "@react-email/components";
 import type { ReactElement } from "react";
 import { Resend } from "resend";
 
+export type EmailContext = {
+  category?: "system" | "work" | "personal";
+  senderUserId?: string;
+  organizationId?: string;
+  teamId?: string;
+  projectId?: string;
+  entity?: { type: string; id: string };
+  templateKey?: string;
+  templateProps?: Record<string, unknown>;
+};
+
 export type SendEmailInput = {
   to: string | string[];
   subject: string;
   react: ReactElement;
   idempotencyKey?: string;
   tags?: { name: string; value: string }[];
+  context?: EmailContext;
 };
 
 export type SendEmailResult =
@@ -31,6 +43,7 @@ export type RecordedEmail = {
   text: string;
   tags?: { name: string; value: string }[];
   idempotencyKey?: string;
+  context?: EmailContext;
   result: SendEmailResult;
   createdAt: Date;
 };
@@ -111,6 +124,7 @@ export async function sendEmail(
     text,
     tags: input.tags,
     idempotencyKey: input.idempotencyKey,
+    context: input.context,
     result,
     createdAt: new Date(),
   });
