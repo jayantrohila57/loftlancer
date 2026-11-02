@@ -19,7 +19,7 @@ Product feature code lives here: `module/<domain>/{utils,server,client}/`. Cross
 | `projects` | `apps/studio/src/module/projects` | |
 | `support` | `apps/studio/src/module/support` | |
 | `tasks` | `apps/studio/src/module/tasks` | |
-| `teams` | `apps/studio/src/module/teams` | Pilot migration target; see [docs/reference-module-teams.md](../docs/reference-module-teams.md) |
+| `teams` | `module/teams/client/studio` | `/[org]/teams/...` pilot implemented; see [teams/README.md](./teams/README.md) and [docs/reference-module-teams.md](../docs/reference-module-teams.md) |
 | `studio-shell` | — | Tier 1 Studio shell ([studio-shell/README.md](./studio-shell/README.md)) |
 | `account` | `apps/auth/src/module/` (legacy) | Auth settings; target `module/account/` |
 

@@ -2,7 +2,10 @@
   "extends": "@loftlancer/config/tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@module/*": ["../../module/*"]
+    }
   },
   "include": ["src"]
 }

@@ -1,0 +1,194 @@
+"use client";
+import { Button } from "@loftlancer/ui/button";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@loftlancer/ui/dialog";
+import { Field, FieldLabel } from "@loftlancer/ui/field";
+import { Input } from "@loftlancer/ui/input";
+import { Textarea } from "@loftlancer/ui/textarea";
+import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
+import { GuardedDialog } from "@/lib/team-dialog";
+import type { TeamDto } from "../../../utils/types/utils.team.dto";
+import { useTeamsListScreen } from "../hooks/client.use-teams-list-screen.hook";
+import { TeamsListSkeleton } from "../skeletons/client.team-list.skeleton";
+import { TeamsListContent } from "./client.list.content";
+import { TeamsResponseMessage } from "./client.response.boundary";
+export function TeamsListBoundary({
+  orgId,
+  slug,
+  organizationName,
+  response,
+}: {
+  orgId: string;
+  slug: string;
+  organizationName: string;
+  response: ServiceResponse<TeamDto>;
+}) {
+  const state = useTeamsListScreen(orgId, slug, response);
+  const { query, create, values, errors } = state;
+  const result = query.data;
+  return (
+    <section className="flex min-w-0 flex-col gap-4">
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-semibold text-xl tracking-tight">Teams</h2>
+          <p className="mt-1 text-muted-foreground text-sm">
+            Group organization members and connect teams to projects.
+          </p>
+        </div>
+        {state.canCreate.allowed ? (
+          <Button type="button" size="sm" onClick={() => state.setOpen(true)}>
+            New team
+          </Button>
+        ) : null}
+      </header>
+      {query.isPending ? (
+        <TeamsListSkeleton />
+      ) : query.isError ? (
+        <TeamsResponseMessage
+          message="Please try loading teams again."
+          error
+          retry={() => void query.refetch()}
+        />
+      ) : result.status !== "success" ? (
+        <TeamsResponseMessage
+          message={result.message}
+          error={result.status === "error"}
+          retry={() => void query.refetch()}
+        />
+      ) : (
+        <TeamsListContent
+          organizationName={organizationName}
+          teams={Array.isArray(result.data) ? result.data : []}
+          slug={slug}
+        />
+      )}
+      <GuardedDialog
+        open={state.open}
+        onOpenChange={(next) => {
+          if (!create.isPending) state.setOpen(next);
+        }}
+        isDirty={Object.values(values).some((value) => value.trim())}
+        onDiscard={state.reset}
+        closeWithoutPromptRef={state.closeWithoutPromptRef}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create team</DialogTitle>
+            <DialogDescription>
+              Team name is required. Purpose and description are optional.
+            </DialogDescription>
+          </DialogHeader>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void state.submit();
+            }}
+            noValidate
+          >
+            {Object.values(errors).some(Boolean) ? (
+              <div ref={state.summaryRef} tabIndex={-1} role="alert">
+                <p>Check the team details.</p>
+                {Object.entries(errors).map(([key, messages]) =>
+                  messages?.map((message) => (
+                    <a
+                      className="block underline"
+                      href={`#team-${key}`}
+                      key={`${key}-${message}`}
+                    >
+                      {message}
+                    </a>
+                  )),
+                )}
+              </div>
+            ) : null}
+            {create.data && create.data.status !== "success" ? (
+              <p role="alert">{create.data.message}</p>
+            ) : create.isError ? (
+              <p role="alert">
+                Could not create team. Your entries are saved; try again.
+              </p>
+            ) : null}
+            <Field name="name" invalid={Boolean(errors.name)}>
+              <FieldLabel htmlFor="team-name">Team name</FieldLabel>
+              <Input
+                id="team-name"
+                required
+                maxLength={100}
+                value={values.name}
+                onBlur={state.validate}
+                onChange={(event) =>
+                  state.setValues({ ...values, name: event.target.value })
+                }
+                aria-invalid={Boolean(errors.name)}
+                aria-describedby={errors.name ? "team-name-error" : undefined}
+              />
+              {errors.name ? (
+                <p id="team-name-error" className="text-destructive text-sm">
+                  {errors.name[0]}
+                </p>
+              ) : null}
+            </Field>
+            <Field name="purpose" invalid={Boolean(errors.purpose)}>
+              <FieldLabel htmlFor="team-purpose">Purpose</FieldLabel>
+              <Input
+                id="team-purpose"
+                maxLength={250}
+                value={values.purpose}
+                onChange={(event) =>
+                  state.setValues({ ...values, purpose: event.target.value })
+                }
+                aria-invalid={Boolean(errors.purpose)}
+              />
+              {errors.purpose ? (
+                <p className="text-destructive text-sm">{errors.purpose[0]}</p>
+              ) : null}
+            </Field>
+            <Field name="description" invalid={Boolean(errors.description)}>
+              <FieldLabel htmlFor="team-description">Description</FieldLabel>
+              <Textarea
+                id="team-description"
+                maxLength={500}
+                rows={3}
+                value={values.description}
+                onChange={(event) =>
+                  state.setValues({
+                    ...values,
+                    description: event.target.value,
+                  })
+                }
+                aria-invalid={Boolean(errors.description)}
+              />
+              {errors.description ? (
+                <p className="text-destructive text-sm">
+                  {errors.description[0]}
+                </p>
+              ) : null}
+            </Field>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="ghost"
+                disabled={create.isPending}
+                onClick={() => state.setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={create.isPending || !state.canCreate.allowed}
+              >
+                {create.isPending ? "Creating…" : "Create team"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </GuardedDialog>
+    </section>
+  );
+}

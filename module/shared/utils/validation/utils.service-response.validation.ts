@@ -20,14 +20,41 @@ const serviceErrorDetailSchema: z.ZodType<ServiceErrorDetail> = z.object({
 export const serviceStatusSchema = z.enum(["success", "failed", "error"]);
 
 export function serviceResponseSchema<T extends z.ZodTypeAny>(dataSchema: T) {
-  return z.object({
-    status: serviceStatusSchema,
-    data: z.union([dataSchema, z.array(dataSchema), z.null()]),
-    message: z.string(),
-    error: z
-      .union([serviceFieldErrorsSchema, serviceErrorDetailSchema, z.null()])
-      .optional(),
-  });
+  return z
+    .object({
+      status: serviceStatusSchema,
+      data: z.union([dataSchema, z.array(dataSchema), z.null()]),
+      message: z.string(),
+      error: z
+        .union([serviceFieldErrorsSchema, serviceErrorDetailSchema, z.null()])
+        .optional(),
+    })
+    .superRefine((response, ctx) => {
+      if (!("data" in response))
+        ctx.addIssue({
+          code: "custom",
+          path: ["data"],
+          message: "Response data is required",
+        });
+      if (
+        response.status !== "success" &&
+        (!("data" in response) || response.data !== null)
+      )
+        ctx.addIssue({
+          code: "custom",
+          path: ["data"],
+          message: "Failed responses must have null data",
+        });
+      if (
+        response.status === "error" &&
+        (!response.error || !("code" in response.error))
+      )
+        ctx.addIssue({
+          code: "custom",
+          path: ["error"],
+          message: "System errors require an error code",
+        });
+    });
 }
 
 /** Use when validating unknown controller output before return. */

@@ -5,7 +5,7 @@
     "SKIP_ENV_VALIDATION",
     "API_ENTRYPOINT_INVENTORY_OUT"
   ],
-  "globalDependencies": ["package.json", "CHANGELOG.md"],
+  "globalDependencies": ["package.json", "CHANGELOG.md", "module/**"],
   "globalEnv": [
     "ORGANIZATIONS_ENABLED",
     "NEXT_PUBLIC_ORGANIZATIONS_ENABLED",

@@ -30,11 +30,25 @@ import {
 import {
   projectManager,
   projectMemberGrant,
-  projectTeam,
 } from "@loftlancer/db/schema/project-access";
 import { project } from "@loftlancer/db/schema/projects";
 import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
+import { teamAvailableMembersController } from "@module/teams/server/controller/server.team-available-members.controller";
+import { teamCreateController } from "@module/teams/server/controller/server.team-create.controller";
+import { teamDeleteController } from "@module/teams/server/controller/server.team-delete.controller";
+import { teamListController } from "@module/teams/server/controller/server.team-list.controller";
+import { teamMemberAddController } from "@module/teams/server/controller/server.team-member-add.controller";
+import { teamMemberRemoveController } from "@module/teams/server/controller/server.team-member-remove.controller";
+import { teamMemberRoleChangeController } from "@module/teams/server/controller/server.team-member-role-change.controller";
+import { teamMembersController } from "@module/teams/server/controller/server.team-members.controller";
+import { teamRestoreController } from "@module/teams/server/controller/server.team-restore.controller";
+import { teamUpdateController } from "@module/teams/server/controller/server.team-update.controller";
+import {
+  unwrapTeamList,
+  unwrapTeamObject,
+} from "@module/teams/server/handlers/server.legacy-response.handler";
+import { applyTeamProjectDefaults } from "@module/teams/server/service/server.team-project-defaults.service";
 import { and, eq, gt, inArray, isNull, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { writeAuditEvent } from "../actions/audit-event-writer";
@@ -81,78 +95,6 @@ async function recordMutationAudit(
     return;
   }
   await writeAuthAuditEvent(input);
-}
-
-type OrganizationMutationTx = Parameters<
-  Parameters<typeof db.transaction>[0]
->[0];
-
-async function applyTeamProjectDefaults(
-  tx: OrganizationMutationTx,
-  input: {
-    organizationId: string;
-    teamId: string;
-    userId: string;
-    actorUserId: string;
-    role: string;
-  },
-) {
-  if (input.role !== "member") return;
-
-  const linkedProjects = await tx
-    .select({ projectId: projectTeam.projectId })
-    .from(projectTeam)
-    .where(
-      and(
-        eq(projectTeam.organizationId, input.organizationId),
-        eq(projectTeam.teamId, input.teamId),
-        isNull(projectTeam.deletedAt),
-      ),
-    )
-    .orderBy(projectTeam.projectId);
-
-  for (const { projectId } of linkedProjects) {
-    const [existing] = await tx
-      .select({
-        id: projectMemberGrant.id,
-        grants: projectMemberGrant.grants,
-      })
-      .from(projectMemberGrant)
-      .where(
-        and(
-          eq(projectMemberGrant.organizationId, input.organizationId),
-          eq(projectMemberGrant.projectId, projectId),
-          eq(projectMemberGrant.userId, input.userId),
-          isNull(projectMemberGrant.deletedAt),
-        ),
-      )
-      .limit(1)
-      .for("update");
-    const grants = mergeProjectMemberGrants(
-      existing?.grants ?? [],
-      DEFAULT_TEAM_PROJECT_GRANTS,
-    );
-
-    if (existing) {
-      await tx
-        .update(projectMemberGrant)
-        .set({
-          grants,
-          updatedBy: input.actorUserId,
-          updatedAt: new Date(),
-        })
-        .where(eq(projectMemberGrant.id, existing.id));
-    } else {
-      await tx.insert(projectMemberGrant).values({
-        id: crypto.randomUUID(),
-        organizationId: input.organizationId,
-        projectId,
-        userId: input.userId,
-        grants,
-        updatedBy: input.actorUserId,
-      });
-    }
-  }
 }
 
 function slugifyOrganizationName(name: string): string {
@@ -1314,13 +1256,9 @@ export async function mcpInvitationReject(
 }
 
 export async function mcpTeamsList(userId: string, organizationId: string) {
-  await requireOrgAction("member.list", { userId, organizationId });
-  const rows = await db
-    .select()
-    .from(team)
-    .where(and(eq(team.organizationId, organizationId), isNull(team.deletedAt)))
-    .orderBy(team.name);
-  return { items: rows };
+  return unwrapTeamList(
+    await teamListController({ ctx: { userId, orgId: organizationId } }),
+  );
 }
 
 export async function teamMembersList(
@@ -1328,54 +1266,12 @@ export async function teamMembersList(
   organizationId: string,
   teamId: string,
 ) {
-  await requireOrgAction("team.member.list", {
-    userId,
-    organizationId,
-    teamId,
-  });
-  const [row] = await db
-    .select({ id: team.id })
-    .from(team)
-    .where(
-      and(
-        eq(team.id, teamId),
-        eq(team.organizationId, organizationId),
-        isNull(team.deletedAt),
-      ),
-    )
-    .limit(1);
-  if (!row) {
-    throw new Error("Team not found");
-  }
-  const addedBy = alias(user, "team_member_added_by");
-  const updatedBy = alias(user, "team_member_updated_by");
-  const rows = await db
-    .select({
-      id: teamMember.id,
-      userId: teamMember.userId,
-      teamId: teamMember.teamId,
-      role: teamMember.role,
-      createdAt: teamMember.createdAt,
-      addedByName: addedBy.name,
-      updatedAt: teamMember.updatedAt,
-      updatedByName: updatedBy.name,
-      name: user.name,
-      email: user.email,
-    })
-    .from(teamMember)
-    .innerJoin(
-      member,
-      and(
-        eq(member.userId, teamMember.userId),
-        eq(member.organizationId, organizationId),
-        isNull(member.deletedAt),
-      ),
-    )
-    .innerJoin(user, eq(user.id, teamMember.userId))
-    .leftJoin(addedBy, eq(addedBy.id, teamMember.addedBy))
-    .leftJoin(updatedBy, eq(updatedBy.id, teamMember.updatedBy))
-    .where(eq(teamMember.teamId, teamId));
-  return { items: rows };
+  return unwrapTeamList(
+    await teamMembersController({
+      ctx: { userId, orgId: organizationId },
+      input: { teamId },
+    }),
+  );
 }
 
 export async function teamEligibleMembersList(
@@ -1383,41 +1279,12 @@ export async function teamEligibleMembersList(
   organizationId: string,
   teamId: string,
 ) {
-  await requireOrgAction("team.member.add", {
-    userId,
-    organizationId,
-    teamId,
-    audit: false,
-  });
-  const [teamRow] = await db
-    .select({ id: team.id })
-    .from(team)
-    .where(
-      and(
-        eq(team.id, teamId),
-        eq(team.organizationId, organizationId),
-        isNull(team.deletedAt),
-      ),
-    )
-    .limit(1);
-  if (!teamRow) throw new Error("Team not found");
-  const rows = await db
-    .select({ userId: member.userId, name: user.name, email: user.email })
-    .from(member)
-    .innerJoin(user, eq(user.id, member.userId))
-    .leftJoin(
-      teamMember,
-      and(eq(teamMember.teamId, teamId), eq(teamMember.userId, member.userId)),
-    )
-    .where(
-      and(
-        eq(member.organizationId, organizationId),
-        isNull(member.deletedAt),
-        isNull(teamMember.id),
-      ),
-    )
-    .orderBy(user.name);
-  return { items: rows };
+  return unwrapTeamList(
+    await teamAvailableMembersController({
+      ctx: { userId, orgId: organizationId },
+      input: { teamId },
+    }),
+  );
 }
 
 export async function mcpTeamCreate(
@@ -1426,41 +1293,16 @@ export async function mcpTeamCreate(
   name: string,
   details: { description?: string | null; purpose?: string | null } = {},
 ) {
-  await requireOrgAction("team.create", { userId, organizationId });
-  const normalizedName = name.trim();
-  if (!normalizedName) throw new Error("invalid_team_name");
-  const teamId = crypto.randomUUID();
-  await db.transaction(async (tx) => {
-    await tx.insert(team).values({
-      id: teamId,
-      name: normalizedName,
-      description: details.description?.trim() || null,
-      purpose: details.purpose?.trim() || null,
-      organizationId,
-      memberCount: 1,
-      createdBy: userId,
-      updatedAt: new Date(),
-      updatedBy: userId,
-    });
-    await tx.insert(teamMember).values({
-      id: crypto.randomUUID(),
-      teamId,
-      userId,
-      role: "lead",
-      addedBy: userId,
-      updatedAt: new Date(),
-      updatedBy: userId,
-    });
-  });
-  await recordMutationAudit({
-    action: "team.create",
-    result: "success",
-    actorUserId: userId,
-    organizationId,
-    entityId: teamId,
-    payload: { name: normalizedName },
-  });
-  return { id: teamId, name: normalizedName, organizationId };
+  return unwrapTeamObject(
+    await teamCreateController({
+      ctx: { userId, orgId: organizationId },
+      input: {
+        name,
+        description: details.description ?? undefined,
+        purpose: details.purpose ?? undefined,
+      },
+    }),
+  );
 }
 
 export async function mcpTeamUpdate(
@@ -1470,50 +1312,17 @@ export async function mcpTeamUpdate(
   name: string,
   details: { description?: string | null; purpose?: string | null } = {},
 ) {
-  await requireOrgAction("team.update", { userId, organizationId });
-  const normalizedName = name.trim();
-  if (!normalizedName) throw new Error("invalid_team_name");
-  const values: {
-    name: string;
-    updatedAt: Date;
-    updatedBy: string;
-    description?: string | null;
-    purpose?: string | null;
-  } = { name: normalizedName, updatedAt: new Date(), updatedBy: userId };
-  if (details.description !== undefined)
-    values.description = details.description?.trim() || null;
-  if (details.purpose !== undefined)
-    values.purpose = details.purpose?.trim() || null;
-  const [row] = await db
-    .update(team)
-    .set(values)
-    .where(
-      and(
-        eq(team.id, teamId),
-        eq(team.organizationId, organizationId),
-        isNull(team.deletedAt),
-      ),
-    )
-    .returning({
-      id: team.id,
-      name: team.name,
-      description: team.description,
-      purpose: team.purpose,
-      updatedAt: team.updatedAt,
-      updatedBy: team.updatedBy,
-    });
-  if (!row) {
-    throw new Error("team_not_found");
-  }
-  await recordMutationAudit({
-    action: "team.update",
-    result: "success",
-    actorUserId: userId,
-    organizationId,
-    entityId: teamId,
-    payload: { name: normalizedName },
-  });
-  return row;
+  return unwrapTeamObject(
+    await teamUpdateController({
+      ctx: { userId, orgId: organizationId },
+      input: {
+        teamId,
+        name,
+        description: details.description,
+        purpose: details.purpose,
+      },
+    }),
+  );
 }
 
 export async function mcpTeamDelete(
@@ -1521,69 +1330,12 @@ export async function mcpTeamDelete(
   organizationId: string,
   teamId: string,
 ) {
-  await requireOrgAction("team.delete", { userId, organizationId });
-  await db.transaction(async (tx) => {
-    const [activeOrganization] = await tx
-      .select({ id: organization.id })
-      .from(organization)
-      .where(
-        and(
-          eq(organization.id, organizationId),
-          isNull(organization.deletedAt),
-        ),
-      )
-      .for("update");
-    if (!activeOrganization) throw new Error("organization_not_found");
-    const [existing] = await tx
-      .select({ id: team.id })
-      .from(team)
-      .where(
-        and(
-          eq(team.id, teamId),
-          eq(team.organizationId, organizationId),
-          isNull(team.deletedAt),
-        ),
-      )
-      .for("update");
-    if (!existing) throw new Error("team_not_found");
-    await tx
-      .update(invitation)
-      .set({
-        status: "canceled",
-        revokedAt: new Date(),
-        revokedBy: userId,
-        updatedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(invitation.organizationId, organizationId),
-          eq(invitation.teamId, teamId),
-          eq(invitation.status, "pending"),
-        ),
-      );
-    if (isSoftDeletesEnabled()) {
-      await tx
-        .update(team)
-        .set(softDeleteSet(userId))
-        .where(
-          and(eq(team.id, teamId), eq(team.organizationId, organizationId)),
-        );
-    } else {
-      await tx
-        .delete(team)
-        .where(
-          and(eq(team.id, teamId), eq(team.organizationId, organizationId)),
-        );
-    }
-  });
-  await recordMutationAudit({
-    action: "team.delete",
-    result: "success",
-    actorUserId: userId,
-    organizationId,
-    entityId: teamId,
-  });
-  return { success: true, teamId };
+  return unwrapTeamObject(
+    await teamDeleteController({
+      ctx: { userId, orgId: organizationId },
+      input: { teamId },
+    }),
+  );
 }
 
 export async function mcpTeamRestore(
@@ -1591,26 +1343,12 @@ export async function mcpTeamRestore(
   organizationId: string,
   teamId: string,
 ) {
-  await requireOrgAction("team.restore", { userId, organizationId });
-  if (!isSoftDeletesEnabled()) {
-    throw new Error("soft_deletes_disabled");
-  }
-  const [row] = await db
-    .update(team)
-    .set({ deletedAt: null, deletedBy: null })
-    .where(and(eq(team.id, teamId), eq(team.organizationId, organizationId)))
-    .returning({ id: team.id, name: team.name });
-  if (!row) {
-    throw new Error("team_not_found");
-  }
-  await recordMutationAudit({
-    action: "team.restore",
-    result: "success",
-    actorUserId: userId,
-    organizationId,
-    entityId: teamId,
-  });
-  return row;
+  return unwrapTeamObject(
+    await teamRestoreController({
+      ctx: { userId, orgId: organizationId },
+      input: { teamId },
+    }),
+  );
 }
 
 export async function mcpTeamAddMember(
@@ -1619,76 +1357,12 @@ export async function mcpTeamAddMember(
   teamId: string,
   targetUserId: string,
 ) {
-  await requireOrgAction("team.member.add", { userId, organizationId, teamId });
-  await db.transaction(async (tx) => {
-    const [activeMember] = await tx
-      .select({ id: member.id, role: member.role })
-      .from(member)
-      .where(
-        activeMemberWhere(
-          and(
-            eq(member.organizationId, organizationId),
-            eq(member.userId, targetUserId),
-          ),
-        ),
-      )
-      .limit(1)
-      .for("update");
-    if (!activeMember) throw new Error("organization_member_not_found");
-    const [teamRow] = await tx
-      .select({ id: team.id })
-      .from(team)
-      .where(
-        and(
-          eq(team.id, teamId),
-          eq(team.organizationId, organizationId),
-          isNull(team.deletedAt),
-        ),
-      )
-      .for("update");
-    if (!teamRow) throw new Error("team_not_found");
-    const [existing] = await tx
-      .select({ id: teamMember.id })
-      .from(teamMember)
-      .where(
-        and(eq(teamMember.teamId, teamId), eq(teamMember.userId, targetUserId)),
-      )
-      .limit(1);
-    if (!existing) {
-      await tx.insert(teamMember).values({
-        id: crypto.randomUUID(),
-        teamId,
-        userId: targetUserId,
-        addedBy: userId,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      });
-    }
-    await applyTeamProjectDefaults(tx, {
-      organizationId,
-      teamId,
-      userId: targetUserId,
-      actorUserId: userId,
-      role: activeMember.role,
-    });
-    const [count] = await tx
-      .select({ count: sql<number>`count(*)::int` })
-      .from(teamMember)
-      .where(eq(teamMember.teamId, teamId));
-    await tx
-      .update(team)
-      .set({ memberCount: count?.count ?? 0 })
-      .where(eq(team.id, teamId));
-  });
-  await recordMutationAudit({
-    action: "team.member.add",
-    result: "success",
-    actorUserId: userId,
-    organizationId,
-    entityId: teamId,
-    targetUserId,
-  });
-  return { teamId, userId: targetUserId };
+  return unwrapTeamObject(
+    await teamMemberAddController({
+      ctx: { userId, orgId: organizationId },
+      input: { teamId, userId: targetUserId },
+    }),
+  );
 }
 
 export async function mcpTeamRemoveMember(
@@ -1697,63 +1371,12 @@ export async function mcpTeamRemoveMember(
   teamId: string,
   targetUserId: string,
 ) {
-  await requireOrgAction("team.member.remove", {
-    userId,
-    organizationId,
-    teamId,
-  });
-  await db.transaction(async (tx) => {
-    const [teamRow] = await tx
-      .select({ id: team.id })
-      .from(team)
-      .where(
-        and(
-          eq(team.id, teamId),
-          eq(team.organizationId, organizationId),
-          isNull(team.deletedAt),
-        ),
-      )
-      .for("update");
-    if (!teamRow) throw new Error("team_not_found");
-    const [target] = await tx
-      .select({ role: teamMember.role })
-      .from(teamMember)
-      .where(
-        and(eq(teamMember.teamId, teamId), eq(teamMember.userId, targetUserId)),
-      )
-      .limit(1);
-    if (target?.role === "lead") {
-      const [leadCount] = await tx
-        .select({ count: sql<number>`count(*)::int` })
-        .from(teamMember)
-        .where(and(eq(teamMember.teamId, teamId), eq(teamMember.role, "lead")));
-      if ((leadCount?.count ?? 0) <= 1) {
-        throw new Error("team_requires_lead");
-      }
-    }
-    await tx
-      .delete(teamMember)
-      .where(
-        and(eq(teamMember.teamId, teamId), eq(teamMember.userId, targetUserId)),
-      );
-    const [count] = await tx
-      .select({ count: sql<number>`count(*)::int` })
-      .from(teamMember)
-      .where(eq(teamMember.teamId, teamId));
-    await tx
-      .update(team)
-      .set({ memberCount: count?.count ?? 0 })
-      .where(eq(team.id, teamId));
-  });
-  await recordMutationAudit({
-    action: "team.member.remove",
-    result: "success",
-    actorUserId: userId,
-    organizationId,
-    entityId: teamId,
-    targetUserId,
-  });
-  return { teamId, userId: targetUserId };
+  return unwrapTeamObject(
+    await teamMemberRemoveController({
+      ctx: { userId, orgId: organizationId },
+      input: { teamId, userId: targetUserId },
+    }),
+  );
 }
 
 export async function mcpTeamChangeMemberRole(
@@ -1763,69 +1386,12 @@ export async function mcpTeamChangeMemberRole(
   targetUserId: string,
   role: "lead" | "member",
 ) {
-  await requireOrgAction("team.member.role.change", {
-    userId,
-    organizationId,
-    teamId,
-  });
-  await db.transaction(async (tx) => {
-    const [teamRow] = await tx
-      .select({ id: team.id })
-      .from(team)
-      .where(
-        and(
-          eq(team.id, teamId),
-          eq(team.organizationId, organizationId),
-          isNull(team.deletedAt),
-        ),
-      )
-      .for("update");
-    if (!teamRow) throw new Error("team_not_found");
-    const [targetMember] = await tx
-      .select({ id: member.id })
-      .from(member)
-      .where(
-        activeMemberWhere(
-          and(
-            eq(member.organizationId, organizationId),
-            eq(member.userId, targetUserId),
-          ),
-        ),
-      )
-      .limit(1);
-    if (!targetMember) throw new Error("organization_member_not_found");
-    const [row] = await tx
-      .select({ membershipId: teamMember.id, role: teamMember.role })
-      .from(teamMember)
-      .where(
-        and(eq(teamMember.teamId, teamId), eq(teamMember.userId, targetUserId)),
-      )
-      .limit(1);
-    if (!row) throw new Error("team_member_not_found");
-    if (row.role === "lead" && role === "member") {
-      const [leadCount] = await tx
-        .select({ count: sql<number>`count(*)::int` })
-        .from(teamMember)
-        .where(and(eq(teamMember.teamId, teamId), eq(teamMember.role, "lead")));
-      if ((leadCount?.count ?? 0) <= 1) {
-        throw new Error("team_requires_lead");
-      }
-    }
-    await tx
-      .update(teamMember)
-      .set({ role, updatedAt: new Date(), updatedBy: userId })
-      .where(eq(teamMember.id, row.membershipId));
-  });
-  await recordMutationAudit({
-    action: "team.member.role.change",
-    result: "success",
-    actorUserId: userId,
-    organizationId,
-    entityId: teamId,
-    targetUserId,
-    payload: { role },
-  });
-  return { teamId, userId: targetUserId, role };
+  return unwrapTeamObject(
+    await teamMemberRoleChangeController({
+      ctx: { userId, orgId: organizationId },
+      input: { teamId, userId: targetUserId, role },
+    }),
+  );
 }
 
 export async function resolveOrgFromInput(

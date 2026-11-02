@@ -7,10 +7,19 @@
   },
   "dependencies": {
     "@loftlancer/actions": "workspace:*",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@loftlancer/api": "workspace:*",
+    "@loftlancer/db": "workspace:*",
+    "@loftlancer/logger": "workspace:*",
+    "@loftlancer/ui": "workspace:*",
+    "@tanstack/react-query": "^5.104.2",
+    "react": "^19.3.0",
+    "next": "catalog:",
+    "drizzle-orm": "catalog:"
   },
   "devDependencies": {
     "@loftlancer/config": "workspace:*",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/react": "^19.3.0"
   }
 }
