@@ -1,0 +1,25 @@
+---
+description: Route loading/error/not-found/forbidden; tier-stable skeletons; DelayedPageLoading
+globs: apps/**/app/**,module/**/client/**/skeletons/**
+alwaysApply: false
+---
+
+# App states
+
+Full spec: **[docs/app-states.md](../docs/app-states.md)** · Layout stability: **[docs/layouts.md](../docs/layouts.md)**
+
+## Route-level
+
+- Use App Router **`loading.tsx`**, **`error.tsx`**, **`not-found.tsx`**, **`forbidden.tsx`** — thin re-exports from module when possible.
+- Skeleton geometry **matches** final page (Tier 1 + Tier 2 stable across navigations).
+
+## In-page API
+
+- **`ServiceResponse` `failed`** — validation/business (not route forbidden).
+- **`ServiceResponse` `error`** — system fault + retry UI.
+- **`loading`** is **`isPending`**, not a response status.
+
+## Related
+
+- [docs/data-workflow.md](../docs/data-workflow.md)  
+- [docs/gaps/client-layer.md](../docs/gaps/client-layer.md)  

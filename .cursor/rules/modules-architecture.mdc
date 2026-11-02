@@ -1,0 +1,38 @@
+---
+description: module layouts (Tier 1 shell + Tier 2 section); routes per module; rendering; app states
+alwaysApply: true
+---
+
+# Module, layouts, server, rendering
+
+Read **docs/ui-ux-skills.md**, **docs/naming.md**, **docs/architecture-gaps.md**, **docs/new-feature-checklist.md**, **docs/data-workflow.md**, **docs/layouts.md**, **docs/app-states.md**, **docs/rendering.md**, **docs/server-api.md**, **docs/modules.md**, **docs/packages.md**.
+
+## Naming
+
+- **`<layer>.<slug>.<role>.<ext>`** — see [naming.md](../docs/naming.md); Cursor rule **naming.mdc** on `module/**`.
+
+## Data
+
+- **ServiceResponse** on every controller: `success` \| `failed` \| `error`; validate in `module/shared/utils`; UI toast + body ([data-workflow.md](../docs/data-workflow.md)).
+
+## Actions & audit
+
+- Registry IDs in `packages/actions`; **`runAction`** wraps permission + audit (all outcomes) + handler ([actions-and-events.md](../docs/actions-and-events.md)).
+
+## Routes & layouts
+
+- Read **docs/layouts.md** and **.cursor/rules/layouts.mdc** when editing `app/**/layout.tsx` or module `client/…/layout/`.
+
+## Rendering & states
+
+- Logic in functions; components render props; client islands via `dynamic()` + skeleton.
+- Route `loading/error/not-found/forbidden` + in-page ServiceResponse phases — tier-stable skeletons ([app-states.md](../docs/app-states.md)).
+- **UI work:** read [ui-ux-skills.md](../docs/ui-ux-skills.md) and relevant `.agents/skills/*/SKILL.md` before editing `client/` or `packages/ui`.
+
+## Server
+
+- All API logic in `module/…/server/`; oRPC only for new RPC.
+
+## Packages
+
+- Platform only.

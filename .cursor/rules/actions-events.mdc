@@ -1,0 +1,36 @@
+---
+description: Registry action IDs; runAction wrapper; audit all outcomes; before/after events
+globs: packages/actions/**,packages/api/src/actions/**,module/**/server/**,module/shared/server/**
+alwaysApply: false
+---
+
+# Actions & events
+
+Full spec: **[docs/actions-and-events.md](../docs/actions-and-events.md)**
+
+## Action ID
+
+- Every gated mutation uses a name from **`packages/actions/src/registry-data.ts`** — RBAC, UI `Can`, audit, notifications, tracking.
+- No new ad hoc strings.
+
+## Server: `runAction` (target)
+
+Wrap controller work: **`requireAction`** → handler → **`writeAuditEvent`** for **success, denied, and failure** → **ServiceResponse**.
+
+- Permission deny → audit **`denied`** + response **`failed`**
+- Validation/business → audit **`failure`** + **`failed`**
+- System fault → audit **`failure`** + response **`error`**
+
+## Events
+
+- **`emitActionEvent`** (or module helper): **`before`** at start, **`after`** on completion with result.
+- Include **action ID** for Sentry/PostHog breadcrumbs (client intent + server phases).
+
+## UI
+
+- `<Can>` / `useCan` with same action ID; optional **intent tracking** on click before oRPC.
+
+## Do not
+
+- Skip audit on failed/denied mutations when audit is enabled for that action
+- Split permission ID from audit ID from UI gate ID (one registry name)

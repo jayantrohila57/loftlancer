@@ -1,0 +1,30 @@
+---
+description: Mandatory agent skills for UI/UX — read SKILL.md before building or reviewing interface code
+globs: module/**/client/**,packages/ui/**,apps/**/src/**
+alwaysApply: false
+---
+
+# UI / UX skills
+
+Full map: **[docs/ui-ux-skills.md](../docs/ui-ux-skills.md)**
+
+## Before any UI code
+
+Read **`.agents/skills/shadcn/SKILL.md`** and **`.agents/skills/coss/SKILL.md`**. Use **`@loftlancer/ui`** — no duplicate primitives.
+
+## Also read by task
+
+| Task | Skills |
+|------|--------|
+| New screen / form / dialog | **coss-particles**, **ui-ux-pro-max**, docs **rendering**, **app-states**, **data-workflow** |
+| Complex component API | **vercel-composition-patterns** |
+| Motion / polish | **emil-design-eng** |
+| Operate polish / redesign | **impeccable** (Studio/Auth = Operate mode) |
+| Marketing / distinctive landing | **frontend-design** (+ **impeccable** Persuade) |
+| UI audit | **web-design-guidelines**, **ui-ux-pro-max** |
+| Radix → Base migration | **migrate-radix-to-base** |
+| Perf | **vercel-react-best-practices** |
+
+## Product contract
+
+ServiceResponse boundaries, toasts, route skeletons — **docs**, not optional. Skills do not override **failed** vs **error** vs empty.

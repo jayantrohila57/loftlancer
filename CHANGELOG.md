@@ -18,6 +18,17 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ### Changed
 
+- Added [docs/ui-ux-skills.md](./docs/ui-ux-skills.md) and `.cursor/rules/ui-ux.mdc` — mandatory agent skill map for UI/UX (shadcn, coss, ui-ux-pro-max, impeccable, etc.).
+- Added [docs/naming.md](./docs/naming.md) and `.cursor/rules/naming.mdc` (layer prefix, role postfix, folder rules); aligned module/reference docs to `server.*.controller.ts` and `client.use-*.hook.ts` patterns.
+- Added prescriptive architecture gap docs under [docs/gaps/](./docs/gaps/), [docs/architecture-gaps.md](./docs/architecture-gaps.md), [docs/new-feature-checklist.md](./docs/new-feature-checklist.md), [docs/reference-module-teams.md](./docs/reference-module-teams.md), and [docs/tooling.md](./docs/tooling.md); ServiceResponse and runAction stubs in `module/shared/`; Cursor rules for access-control, rendering, and app-states.
+- Documented RBAC vs ABAC in [docs/access-control.md](./docs/access-control.md).
+- Documented actions, audit, and events in [docs/actions-and-events.md](./docs/actions-and-events.md) and `.cursor/rules/actions-events.mdc`.
+- Documented data workflow in [docs/data-workflow.md](./docs/data-workflow.md) and `.cursor/rules/data-workflow.mdc` (ServiceResponse, toast, UI).
+- Documented module routes and two-tier layouts in [docs/layouts.md](./docs/layouts.md) and Cursor rule `.cursor/rules/layouts.mdc`.
+- Documented App Router page states in [docs/app-states.md](./docs/app-states.md) (loading, error, not-found, forbidden, layout stability).
+- Documented UI composition in [docs/rendering.md](./docs/rendering.md): logic in functions, components render props, dynamic client islands + skeletons.
+- Documented server API policy in [docs/server-api.md](./docs/server-api.md): logic in `module/…/server`, oRPC-only target (tRPC removal), bare Next `app/`, `module/shared/`; updated modules, packages, README, AGENTS, index.
+- Documented **`module/` vs `packages/`** responsibilities in [docs/modules.md](./docs/modules.md) and [docs/packages.md](./docs/packages.md); internal layout; updated README, AGENTS, and index.
 - Consolidated documentation into flat `docs/` (`database.md`, `integrations.md`, `product.md`, `releasing.md`, `index.md`) and updated links (#911).
 - Moved the release procedure doc while keeping `CHANGELOG.md` at the repo root (#911).
 - Removed obsolete root planning docs and `scripts/commit-workflow.md`; slimmed [AGENTS.md](./AGENTS.md) (#911).

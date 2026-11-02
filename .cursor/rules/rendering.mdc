@@ -1,0 +1,21 @@
+---
+description: Logic in functions; boundaries; dynamic() client islands + skeletons
+globs: module/**/client/**,apps/**/app/**
+alwaysApply: false
+---
+
+# Rendering
+
+Full spec: **[docs/rendering.md](../docs/rendering.md)** · Gaps: **[docs/gaps/client-layer.md](../docs/gaps/client-layer.md)**
+
+## Rules
+
+- Business logic in **functions** (server page, hooks) — components render **props** only.
+- **`client.*.boundary.tsx`** switches on `isPending` + **ServiceResponse** status; **content** assumes success + data.
+- Client leaves from server trees: **`next/dynamic`** + matching skeleton ([app-states.md](../docs/app-states.md)).
+- No parallel **ViewState** enum — use [utils.response-to-ui.mapper.ts](../../module/shared/utils/state/utils.response-to-ui.mapper.ts) if needed.
+
+## Forbidden
+
+- Fetch or toast inside content components.
+- Static import of heavy `"use client"` panels without `dynamic()`.

@@ -1,0 +1,27 @@
+---
+description: Layer prefix + role postfix file naming under module/ (searchable kebab-case)
+globs: module/**,apps/**/app/**,packages/api/src/orpc/**
+alwaysApply: false
+---
+
+# Naming
+
+Full spec: **[docs/naming.md](../docs/naming.md)**
+
+## Pattern
+
+`<layer>.<kebab-slug>.<role>.<ext>` — layer is **`utils.`** | **`server.`** | **`client.`**
+
+## Must
+
+- Controller: `server.<op>.controller.ts` + service: `server.<op>.service.ts`
+- Zod: `utils.<topic>.validation.ts`
+- UI: `client.<screen>.boundary.tsx`, `.content.tsx`, `.skeleton.tsx`
+- Hooks: `client.use-<feature>-<op>.hook.ts`
+- Tier 2: `client.section.layout.tsx`; Tier 1: `client.shell.layout.tsx`
+
+## Forbidden
+
+- Files without layer prefix (`get-team.ts`)
+- camelCase filenames
+- Duplicate operation slug without `.controller` / `.service` postfix

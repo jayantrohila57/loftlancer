@@ -1,0 +1,30 @@
+---
+description: RBAC + ABAC — registry action IDs, requireAction, evaluatePermission, runAction context
+globs: module/**/server/**,packages/actions/**,packages/api/src/actions/**
+alwaysApply: false
+---
+
+# Access control
+
+Full spec: **[docs/access-control.md](../docs/access-control.md)** · Prescriptive gaps: **[docs/gaps/actions-audit.md](../docs/gaps/actions-audit.md)**
+
+## One action ID
+
+- Same **`ActionName`** from `packages/actions` for RBAC, UI `useCan`, audit, MCP, and oRPC.
+- No separate ABAC-only IDs.
+
+## Server
+
+- Mutations: **`runAction`** in `module/shared/server/run-action.ts` (permission + audit + ServiceResponse).
+- Expected deny → **`ServiceResponse` `failed`**, not throw to client.
+- **`buildAccessContext`** supplies org/project/team/user fields per action scope.
+
+## Client
+
+- Gate with **`useCan` / `<Can>`** only — server still enforces.
+- Do not branch on raw role strings in feature UI.
+
+## Related docs
+
+- [docs/product.md](../docs/product.md) — registry recipe  
+- [docs/actions-and-events.md](../docs/actions-and-events.md)  

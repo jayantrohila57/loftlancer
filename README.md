@@ -42,7 +42,8 @@ flowchart LR
 | `apps/docs` | Landing + docs at `/` |
 | `apps/auth` | Auth issuer + account settings at `/auth` |
 | `apps/studio` | Product UI at `/studio` |
-| `packages/api` | tRPC routers (projects, orgs, access, audit, notifications, account, …) |
+| `module/` | Product feature code + **all server API logic** (`server/`, `shared/`) — [docs/modules.md](./docs/modules.md), [docs/server-api.md](./docs/server-api.md) |
+| `packages/api` | **oRPC transport shell** (tRPC legacy until removed) — [docs/packages.md](./docs/packages.md) |
 | `packages/actions` | Canonical action registry, org roles, `requireAction` evaluation |
 | `packages/auth` | Better Auth (GitHub OAuth, organizations, teams) |
 | `packages/auth-client` | Shared Better Auth React client |

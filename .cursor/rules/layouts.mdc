@@ -1,0 +1,45 @@
+---
+description: Module routes and two-tier Studio layouts (shell + section); app import-only
+globs: apps/**/app/**/layout.tsx,apps/**/app/**/page.tsx,module/**/client/**/layout/**,module/studio-shell/**
+alwaysApply: false
+---
+
+# Layouts & module routes
+
+Full spec: **[docs/layouts.md](../docs/layouts.md)**. Combine with [rendering.md](../docs/rendering.md), [app-states.md](../docs/app-states.md).
+
+## Route ownership
+
+- Each **URL prefix** belongs to **one** `module/<feature>/`; all child pages use that module’s Tier 2 layout and pages.
+- Do **not** add layout or nav logic in `apps/*/src/app` — **import only** from `module/`.
+
+## Two tiers (required)
+
+| Tier | Path | Contains |
+|------|------|----------|
+| **1 Shell** | `module/studio-shell/client/studio/` | Sidebar + inset + **primary header**; nav varies by module via **config**, not duplicate layouts |
+| **2 Section** | `module/<feature>/client/studio/layout/` | **Sub-header** (title, optional tabs, section actions); **shared by all child routes** in that section |
+| **Page** | `module/<feature>/server/page` + `client/…/rsc` | Content column only — no duplicate sub-header on leaf pages |
+
+If two pages share the same sub-header/tabs → **one** `client.section.layout.tsx`.
+
+## Naming
+
+- `client.shell.*` — Tier 1  
+- `client.section.*` — Tier 2  
+- `client.page.*` — page body (content slot)
+
+## Legacy
+
+- Do **not** extend `apps/studio/src/components/layout` or fat `app/**/layout.tsx` for new work — rewrite into `module/studio-shell` + module `layout/`.
+
+## States & shift
+
+- Put `loading.tsx` on the **fetching segment**; skeleton matches **Tier 2 sub-header + content** height ([app-states.md](../docs/app-states.md)).
+- Tier 1 stable when switching Tier 2 children; Tier 2 stable when switching leaf pages.
+
+## Forbidden
+
+- Module-specific tabs in Tier 1 shell (except global nav).
+- Per-page sub-headers when siblings should share Tier 2.
+- Cross-module layout imports (use `@loftlancer/ui` + route helpers).
