@@ -42,6 +42,7 @@ export const recordEmail: EmailRecorder = async (email) => {
     if (existing) return;
   }
 
+  const context = email.context;
   const recipients = [
     ...new Set(email.to.map(normalizeMailboxEmail).filter(Boolean)),
   ];
@@ -58,8 +59,14 @@ export const recordEmail: EmailRecorder = async (email) => {
       account.id,
     ]),
   );
+  const [sender] = context?.senderUserId
+    ? await db
+        .select({ id: user.id, email: user.email })
+        .from(user)
+        .where(eq(user.id, context.senderUserId))
+        .limit(1)
+    : [];
   const result = mailboxDelivery(email.result);
-  const context = email.context;
   const messageId = crypto.randomUUID();
 
   await db.transaction(async (tx) => {
@@ -85,15 +92,30 @@ export const recordEmail: EmailRecorder = async (email) => {
       templateProps: context?.templateProps ?? null,
       createdAt: email.createdAt,
     });
-    if (recipients.length > 0) {
-      await tx.insert(mailRecipient).values(
-        recipients.map((recipient) => ({
-          id: crypto.randomUUID(),
-          messageId,
-          recipientUserId: usersByEmail.get(recipient) ?? null,
-          email: recipient,
-        })),
-      );
+    const recipientRows: {
+      id: string;
+      messageId: string;
+      recipientUserId: string | null;
+      email: string;
+      folder: "inbox" | "sent";
+    }[] = recipients.map((recipient) => ({
+      id: crypto.randomUUID(),
+      messageId,
+      recipientUserId: usersByEmail.get(recipient) ?? null,
+      email: recipient,
+      folder: "inbox",
+    }));
+    if (sender) {
+      recipientRows.push({
+        id: crypto.randomUUID(),
+        messageId,
+        recipientUserId: sender.id,
+        email: normalizeMailboxEmail(sender.email),
+        folder: "sent",
+      });
+    }
+    if (recipientRows.length > 0) {
+      await tx.insert(mailRecipient).values(recipientRows);
     }
   });
 };

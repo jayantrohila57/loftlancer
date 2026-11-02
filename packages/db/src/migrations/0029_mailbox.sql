@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS "mail_recipient" (
   CONSTRAINT "mail_recipient_folder_check" CHECK ("folder" in ('inbox', 'sent'))
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS "mail_recipient_message_email_uidx"
-  ON "mail_recipient" ("message_id", "email");
+CREATE UNIQUE INDEX IF NOT EXISTS "mail_recipient_message_email_folder_uidx"
+  ON "mail_recipient" ("message_id", "email", "folder");
 CREATE INDEX IF NOT EXISTS "mail_recipient_user_folder_created_idx"
   ON "mail_recipient" ("recipient_user_id", "folder", "created_at");
 CREATE INDEX IF NOT EXISTS "mail_recipient_email_created_idx"

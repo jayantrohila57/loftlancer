@@ -108,9 +108,10 @@ export const mailRecipient = pgTable(
       "mail_recipient_folder_check",
       sql`${table.folder} in ('inbox', 'sent')`,
     ),
-    uniqueIndex("mail_recipient_message_email_uidx").on(
+    uniqueIndex("mail_recipient_message_email_folder_uidx").on(
       table.messageId,
       table.email,
+      table.folder,
     ),
     index("mail_recipient_user_folder_created_idx").on(
       table.recipientUserId,
