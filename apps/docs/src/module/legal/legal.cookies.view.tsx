@@ -2,7 +2,7 @@ import { LegalPage } from "@/components/legal-page";
 
 export default function CookiesPage() {
   return (
-    <LegalPage title="Cookie policy">
+    <LegalPage href="/legal/cookies" title="Cookie policy">
       <p>
         Loftlancer uses cookies and local storage to keep you signed in and
         remember your analytics choice.
