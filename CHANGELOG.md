@@ -12,9 +12,22 @@ with one product version for the whole monorepo (root `package.json`).
   feature releases and the patch version for fix batches.
 
 Dates are in IST (UTC+5:30). Numbers like #123 are GitHub issues or pull
-requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure.
+requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure.
 
 ## [Unreleased]
+
+### Changed
+
+- Consolidated documentation into flat `docs/` (`database.md`, `integrations.md`, `product.md`, `releasing.md`, `index.md`) and updated links (#911).
+- Moved the release procedure doc while keeping `CHANGELOG.md` at the repo root (#911).
+- Removed obsolete root planning docs and `scripts/commit-workflow.md`; slimmed [AGENTS.md](./AGENTS.md) (#911).
+- Moved integrations inventory; removed historical `docs/archive/` (#911).
+- Merged reset-seed into [docs/database.md](./docs/database.md); replaced product specs with [docs/product.md](./docs/product.md) recipe (#911).
+
+### Removed
+
+- Retired `UI.md`, `plan.md`, and `summary.md` from the documentation index (#911).
+- Removed `scripts/README.md` (script index; can be restored under `docs/` later) (#911).
 
 ## [1.23.0] - 2026-11-02
 
@@ -566,7 +579,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - Studio product analytics in PostHog, after consent only: the signed-in user is identified by id (no email or name) with the active organization as a group, PostHog is reset on sign-out, and core events are captured for organization, project and environment creation, onboarding completion, member invites and variable create/update/delete/import. Event properties carry counts and enums only, never variable keys or values (#353)
 - Browser logs from auth, studio and docs are forwarded to Sentry Logs (#355)
 - Loftlancer brand kit in the README and `.github/brand/`, using the Lucide Layers mark (#393)
-- Issue forms, a pull request checklist and `docs/REVIEW_CHECKLIST.md` for contributors (#384)
+- Issue forms, a pull request checklist and `docs/guide/REVIEW_CHECKLIST.md` for contributors (#384)
 
 ### Changed
 
@@ -626,7 +639,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - New service env vars are declared in turbo's build env list, and env validation accepts the optional Google, Resend and Better Stack keys (#370)
 - The docs site gets a footer with Changelog and Status links (#368, #369)
 - GA4 (public site) and PostHog (studio) are switched on in production now that their keys are configured; both still load only after consent (#351, #353)
-- `docs/integrations.md` covers Better Stack, the Google Cloud project (OAuth, GA4, Search Console), PostHog and passwordless auth (#371)
+- `docs/archive/integrations.md` covers Better Stack, the Google Cloud project (OAuth, GA4, Search Console), PostHog and passwordless auth (#371)
 
 ### Removed
 
@@ -639,7 +652,7 @@ requests. See [docs/RELEASING.md](./docs/RELEASING.md) for the release procedure
 - SEO groundwork: `metadataBase`, canonical URLs, a unique title and description per public page, a public-only sitemap, robots rules that block `/studio` and `/auth`, and JSON-LD on the home page (#352, PR #366)
 - Cookie consent banner with env-gated GA4 (public site) and PostHog (studio) wrappers that load only after consent (#365)
 - Sentry source-map upload via `withSentryConfig` for studio, auth and docs (#364)
-- Services and integrations inventory in `docs/integrations.md` (#361)
+- Services and integrations inventory in `docs/archive/integrations.md` (#361)
 
 ## [1.7.1] - 2026-10-17
 

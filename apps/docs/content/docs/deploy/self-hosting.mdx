@@ -3,7 +3,7 @@ title: Self-hosting and deploy
 description: Vercel, Neon, feature flags, and monorepo build commands.
 ---
 
-Production runs as **one Vercel project** (path routing in `vercel.json`) and **Neon** PostgreSQL. The canonical runbook is [`docs/PRODUCTION_DEPLOY.md`](https://github.com/jayantrohila57/loftlancer/blob/main/docs/PRODUCTION_DEPLOY.md).
+Production runs as **one Vercel project** (path routing in `vercel.json`) and **Neon** PostgreSQL. The canonical runbook is [`docs/database.md`](https://github.com/jayantrohila57/loftlancer/blob/main/docs/database.md).
 
 ## Apps to deploy
 
@@ -33,4 +33,4 @@ pnpm build
 
 ## Destructive seed
 
-`pnpm db:reset-seed` is documented in `docs/DB_RESET.md` and requires explicit confirmation — do not run against production without a backup branch.
+`pnpm db:reset-seed` is documented in `docs/database.md` and requires explicit confirmation — do not run against production without a backup branch.

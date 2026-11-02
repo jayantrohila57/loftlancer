@@ -1,7 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalPassThroughEnv": ["SKIP_ENV_VALIDATION"],
+  "globalPassThroughEnv": [
+    "SKIP_ENV_VALIDATION",
+    "API_ENTRYPOINT_INVENTORY_OUT"
+  ],
   "globalDependencies": ["package.json", "CHANGELOG.md"],
   "globalEnv": [
     "ORGANIZATIONS_ENABLED",

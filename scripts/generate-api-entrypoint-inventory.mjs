@@ -3,7 +3,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const output = path.join(root, "docs/API_ENTRYPOINT_INVENTORY.md");
+const output = process.env.API_ENTRYPOINT_INVENTORY_OUT
+  ? path.resolve(process.env.API_ENTRYPOINT_INVENTORY_OUT)
+  : null;
 
 async function files(directory, predicate) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -238,7 +240,13 @@ const markdown = [
   "5. Re-run this inventory and compare the generated diff in every backend-entry-point PR.",
 ].join("\n");
 
-await writeFile(output, `${markdown}\n`);
-console.log(
-  `Wrote ${relative(output)}: ${procedures.length} procedures, ${routes.length} HTTP routes, ${actions.length} MCP actions.`,
-);
+if (output) {
+  await writeFile(output, `${markdown}\n`);
+  console.log(
+    `Wrote ${relative(output)}: ${procedures.length} procedures, ${routes.length} HTTP routes, ${actions.length} MCP actions.`,
+  );
+} else {
+  console.log(
+    `Inventory: ${procedures.length} tRPC procedures, ${routes.length} HTTP routes, ${actions.length} MCP actions. Set API_ENTRYPOINT_INVENTORY_OUT to write markdown.`,
+  );
+}
