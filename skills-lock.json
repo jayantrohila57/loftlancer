@@ -73,6 +73,12 @@
       "skillPath": "skills/orpc/SKILL.md",
       "computedHash": "d075c0f5ad5f538c43723c900f82ae291ab849ead808e4eaf09d55cf8a85a0e2"
     },
+    "setup-ts-deep-modules": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/in-progress/setup-ts-deep-modules/SKILL.md",
+      "computedHash": "61508216ede38d8cfa712879197a76f75f4896615dbf7abc3f62571f8f5923cc"
+    },
     "shadcn": {
       "source": "shadcn-ui/ui",
       "sourceType": "github",
