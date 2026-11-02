@@ -16,6 +16,7 @@
     "@loftlancer/actions": "workspace:*",
     "@loftlancer/api": "workspace:*",
     "@loftlancer/logger": "workspace:*",
+    "@loftlancer/mcp": "workspace:*",
     "@loftlancer/ui": "workspace:*",
     "@next/third-parties": "^16.4.3",
     "@sentry/nextjs": "^11.8.0",

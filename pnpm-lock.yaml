@@ -408,6 +408,9 @@ importers:
       '@loftlancer/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@loftlancer/mcp':
+        specifier: workspace:*
+        version: link:../../packages/mcp
       '@loftlancer/ui':
         specifier: workspace:*
         version: link:../../packages/ui
