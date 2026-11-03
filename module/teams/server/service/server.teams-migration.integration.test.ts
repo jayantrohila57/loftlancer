@@ -265,7 +265,12 @@ test("native team invitations and project links preserve scope, delivery and ter
       (e) => e.entityId === invitationId && e.result === "success",
     );
     assert.ok(createdEvent);
-    assert.equal(createdEvent.payload?.teamId, teamId);
+    assert.deepEqual(createdEvent.payload, {
+      operation: "invitation-create",
+      scope: "team",
+      teamId,
+      role: "member",
+    });
     assert.ok(invites.some((e) => e.result === "failure"));
     assert.ok(events.every((e) => e.ipAddress === ctx.ip));
     assert.equal(
