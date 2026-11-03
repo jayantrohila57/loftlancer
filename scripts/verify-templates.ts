@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { db } from "../packages/drizzle/src/index";
 import { user } from "../packages/drizzle/src/schema/better-auth";
@@ -14,7 +15,7 @@ async function main() {
   console.log(`🔌 DB URL: ${dbUrl.substring(0, 15)}...`);
 
   // 1. Setup Context
-  const TEST_USER_ID = `test-user-${Math.random().toString(36).substring(7)}`;
+  const TEST_USER_ID = `test-user-${randomUUID().slice(0, 8)}`;
   console.log(`👤 Using Test User ID: ${TEST_USER_ID}`);
 
   try {

@@ -1,12 +1,22 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod/v3";
 
+function stripSurroundingQuotes(value: string): string {
+  let trimmed = value.trim();
+  while (trimmed.length >= 2) {
+    const first = trimmed[0];
+    const last = trimmed[trimmed.length - 1];
+    if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+      trimmed = trimmed.slice(1, -1).trim();
+      continue;
+    }
+    break;
+  }
+  return trimmed;
+}
+
 function normalizeAllowlistEmail(raw: string): string {
-  return raw
-    .trim()
-    .replace(/^["']+|["']+$/g, "")
-    .trim()
-    .toLowerCase();
+  return stripSurroundingQuotes(raw).toLowerCase();
 }
 
 const emailListSchema = z
