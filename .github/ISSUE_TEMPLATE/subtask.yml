@@ -1,0 +1,59 @@
+name: Sub-task (agent chunk)
+description: One verifiable slice of a parent issue — one commit / one agent session
+labels: [enhancement]
+body:
+  - type: input
+    id: parent
+    attributes:
+      label: Parent issue
+      description: "Number of the parent GitHub issue (e.g. 916)"
+      placeholder: "916"
+    validations:
+      required: true
+  - type: input
+    id: module
+    attributes:
+      label: Module path
+      description: "Domain folder under module/ (e.g. teams)"
+      placeholder: "teams"
+    validations:
+      required: true
+  - type: textarea
+    id: read_first
+    attributes:
+      label: Read first
+      description: "Agents must read these before editing"
+      value: |
+        - module/<domain>/README.md
+        - docs/new-feature-checklist.md (steps for this slice only)
+        - .cursor/rules/agent-workflow.mdc
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal (this chunk only)
+      description: Single outcome — not the whole parent issue
+    validations:
+      required: true
+  - type: textarea
+    id: forbidden
+    attributes:
+      label: Do not
+      description: Explicit anti-patterns for this chunk
+      value: |
+        - Copy legacy apps/studio/src/module/* or packages/api/src/modules/* as templates
+        - Add tRPC, z.unknown() oRPC inputs, or skip serviceResponseSchema.parse on controllers
+        - Implement blocked dependencies — add module README TODO instead
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: Verifiable checklist for this sub-issue only
+      value: |
+        - [ ] pnpm audit:module-architecture (no new violations)
+        - [ ] pnpm check-types (and listed tests) pass
+        - [ ] module/<domain>/README.md updated if boundaries or TODOs changed
+        - [ ] Commit footer Fixes #<this-sub-issue-number>
+    validations:
+      required: true

@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Module, layouts, server, rendering
 
+**Agents:** read **`module/<domain>/README.md`** first for the domain you edit. Workflow: **`.cursor/rules/agent-workflow.mdc`**. Platform contracts below — do not duplicate module runbooks in `docs/`.
+
 Read **docs/ui-ux-skills.md**, **docs/naming.md**, **docs/architecture-gaps.md**, **docs/new-feature-checklist.md**, **docs/data-workflow.md**, **docs/layouts.md**, **docs/app-states.md**, **docs/rendering.md**, **docs/server-api.md**, **docs/modules.md**, **docs/packages.md**.
 
 ## Naming

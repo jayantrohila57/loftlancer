@@ -67,14 +67,13 @@ See: [packages.md](../packages.md), [modules.md](../modules.md).
 
 ---
 
-## CI (target)
+## CI
 
-When implemented:
+**Implemented:** **`pnpm audit:module-architecture`** in GitHub Actions (see [tooling.md](../tooling.md)). Fails on **new** architecture violations vs baseline; includes app `page.tsx` forbidden imports and thin-route heuristics.
 
-- Fail if new files appear under `packages/api/src/modules/` for product domains (allowlist during migration).  
-- Optional: lint app `page.tsx` for forbidden imports (`@loftlancer/db`, `requireAction`).
+**Still target:**
 
-Document implementation in [agent-meta.md](./agent-meta.md) when added.
+- Fail if new files appear under `packages/api/src/modules/` for product domains (allowlist during migration).
 
 ---
 

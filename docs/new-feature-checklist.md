@@ -1,12 +1,24 @@
 # New feature checklist
 
-Ordered steps for adding or extending a **product feature** under `module/<feature>/`. Use with [reference-module-teams.md](./reference-module-teams.md) and [architecture-gaps.md](./architecture-gaps.md).
+Ordered steps for adding or extending a **product feature** under `module/<feature>/`.
+
+**Read first:** **`module/<feature>/README.md`** (create from [module/README.template.md](../module/README.template.md)). Platform index: [architecture-gaps.md](./architecture-gaps.md), [modules.md](./modules.md). Directory tree reference: [reference-module-teams.md](./reference-module-teams.md) (structure only — live runbook stays in `module/teams/README.md`).
+
+**Agents:** implement **one sub-issue** at a time; plan before code if scope spans multiple sections below ([agent-workflow.mdc](../.cursor/rules/agent-workflow.mdc)).
+
+---
+
+## 0. Plan (before code)
+
+- [ ] Sub-issue (or scoped issue) acceptance criteria clear; parent issue linked if applicable.
+- [ ] **`module/<feature>/README.md`** read; update **TODO (blocked)** if stopping on a dependency.
+- [ ] Short ordered plan in chat when scope spans multiple sections below (required for small/fast models).
 
 ---
 
 ## 1. Product and access
 
-- [ ] Open GitHub issue for the work ([AGENTS.md](../AGENTS.md)).
+- [ ] Work tied to an open GitHub **sub-issue** ([AGENTS.md](../AGENTS.md)).
 - [ ] Add or update action row in `packages/actions/src/registry-data.ts` (`name`, `scope`, roles, audit entity, optional `notifyOn`).
 - [ ] Read [access-control.md](./access-control.md) for scope and ABAC attributes.
 
@@ -63,7 +75,17 @@ Ordered steps for adding or extending a **product feature** under `module/<featu
 
 ---
 
-## 8. Ship
+## 8. Verify (mechanical)
+
+- [ ] **`pnpm audit:module-architecture`** — zero **new** violations ([tooling.md](./tooling.md)).
+- [ ] **`pnpm check-types`** and relevant **`pnpm test`** / feature tests.
+- [ ] Before PR to **`dev`**: **`pnpm verify:dev-merge`** on the full issue branch.
+
+---
+
+## 9. Ship
+
+- [ ] **`module/<feature>/README.md`** updated (boundaries, verification, sub-issues table, TODOs).
 
 - [ ] [CHANGELOG.md](../CHANGELOG.md) under `[Unreleased]` when merged to `dev`.
 - [ ] Commit footer `Fixes #<issue>` when completing issue work.

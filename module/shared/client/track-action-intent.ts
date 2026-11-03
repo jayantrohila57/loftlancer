@@ -1,8 +1,8 @@
 import type { ActionName } from "@loftlancer/actions";
-
-/**
- * Client breadcrumb before mutation — wire PostHog/Sentry in implementation.
- */
+/** App instrumentation can subscribe without coupling modules to a telemetry vendor. */
 export function trackActionIntent(action: ActionName): void {
-  void action;
+  if (typeof window !== "undefined")
+    window.dispatchEvent(
+      new CustomEvent("loftlancer.action.intent", { detail: { action } }),
+    );
 }

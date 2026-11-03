@@ -14,8 +14,15 @@
     "verbatimModuleSyntax": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [{ "name": "next" }],
-    "paths": { "@/*": ["./src/*"] }
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@module/*": ["../../module/*"]
+    }
   },
   "include": [
     "./next-env.d.ts",

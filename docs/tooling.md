@@ -75,6 +75,32 @@ When `module/package.json` exists, register **`check-types`** in turbo pipeline 
 
 ---
 
+## Module architecture audit (CI gate)
+
+**`pnpm audit:module-architecture`** runs **`scripts/audit-module-architecture.mjs`**. It enforces prescriptive gaps mechanically (not honor-system for agents):
+
+| Rule | What it checks |
+|------|----------------|
+| `controller-response-schema` | Every `module/*/server/controller/*.controller.ts` returns **`serviceResponseSchema(...).parse(...)`** |
+| `orpc-input-schema` | No **`z.unknown()`** or **`teamControllerInputSchema`** in `packages/api/src/orpc/procedures/` |
+| `orpc-module-import` | Procedures import controllers/schemas from **`@module/*`** |
+| `legacy-unwrap` | **`unwrapTeam*`** only in allowlisted tRPC/MCP/legacy handler paths |
+| `app-page-forbidden` / `app-page-thin` | Studio (and other) **`page.tsx`**: no DB/`requireAction`; teams routes stay thin **`@module`** re-exports |
+
+**Baseline:** Known debt is listed in **`scripts/audit-module-architecture-baseline.json`**. CI **fails on NEW violation ids** only. After fixing code, shrink the baseline:
+
+```bash
+node scripts/audit-module-architecture.mjs --write-baseline
+```
+
+**Strict (local / burn-down):** **`node scripts/audit-module-architecture.mjs --strict`** fails on any violation.
+
+CI runs this on every push to **`dev`** and **`main`** and on pull requests ([forbidden-defaults.md](./gaps/forbidden-defaults.md)).
+
+**Before merging an issue branch to `dev`:** **`pnpm verify:dev-merge`** (lint, routes, audit, types, tests). Agent workflow: [AGENTS.md](../AGENTS.md), `.cursor/rules/agent-workflow.mdc`, **[.codex/README.md](../.codex/README.md)** (OpenAI Codex).
+
+---
+
 ## Related
 
 - [architecture-gaps.md](./architecture-gaps.md)  

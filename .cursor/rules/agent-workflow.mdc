@@ -1,0 +1,84 @@
+---
+description: Strict agent workflow — issues, sub-issues, no rule-breaking shortcuts, module README first
+alwaysApply: true
+---
+
+# Agent workflow (mandatory)
+
+Agents and cloud workers **must** follow this workflow. Completing a task by violating architecture rules is **forbidden** — CI and `pnpm audit:module-architecture` are the gate, not README checkboxes or issue “done” lists.
+
+## 1. Never work outside the rules
+
+**Forbidden shortcuts** (non-exhaustive):
+
+- Copying **`apps/studio/src/module/*`**, **`packages/api/src/modules/*`**, or legacy app **`lib/*`** as templates for **new** product code
+- New **tRPC** procedures, **`z.unknown()`** oRPC inputs, controllers without **`serviceResponseSchema(...).parse`**, domain logic in **`apps/*/src/app/**/page.tsx`**
+- “Temporary” adapters that skip **`runAction`**, audit, or ServiceResponse to ship faster
+- Marking an issue complete while leaving **new** architecture audit violations
+
+**Required:** [AGENTS.md](../AGENTS.md), [docs/gaps/forbidden-defaults.md](../docs/gaps/forbidden-defaults.md), [docs/new-feature-checklist.md](../docs/new-feature-checklist.md), and **`pnpm audit:module-architecture`** (exit 0).
+
+## 2. Parent issue → sub-issues (chunks)
+
+- One **parent** GitHub issue describes the outcome; **implementation work is split into sub-issues** (one verifiable slice each).
+- Agents implement **one sub-issue per session** when possible; do not boil the ocean in a single PR.
+- Sub-issue body must name **`module/<domain>/`** and link the parent issue.
+
+## 3. Branch, commits, merge gate
+
+| Step | Rule |
+|------|------|
+| Branch | From **`dev`**: `feat/<parent>-<short-slug>` or `fix/<parent>-<short-slug>` (include parent issue number) |
+| Commits | **One commit per completed sub-issue**; footer **`Fixes #<sub-issue>`** (use **`Refs #<parent>`** when the parent stays open) |
+| PR | Targets **`dev`** only; lists sub-issues closed by the PR |
+| Before merge | Run **`pnpm verify:dev-merge`** on the **full branch diff** (all sub-issues on that branch), not only the last commit |
+
+Do not merge to **`dev`** until verification passes on the combined branch work for that parent issue.
+
+## 4. Plan before code (especially small / fast models)
+
+Before editing files:
+
+1. Read **`module/<domain>/README.md`** for that domain (workflow, boundaries, TODOs).
+2. Read the **sub-issue** acceptance criteria only — not the whole parent scope.
+3. If scope is large for the model (e.g. Tera, Luna, or any “light” agent): write a **short plan** in the chat (ordered steps mapping to checklist sections 1–8 in [new-feature-checklist.md](../docs/new-feature-checklist.md)) and execute **one step at a time**.
+4. Switch to **Plan mode** when the sub-issue touches more than ~3 layers (utils + server + oRPC + client + routes).
+
+## 5. Migration: new structure only
+
+We are moving from legacy app/API folders to **`module/<domain>/`**. For **new or migrated** code:
+
+- **Do not** extend legacy patterns “because it still exists”
+- **Do not** add product logic under **`packages/api/src/modules/<domain>`** or fat Studio app modules
+- Compatibility shims (tRPC/MCP unwrap) are **transport-only** — new behavior lives in **`module/`** + thin oRPC
+
+## 6. Reference code: module first
+
+When looking for examples:
+
+1. **`module/<same-or-close-domain>/`** (e.g. teams pilot)
+2. **`module/shared/`**
+3. **`docs/gaps/*`** and platform **`packages/`** (infra only)
+
+**Last resort:** legacy paths — read-only to understand behavior, **never** as a copy template.
+
+## 7. Blocked dependencies → module README TODO
+
+If work depends on another domain not yet migrated or an open issue:
+
+- **Stop** at the boundary; do not fake completion with app-layer hacks
+- Add a **`## TODO (blocked)`** entry in **`module/<domain>/README.md`**: dependency, sub-issue or issue link, what remains
+- In code, prefer a **single** `// TODO(#issue): …` pointing to that README section — no silent partial implementations
+
+## 8. Module README is the operational source of truth
+
+Per-domain **plans, migration boundaries, verification commands, and TODOs** live in **`module/<domain>/README.md`**, not new long-form docs under **`docs/`**.
+
+- **`docs/`** = platform-wide contracts, gaps index, naming — **not** duplicate module runbooks
+- When changing how a module is built or verified, **update that module’s README** in the same PR
+
+Template: [module/README.template.md](../module/README.template.md).
+
+---
+
+See also: [git-branches.mdc](./git-branches.mdc), [module-architecture-audit.mdc](./module-architecture-audit.mdc), [modules-architecture.mdc](./modules-architecture.mdc).

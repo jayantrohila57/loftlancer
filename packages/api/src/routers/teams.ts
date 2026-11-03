@@ -1,359 +1,219 @@
-import { db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
-import { projectTeam } from "@loftlancer/db/schema/project-access";
-import { project } from "@loftlancer/db/schema/projects";
-import { team } from "@loftlancer/db/schema/team";
-import { TRPCError } from "@trpc/server";
-import { and, eq, isNull } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
-import { z } from "zod/v3";
-import { actionGuard } from "../actions/action-guard";
-import { requireAction } from "../actions/require-action";
-import { orgProcedure, router } from "../index";
+import { teamAvailableMembersController } from "@module/teams/server/controller/server.team-available-members.controller";
+import { teamCreateController } from "@module/teams/server/controller/server.team-create.controller";
+import { teamDeleteController } from "@module/teams/server/controller/server.team-delete.controller";
+import { teamGetController } from "@module/teams/server/controller/server.team-get.controller";
+import { teamLinkableProjectsController } from "@module/teams/server/controller/server.team-linkable-projects.controller";
+import { teamListController } from "@module/teams/server/controller/server.team-list.controller";
+import { teamMemberAddController } from "@module/teams/server/controller/server.team-member-add.controller";
+import { teamMemberRemoveController } from "@module/teams/server/controller/server.team-member-remove.controller";
+import { teamMemberRoleChangeController } from "@module/teams/server/controller/server.team-member-role-change.controller";
+import { teamMembersController } from "@module/teams/server/controller/server.team-members.controller";
+import { teamProjectsController } from "@module/teams/server/controller/server.team-projects.controller";
+import { teamRestoreController } from "@module/teams/server/controller/server.team-restore.controller";
+import { teamUpdateController } from "@module/teams/server/controller/server.team-update.controller";
 import {
-  mcpTeamAddMember,
-  mcpTeamChangeMemberRole,
-  mcpTeamCreate,
-  mcpTeamDelete,
-  mcpTeamRemoveMember,
-  mcpTeamRestore,
-  mcpTeamUpdate,
-  teamEligibleMembersList,
-  teamMembersList,
-} from "../mcp/organization-ops";
-import { getTeams } from "../modules/teams/api/api.get-teams";
+  unwrapTeamList,
+  unwrapTeamObject,
+} from "@module/teams/server/handlers/server.legacy-response.handler";
+import { teamCreateInputSchema } from "@module/teams/utils/validation/utils.create-team.validation";
+import { teamGetInputSchema } from "@module/teams/utils/validation/utils.team-id.validation";
+import {
+  teamMemberInputSchema,
+  teamMemberRoleInputSchema,
+  teamUpdateInputSchema,
+} from "@module/teams/utils/validation/utils.team-operations.validation";
+import { orgProcedure, router } from "../index";
 
+/** Compatibility transport only. Native module clients use oRPC ServiceResponse. */
 export const teamsRouter = router({
-  list: orgProcedure.query(({ ctx }) =>
-    getTeams({
-      userId: ctx.session.user.id,
-      organizationId: ctx.activeOrganizationId ?? null,
-      ipAddress: ctx.ipAddress,
-      userAgent: ctx.userAgent,
-    }),
+  list: orgProcedure.query(async ({ ctx }) =>
+    unwrapTeamList(
+      await teamListController({
+        ctx: {
+          userId: ctx.session.user.id,
+          orgId: ctx.activeOrganizationId,
+          ip: ctx.ipAddress,
+          userAgent: ctx.userAgent,
+        },
+      }),
+    ),
   ),
-
+  get: orgProcedure.input(teamGetInputSchema).query(async ({ ctx, input }) => ({
+    team: unwrapTeamObject(
+      await teamGetController({
+        input,
+        ctx: {
+          userId: ctx.session.user.id,
+          orgId: ctx.activeOrganizationId,
+          ip: ctx.ipAddress,
+          userAgent: ctx.userAgent,
+        },
+      }),
+    ),
+  })),
   members: orgProcedure
-    .input(z.object({ teamId: z.string().min(1) }))
-    .use(
-      actionGuard("team.member.list", (input) => ({
-        teamId: (input as { teamId: string }).teamId,
-      })),
-    )
-    .query(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        return { items: [] };
-      }
-      return teamMembersList(ctx.session.user.id, organizationId, input.teamId);
-    }),
-
-  get: orgProcedure
-    .input(z.object({ teamId: z.string().min(1) }))
-    .use(
-      actionGuard("team.member.list", (input) => ({
-        teamId: (input as { teamId: string }).teamId,
-      })),
-    )
-    .query(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) return { team: null };
-      const creator = alias(user, "team_creator");
-      const updater = alias(user, "team_updater");
-      const [row] = await db
-        .select({
-          id: team.id,
-          name: team.name,
-          description: team.description,
-          purpose: team.purpose,
-          organizationId: team.organizationId,
-          createdAt: team.createdAt,
-          createdBy: team.createdBy,
-          createdByName: creator.name,
-          updatedAt: team.updatedAt,
-          updatedBy: team.updatedBy,
-          updatedByName: updater.name,
-        })
-        .from(team)
-        .leftJoin(creator, eq(team.createdBy, creator.id))
-        .leftJoin(updater, eq(team.updatedBy, updater.id))
-        .where(
-          and(
-            eq(team.id, input.teamId),
-            eq(team.organizationId, organizationId),
-            isNull(team.deletedAt),
-          ),
-        )
-        .limit(1);
-      return { team: row ?? null };
-    }),
-
+    .input(teamGetInputSchema)
+    .query(async ({ ctx, input }) =>
+      unwrapTeamList(
+        await teamMembersController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   availableMembers: orgProcedure
-    .input(z.object({ teamId: z.string().min(1) }))
-    .use(
-      actionGuard("team.member.add", (input) => ({
-        teamId: (input as { teamId: string }).teamId,
-      })),
-    )
-    .query(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) return { items: [] };
-      return teamEligibleMembersList(
-        ctx.session.user.id,
-        organizationId,
-        input.teamId,
-      );
-    }),
-
+    .input(teamGetInputSchema)
+    .query(async ({ ctx, input }) =>
+      unwrapTeamList(
+        await teamAvailableMembersController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   projects: orgProcedure
-    .input(z.object({ teamId: z.string().min(1) }))
-    .use(
-      actionGuard("team.member.list", (input) => ({
-        teamId: (input as { teamId: string }).teamId,
-      })),
-    )
-    .query(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) return { items: [] };
-
-      const rows = await db
-        .select({
-          id: project.id,
-          name: project.name,
-          slug: project.slug,
-        })
-        .from(projectTeam)
-        .innerJoin(project, eq(projectTeam.projectId, project.id))
-        .innerJoin(team, eq(projectTeam.teamId, team.id))
-        .where(
-          and(
-            eq(projectTeam.organizationId, organizationId),
-            eq(projectTeam.teamId, input.teamId),
-            eq(team.organizationId, organizationId),
-            isNull(team.deletedAt),
-            isNull(projectTeam.deletedAt),
-            isNull(project.deletedAt),
-          ),
-        )
-        .orderBy(project.name);
-
-      if (rows.length === 0) {
-        const [teamRow] = await db
-          .select({ id: team.id })
-          .from(team)
-          .where(
-            and(
-              eq(team.id, input.teamId),
-              eq(team.organizationId, organizationId),
-              isNull(team.deletedAt),
-            ),
-          )
-          .limit(1);
-        if (!teamRow) {
-          throw new TRPCError({ code: "NOT_FOUND", message: "Team not found" });
-        }
-      }
-
-      const visibleProjects = await Promise.all(
-        rows.map(async (row) => {
-          try {
-            await requireAction("project.read", {
-              userId: ctx.session.user.id,
-              organizationId,
-              projectId: row.id,
-              audit: false,
-            });
-            return row;
-          } catch (error) {
-            if (error instanceof TRPCError && error.code === "FORBIDDEN") {
-              return null;
-            }
-            throw error;
-          }
+    .input(teamGetInputSchema)
+    .query(async ({ ctx, input }) =>
+      unwrapTeamList(
+        await teamProjectsController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
         }),
-      );
-      return { items: visibleProjects.filter((row) => row !== null) };
-    }),
-
+      ),
+    ),
   linkableProjects: orgProcedure
-    .input(z.object({ teamId: z.string().min(1) }))
-    .use(actionGuard("member.list"))
-    .query(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) return { items: [] };
-      const [teamRow] = await db
-        .select({ id: team.id })
-        .from(team)
-        .where(
-          and(
-            eq(team.id, input.teamId),
-            eq(team.organizationId, organizationId),
-            isNull(team.deletedAt),
-          ),
-        )
-        .limit(1);
-      if (!teamRow) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Team not found" });
-      }
-      const rows = await db
-        .select({ id: project.id, name: project.name, slug: project.slug })
-        .from(project)
-        .where(
-          and(
-            eq(project.organizationId, organizationId),
-            isNull(project.deletedAt),
-          ),
-        )
-        .orderBy(project.name);
-      const permitted = await Promise.all(
-        rows.map(async (row) => {
-          try {
-            await requireAction("project.assign_team", {
-              userId: ctx.session.user.id,
-              organizationId,
-              projectId: row.id,
-              audit: false,
-            });
-            return row;
-          } catch (error) {
-            if (error instanceof TRPCError && error.code === "FORBIDDEN") {
-              return null;
-            }
-            throw error;
-          }
+    .input(teamGetInputSchema)
+    .query(async ({ ctx, input }) =>
+      unwrapTeamList(
+        await teamLinkableProjectsController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
         }),
-      );
-      return { items: permitted.filter((row) => row !== null) };
-    }),
-
+      ),
+    ),
   create: orgProcedure
-    .input(
-      z.object({
-        name: z.string().trim().min(1).max(100),
-        description: z.string().trim().max(500).optional(),
-        purpose: z.string().trim().max(250).optional(),
-      }),
-    )
-    .use(actionGuard("team.create"))
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        throw new Error("No active org");
-      }
-      return mcpTeamCreate(ctx.session.user.id, organizationId, input.name, {
-        description: input.description,
-        purpose: input.purpose,
-      });
-    }),
-
+    .input(teamCreateInputSchema)
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamCreateController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   update: orgProcedure
-    .input(
-      z.object({
-        teamId: z.string().min(1),
-        name: z.string().trim().min(1).max(100),
-        description: z.string().trim().max(500).nullable().optional(),
-        purpose: z.string().trim().max(250).nullable().optional(),
-      }),
-    )
-    .use(actionGuard("team.update"))
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        throw new Error("No active org");
-      }
-      return mcpTeamUpdate(
-        ctx.session.user.id,
-        organizationId,
-        input.teamId,
-        input.name,
-        { description: input.description, purpose: input.purpose },
-      );
-    }),
-
+    .input(teamUpdateInputSchema)
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamUpdateController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   delete: orgProcedure
-    .input(z.object({ teamId: z.string().min(1) }))
-    .use(actionGuard("team.delete"))
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        throw new Error("No active org");
-      }
-      return mcpTeamDelete(ctx.session.user.id, organizationId, input.teamId);
-    }),
-
+    .input(teamGetInputSchema)
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamDeleteController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   restore: orgProcedure
-    .input(z.object({ teamId: z.string().min(1) }))
-    .use(actionGuard("team.restore"))
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        throw new Error("No active org");
-      }
-      return mcpTeamRestore(ctx.session.user.id, organizationId, input.teamId);
-    }),
-
+    .input(teamGetInputSchema)
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamRestoreController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   addMember: orgProcedure
-    .input(z.object({ teamId: z.string().min(1), userId: z.string().min(1) }))
-    .use(
-      actionGuard("team.member.add", (input) => ({
-        teamId: (input as { teamId: string }).teamId,
-      })),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        throw new Error("No active org");
-      }
-      return mcpTeamAddMember(
-        ctx.session.user.id,
-        organizationId,
-        input.teamId,
-        input.userId,
-      );
-    }),
-
+    .input(teamMemberInputSchema)
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamMemberAddController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   removeMember: orgProcedure
-    .input(z.object({ teamId: z.string().min(1), userId: z.string().min(1) }))
-    .use(
-      actionGuard("team.member.remove", (input) => ({
-        teamId: (input as { teamId: string }).teamId,
-      })),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        throw new Error("No active org");
-      }
-      return mcpTeamRemoveMember(
-        ctx.session.user.id,
-        organizationId,
-        input.teamId,
-        input.userId,
-      );
-    }),
-
+    .input(teamMemberInputSchema)
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamMemberRemoveController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   updateMemberRole: orgProcedure
-    .input(
-      z.object({
-        teamId: z.string().min(1),
-        userId: z.string().min(1),
-        role: z.enum(["lead", "member"]),
-      }),
-    )
-    .use(
-      actionGuard("team.member.role.change", (input) => ({
-        teamId: (input as { teamId: string }).teamId,
-      })),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) throw new Error("No active org");
-      return mcpTeamChangeMemberRole(
-        ctx.session.user.id,
-        organizationId,
-        input.teamId,
-        input.userId,
-        input.role,
-      );
-    }),
+    .input(teamMemberRoleInputSchema)
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamMemberRoleChangeController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
 });

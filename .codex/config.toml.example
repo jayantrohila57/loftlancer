@@ -1,0 +1,7 @@
+# Example ~/.codex/config.toml (merge — do not overwrite your full file)
+
+# Loftlancer: nested module AGENTS.md + long root AGENTS.md
+project_doc_max_bytes = 65536
+
+# Optional fallbacks if you use alternate names in other repos
+# project_doc_fallback_filenames = ["TEAM_GUIDE.md", ".agents.md"]

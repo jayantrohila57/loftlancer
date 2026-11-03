@@ -1,6 +1,8 @@
 # Reference module: teams
 
-Canonical **greenfield** layout for `module/teams/` — names and paths agents should copy for other domains. Not a migration guide from legacy app folders.
+**Operational runbook (agents read this first):** [module/teams/README.md](../module/teams/README.md)
+
+This file is a **structural reference** (directory tree, naming) for copying layout to other domains — not migration steps or verification commands.
 
 Related: [modules.md](./modules.md), [layouts.md](./layouts.md), [new-feature-checklist.md](./new-feature-checklist.md).
 

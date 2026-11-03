@@ -7,7 +7,7 @@ Thanks for your interest in contributing!
 1. Fork the repository and clone your fork.
 2. Install dependencies and follow the setup steps in the [README](README.md).
 3. Base your work on **`dev`**, not **`main`**: `git checkout dev && git pull --rebase`.
-4. Create a branch for your change: `git checkout -b feat/short-description`.
+4. Create a branch for your change: `git checkout -b feat/<issue>-short-description`.
 
 ## Branch policy
 
@@ -18,10 +18,21 @@ Thanks for your interest in contributing!
 
 Enable GitHub **branch protection** on `main` (block direct pushes; require PR from `dev` or release automation) so the rule is enforced on the server, not only in docs.
 
+## Agent and issue workflow
+
+For AI agents and large human tasks:
+
+1. **Parent issue** = outcome; **sub-task issues** (GitHub template *Sub-task*) = one verifiable slice each.
+2. **One commit per sub-issue** (`Fixes #sub`); PR targets **`dev`** when the parent’s work on that branch is complete.
+3. Before merge: **`pnpm verify:dev-merge`** and **`pnpm audit:module-architecture`** (no new violations).
+4. Domain-specific boundaries and blocked TODOs: **`module/<domain>/README.md`** — see [module/README.template.md](module/README.template.md).
+
+Details: [AGENTS.md](AGENTS.md), `.cursor/rules/agent-workflow.mdc`, [.codex/README.md](.codex/README.md) (OpenAI Codex).
+
 ## Making changes
 
-- Keep pull requests focused on a single change.
-- Follow the existing code style and run the project's lint/type-check/test scripts (see `package.json`) before opening a PR.
+- Keep pull requests focused; prefer closing a **set of sub-issues** rather than one oversized PR.
+- Before opening a PR, run **`pnpm verify:dev-merge`** (see `package.json`).
 - After `pnpm install`, Husky runs a **pre-commit** hook (`lint-staged` + Biome on staged files). CI runs the full gate (`lint:ci`, types, tests, build). Do not use `--no-verify` unless you have a documented reason.
 - Never commit secrets or real `.env` files; use `.env.example` as a reference.
 
