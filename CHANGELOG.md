@@ -16,6 +16,10 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Fixed
+
+- Mount legacy `/better-auth/api/better-auth/*` on the auth app (Next route + Vercel redirect to `/api/auth`) so GitHub OAuth callbacks registered before the path migration keep working until the GitHub app settings are updated.
+
 ## [1.26.2] - 2026-11-03
 
 ### Fixed
