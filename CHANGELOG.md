@@ -19,6 +19,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 ### Removed
 
 - Product reset: removed teams, organizations, projects, and marketplace-apps domain modules, Studio routes, and related API/oRPC/MCP surfaces. Account and auth remain.
+- Removed empty/stub `module/` domains (`activity`, `ai`, `environments`, `files`, `notifications`, `overview`, `support`, `tasks`) and leftover Studio placeholder stubs for organizations, projects, and apps.
 
 
 ## [1.25.1] - 2026-11-03
