@@ -1,9 +1,9 @@
 "use client";
 
+import { LoftlancerImpersonationBanner } from "@features/authentication/core/client";
+import { OfflineBanner } from "@features/patterns/core/client/patterns.offline-banner";
+import { SkipLink } from "@features/patterns/core/client/patterns.skip-link";
 import { DirectionProvider } from "@loftlancer/ui/direction";
-import { ImpersonationBanner } from "@loftlancer/ui/patterns/impersonation-banner";
-import { OfflineBanner } from "@loftlancer/ui/patterns/offline-banner";
-import { SkipLink } from "@loftlancer/ui/patterns/skip-link";
 import { ThemeProvider } from "@loftlancer/ui/theme-provider";
 import { ToastProvider } from "@loftlancer/ui/toast";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -11,6 +11,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useState } from "react";
 import { PostHogUser } from "@/components/posthog-user";
 import { SentryUser } from "@/components/sentry-user";
+import { authClient } from "@/lib/auth-client";
 import {
   getClientErrorMessage,
   isBenignClientError,
@@ -52,7 +53,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           >
             <ToastProvider position="bottom-left">
               <SkipLink />
-              <ImpersonationBanner />
+              <LoftlancerImpersonationBanner authClient={authClient} />
               <OfflineBanner />
               {/* Sentry stays off without a DSN (#339); skip the session hook too. */}
               {process.env.NEXT_PUBLIC_SENTRY_DSN ? <SentryUser /> : null}

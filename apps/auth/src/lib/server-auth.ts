@@ -1,6 +1,6 @@
 import "server-only";
 
-import { tagRequestIdentity } from "@loftlancer/api/request-identity";
+import { tagRequestIdentity } from "@loftlancer/orpc/request-identity";
 import { headers } from "next/headers";
 import { cache } from "react";
 import { siblingAuth } from "@/lib/sibling-auth";

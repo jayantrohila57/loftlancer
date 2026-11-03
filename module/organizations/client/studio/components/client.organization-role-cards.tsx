@@ -4,8 +4,8 @@ import {
   type OrgRole,
   PERMISSION_MATRIX_ROWS,
   roleCapability,
-} from "@loftlancer/actions";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+} from "@features/authorization/utils";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { RoleBadge } from "@/components/patterns/status-badge";
 
@@ -51,23 +51,23 @@ export function OrganizationRoleCards() {
                   {cap === "yes" ? (
                     <AppIcon
                       name="check"
-                      className="size-3.5 shrink-0 text-primary"
+                      className="text-primary size-3.5 shrink-0"
                     />
                   ) : cap === "grant" ? (
                     <AppIcon
                       name="variable"
-                      className="size-3.5 shrink-0 text-muted-foreground"
+                      className="text-muted-foreground size-3.5 shrink-0"
                     />
                   ) : (
                     <AppIcon
                       name="minus"
-                      className="size-3.5 shrink-0 text-muted-foreground/50"
+                      className="text-muted-foreground/50 size-3.5 shrink-0"
                     />
                   )}
                   <span
                     className={
                       cap === "no"
-                        ? "text-muted-foreground line-through decoration-muted-foreground/40"
+                        ? "text-muted-foreground decoration-muted-foreground/40 line-through"
                         : undefined
                     }
                   >
@@ -81,12 +81,12 @@ export function OrganizationRoleCards() {
                     {row.label}
                   </span>
                   {cap === "grant" ? (
-                    <span className="ms-auto text-muted-foreground text-xs">
+                    <span className="text-muted-foreground ms-auto text-xs">
                       with access
                     </span>
                   ) : null}
                   {cap === "no" ? (
-                    <span className="ms-auto text-muted-foreground text-xs">
+                    <span className="text-muted-foreground ms-auto text-xs">
                       Not included
                     </span>
                   ) : null}

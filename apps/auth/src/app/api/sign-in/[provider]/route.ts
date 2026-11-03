@@ -1,5 +1,8 @@
-import { validateReturnTo } from "@loftlancer/auth/return-to";
-import { landingUrl, studioHomeUrl } from "@loftlancer/ui/auth-links";
+import {
+  landingUrl,
+  studioHomeUrl,
+} from "@features/authentication/utils/auth-links";
+import { validateReturnTo } from "@loftlancer/better-auth/return-to";
 import { type NextRequest, NextResponse } from "next/server";
 import { appUrl } from "@/lib/base-path";
 import { platformAuth } from "@/lib/platform-auth";

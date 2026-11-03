@@ -1,21 +1,21 @@
-import { logSchemaOutOfDateOnce } from "@loftlancer/db/postgres-errors";
+import { logSchemaOutOfDateOnce } from "@loftlancer/drizzle/postgres-errors";
 import { toNextJsHandler } from "better-auth/next-js";
 import type { NextRequest } from "next/server";
 import { siblingAuth } from "@/lib/sibling-auth";
 
 /** Next strips the app basePath (e.g. `/studio`) from `request.url`; Better Auth expects it. */
-const authBasePath = siblingAuth.options.basePath ?? "/api/auth";
+const authBasePath = siblingAuth.options.basePath ?? "/api/better-auth";
 
 function withAppBasePath(request: Request): Request {
   const url = new URL(request.url);
   if (
-    authBasePath === "/api/auth" ||
+    authBasePath === "/api/better-auth" ||
     url.pathname.startsWith(authBasePath) ||
-    !url.pathname.startsWith("/api/auth")
+    !url.pathname.startsWith("/api/better-auth")
   ) {
     return request;
   }
-  url.pathname = `${authBasePath}${url.pathname.slice("/api/auth".length)}`;
+  url.pathname = `${authBasePath}${url.pathname.slice("/api/better-auth".length)}`;
   return new Request(url, request);
 }
 

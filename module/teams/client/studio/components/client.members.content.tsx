@@ -1,14 +1,14 @@
 "use client";
 
+import { DataTableActionsColumnHeader } from "@features/data-table/core/client/data-table.actions-column";
+import { DataTableColumnHeader } from "@features/data-table/core/client/data-table.column-header";
+import { DataTableRowActions } from "@features/data-table/core/client/data-table.row-actions";
+import type { DataTableColumnDef } from "@features/data-table/core/client/data-table.table";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
+import { PageStatusError as ErrorState } from "@features/patterns/core/client/patterns.page-state";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 import { Button } from "@loftlancer/ui/button";
-import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
-import { DataTableColumnHeader } from "@loftlancer/ui/data-table/data-table-column-header";
-import { DataTableRowActions } from "@loftlancer/ui/data-table/data-table-row-actions";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
-import { PageStatusError as ErrorState } from "@loftlancer/ui/patterns/page-state";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import type { useTeamMembersScreen } from "../hooks/client.use-teams-members-screen.hook";
 import { Can } from "./client.can";
 
@@ -55,11 +55,11 @@ export function TeamMembersContent({
           <span className="block truncate font-medium">
             {row.original.name}
           </span>
-          <span className="block truncate text-muted-foreground text-xs">
+          <span className="text-muted-foreground block truncate text-xs">
             {row.original.email}
           </span>
           {row.original.createdAt ? (
-            <span className="block truncate text-muted-foreground text-xs">
+            <span className="text-muted-foreground block truncate text-xs">
               Joined{" "}
               <LocalDateTime
                 value={String(row.original.createdAt)}
@@ -162,7 +162,7 @@ export function TeamMembersContent({
         <>
           <Can action="team.member.add" teamId={teamId} fallback={null}>
             {addable.length > 0 ? (
-              <div className="flex flex-wrap items-end gap-2 rounded-xl border bg-card p-4">
+              <div className="bg-card flex flex-wrap items-end gap-2 rounded-xl border p-4">
                 <SearchableCombobox
                   value={userId}
                   onChange={setUserId}

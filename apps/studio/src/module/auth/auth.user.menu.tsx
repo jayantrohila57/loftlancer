@@ -3,8 +3,8 @@
 import {
   HeaderUserMenu,
   type UserMenuProps,
-} from "@loftlancer/ui/patterns/sidebar-kit";
-import { docsUrl } from "@loftlancer/ui/platform-urls";
+} from "@features/patterns/core/client/patterns.sidebar-kit";
+import { docsUrl } from "@features/shell/utils/shell.platform-urls.utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCurrentOrgSlug } from "@/components/org/use-current-org-slug";
@@ -41,7 +41,7 @@ export function UserMenu() {
     return (
       <span
         aria-hidden
-        className="size-8 shrink-0 animate-pulse rounded-md border border-border/60 bg-muted"
+        className="border-border/60 bg-muted size-8 shrink-0 animate-pulse rounded-md border"
       />
     );
   }

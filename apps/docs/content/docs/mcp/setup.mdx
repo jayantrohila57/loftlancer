@@ -8,7 +8,7 @@ The MCP server is built (`@loftlancer/mcp`) but **not deployed** on loftlancer.c
 </Callout>
 
 
-The MCP HTTP server is the **`@loftlancer/mcp`** package, which delegates tool registration to **`@loftlancer/mcp`** (`registerMcpTools`). Each tool maps to a canonical action implemented in **`@loftlancer/api/mcp`.
+The MCP HTTP stack uses **`@loftlancer/mcp`** (SDK auth/CORS/rate-limit) plus **`@loftlancer/orpc/mcp`** (`registerMcpTools` / `createLoftlancerMcpHttpHandler`). Each tool maps to a canonical action implemented in **`@loftlancer/orpc/mcp`**.
 
 **End users:** start with [Using MCP](/docs/mcp/usage) and [Connect MCP clients](/docs/mcp/connecting-clients).
 
@@ -27,7 +27,7 @@ Call the built-in **`permissions_snapshot`** tool (requires only `mcp:tools`) to
 
 ## Rate limits
 
-`@loftlancer/mcp` applies per-user and per-client rate limits (`rate-limit.ts`). Write and reveal verbs use stricter limits than reads.
+`@loftlancer/mcp` applies per-user and per-client rate limits (`utils/mcp.rate-limit.ts`). Write and reveal verbs use stricter limits than reads.
 
 ## Authorization
 

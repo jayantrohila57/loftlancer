@@ -1,7 +1,7 @@
-import { platformSessionMiddleware } from "@loftlancer/auth/platform-middleware";
-import { DEFAULT_STUDIO_URL } from "@loftlancer/env/platform";
-import { resolvePublicServiceUrl } from "@loftlancer/env/vercel-services";
-import { isReservedOrgSlug } from "@loftlancer/ui/studio-routes";
+import { isReservedOrgSlug } from "@features/shell/utils/shell.studio-routes.utils";
+import { platformSessionMiddleware } from "@loftlancer/better-auth/platform-middleware";
+import { DEFAULT_STUDIO_URL } from "@loftlancer/t3-env/platform";
+import { resolvePublicServiceUrl } from "@loftlancer/t3-env/vercel-services";
 import { type NextRequest, NextResponse } from "next/server";
 import { isPublicInvitationRoute } from "@/lib/public-invitation-route";
 import { siblingAuth } from "@/lib/sibling-auth";

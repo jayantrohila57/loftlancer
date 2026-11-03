@@ -1,2 +1,2 @@
 "use client";
-export * from "@loftlancer/ui/data-table/data-table-column-header";
+export * from "@features/data-table/core/client/data-table.column-header";

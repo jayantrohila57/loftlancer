@@ -1,4 +1,4 @@
-import { sentryTestToken } from "@loftlancer/logger/sentry-test";
+import { sentryTestToken } from "@loftlancer/sentry/test";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SentryTestTrigger } from "@/components/sentry-test-trigger";

@@ -41,14 +41,14 @@ function renderInline(text: string): ReactNode {
     const key = `${index}-${part}`;
     if (part.startsWith("`") && part.endsWith("`")) {
       return (
-        <code key={key} className="rounded bg-muted px-1 text-xs">
+        <code key={key} className="bg-muted rounded px-1 text-xs">
           {part.slice(1, -1)}
         </code>
       );
     }
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        <strong key={key} className="font-medium text-foreground">
+        <strong key={key} className="text-foreground font-medium">
           {part.slice(2, -2)}
         </strong>
       );
@@ -58,7 +58,7 @@ function renderInline(text: string): ReactNode {
         <a
           key={key}
           href={`${REPO}/issues/${part.slice(1)}`}
-          className="text-muted-foreground tabular-nums underline-offset-2 hover:text-foreground hover:underline"
+          className="text-muted-foreground hover:text-foreground tabular-nums underline-offset-2 hover:underline"
         >
           {part}
         </a>
@@ -85,7 +85,7 @@ function ReleaseItem({
       className="relative grid scroll-mt-8 gap-1.5 pb-8 last:pb-0 sm:grid-cols-[7rem_1fr] sm:gap-4"
     >
       {/* Date rail */}
-      <div className="flex items-center gap-1.5 text-muted-foreground text-xs sm:block sm:pt-0.5 sm:text-right">
+      <div className="text-muted-foreground flex items-center gap-1.5 text-xs sm:block sm:pt-0.5 sm:text-right">
         {release.date ? (
           <time dateTime={release.date} className="tabular-nums">
             {formatDate(release.date)}
@@ -96,16 +96,16 @@ function ReleaseItem({
       </div>
 
       {/* Node + connector + content */}
-      <div className="relative border-border/60 border-l pl-5 sm:pb-0">
+      <div className="border-border/60 relative border-l pl-5 sm:pb-0">
         <span
           aria-hidden
           className={cn(
-            "absolute top-1 -left-[5px] size-2.5 rounded-full border-2 bg-background",
+            "bg-background absolute top-1 -left-[5px] size-2.5 rounded-full border-2",
             latest || unreleased ? "border-primary" : "border-border",
           )}
         />
         <div className="flex flex-wrap items-center gap-1.5">
-          <h2 className="font-semibold text-sm">
+          <h2 className="text-sm font-semibold">
             {unreleased ? (
               title
             ) : (
@@ -133,7 +133,7 @@ function ReleaseItem({
           })}
         </div>
         {release.summary ? (
-          <p className="mt-1 text-muted-foreground text-sm">
+          <p className="text-muted-foreground mt-1 text-sm">
             {renderInline(release.summary)}
           </p>
         ) : null}
@@ -142,14 +142,14 @@ function ReleaseItem({
             const tag = groupTag(group.label);
             return (
               <section key={group.label} className="flex flex-col gap-1.5">
-                <h3 className="font-medium text-muted-foreground text-xs">
+                <h3 className="text-muted-foreground text-xs font-medium">
                   {group.label}
                 </h3>
                 <ul className="flex flex-col gap-1">
                   {group.items.map((item) => (
                     <li
                       key={item}
-                      className="flex gap-2 text-foreground/90 text-sm leading-relaxed"
+                      className="text-foreground/90 flex gap-2 text-sm leading-relaxed"
                     >
                       <span
                         aria-hidden

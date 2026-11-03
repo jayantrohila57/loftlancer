@@ -1,0 +1,42 @@
+{
+  "extends": "../tsconfig.feature-paths.json",
+  "compilerOptions": {
+    "paths": {
+      "@features/api/*": ["../api/src/*"],
+      "@features/authentication/*": ["../authentication/src/*"],
+      "@features/authorization/*": ["./src/*"],
+      "@features/notifications/*": ["../notifications/src/*"],
+      "@features/analytics/*": ["../analytics/src/*"],
+      "@features/observability/*": ["../observability/src/*"],
+      "@features/shell/*": ["../shell/src/*"],
+      "@features/marketing/*": ["../marketing/src/*"],
+      "@features/patterns/*": ["../patterns/src/*"],
+      "@features/data-table/*": ["../data-table/src/*"],
+      "@features/*": ["../*"],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "@packages/drizzle/*": ["../../packages/drizzle/src/*"],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"],
+      "@packages/orpc/*": ["../../packages/orpc/src/*"],
+      "@loftlancer/orpc/actions/require-action-host-register": [
+        "./src/core/server/stubs/authorization.require-action-host-register.stub.ts"
+      ],
+      "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],
+      "@packages/better-auth/*": ["../../packages/better-auth/src/*"],
+      "@packages/typescript-config": ["../../packages/typescript-config"],
+      "@packages/typescript-config/*": ["../../packages/typescript-config/*"],
+      "@packages/crypto": ["../../packages/crypto/src/index.ts"],
+      "@packages/crypto/*": ["../../packages/crypto/src/*"],
+      "@packages/resend": ["../../packages/resend/src/index.ts"],
+      "@packages/resend/*": ["../../packages/resend/src/*"],
+      "@packages/t3-env": ["../../packages/t3-env/src"],
+      "@packages/t3-env/*": ["../../packages/t3-env/src/*"],
+      "@packages/sentry": ["../../packages/sentry/src/index.ts"],
+      "@packages/sentry/*": ["../../packages/sentry/src/*"],
+      "@packages/mcp": ["../../packages/mcp/src/index.ts"],
+      "@packages/ui": ["../../packages/ui/src"],
+      "@packages/ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts"],
+  "exclude": ["node_modules"]
+}

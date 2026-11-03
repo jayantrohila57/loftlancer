@@ -1,4 +1,4 @@
-import { layoutGapClass } from "@loftlancer/ui/layout-spacing";
+import { layoutGapClass } from "@features/shell/utils/shell.layout-spacing.utils";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { cn } from "@/lib/utils";
 

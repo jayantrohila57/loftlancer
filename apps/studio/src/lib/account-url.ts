@@ -1,4 +1,4 @@
-import { DEFAULT_AUTH_URL } from "@loftlancer/env/platform";
+import { DEFAULT_AUTH_URL } from "@loftlancer/t3-env/platform";
 
 export function getAccountAppOrigin(): string {
   return (

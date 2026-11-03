@@ -1,2 +1,2 @@
 "use client";
-export * from "@loftlancer/ui/patterns/form-sheet-guard-context";
+export * from "@features/patterns/core/client/patterns.form-sheet-guard-context";

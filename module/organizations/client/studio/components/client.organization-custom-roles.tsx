@@ -4,10 +4,10 @@ import {
   getActionDefinition,
   normalizeOrgRole,
   PERMISSION_MATRIX_ROWS,
-} from "@loftlancer/actions";
+} from "@features/authorization/utils";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { useState } from "react";
 import { useConfirm } from "@/hooks/use-confirm";
 import { studioORPC } from "@/lib/orpc";
@@ -112,7 +112,7 @@ export function OrganizationCustomRoles() {
               />
             </div>
             <fieldset className="grid gap-2 sm:grid-cols-2">
-              <legend className="mb-2 font-medium text-sm">
+              <legend className="mb-2 text-sm font-medium">
                 Organization permissions
               </legend>
               {PERMISSION_MATRIX_ROWS.filter(
@@ -137,7 +137,7 @@ export function OrganizationCustomRoles() {
                   />
                   <span>
                     <span className="block">{row.label}</span>
-                    <span className="block text-muted-foreground text-xs">
+                    <span className="text-muted-foreground block text-xs">
                       {getActionDefinition(row.action).description}
                     </span>
                   </span>
@@ -171,14 +171,14 @@ export function OrganizationCustomRoles() {
           </form>
         </Can>
         {roles.isError ? (
-          <p role="alert" className="mt-4 text-destructive text-sm">
+          <p role="alert" className="text-destructive mt-4 text-sm">
             Could not load custom roles: {roles.error.message}
           </p>
         ) : null}
         {roleItems.length && members.data?.items.length ? (
           <Can action="organization.role.assign">
             <div className="mt-5 border-t pt-4">
-              <h3 className="mb-2 font-medium text-sm">
+              <h3 className="mb-2 text-sm font-medium">
                 Assign roles to members
               </h3>
               <ul className="divide-y">
@@ -202,7 +202,7 @@ export function OrganizationCustomRoles() {
                         </span>
                         <select
                           aria-label={`Custom role for ${member.name || member.email}`}
-                          className="h-9 rounded-md border bg-background px-3 text-sm"
+                          className="bg-background h-9 rounded-md border px-3 text-sm"
                           value={currentRole?.id ?? ""}
                           disabled={assign.isPending}
                           onChange={(event) =>
@@ -280,7 +280,7 @@ export function OrganizationCustomRoles() {
             ))}
           </ul>
         ) : !roles.isPending && !roles.isError ? (
-          <p className="mt-4 text-muted-foreground text-sm">
+          <p className="text-muted-foreground mt-4 text-sm">
             No custom roles yet.
           </p>
         ) : null}

@@ -1,6 +1,6 @@
-import { createContextWithAuth } from "@loftlancer/api/create-context";
-import { getPrivateFile } from "@loftlancer/api/modules/files/api/api.get-private-file";
-import { requireActiveOrganization } from "@loftlancer/api/org-access";
+import { createContextWithAuth } from "@loftlancer/orpc/core/orpc.create-context";
+import { getPrivateFile } from "@modules/files/server/api/api.get-private-file";
+import { requireActiveOrganization } from "@modules/organizations/server/service/server.org-access.service";
 import { TRPCError } from "@trpc/server";
 import { NextResponse } from "next/server";
 import { siblingAuth } from "@/lib/sibling-auth";

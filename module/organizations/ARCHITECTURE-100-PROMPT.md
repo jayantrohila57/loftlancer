@@ -18,7 +18,7 @@ Follow the applicable checklist one section at a time. Plan before coding whenev
 ## Architecture rules
 
 - New product logic belongs in `module/organizations/{utils,server,client}/`; routes stay thin and call native oRPC/module flows.
-- Do not use `apps/studio/src/module/organizations/*`, `packages/api/src/modules/organizations/*`, or `packages/api/src/routers/organizations.ts` as templates. Consult them only to preserve existing behavior and compatibility.
+- Do not use `apps/studio/src/module/organizations/*`, `packages/orpc/src/modules/organizations/*`, or `packages/orpc/src/routers/organizations.ts` as templates. Consult them only to preserve existing behavior and compatibility.
 - Do not add product tRPC procedures, `z.unknown()` inputs, or bypasses. Each controller validates input and validates outbound data with `serviceResponseSchema(<outputSchema>).parse`.
 - Keep controllers thin: authorization/audit through `runAction`, with business logic in services. Reuse `module/shared/` seams when appropriate.
 - Preserve invitation behavior shared with Teams and MCP; adapt compatibility callers at the transport boundary rather than duplicating domain logic.
@@ -29,16 +29,16 @@ Follow the applicable checklist one section at a time. Plan before coding whenev
 
 Proceed in this order and implement only the next open item:
 
-| Order | Issue | Scope |
-|-------|-------|-------|
-| 0 | [#938](https://github.com/jayantrohila57/loftlancer/issues/938) | Module README, architecture handoff prompt, module index link |
-| A | [#939](https://github.com/jayantrohila57/loftlancer/issues/939) | Validation schemas and read controllers: list, get by slug, get profile |
-| B | [#940](https://github.com/jayantrohila57/loftlancer/issues/940) | Invitation and member controllers |
-| C | [#973](https://github.com/jayantrohila57/loftlancer/issues/973) | Settings, branding, custom roles, domains, lifecycle, member administration |
-| D | [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | Native oRPC organizations procedures with operation-specific schemas |
-| E | [#975](https://github.com/jayantrohila57/loftlancer/issues/975) | Client migration, phase 1 |
-| F | [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | Client migration, phase 2 |
-| G | [#977](https://github.com/jayantrohila57/loftlancer/issues/977) | Compatibility tRPC/MCP adapters, integration coverage, empty audit baseline, final checks |
+| Order | Issue                                                           | Scope                                                                                     |
+| ----- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 0     | [#938](https://github.com/jayantrohila57/loftlancer/issues/938) | Module README, architecture handoff prompt, module index link                             |
+| A     | [#939](https://github.com/jayantrohila57/loftlancer/issues/939) | Validation schemas and read controllers: list, get by slug, get profile                   |
+| B     | [#940](https://github.com/jayantrohila57/loftlancer/issues/940) | Invitation and member controllers                                                         |
+| C     | [#973](https://github.com/jayantrohila57/loftlancer/issues/973) | Settings, branding, custom roles, domains, lifecycle, member administration               |
+| D     | [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | Native oRPC organizations procedures with operation-specific schemas                      |
+| E     | [#975](https://github.com/jayantrohila57/loftlancer/issues/975) | Client migration, phase 1                                                                 |
+| F     | [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | Client migration, phase 2                                                                 |
+| G     | [#977](https://github.com/jayantrohila57/loftlancer/issues/977) | Compatibility tRPC/MCP adapters, integration coverage, empty audit baseline, final checks |
 
 ## Checks and completion
 

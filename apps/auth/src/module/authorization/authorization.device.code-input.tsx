@@ -97,7 +97,7 @@ export function SegmentedCodeInput({
             onPaste={onPaste}
             onFocus={(event) => event.target.select()}
             className={cn(
-              "h-8 w-8 rounded-md border border-border/60 bg-background text-center font-mono text-sm uppercase outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:opacity-60",
+              "border-border/60 bg-background focus-visible:border-ring focus-visible:ring-ring/30 h-8 w-8 rounded-md border text-center font-mono text-sm uppercase transition-colors outline-none focus-visible:ring-2 disabled:opacity-60",
               invalid && "border-destructive/60",
               readOnly && "bg-muted",
             )}

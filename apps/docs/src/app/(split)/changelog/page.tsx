@@ -30,14 +30,14 @@ function renderInline(text: string): ReactNode {
     const key = `${index}-${part}`;
     if (part.startsWith("`") && part.endsWith("`")) {
       return (
-        <code key={key} className="rounded-sm bg-muted px-1 font-mono text-xs">
+        <code key={key} className="bg-muted rounded-sm px-1 font-mono text-xs">
           {part.slice(1, -1)}
         </code>
       );
     }
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        <strong key={key} className="font-medium text-foreground">
+        <strong key={key} className="text-foreground font-medium">
           {part.slice(2, -2)}
         </strong>
       );
@@ -47,7 +47,7 @@ function renderInline(text: string): ReactNode {
         <a
           key={key}
           href={`${REPO}/issues/${part.slice(1)}`}
-          className="text-muted-foreground tabular-nums underline-offset-2 hover:text-foreground hover:underline"
+          className="text-muted-foreground hover:text-foreground tabular-nums underline-offset-2 hover:underline"
         >
           {part}
         </a>
@@ -71,9 +71,9 @@ function ReleaseItem({
   return (
     <li
       id={id}
-      className="grid scroll-mt-28 gap-3 border-border/70 border-b py-7 last:border-b-0 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-8 md:py-9"
+      className="border-border/70 grid scroll-mt-28 gap-3 border-b py-7 last:border-b-0 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-8 md:py-9"
     >
-      <div className="font-mono text-[11px] text-muted-foreground tabular-nums sm:pt-1">
+      <div className="text-muted-foreground font-mono text-[11px] tabular-nums sm:pt-1">
         {release.date ? (
           <time dateTime={release.date}>{formatDate(release.date)}</time>
         ) : (
@@ -82,7 +82,7 @@ function ReleaseItem({
       </div>
       <article>
         <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h2 className="mt-0! border-0! pb-0! font-medium! text-2xl! tracking-[-0.05em]! md:text-3xl!">
+          <h2 className="mt-0! border-0! pb-0! text-2xl! font-medium! tracking-[-0.05em]! md:text-3xl!">
             {unreleased ? (
               title
             ) : (
@@ -95,13 +95,13 @@ function ReleaseItem({
             )}
           </h2>
           {latest ? (
-            <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.1em]">
+            <span className="text-muted-foreground font-mono text-[10px] tracking-[0.1em] uppercase">
               Latest release
             </span>
           ) : null}
         </header>
         {release.summary ? (
-          <p className="mt-2 max-w-3xl text-muted-foreground leading-6">
+          <p className="text-muted-foreground mt-2 max-w-3xl leading-6">
             {renderInline(release.summary)}
           </p>
         ) : null}
@@ -116,7 +116,7 @@ function ReleaseItem({
               key={group.label}
               className="border-border/70 border-t pt-3"
             >
-              <h3 className="mt-0! mb-2! border-0! pb-0! font-mono! text-[10px]! text-muted-foreground! uppercase tracking-[0.1em]!">
+              <h3 className="text-muted-foreground! mt-0! mb-2! border-0! pb-0! font-mono! text-[10px]! tracking-[0.1em]! uppercase">
                 {group.label}{" "}
                 <span className="tabular-nums">/ {group.items.length}</span>
               </h3>
@@ -124,11 +124,11 @@ function ReleaseItem({
                 {group.items.map((item) => (
                   <li
                     key={item}
-                    className="grid grid-cols-[0.5rem_minmax(0,1fr)] gap-2 text-foreground/90 text-sm leading-6"
+                    className="text-foreground/90 grid grid-cols-[0.5rem_minmax(0,1fr)] gap-2 text-sm leading-6"
                   >
                     <span
                       aria-hidden
-                      className="mt-[0.65rem] size-1 rounded-full bg-muted-foreground/60"
+                      className="bg-muted-foreground/60 mt-[0.65rem] size-1 rounded-full"
                     />
                     <span className="min-w-0">{renderInline(item)}</span>
                   </li>

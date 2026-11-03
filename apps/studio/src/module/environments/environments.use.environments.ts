@@ -1,6 +1,9 @@
 "use client";
 
-import type { EnvironmentOutput, ProjectOutput } from "@loftlancer/api/types";
+import type {
+  EnvironmentOutput,
+  ProjectOutput,
+} from "@modules/projects/utils/types/utils.project.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";

@@ -1,13 +1,13 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
-import { Badge } from "@loftlancer/ui/badge";
-import { Button } from "@loftlancer/ui/button";
 import {
   DataTable,
   type DataTableColumnDef,
-} from "@loftlancer/ui/data-table/data-table";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
+} from "@features/data-table/core/client/data-table.table";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
+import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
+import { Badge } from "@loftlancer/ui/badge";
+import { Button } from "@loftlancer/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

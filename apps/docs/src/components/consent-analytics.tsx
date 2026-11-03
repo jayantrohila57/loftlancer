@@ -3,7 +3,7 @@
 import {
   AnalyticsConsentBanner,
   useAnalyticsConsent,
-} from "@loftlancer/ui/patterns/analytics-consent";
+} from "@features/analytics/core/client";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 import { gaMeasurementId } from "@/lib/analytics";

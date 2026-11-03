@@ -1,9 +1,9 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { appIcons } from "@/lib/icons";
 import { InstalledAppsOverview } from "@/module/apps/apps.installed.apps.overview";
 import { routes } from "@/utils/navigation";
@@ -36,7 +36,7 @@ export function ProjectOverviewSections({
             {project.description ? (
               <div>
                 <dt className="text-muted-foreground text-xs">Description</dt>
-                <dd className="mt-1 whitespace-pre-wrap text-sm">
+                <dd className="mt-1 text-sm whitespace-pre-wrap">
                   {project.description}
                 </dd>
               </div>
@@ -44,7 +44,7 @@ export function ProjectOverviewSections({
             {project.purpose ? (
               <div>
                 <dt className="text-muted-foreground text-xs">Purpose</dt>
-                <dd className="mt-1 whitespace-pre-wrap text-sm">
+                <dd className="mt-1 text-sm whitespace-pre-wrap">
                   {project.purpose}
                 </dd>
               </div>

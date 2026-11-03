@@ -1,6 +1,6 @@
 import "server-only";
-import { appRouter } from "@loftlancer/api/routers/index";
-import type { AuthSession } from "@loftlancer/auth/session-types";
+import type { AuthSession } from "@loftlancer/better-auth/session-types";
+import { appRouter } from "@loftlancer/orpc/routers/index";
 
 export async function getConnectedAccounts(session: AuthSession) {
   return appRouter.createCaller({ session }).account.listConnectedAccounts();

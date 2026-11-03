@@ -14,7 +14,7 @@ warning logs only the database hostname and mode, never credentials.
 
 **Do not add `db:migrate` to the deploy pipeline.** After pulling schema changes:
 
-1. Review diffs locally: `pnpm --filter @loftlancer/db db:push` (against a dev/staging database first).
+1. Review diffs locally: `pnpm --filter @loftlancer/drizzle db:push` (against a dev/staging database first).
 2. Apply to production manually when intentional: run `db:push` with production `DATABASE_URL`, or apply the matching SQL from `src/migrations/` if you prefer explicit scripts (e.g. `0004_organizations.sql`).
 
 One-off data scripts (e.g. `scripts/backfill-personal-orgs.ts`) are run separately; they are not part of Vercel builds.
@@ -22,8 +22,8 @@ One-off data scripts (e.g. `scripts/backfill-personal-orgs.ts`) are run separate
 ## Local development
 
 ```bash
-pnpm --filter @loftlancer/db db:push    # sync schema to DATABASE_URL
-pnpm --filter @loftlancer/db db:studio  # browse data
+pnpm --filter @loftlancer/drizzle db:push    # sync schema to DATABASE_URL
+pnpm --filter @loftlancer/drizzle db:studio  # browse data
 ```
 
 `db:generate` / `db:migrate` remain available for teams that use migration journals; this repo’s production source of truth is **push + reviewed SQL** for major releases.
@@ -40,7 +40,7 @@ Playwright login (`E2E_TEST_MODE=1`) calls `ensureE2eDemoProject`, which creates
 
 Use this when applying the combined platform migration (`0007`) to **production**: keep the owner’s GitHub login, wipe application data, then load realistic **fake** sample data for demos and QA.
 
-**Policy:** On intentional prod schema change, use **Neon backup first**, apply reviewed SQL from `packages/db/src/migrations/` (e.g. `0007_platform_combined_for_prod.sql`) or intentional `db:push`, then optional reset-seed keeping the owner account (`KEEP_USER_EMAIL`). See [AGENTS.md](../AGENTS.md).
+**Policy:** On intentional prod schema change, use **Neon backup first**, apply reviewed SQL from `packages/drizzle/src/migrations/` (e.g. `0007_platform_combined_for_prod.sql`) or intentional `db:push`, then optional reset-seed keeping the owner account (`KEEP_USER_EMAIL`). See [AGENTS.md](../AGENTS.md).
 
 **Never run `db:reset-seed` against the production Neon default branch until you intend to wipe prod data.** Always validate on a Neon branch first.
 
@@ -62,13 +62,13 @@ The check never resets data. The fingerprint file is local and ignored by Git.
 
 - `RESET_CONFIRM=yes` and `KEEP_USER_EMAIL` set to the owner account that must keep Better Auth `user`, `account`, `session`, and `verification` rows.
 - `DATABASE_URL` pointing at the target database (branch or production).
-- App env vars required by `@loftlancer/env` (`ENCRYPTION_KEY`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `CORS_ORIGIN`) or `SKIP_ENV_VALIDATION=1` for scripted runs with only `DATABASE_URL` + crypto key.
-- Schema at or beyond `packages/db/src/migrations/0007_platform_combined_for_prod.sql` (run migration SQL or `pnpm --filter @loftlancer/db db:push` on the target).
+- App env vars required by `@loftlancer/t3-env` (`ENCRYPTION_KEY`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `CORS_ORIGIN`) or `SKIP_ENV_VALIDATION=1` for scripted runs with only `DATABASE_URL` + crypto key.
+- Schema at or beyond `packages/drizzle/src/migrations/0007_platform_combined_for_prod.sql` (run migration SQL or `pnpm --filter @loftlancer/drizzle db:push` on the target).
 
 ### Recommended production workflow
 
 1. **Backup branch** — In Neon, create a branch from the current default (e.g. `backup-before-platform-YYYY-MM-DD`).
-2. **Migrate** — Apply `0007_platform_combined_for_prod.sql` on the target (or `db:push` after review). SQL lives under `packages/db/src/migrations/`.
+2. **Migrate** — Apply `0007_platform_combined_for_prod.sql` on the target (or `db:push` after review). SQL lives under `packages/drizzle/src/migrations/`.
 3. **Enable feature flags** (after migration):
 
    ```env

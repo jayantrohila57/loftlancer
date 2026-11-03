@@ -1,6 +1,6 @@
 "use client";
 
-import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
+import { SettingsPanelSkeleton } from "@features/patterns/core/client/patterns.settings-panel-skeleton";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { OrganizationSectionPage } from "@module/organizations/client/studio/components/client.organization-section.page";
 import { OrganizationSettingsContentSkeleton } from "@module/organizations/client/studio/skeletons/client.organization-settings-content.skeleton";

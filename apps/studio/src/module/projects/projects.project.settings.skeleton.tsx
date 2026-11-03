@@ -1,4 +1,4 @@
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
 import DashboardSection from "@/components/section-dashboard";
 
 /** Mirrors the project settings form, status selector, and danger zone. */

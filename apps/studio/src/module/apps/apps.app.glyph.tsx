@@ -20,12 +20,12 @@ export function AppGlyph({
   return (
     <span
       className={cn(
-        "flex size-8 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-muted/50",
+        "border-border/60 bg-muted/50 flex size-8 shrink-0 items-center justify-center rounded-lg border",
         className,
       )}
       aria-hidden
     >
-      <Icon className="size-4 text-muted-foreground" />
+      <Icon className="text-muted-foreground size-4" />
     </span>
   );
 }

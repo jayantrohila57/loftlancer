@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.feature-paths.json",
+  "compilerOptions": {
+    "paths": {
+      "@features/shell/*": ["../shell/src/*"],
+      "@features/data-table/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}

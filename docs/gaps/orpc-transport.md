@@ -1,6 +1,6 @@
 # Gap: oRPC transport
 
-**Purpose:** New endpoints must not add tRPC, fat handlers in `apps/`, or domain logic in `packages/api`. This doc fixes **where** procedures live and **how** they call modules.
+**Purpose:** New endpoints must not add tRPC, fat handlers in `apps/`, or domain logic in `packages/orpc`. This doc fixes **where** procedures live and **how** they call modules.
 
 See also: [server-api.md](../server-api.md), [packages.md](../packages.md).
 
@@ -8,12 +8,12 @@ See also: [server-api.md](../server-api.md), [packages.md](../packages.md).
 
 ## Layer responsibilities
 
-| Layer | Path | Allowed |
-|-------|------|---------|
-| Domain | `module/<feature>/server/controller`, `service` | All business logic, `runAction`, ServiceResponse |
-| Transport shell | `packages/api/src/orpc/` | Context, procedure registration, call controller |
-| HTTP mount | `apps/*/src/app/api/orpc/` | Catch-all handler only — **no procedures** |
-| Client | `apps/*/src/lib/orpc.ts` + `module/.../client/hooks` | Typed client; hooks call oRPC |
+| Layer           | Path                                                 | Allowed                                          |
+| --------------- | ---------------------------------------------------- | ------------------------------------------------ |
+| Domain          | `module/<feature>/server/controller`, `service`      | All business logic, `runAction`, ServiceResponse |
+| Transport shell | `packages/orpc/src/orpc/`                            | Context, procedure registration, call controller |
+| HTTP mount      | `apps/*/src/app/api/orpc/`                           | Catch-all handler only — **no procedures**       |
+| Client          | `apps/*/src/lib/orpc.ts` + `module/.../client/hooks` | Typed client; hooks call oRPC                    |
 
 **New code:** oRPC only. **Do not** add tRPC procedures.
 
@@ -21,12 +21,12 @@ See also: [server-api.md](../server-api.md), [packages.md](../packages.md).
 
 ## Procedure file layout
 
-Add procedures under **`packages/api/src/orpc/procedures/<domain>.ts`** (create folder when greenfield wiring starts).
+Add procedures under **`packages/orpc/src/orpc/procedures/<domain>.ts`** (create folder when greenfield wiring starts).
 
 **Template:**
 
 ```ts
-// packages/api/src/orpc/procedures/teams.ts — pattern only
+// packages/orpc/src/orpc/procedures/teams.ts — pattern only
 import { teamGetController } from "@module/teams/server/controller/server.team-get.controller";
 import { teamGetInputSchema } from "@module/teams/utils/validation/utils.team-get.validation";
 
@@ -47,10 +47,10 @@ export const teamGet = protectedProcedure
 
 ## Router assembly
 
-| Router | File | Mount |
-|--------|------|-------|
-| Studio product | `packages/api/src/orpc/studio-router.ts` | Studio app `/api/orpc` |
-| Account / auth settings | `packages/api/src/orpc/account-router.ts` | Auth app `/api/orpc` |
+| Router                  | File                                       | Mount                  |
+| ----------------------- | ------------------------------------------ | ---------------------- |
+| Studio product          | `packages/orpc/src/orpc/studio-router.ts`  | Studio app `/api/orpc` |
+| Account / auth settings | `packages/orpc/src/orpc/account-router.ts` | Auth app `/api/orpc`   |
 
 Namespace keys match **`module/<feature>`** names (`teams`, `projects`, …).
 
@@ -60,15 +60,15 @@ Namespace keys match **`module/<feature>`** names (`teams`, `projects`, …).
 
 Procedures receive context built once per request. **Minimum:**
 
-| Field | Purpose |
-|-------|---------|
-| `userId` | Actor |
-| `session` | Better Auth session reference |
-| `orgId` | When route is org-scoped (nullable) |
-| `projectId` | Project-scoped actions (nullable) |
-| `teamId` | Team-scoped actions (nullable) |
-| `ip` | Audit |
-| `userAgent` | Audit |
+| Field       | Purpose                             |
+| ----------- | ----------------------------------- |
+| `userId`    | Actor                               |
+| `session`   | Better Auth session reference       |
+| `orgId`     | When route is org-scoped (nullable) |
+| `projectId` | Project-scoped actions (nullable)   |
+| `teamId`    | Team-scoped actions (nullable)      |
+| `ip`        | Audit                               |
+| `userAgent` | Audit                               |
 
 `runAction` and `buildAccessContext` (see [actions-audit.md](./actions-audit.md)) consume the same shape. **Do not** invent parallel `{ userId }` only contexts in new procedures.
 
@@ -76,11 +76,10 @@ Procedures receive context built once per request. **Minimum:**
 
 ## Middleware order (fixed)
 
-1. **Auth** — reject unauthenticated when procedure requires session  
-2. **Scope** — attach org/project/team from route or input (validated)  
-3. **Handler** — controller → `runAction` / service  
-
-Permission evaluation lives **inside controller via `runAction`**, not duplicated in procedure middleware, unless platform adds a shared `gatedProcedure(actionId)` that still delegates to the same `runAction` path.
+1. **Auth** — reject unauthenticated when procedure requires session
+2. **Scope** — attach org/project/team from route or input (validated)
+3. **Handler** — controller → `runAction` / service
+   Permission evaluation lives **inside controller via `runAction`**, not duplicated in procedure middleware, unless platform adds a shared `gatedProcedure(actionId)` that still delegates to the same `runAction` path.
 
 ---
 
@@ -103,6 +102,6 @@ MCP tools call the **same controller** as oRPC. Tool result payload exposes **`s
 
 ## Related
 
-- [imports-paths.md](./imports-paths.md) — client import path  
-- [server-folders.md](./server-folders.md) — controller vs handlers  
-- [forbidden-defaults.md](./forbidden-defaults.md) — no domain in `packages/api/src/modules`  
+- [imports-paths.md](./imports-paths.md) — client import path
+- [server-folders.md](./server-folders.md) — controller vs handlers
+- [forbidden-defaults.md](./forbidden-defaults.md) — no domain in `packages/orpc/src/modules`

@@ -2,8 +2,8 @@ import "server-only";
 import {
   resolveOrganizationForPage,
   runPageGuard,
-} from "@loftlancer/api/page-guards";
-import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
+} from "@loftlancer/orpc/page-guards";
+import { isOrganizationsEnabled } from "@loftlancer/t3-env/organizations";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";

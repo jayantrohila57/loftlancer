@@ -7,6 +7,7 @@ Fixes #
 ## What changed
 
 ## Checklist
+
 - [ ] One commit per sub-issue where applicable; each says `Fixes #N` (or `Refs #N` for partial work)
 - [ ] Targets **`dev`** only (never land feature/fix/docs work on `main`; production is **`dev` → `main`** only); no `--no-verify`
 - [ ] **`pnpm verify:dev-merge`** pass on full branch (lint, routes, architecture audit, types, tests)

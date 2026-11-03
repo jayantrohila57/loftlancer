@@ -1,4 +1,4 @@
-import { AppNotFoundPage } from "@loftlancer/ui/patterns/app-route-states";
+import { AppNotFoundPage } from "@features/patterns/core/client/patterns.app-route-states";
 
 export default function SettingsNotFound() {
   return (

@@ -1,5 +1,5 @@
 ---
-description: module layouts (Tier 1 shell + Tier 2 section); routes per module; rendering; app states
+description: Apps → Modules → Features → Packages; layouts; rendering; app states
 alwaysApply: true
 ---
 
@@ -7,11 +7,39 @@ alwaysApply: true
 
 **Agents:** read **`module/<domain>/README.md`** first for the domain you edit. Workflow: **`.cursor/rules/agent-workflow.mdc`**. Platform contracts below — do not duplicate module runbooks in `docs/`.
 
-Read **docs/ui-ux-skills.md**, **docs/naming.md**, **docs/architecture-gaps.md**, **docs/new-feature-checklist.md**, **docs/data-workflow.md**, **docs/layouts.md**, **docs/app-states.md**, **docs/rendering.md**, **docs/server-api.md**, **docs/modules.md**, **docs/packages.md**.
+Read **docs/ui-ux-skills.md**, **docs/naming.md**, **docs/architecture-gaps.md**, **docs/new-feature-checklist.md**, **docs/data-workflow.md**, **docs/layouts.md**, **docs/app-states.md**, **docs/rendering.md**, **docs/server-api.md**, **docs/modules.md**, **docs/features.md**, **docs/packages.md**.
+
+## Four layers (dependency direction)
+
+```text
+apps/*  →  module/*  →  features/*  →  packages/*
+```
+
+| Layer        | Path                         | Owns                                                                 |
+| ------------ | ---------------------------- | -------------------------------------------------------------------- |
+| **Apps**     | `apps/*`                     | Routing, layouts, thin re-exports — almost no business rules         |
+| **Modules**  | `module/<domain>/`           | Domain server, client, utils/shared, per-domain README               |
+| **Features** | `features/<name>/`           | Cross-domain reuse (authz, auth UX, patterns, …) — see **features.md** |
+| **Packages** | `packages/*` (`@loftlancer/*`) | Vendor SDK / infra only — no product business logic                  |
+
+**CI:** **`pnpm audit:architecture-layers`** (import direction). **`pnpm audit:module-architecture`** (oRPC + module contracts). Before merge to **`dev`:** **`pnpm verify:dev-merge`**.
+
+## Import aliases (prefer for new code)
+
+| Layer    | Alias        | Example                                      |
+| -------- | ------------ | -------------------------------------------- |
+| Apps     | `@/`         | `@/lib/orpc`                                 |
+| Modules  | `@modules/`  | `@modules/teams/server/...`                  |
+| Features | `@features/` | `@features/authorization/utils`              |
+| Packages | `@packages/` | `@packages/drizzle`                          |
+
+Dual support: **`@module/*`** = **`@modules/*`**; workspace **`@loftlancer/*`** alongside **`@packages/*`** ([AGENTS.md](../AGENTS.md), [docs/tooling.md](../docs/tooling.md)).
 
 ## Naming
 
-- **`<layer>.<slug>.<role>.<ext>`** — see [naming.md](../docs/naming.md); Cursor rule **naming.mdc** on `module/**`.
+- **Modules:** **`<layer>.<slug>.<role>.<ext>`** — `utils.` \| `server.` \| `client.` ([naming.md](../docs/naming.md); **naming.mdc** on `module/**`).
+- **Features:** **`<feature>.<purpose>.<suffix>`** under `features/<name>/src/` — see [features/NAMING.md](../features/NAMING.md).
+- **Packages:** provider-prefixed files under `src/{core,config,constants,types,utils}/` — see [docs/packages.md](../docs/packages.md).
 
 ## Data
 
@@ -19,7 +47,8 @@ Read **docs/ui-ux-skills.md**, **docs/naming.md**, **docs/architecture-gaps.md**
 
 ## Actions & audit
 
-- Registry IDs in `packages/actions`; **`runAction`** wraps permission + audit (all outcomes) + handler ([actions-and-events.md](../docs/actions-and-events.md)).
+- Action IDs: **`features/authorization/src/constants/authorization.registry-data.ts`** → import **`@features/authorization/utils`** ([actions-and-events.md](../docs/actions-and-events.md)).
+- **`runAction`:** **`@modules/shared/server/run-action`** (re-exports **`@features/authorization/core/server`**) — permission + audit (all outcomes) + handler.
 
 ## Routes & layouts
 
@@ -29,12 +58,15 @@ Read **docs/ui-ux-skills.md**, **docs/naming.md**, **docs/architecture-gaps.md**
 
 - Logic in functions; components render props; client islands via `dynamic()` + skeleton.
 - Route `loading/error/not-found/forbidden` + in-page ServiceResponse phases — tier-stable skeletons ([app-states.md](../docs/app-states.md)).
-- **UI work:** read [ui-ux-skills.md](../docs/ui-ux-skills.md) and relevant `.agents/skills/*/SKILL.md` before editing `client/` or `packages/ui`.
+- **UI work:** read [ui-ux-skills.md](../docs/ui-ux-skills.md) and relevant `.agents/skills/*/SKILL.md` before editing module `client/` or **`@packages/ui`** / **`features/*`** client surfaces.
 
 ## Server
 
-- All API logic in `module/…/server/`; oRPC only for new RPC.
+- Domain API logic in **`module/…/server/`** (and feature server in **`features/…/src/core/server/`** when cross-domain).
+- **oRPC:** thin procedures in **`@packages/orpc`** / **`packages/orpc/src/orpc/`** → module controllers; no new tRPC ([server-api.md](../docs/server-api.md)).
 
-## Packages
+## Packages vs features vs modules
 
-- Platform only.
+- **New domain behavior** → **`module/<domain>/`** only (not `packages/orpc/src/modules/*`, not fat `apps/*/page.tsx`).
+- **Reused across domains** → **`features/<name>/`** (features must not import **`@modules/*`**).
+- **DB, Better Auth, mail, env, Sentry, crypto, MCP glue, UI primitives** → **`packages/`** only.

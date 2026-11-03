@@ -1,8 +1,8 @@
 "use client";
 
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import Link from "next/link";
 import { useState } from "react";
 import { AppGlyph } from "@/module/apps/apps.app.glyph";
@@ -46,14 +46,14 @@ export function AppCard({
 
   return (
     <div
-      className="flex min-h-36 flex-col gap-3 rounded-md bg-card p-4 ring-1 ring-border/60"
+      className="bg-card ring-border/60 flex min-h-36 flex-col gap-3 rounded-md p-4 ring-1"
       data-testid={`app-card-${app.id}`}
     >
       <div className="flex items-start gap-3">
         <AppGlyph icon={app.icon} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <h3 className="truncate font-medium text-sm">{app.name}</h3>
+            <h3 className="truncate text-sm font-medium">{app.name}</h3>
             {active ? (
               <Badge variant="success" size="sm">
                 Installed
@@ -67,7 +67,7 @@ export function AppCard({
           <p className="text-muted-foreground text-xs">{app.category}</p>
         </div>
       </div>
-      <p className="line-clamp-2 flex-1 text-muted-foreground text-xs">
+      <p className="text-muted-foreground line-clamp-2 flex-1 text-xs">
         {app.description}
       </p>
       <div className="flex items-center gap-1.5">
@@ -123,7 +123,7 @@ export function AppCard({
         description={
           <div className="flex flex-col gap-2 text-xs">
             <div>
-              <p className="font-medium text-foreground">It will be able to</p>
+              <p className="text-foreground font-medium">It will be able to</p>
               <ul className="list-disc ps-4">
                 {app.permissions.map((p) => (
                   <li key={p}>{p}</li>
@@ -131,7 +131,7 @@ export function AppCard({
               </ul>
             </div>
             <div>
-              <p className="font-medium text-foreground">Data it creates</p>
+              <p className="text-foreground font-medium">Data it creates</p>
               <ul className="list-disc ps-4">
                 {app.dataCreated.map((p) => (
                   <li key={p}>{p}</li>

@@ -1,9 +1,9 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
 import { Button } from "@loftlancer/ui/button";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "@loftlancer/ui/menu";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import {
   Tooltip,
   TooltipContent,
@@ -143,7 +143,7 @@ export function EnvironmentsTabsView({
                     </Tooltip>
                     <MenuPopup align="end">
                       <MenuItem onClick={() => setEditOpen(true)}>
-                        <AppIcon name="edit" className="me-2 text-foreground" />
+                        <AppIcon name="edit" className="text-foreground me-2" />
                         Rename
                       </MenuItem>
                       <MenuItem
@@ -152,7 +152,7 @@ export function EnvironmentsTabsView({
                       >
                         <AppIcon
                           name="delete"
-                          className="me-2 text-foreground"
+                          className="text-foreground me-2"
                         />
                         Delete
                       </MenuItem>

@@ -1,1 +1,1 @@
-export { formatActionLabel } from "@loftlancer/actions";
+export { formatActionLabel } from "@features/authorization/utils";

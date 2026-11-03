@@ -9,7 +9,7 @@ An **organization** is the top-level tenant boundary. Members belong to exactly 
 
 - The studio app uses an **active organization** cookie for browser sessions.
 - tRPC procedures call `requireActiveOrganization` and evaluate actions with org context.
-- MCP tools accept `organizationId` or `organizationSlug` on each call because bearer tokens do not carry the active-org cookie (`organizationRefSchema` in `@loftlancer/api/mcp`).
+- MCP tools accept `organizationId` or `organizationSlug` on each call because bearer tokens do not carry the active-org cookie (`organizationRefSchema` in `@loftlancer/orpc/mcp`).
 
 ## Related actions
 

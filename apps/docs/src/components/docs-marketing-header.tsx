@@ -1,6 +1,6 @@
 "use client";
 
-import { MarketingSiteHeader } from "@loftlancer/ui/marketing";
+import { MarketingSiteHeader } from "@features/marketing/core/client";
 import { MenuItem } from "@loftlancer/ui/menu";
 import { useDocsLayout } from "fumadocs-ui/layouts/docs";
 import { ModeToggle } from "@/components/mode-toggle";

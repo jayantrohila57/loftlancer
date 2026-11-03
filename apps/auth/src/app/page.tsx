@@ -1,4 +1,4 @@
-import { studioHomeUrl } from "@loftlancer/ui/auth-links";
+import { studioHomeUrl } from "@features/authentication/utils/auth-links";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 

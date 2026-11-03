@@ -1,5 +1,5 @@
 "use client";
-import type { ActionName } from "@loftlancer/actions";
+import type { ActionName } from "@features/authorization/utils";
 import { toastManager } from "@loftlancer/ui/toast";
 import { applyResponseToast } from "@module/shared/client/apply-response-toast";
 import { useModuleOrganizationId } from "@module/shared/client/client.scope.provider";

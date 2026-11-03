@@ -18,7 +18,7 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "@loftlancer/config": "workspace:*",
+    "@loftlancer/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26",
     "@types/react": "^19.3.0",

@@ -1,6 +1,6 @@
 "use client";
 
-import { layoutFormStackClass } from "@loftlancer/ui/layout-spacing";
+import { layoutFormStackClass } from "@features/shell/utils/shell.layout-spacing.utils";
 import { ScrollArea } from "@loftlancer/ui/scroll-area";
 import { SheetFooter, SheetHeader, SheetPopup } from "@loftlancer/ui/sheet";
 import type { ComponentProps, FormHTMLAttributes, ReactNode } from "react";

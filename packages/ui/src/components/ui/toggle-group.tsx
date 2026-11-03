@@ -3,7 +3,7 @@
 import { Toggle as TogglePrimitive } from "@base-ui/react/toggle";
 import { ToggleGroup as ToggleGroupPrimitive } from "@base-ui/react/toggle-group";
 import type * as React from "react";
-import { segmentedControlRootClassName } from "../../lib/segmented-control";
+import { segmentedControlRootClassName } from "../../core/segmented-control";
 import { cn } from "../../lib/utils";
 
 export function ToggleGroup({
@@ -26,7 +26,7 @@ export function ToggleGroupItem({
   return (
     <TogglePrimitive
       className={cn(
-        "inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-transparent text-muted-foreground outline-none transition-[color,background-color,box-shadow] hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-64 data-pressed:bg-background data-pressed:text-foreground data-pressed:shadow-sm/5 sm:size-7 dark:data-pressed:bg-input",
+        "text-muted-foreground hover:text-foreground focus-visible:ring-ring data-pressed:bg-background data-pressed:text-foreground dark:data-pressed:bg-input inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-transparent transition-[color,background-color,box-shadow] outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-64 data-pressed:shadow-sm/5 sm:size-7",
         className,
       )}
       data-slot="toggle-group-item"

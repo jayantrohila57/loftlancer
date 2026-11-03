@@ -1,7 +1,7 @@
 "use client";
 
-import { logger } from "@loftlancer/logger";
-import { MarketingPageShell } from "@loftlancer/ui/marketing";
+import { MarketingPageShell } from "@features/marketing/core/client";
+import { logger } from "@loftlancer/sentry";
 import { useEffect } from "react";
 import { MarketingRouteState } from "@/components/marketing-route-state";
 import { ModeToggle } from "@/components/mode-toggle";

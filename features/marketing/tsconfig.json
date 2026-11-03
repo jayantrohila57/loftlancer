@@ -1,0 +1,14 @@
+{
+  "extends": "@loftlancer/typescript-config/tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "paths": {
+      "@features/marketing/*": ["./src/*"],
+      "@features/shell/*": ["../shell/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}

@@ -142,7 +142,7 @@ export function DataTableFacetedFilter<T extends string = string>({
         disabled={disabled || isApplying}
         className={cn(
           selectTriggerVariants({ size: "sm" }),
-          "h-8 w-auto min-w-[8.5rem] max-w-full justify-start gap-1.5",
+          "h-8 w-auto max-w-full min-w-[8.5rem] justify-start gap-1.5",
           className,
         )}
         aria-label={ariaLabel ?? title}
@@ -197,7 +197,7 @@ export function DataTableFacetedFilter<T extends string = string>({
                   ))}
                 </div>
               ) : filteredOptions.length === 0 ? (
-                <p className="px-2 py-6 text-center text-muted-foreground text-sm">
+                <p className="text-muted-foreground px-2 py-6 text-center text-sm">
                   No results.
                 </p>
               ) : (
@@ -208,7 +208,7 @@ export function DataTableFacetedFilter<T extends string = string>({
                     <button
                       key={option.value}
                       type="button"
-                      className="flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+                      className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm outline-none"
                       onClick={() => toggleOption(option.value, !checked)}
                     >
                       <Checkbox
@@ -220,7 +220,7 @@ export function DataTableFacetedFilter<T extends string = string>({
                         onClick={(event) => event.stopPropagation()}
                       />
                       {option.icon ? (
-                        <span className="flex shrink-0 text-muted-foreground">
+                        <span className="text-muted-foreground flex shrink-0">
                           {option.icon}
                         </span>
                       ) : null}

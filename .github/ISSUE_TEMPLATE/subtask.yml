@@ -42,7 +42,7 @@ body:
       label: Do not
       description: Explicit anti-patterns for this chunk
       value: |
-        - Copy legacy apps/studio/src/module/* or packages/api/src/modules/* as templates
+        - Copy legacy apps/studio/src/module/* or packages/orpc/src/modules/* as templates
         - Add tRPC, z.unknown() oRPC inputs, or skip serviceResponseSchema.parse on controllers
         - Implement blocked dependencies — add module README TODO instead
   - type: textarea

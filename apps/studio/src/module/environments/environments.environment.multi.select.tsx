@@ -42,7 +42,7 @@ export function EnvironmentMultiSelect({
               value={env.id}
               aria-pressed={selected}
               className={cn(
-                "inline-flex h-8 items-center rounded-md border px-2.5 font-medium text-sm transition-colors",
+                "inline-flex h-8 items-center rounded-md border px-2.5 text-sm font-medium transition-colors",
                 selected
                   ? "border-primary/30 bg-primary/10 text-foreground"
                   : "border-border bg-background text-muted-foreground hover:text-foreground",

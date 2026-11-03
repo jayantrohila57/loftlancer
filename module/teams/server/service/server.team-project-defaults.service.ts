@@ -1,12 +1,12 @@
 import {
   DEFAULT_TEAM_PROJECT_GRANTS,
   mergeProjectMemberGrants,
-} from "@loftlancer/actions";
-import type { db } from "@loftlancer/db";
+} from "@features/authorization/utils";
+import type { db } from "@loftlancer/drizzle";
 import {
   projectMemberGrant,
   projectTeam,
-} from "@loftlancer/db/schema/project-access";
+} from "@loftlancer/drizzle/schema/project-access";
 import { and, eq, isNull } from "drizzle-orm";
 
 type OrganizationMutationTx = Parameters<

@@ -10,11 +10,11 @@
 
 Loftlancer runs as **one Vercel project** (Vercel Services) on **loftlancer.com**, with three Next.js apps routed by path:
 
-| Path | App | Purpose |
-| ---- | --- | ------- |
-| `/` | `apps/docs` | Landing page and Fumadocs documentation (static export) |
-| `/auth` | `apps/auth` | Sign-in (GitHub, Google when configured, email magic links; no passwords), sessions and account settings (`/auth/settings/*`) |
-| `/studio` | `apps/studio` | Product dashboard: organizations, projects, environments, variables |
+| Path      | App           | Purpose                                                                                                                       |
+| --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `/`       | `apps/docs`   | Landing page and Fumadocs documentation (static export)                                                                       |
+| `/auth`   | `apps/auth`   | Sign-in (GitHub, Google when configured, email magic links; no passwords), sessions and account settings (`/auth/settings/*`) |
+| `/studio` | `apps/studio` | Product dashboard: organizations, projects, environments, variables                                                           |
 
 Routing lives in the root [`vercel.json`](./vercel.json) (`services` + `rewrites`). Session cookies are same-origin on loftlancer.com. Better Auth is served at `/auth/api/auth`; the GitHub OAuth callback is `https://loftlancer.com/auth/api/auth/callback/github`.
 
@@ -37,38 +37,38 @@ flowchart LR
 
 ## Monorepo layout
 
-| Path | Purpose |
-| ---- | ------- |
-| `apps/docs` | Landing + docs at `/` |
-| `apps/auth` | Auth issuer + account settings at `/auth` |
-| `apps/studio` | Product UI at `/studio` |
-| `module/` | Product feature code + **all server API logic** (`server/`, `shared/`) — [docs/modules.md](./docs/modules.md), [docs/server-api.md](./docs/server-api.md) |
-| `packages/api` | **oRPC transport shell** (tRPC legacy until removed) — [docs/packages.md](./docs/packages.md) |
-| `packages/actions` | Canonical action registry, org roles, `requireAction` evaluation |
-| `packages/auth` | Better Auth (GitHub OAuth, organizations, teams) |
-| `packages/auth-client` | Shared Better Auth React client |
-| `packages/db` | Drizzle schema, migrations, soft-delete helpers, `db:reset-seed` |
-| `packages/notifications` | Notification types, triggers, idempotent writers |
-| `packages/crypto` | AES-256-GCM encrypt/decrypt for secret values |
-| `packages/env` | Shared Zod env validation & feature flags |
-| `packages/mcp` | MCP tool definitions (used by the docs tool reference) |
-| `packages/config` | Shared TypeScript/Biome config |
-| `packages/ui` | Shared coss/shadcn UI (`@loftlancer/ui`) |
+| Path                         | Purpose                                                                                                                                                   |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/docs`                  | Landing + docs at `/`                                                                                                                                     |
+| `apps/auth`                  | Auth issuer + account settings at `/auth`                                                                                                                 |
+| `apps/studio`                | Product UI at `/studio`                                                                                                                                   |
+| `module/`                    | Product feature code + **all server API logic** (`server/`, `shared/`) — [docs/modules.md](./docs/modules.md), [docs/server-api.md](./docs/server-api.md) |
+| `packages/orpc`              | **oRPC transport shell** (tRPC legacy until removed) — [docs/packages.md](./docs/packages.md)                                                             |
+| `features/authorization`     | Canonical action registry, org roles, `requireAction` / `runAction` (`@features/authorization/*`)                                                         |
+| `packages/auth`              | Better Auth (GitHub OAuth, organizations, teams)                                                                                                          |
+| `packages/auth-client`       | Shared Better Auth React client                                                                                                                           |
+| `packages/drizzle`           | Drizzle schema, migrations, soft-delete helpers, `db:reset-seed`                                                                                          |
+| `features/notifications`     | Notification types, triggers, idempotent writers                                                                                                          |
+| `packages/crypto`            | Node `node:crypto` AES-256-GCM encrypt/decrypt for secret values                                                                                          |
+| `packages/t3-env`            | Shared Zod env validation & feature flags                                                                                                                 |
+| `packages/mcp`               | MCP tool definitions (used by the docs tool reference)                                                                                                    |
+| `packages/typescript-config` | Shared TypeScript base config (`tsconfig.base.json`)                                                                                                      |
+| `packages/ui`                | Shared coss/shadcn UI (`@loftlancer/ui`)                                                                                                                  |
 
 **Legacy history:** `apps/web`, `apps/www`, `apps/console`, `apps/mcp`, `apps/account` and `apps/support` were removed in October 2026 ([#163](https://github.com/jayantrohila57/loftlancer/issues/163)). Account settings moved into `apps/auth`; the admin console, standalone MCP server and support app are no longer deployed. Their history remains in git.
 
 ## Product concepts
 
-| Area | Behavior |
-| ---- | -------- |
-| **Roles** | Org **Owner**, **Manager**, **Member** (legacy `admin` → Manager). Platform **Admin** reserved for future console. |
-| **Teams** | Better Auth teams under each organization |
-| **Project access** | Per-project manager rows, team links, and member **CRUD grants** |
-| **Actions** | `@loftlancer/actions` names every gated operation; server uses `requireAction` |
-| **Audit** | `audit_event` + Timeline UIs when `ACTIONS_AUDIT_ENABLED=true` |
-| **Soft delete** | `deleted_at` / `deleted_by` when `SOFT_DELETES_ENABLED=true` |
-| **Organizations** | `/dashboard/organizations` hub (members, teams, invitations, roles, settings, timeline) |
-| **Account settings** | `/dashboard/settings/*` — profile, sessions, accounts, export, delete, personal timeline |
+| Area                 | Behavior                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Roles**            | Org **Owner**, **Manager**, **Member** (legacy `admin` → Manager). Platform **Admin** reserved for future console. |
+| **Teams**            | Better Auth teams under each organization                                                                          |
+| **Project access**   | Per-project manager rows, team links, and member **CRUD grants**                                                   |
+| **Actions**          | `@features/authorization` registry names every gated operation; server uses `requireAction` / `runAction`          |
+| **Audit**            | `audit_event` + Timeline UIs when `ACTIONS_AUDIT_ENABLED=true`                                                     |
+| **Soft delete**      | `deleted_at` / `deleted_by` when `SOFT_DELETES_ENABLED=true`                                                       |
+| **Organizations**    | `/dashboard/organizations` hub (members, teams, invitations, roles, settings, timeline)                            |
+| **Account settings** | `/dashboard/settings/*` — profile, sessions, accounts, export, delete, personal timeline                           |
 
 Deep specs: [docs/index.md](./docs/index.md), [docs/product.md](./docs/product.md), [docs/database.md](./docs/database.md).
 
@@ -91,24 +91,24 @@ pnpm install
 
 ## Environment variables
 
-Create **`apps/studio/.env`** (Drizzle Kit reads this path for database commands). Validated via `@loftlancer/env`:
+Create **`apps/studio/.env`** (Drizzle Kit reads this path for database commands). Validated via `@loftlancer/t3-env`:
 
-| Variable | Required | Description |
-| -------- | -------- | ----------- |
-| `DATABASE_URL` | yes | PostgreSQL connection URL |
-| `BETTER_AUTH_SECRET` | yes | Session secret (≥ 32 characters) |
-| `BETTER_AUTH_URL` | yes | Public auth app URL (`https://loftlancer.com/auth` in production, `http://localhost:3000` locally) |
-| `CORS_ORIGIN` | yes | Browser origin (usually same as `BETTER_AUTH_URL` in dev) |
-| `ENCRYPTION_KEY` | yes | 64 hex chars (32 bytes) for AES-256-GCM |
-| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | yes | GitHub OAuth |
-| `ORGANIZATIONS_ENABLED` | no | `true` to scope projects to active org |
-| `NOTIFICATIONS_ENABLED` | no | In-app notifications |
-| `VARIABLES_V2_ENABLED` | no | Typed variables (`secret` / `config`) |
-| `ACTIONS_AUDIT_ENABLED` | no | `audit_event` + timeline routes |
-| `SOFT_DELETES_ENABLED` | no | Soft delete semantics |
-| `NEXT_PUBLIC_*` | no | Client mirrors for flags above (rebuild after change) |
-| `NODE_ENV` | no | `development` \| `production` \| `test` |
-| `SKIP_ENV_VALIDATION` | no | `1` skips Zod (not recommended) |
+| Variable                                    | Required | Description                                                                                        |
+| ------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                              | yes      | PostgreSQL connection URL                                                                          |
+| `BETTER_AUTH_SECRET`                        | yes      | Session secret (≥ 32 characters)                                                                   |
+| `BETTER_AUTH_URL`                           | yes      | Public auth app URL (`https://loftlancer.com/auth` in production, `http://localhost:3000` locally) |
+| `CORS_ORIGIN`                               | yes      | Browser origin (usually same as `BETTER_AUTH_URL` in dev)                                          |
+| `ENCRYPTION_KEY`                            | yes      | 64 hex chars (32 bytes) for AES-256-GCM                                                            |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | yes      | GitHub OAuth                                                                                       |
+| `ORGANIZATIONS_ENABLED`                     | no       | `true` to scope projects to active org                                                             |
+| `NOTIFICATIONS_ENABLED`                     | no       | In-app notifications                                                                               |
+| `VARIABLES_V2_ENABLED`                      | no       | Typed variables (`secret` / `config`)                                                              |
+| `ACTIONS_AUDIT_ENABLED`                     | no       | `audit_event` + timeline routes                                                                    |
+| `SOFT_DELETES_ENABLED`                      | no       | Soft delete semantics                                                                              |
+| `NEXT_PUBLIC_*`                             | no       | Client mirrors for flags above (rebuild after change)                                              |
+| `NODE_ENV`                                  | no       | `development` \| `production` \| `test`                                                            |
+| `SKIP_ENV_VALIDATION`                       | no       | `1` skips Zod (not recommended)                                                                    |
 
 Example secret generation:
 
@@ -127,14 +127,14 @@ Local sync:
 pnpm db:push
 ```
 
-| Script | Purpose |
-| ------ | ------- |
-| `pnpm db:migrate` | Drizzle migrate (journal-based workflows) |
-| `pnpm db:generate` | Generate migration SQL |
-| `pnpm db:studio` | Drizzle Studio |
+| Script               | Purpose                                                                                                        |
+| -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `pnpm db:migrate`    | Drizzle migrate (journal-based workflows)                                                                      |
+| `pnpm db:generate`   | Generate migration SQL                                                                                         |
+| `pnpm db:studio`     | Drizzle Studio                                                                                                 |
 | `pnpm db:reset-seed` | **Destructive** wipe + sample seed — [docs/database.md](./docs/database.md#reset-and-sample-seed-dbreset-seed) |
 
-Production uses **reviewed SQL / push**, not automatic migrate on deploy — see [docs/database.md](./docs/database.md) (Neon backup, reviewed SQL under `packages/db/src/migrations/`, optional reset-seed).
+Production uses **reviewed SQL / push**, not automatic migrate on deploy — see [docs/database.md](./docs/database.md) (Neon backup, reviewed SQL under `packages/drizzle/src/migrations/`, optional reset-seed).
 
 ## Run & build
 
@@ -148,7 +148,7 @@ pnpm check-types
 pnpm test
 ```
 
-Optional Postgres integration tests (for example `packages/api` `*.integration.test.ts`) are skipped by default. Opt in with `TEST_DATABASE_URL` (connection string used for those tests only; `DATABASE_URL` is ignored) or `RUN_DB_INTEGRATION_TESTS=1` (still requires `TEST_DATABASE_URL`).
+Optional Postgres integration tests (for example `packages/orpc` `*.integration.test.ts`) are skipped by default. Opt in with `TEST_DATABASE_URL` (connection string used for those tests only; `DATABASE_URL` is ignored) or `RUN_DB_INTEGRATION_TESTS=1` (still requires `TEST_DATABASE_URL`).
 
 ## Tech stack
 
@@ -161,12 +161,12 @@ Optional Postgres integration tests (for example `packages/api` `*.integration.t
 
 ## Documentation index
 
-| Doc | Topic |
-| --- | ----- |
-| [docs/index.md](./docs/index.md) | **Full doc map** |
-| [AGENTS.md](./AGENTS.md) | Issues, git, agent rules |
-| [docs/releasing.md](./docs/releasing.md) | Versioning & releases |
-| [SECURITY.md](./SECURITY.md) | Vulnerability reporting |
+| Doc                                      | Topic                    |
+| ---------------------------------------- | ------------------------ |
+| [docs/index.md](./docs/index.md)         | **Full doc map**         |
+| [AGENTS.md](./AGENTS.md)                 | Issues, git, agent rules |
+| [docs/releasing.md](./docs/releasing.md) | Versioning & releases    |
+| [SECURITY.md](./SECURITY.md)             | Vulnerability reporting  |
 
 ## Security
 
@@ -180,13 +180,13 @@ See [SECURITY.md](./SECURITY.md).
 
 Brand assets live in [`.github/brand`](.github/brand): logo mark (SVG and PNG), wordmark (SVG), light and dark lockups, app icons (512, 192 and 32 px), an Open Graph image (1200×630), a GitHub social preview (1280×640), this README banner, an X/LinkedIn banner (1500×500) and a palette sheet.
 
-| Role | Hex | Source |
-| --- | --- | --- |
-| Primary (light) | `#262626` | `--primary = neutral-800` |
-| Primary foreground | `#fafafa` | `--primary-foreground = neutral-50` |
-| Background (light) | `#ffffff` | `--background = white` |
-| Background (dark) | `#161616` | `--background (dark) = neutral-950 95% + white` |
-| Foreground (dark) | `#f5f5f5` | `--foreground (dark) = neutral-100` |
+| Role               | Hex       | Source                                          |
+| ------------------ | --------- | ----------------------------------------------- |
+| Primary (light)    | `#262626` | `--primary = neutral-800`                       |
+| Primary foreground | `#fafafa` | `--primary-foreground = neutral-50`             |
+| Background (light) | `#ffffff` | `--background = white`                          |
+| Background (dark)  | `#161616` | `--background (dark) = neutral-950 95% + white` |
+| Foreground (dark)  | `#f5f5f5` | `--foreground (dark) = neutral-100`             |
 
 Type: Inter (UI) and Geist Mono (code), from `packages/ui/src/lib/fonts.ts`.
 

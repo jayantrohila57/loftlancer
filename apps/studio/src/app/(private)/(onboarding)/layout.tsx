@@ -2,7 +2,7 @@ import {
   Auth5Branding,
   Auth5Content,
   Auth5Frame,
-} from "@loftlancer/ui/patterns/auth-5";
+} from "@features/authentication/core/client";
 import { ActiveOrganizationProvider } from "@/components/org/active-organization-context";
 
 /**

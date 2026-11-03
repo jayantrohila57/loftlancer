@@ -13,7 +13,7 @@ export function SettingsPanel({
   return (
     <div
       className={cn(
-        "divide-y divide-border/60 rounded-md border border-border/60 bg-card text-card-foreground",
+        "divide-border/60 border-border/60 bg-card text-card-foreground divide-y rounded-md border",
         className,
       )}
     >
@@ -37,9 +37,9 @@ export function SettingsSectionHeader({
     <div className={cn("px-4 py-3", className)}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="font-medium text-sm">{title}</h3>
+          <h3 className="text-sm font-medium">{title}</h3>
           {description ? (
-            <p className="mt-0.5 text-muted-foreground text-xs">
+            <p className="text-muted-foreground mt-0.5 text-xs">
               {description}
             </p>
           ) : null}
@@ -75,12 +75,12 @@ export function SettingsRow({
       <div className="flex min-w-0 items-start gap-2">
         {icon ? <AppIcon name={icon} className="mt-0.5" /> : null}
         <div className="min-w-0">
-          <p className="font-medium text-sm">
+          <p className="text-sm font-medium">
             {label}
             {required ? <RequiredMarker /> : null}
           </p>
           {description ? (
-            <p className="mt-0.5 text-muted-foreground text-xs">
+            <p className="text-muted-foreground mt-0.5 text-xs">
               {description}
             </p>
           ) : null}
@@ -121,12 +121,12 @@ export function SettingsField({
       <div className="flex min-w-0 items-start gap-2">
         {icon ? <AppIcon name={icon} className="mt-0.5" /> : null}
         <div className="min-w-0">
-          <p className="font-medium text-sm">
+          <p className="text-sm font-medium">
             {label}
             {required ? <RequiredMarker /> : null}
           </p>
           {description ? (
-            <p className="mt-0.5 text-muted-foreground text-xs">
+            <p className="text-muted-foreground mt-0.5 text-xs">
               {description}
             </p>
           ) : null}

@@ -1,9 +1,9 @@
 "use client";
 
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
+import { UnsavedChangesPageGuard } from "@features/patterns/core/client/patterns.unsaved-changes-page-guard";
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Input } from "@loftlancer/ui/input";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
-import { UnsavedChangesPageGuard } from "@loftlancer/ui/patterns/unsaved-changes-page-guard";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useSession } from "@/domain/auth/lib/auth-actions";

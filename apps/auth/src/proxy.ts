@@ -1,6 +1,6 @@
-import { platformSessionMiddleware } from "@loftlancer/auth/platform-middleware";
-import { DEFAULT_AUTH_URL } from "@loftlancer/env/platform";
-import { resolvePublicServiceUrl } from "@loftlancer/env/vercel-services";
+import { platformSessionMiddleware } from "@loftlancer/better-auth/platform-middleware";
+import { DEFAULT_AUTH_URL } from "@loftlancer/t3-env/platform";
+import { resolvePublicServiceUrl } from "@loftlancer/t3-env/vercel-services";
 import { type NextRequest, NextResponse } from "next/server";
 import { appUrl } from "@/lib/base-path";
 import { setPrivateNoStore } from "@/lib/private-response";

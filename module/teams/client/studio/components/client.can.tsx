@@ -1,6 +1,6 @@
 "use client";
-import type { ActionName } from "@loftlancer/actions";
-import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
+import type { ActionName } from "@features/authorization/utils";
+import { SettingsPanelSkeleton } from "@features/patterns/core/client/patterns.settings-panel-skeleton";
 import type { ReactNode } from "react";
 import { useCan } from "../hooks/client.use-teams-permission.hook";
 export function Can({

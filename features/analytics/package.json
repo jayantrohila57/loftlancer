@@ -1,0 +1,24 @@
+{
+  "name": "@loftlancer/features-analytics",
+  "description": "Browser analytics consent UI.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core/client": "./src/core/client/index.ts",
+    "./constants/*": "./src/constants/*",
+    "./types/*": "./src/types/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@loftlancer/ui": "workspace:*",
+    "react": "^19.3.0"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "typescript": "catalog:"
+  }
+}

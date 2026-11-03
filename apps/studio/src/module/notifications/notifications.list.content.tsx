@@ -1,10 +1,13 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
+import { LoadingButton } from "@features/patterns/core/client/patterns.loading-button";
+import {
+  localDayKey,
+  localDayLabel,
+} from "@features/patterns/utils/patterns.local-day.utils";
 import { Button } from "@loftlancer/ui/button";
-import { localDayKey, localDayLabel } from "@loftlancer/ui/local-day";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMemo, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
@@ -145,7 +148,7 @@ export function NotificationsPageClient() {
               }
             >
               <div
-                className="flex flex-col divide-y divide-border/60"
+                className="divide-border/60 flex flex-col divide-y"
                 aria-hidden="true"
               >
                 {["w-2/3", "w-1/2", "w-3/5", "w-2/5", "w-1/2", "w-3/5"].map(
@@ -162,12 +165,12 @@ export function NotificationsPageClient() {
         ) : listQuery.isError ? (
           <div
             className={cn(
-              "flex flex-col items-center justify-center gap-3 rounded-md border bg-card p-4 text-center",
+              "bg-card flex flex-col items-center justify-center gap-3 rounded-md border p-4 text-center",
               LIST_MIN_H,
             )}
           >
             <div className="space-y-1">
-              <p className="font-medium text-sm">
+              <p className="text-sm font-medium">
                 Could not load notifications
               </p>
               <p className="text-muted-foreground text-xs">
@@ -186,7 +189,7 @@ export function NotificationsPageClient() {
         ) : items.length === 0 ? (
           <EmptyState
             bare
-            className={cn("rounded-md border bg-card", LIST_MIN_H)}
+            className={cn("bg-card rounded-md border", LIST_MIN_H)}
             data-testid="notifications-empty"
             icon={unreadOnly ? appIcons.markAllRead : appIcons.bell}
             title={unreadOnly ? "You're all caught up" : "No notifications yet"}
@@ -230,7 +233,7 @@ export function NotificationsPageClient() {
                 <div
                   role="list"
                   aria-label={g.label}
-                  className="flex flex-col divide-y divide-border/60"
+                  className="divide-border/60 flex flex-col divide-y"
                 >
                   {g.items.map((item) => (
                     <NotificationListItem

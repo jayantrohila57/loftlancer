@@ -16,7 +16,7 @@ export function LegalPolicyNav({ currentHref }: { currentHref: string }) {
       aria-label="Policy pages"
       className="border-foreground/15 border-t pt-4"
     >
-      <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-[0.12em]">
+      <p className="text-muted-foreground font-mono text-[10px] tracking-[0.12em] uppercase">
         Trust and policies
       </p>
       <ul className="mt-3 grid gap-1">
@@ -27,7 +27,7 @@ export function LegalPolicyNav({ currentHref }: { currentHref: string }) {
               aria-current={item.href === currentHref ? "page" : undefined}
               className={`block border-l py-1 pl-2 text-sm transition-colors ${
                 item.href === currentHref
-                  ? "border-foreground font-medium text-foreground"
+                  ? "border-foreground text-foreground font-medium"
                   : "border-border/70 text-muted-foreground hover:border-foreground/60 hover:text-foreground"
               }`}
             >
@@ -60,9 +60,9 @@ export function LegalPage({
       }
       aside={<LegalPolicyNav currentHref={href} />}
     >
-      <div className="mb-8 border-amber-600/70 border-l-2 bg-muted/30 px-4 py-3 text-sm leading-6">
+      <div className="bg-muted/30 mb-8 border-l-2 border-amber-600/70 px-4 py-3 text-sm leading-6">
         <p className="font-medium">Review in progress</p>
-        <p className="mt-1 max-w-3xl text-muted-foreground">
+        <p className="text-muted-foreground mt-1 max-w-3xl">
           This page is being reviewed by the project owner. Contact the owner
           before relying on policy details.
         </p>

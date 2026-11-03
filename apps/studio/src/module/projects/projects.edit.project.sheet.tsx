@@ -1,15 +1,15 @@
 "use client";
 
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ProjectOutput } from "@loftlancer/api/types";
-import { updateProjectInput } from "@loftlancer/api/validation";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { Label } from "@loftlancer/ui/label";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetClose, SheetDescription } from "@loftlancer/ui/sheet";
 import { Switch } from "@loftlancer/ui/switch";
 import { Textarea } from "@loftlancer/ui/textarea";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
+import { updateProjectInput } from "@modules/projects/utils/validation/utils.project-environment.validation";
 import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod/v3";
@@ -143,7 +143,7 @@ export function EditProjectSheet({
               control={form.control}
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
-                  <Label htmlFor={field.name} className="font-medium text-sm">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     Project Name <span className="text-destructive">*</span>
                   </Label>
                   <Input
@@ -167,7 +167,7 @@ export function EditProjectSheet({
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
                   <div className="flex items-baseline justify-between gap-2">
-                    <Label htmlFor={field.name} className="font-medium text-sm">
+                    <Label htmlFor={field.name} className="text-sm font-medium">
                       Description
                     </Label>
                     <span
@@ -186,7 +186,7 @@ export function EditProjectSheet({
                     placeholder="Brief description…"
                     rows={4}
                     maxLength={500}
-                    className="wrap-anywhere resize-none"
+                    className="resize-none wrap-anywhere"
                     disabled={isUpdating}
                     aria-invalid={fieldState.invalid}
                   />
@@ -274,7 +274,7 @@ export function EditProjectSheet({
                     >
                       Public project
                     </Label>
-                    <p className="wrap-anywhere text-muted-foreground text-xs">
+                    <p className="text-muted-foreground text-xs wrap-anywhere">
                       When enabled, project metadata may be visible to others.
                     </p>
                   </div>
@@ -293,7 +293,7 @@ export function EditProjectSheet({
               control={form.control}
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
-                  <Label htmlFor={field.name} className="font-medium text-sm">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     Repository URL
                   </Label>
                   <Input
@@ -317,7 +317,7 @@ export function EditProjectSheet({
               control={form.control}
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
-                  <Label htmlFor={field.name} className="font-medium text-sm">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     Website URL
                   </Label>
                   <Input

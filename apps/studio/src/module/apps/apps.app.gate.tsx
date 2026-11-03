@@ -1,7 +1,7 @@
 "use client";
 
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
 import { Button } from "@loftlancer/ui/button";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import type { ReactNode } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import DashboardSection from "@/components/section-dashboard";

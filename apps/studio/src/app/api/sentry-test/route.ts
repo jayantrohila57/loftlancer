@@ -2,7 +2,7 @@ import {
   isSentryTestRequest,
   sentryTestJson,
   sentryTestNotFound,
-} from "@loftlancer/logger/sentry-test";
+} from "@loftlancer/sentry/test";
 import * as Sentry from "@sentry/nextjs";
 
 export const dynamic = "force-dynamic";

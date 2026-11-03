@@ -1,7 +1,7 @@
 "use client";
 
-import { useIsMobile } from "@loftlancer/ui/hooks/use-media-query";
-import { HorizontalScrollRail } from "@loftlancer/ui/patterns/horizontal-scroll-rail";
+import { HorizontalScrollRail } from "@features/patterns/core/client/patterns.horizontal-scroll-rail";
+import { useIsMobile } from "@features/patterns/core/client/patterns.use-media-query.hook";
 import {
   Tabs,
   TabsList,
@@ -58,7 +58,7 @@ export function SettingsTabsList({
       className={cn(
         horizontal
           ? "h-9 min-h-9 w-fit shrink-0 justify-start gap-0 bg-transparent p-0"
-          : "h-auto w-full min-w-[10.5rem] max-w-[12.5rem] shrink-0 items-stretch justify-start gap-0 bg-transparent p-0",
+          : "h-auto w-full max-w-[12.5rem] min-w-[10.5rem] shrink-0 items-stretch justify-start gap-0 bg-transparent p-0",
         className,
       )}
     >
@@ -69,7 +69,7 @@ export function SettingsTabsList({
   if (horizontal) {
     return (
       <HorizontalScrollRail compactControls className="min-w-0">
-        <div className="flex w-max min-w-full items-end gap-1 border-border border-b">
+        <div className="border-border flex w-max min-w-full items-end gap-1 border-b">
           {list}
         </div>
       </HorizontalScrollRail>
@@ -102,7 +102,7 @@ export function SettingsTabsTab({
       className={cn(
         "gap-2",
         horizontal
-          ? "h-9 min-h-9 shrink-0 grow-0 whitespace-nowrap rounded-none px-2.5 data-active:shadow-none"
+          ? "h-9 min-h-9 shrink-0 grow-0 rounded-none px-2.5 whitespace-nowrap data-active:shadow-none"
           : "w-full grow-0 justify-start rounded-md px-2.5",
         className,
       )}

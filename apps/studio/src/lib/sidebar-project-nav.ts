@@ -1,5 +1,5 @@
-import type { ProjectOutput } from "@loftlancer/api/types";
-import { routes } from "@loftlancer/ui/studio-routes";
+import { routes } from "@features/shell/utils/shell.studio-routes.utils";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 
 /** Slugs that must never appear as sidebar project shortcuts (route collisions). */
 export const SIDEBAR_PROJECT_SLUG_BLOCKLIST = new Set([

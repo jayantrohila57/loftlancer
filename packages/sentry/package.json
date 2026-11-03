@@ -1,0 +1,40 @@
+{
+  "name": "@loftlancer/sentry",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./sink": {
+      "default": "./src/utils/sentry.sink.ts"
+    },
+    "./test": {
+      "default": "./src/utils/sentry.test-guard.ts"
+    },
+    "./instrument": {
+      "default": "./src/config/sentry.instrument.ts"
+    },
+    "./instrument-server": {
+      "default": "./src/config/sentry.instrument-server.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "node --import tsx --test tests/sentry.logger.test.ts tests/sentry.sink.test.ts tests/sentry.env.static.test.ts tests/sentry.server-flush.test.ts tests/sentry.test-guard.test.ts"
+  },
+  "peerDependencies": {
+    "@sentry/core": ">=10.71.0"
+  },
+  "peerDependenciesMeta": {
+    "@sentry/core": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@sentry/core": "^11.8.0",
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/node": "^26.6.5",
+    "typescript": "catalog:",
+    "tsx": "^4.23.15"
+  }
+}

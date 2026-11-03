@@ -28,7 +28,7 @@ function line(text, position) {
 }
 
 async function trpcProcedures() {
-  const routerDirectory = path.join(root, "packages/api/src/routers");
+  const routerDirectory = path.join(root, "packages/orpc/src/routers");
   const routerFiles = (
     await files(routerDirectory, (file) => file.endsWith(".ts"))
   ).filter((file) => !file.endsWith(".test.ts"));
@@ -78,7 +78,10 @@ function routeControls(content, route) {
   if (content.includes("isSentryTestRequest")) {
     return "Sentry test token";
   }
-  if (content.includes(".handler(") || route.path.startsWith("/api/auth/")) {
+  if (
+    content.includes(".handler(") ||
+    route.path.startsWith("/api/better-auth/")
+  ) {
     return "Better Auth handler or flow";
   }
   if (
@@ -138,7 +141,7 @@ async function sourceMatches(pattern) {
 }
 
 async function mcpActions() {
-  const file = path.join(root, "packages/api/src/mcp/handlers.ts");
+  const file = path.join(root, "packages/orpc/src/mcp/handlers.ts");
   const content = await readFile(file, "utf8");
   return [...content.matchAll(/^ {2}"([^"]+)": \{/gm)].map((match) => match[1]);
 }
@@ -178,7 +181,7 @@ const markdown = [
   "",
   "## Module migration rule",
   "",
-  "New or migrated business operations live under `packages/api/src/modules/<module>/api/api.<operation>.ts`. Transport adapters may call those operations, but cannot contain business authorization or data mutation logic. The first extracted reference is `modules/teams/api/api.get-teams.ts`.",
+  "New or migrated business operations live under `packages/orpc/src/modules/<module>/api/api.<operation>.ts`. Transport adapters may call those operations, but cannot contain business authorization or data mutation logic. The first extracted reference is `modules/teams/api/api.get-teams.ts`.",
   "",
   "## tRPC procedure inventory",
   "",
@@ -233,7 +236,7 @@ const markdown = [
   "",
   "## Audit findings and next actions",
   "",
-  "1. tRPC is centralized in `packages/api/src/routers`; route domains are not yet module-owned. Extract one operation at a time behind the stable procedure contract, then migrate the transport client.",
+  "1. tRPC is centralized in `packages/orpc/src/routers`; route domains are not yet module-owned. Extract one operation at a time behind the stable procedure contract, then migrate the transport client.",
   "2. The oRPC adapter shares procedures deliberately during transition. Its error format differs from the current tRPC formatter, so error-shape parity must be checked before moving a client feature.",
   "3. Each HTTP route must be reviewed separately: source discovery cannot prove authentication, action authorization, audit records, or quota enforcement.",
   "4. Every MCP action should remain a registry action with a declared scope. Add the action and its handler together, and retain `mcp-exposed-actions` coverage.",

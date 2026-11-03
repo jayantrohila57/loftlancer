@@ -1,12 +1,12 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
@@ -163,7 +163,7 @@ export function AppSettingsPage({
           <div className="grid gap-3 text-xs sm:grid-cols-2">
             <div>
               <p className="font-medium">Permissions</p>
-              <ul className="list-disc ps-4 text-muted-foreground">
+              <ul className="text-muted-foreground list-disc ps-4">
                 {app.permissions.map((p) => (
                   <li key={p}>{p}</li>
                 ))}
@@ -171,7 +171,7 @@ export function AppSettingsPage({
             </div>
             <div>
               <p className="font-medium">Data it stores</p>
-              <ul className="list-disc ps-4 text-muted-foreground">
+              <ul className="text-muted-foreground list-disc ps-4">
                 {app.dataCreated.map((p) => (
                   <li key={p}>{p}</li>
                 ))}
@@ -276,7 +276,7 @@ export function AppSettingsPage({
           >
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h2 className="font-medium text-sm">Uninstall {app.name}</h2>
+                <h2 className="text-sm font-medium">Uninstall {app.name}</h2>
                 <p className="text-muted-foreground text-xs">
                   Hidden for everyone. Data is kept for 30 days, then
                   permanently deleted.

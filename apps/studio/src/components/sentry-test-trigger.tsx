@@ -1,10 +1,10 @@
 "use client";
 
-import { SENTRY_TEST_HEADER } from "@loftlancer/logger/sentry";
 import {
   SentryTestPanel,
   type SentryTestResult,
-} from "@loftlancer/ui/patterns/sentry-test-panel";
+} from "@features/observability/core/client";
+import { SENTRY_TEST_HEADER } from "@loftlancer/sentry/sink";
 import * as Sentry from "@sentry/nextjs";
 import { withBasePath } from "@/lib/base-path";
 

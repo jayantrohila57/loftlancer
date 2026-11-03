@@ -1,5 +1,5 @@
 "use client";
-import type { ActionName } from "@loftlancer/actions";
+import type { ActionName } from "@features/authorization/utils";
 import { useModuleOrganizationId } from "@module/shared/client/client.scope.provider";
 import { useQuery } from "@tanstack/react-query";
 import { studioORPC } from "@/lib/orpc";

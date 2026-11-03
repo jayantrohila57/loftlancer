@@ -1,5 +1,5 @@
 "use client";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
 import type { TeamDto } from "../../../utils/types/utils.team.dto";
 import { useTeamGet } from "../hooks/client.use-teams-get.hook";
@@ -42,7 +42,7 @@ export function TeamOverviewBoundary({
         title="How team access works"
         description="Teams connect organization membership to project access."
       >
-        <p className="max-w-3xl text-muted-foreground text-sm">
+        <p className="text-muted-foreground max-w-3xl text-sm">
           Add organization members in Members, then choose which projects this
           team can access in Projects. Project Access shows what each person can
           do.

@@ -1,5 +1,5 @@
-import { appRegistry } from "@loftlancer/actions/apps";
-import { buildSignInUrl } from "@loftlancer/ui/auth-links";
+import { buildSignInUrl } from "@features/authentication/utils/auth-links";
+import { appRegistry } from "@features/authorization/config/authorization.apps";
 import { MarketingPage } from "@/components/marketing-page";
 
 /** Everything here exists in the product today. */
@@ -36,37 +36,37 @@ export default function PricingPage() {
       title="Pricing"
       description="One plan, free during early access. No paid tiers exist yet."
     >
-      <section className="not-prose flex flex-col gap-3 rounded-xl bg-card p-4 text-card-foreground ring-1 ring-border/60">
+      <section className="not-prose bg-card text-card-foreground ring-border/60 flex flex-col gap-3 rounded-xl p-4 ring-1">
         <div className="flex items-center justify-between gap-2">
-          <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
             Current offering
           </p>
-          <span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
+          <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs font-medium">
             Free during early access
           </span>
         </div>
         <div className="flex items-baseline justify-between gap-1.5">
           <div className="flex flex-col gap-0.5">
-            <h2 className="mt-0! font-medium text-sm">Early access</h2>
+            <h2 className="mt-0! text-sm font-medium">Early access</h2>
             <p className="text-muted-foreground text-xs">
               Everything Loftlancer does today.
             </p>
           </div>
-          <p className="font-semibold text-2xl tabular-nums">
+          <p className="text-2xl font-semibold tabular-nums">
             $0
-            <span className="font-normal text-muted-foreground text-xs">
+            <span className="text-muted-foreground text-xs font-normal">
               {" "}
               / month
             </span>
           </p>
         </div>
-        <ul className="flex flex-col gap-1.5 border-border/60 border-t pt-3">
+        <ul className="border-border/60 flex flex-col gap-1.5 border-t pt-3">
           {included.map((item) => (
             <li key={item} className="flex items-start gap-2 text-sm">
               <svg
                 viewBox="0 0 24 24"
                 aria-hidden
-                className="mt-0.5 size-3.5 shrink-0 fill-none stroke-2 stroke-primary"
+                className="stroke-primary mt-0.5 size-3.5 shrink-0 fill-none stroke-2"
               >
                 <path d="M20 6 9 17l-5-5" />
               </svg>
@@ -76,7 +76,7 @@ export default function PricingPage() {
         </ul>
         <a
           href={buildSignInUrl()}
-          className="no-underline! inline-flex h-8 w-full items-center justify-center rounded-lg bg-primary px-3 font-medium text-primary-foreground! text-sm transition-colors hover:bg-primary/90"
+          className="bg-primary text-primary-foreground! hover:bg-primary/90 inline-flex h-8 w-full items-center justify-center rounded-lg px-3 text-sm font-medium no-underline! transition-colors"
         >
           Get started free
         </a>
@@ -85,14 +85,14 @@ export default function PricingPage() {
       <section className="not-prose mt-12" aria-labelledby="pricing-questions">
         <h2
           id="pricing-questions"
-          className="font-semibold text-xl tracking-tight"
+          className="text-xl font-semibold tracking-tight"
         >
           Questions
         </h2>
-        <div className="not-prose flex flex-col divide-y divide-border/60 rounded-xl ring-1 ring-border/60">
+        <div className="not-prose divide-border/60 ring-border/60 flex flex-col divide-y rounded-xl ring-1">
           {faq.map((item) => (
             <details key={item.q} className="group px-3 py-2">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-1.5 font-medium text-sm">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-1.5 text-sm font-medium">
                 {item.q}
                 <span
                   aria-hidden
@@ -101,7 +101,7 @@ export default function PricingPage() {
                   +
                 </span>
               </summary>
-              <p className="pt-1.5 text-muted-foreground text-sm">{item.a}</p>
+              <p className="text-muted-foreground pt-1.5 text-sm">{item.a}</p>
             </details>
           ))}
         </div>

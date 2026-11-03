@@ -11,7 +11,7 @@ const emptyMediaVariants = cva(
     variants: {
       variant: {
         default: "bg-transparent",
-        icon: "relative flex size-9 shrink-0 items-center justify-center rounded-md border bg-card not-dark:bg-clip-padding text-foreground shadow-sm/5 before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-md)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)] [&_svg:not([class*='size-'])]:size-4.5",
+        icon: "bg-card text-foreground relative flex size-9 shrink-0 items-center justify-center rounded-md border shadow-sm/5 not-dark:bg-clip-padding before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-md)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)] [&_svg:not([class*='size-'])]:size-4.5",
       },
     },
   },
@@ -24,7 +24,7 @@ export function Empty({
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-1 flex-col items-center justify-center gap-2 text-balance p-2 py-8 text-center",
+        "flex min-w-0 flex-1 flex-col items-center justify-center gap-2 p-2 py-8 text-center text-balance",
         className,
       )}
       data-slot="empty"
@@ -68,14 +68,14 @@ export function EmptyMedia({
             aria-hidden="true"
             className={cn(
               emptyMediaVariants({ className, variant }),
-              "pointer-events-none absolute bottom-px origin-bottom-start -translate-x-0.5 -rotate-10 scale-84 shadow-none rtl:translate-x-0.5",
+              "origin-bottom-start pointer-events-none absolute bottom-px -translate-x-0.5 scale-84 -rotate-10 shadow-none rtl:translate-x-0.5",
             )}
           />
           <div
             aria-hidden="true"
             className={cn(
               emptyMediaVariants({ className, variant }),
-              "pointer-events-none absolute bottom-px origin-bottom-end translate-x-0.5 rotate-10 scale-84 shadow-none rtl:-translate-x-0.5",
+              "origin-bottom-end pointer-events-none absolute bottom-px translate-x-0.5 scale-84 rotate-10 shadow-none rtl:-translate-x-0.5",
             )}
           />
         </>
@@ -94,7 +94,7 @@ export function EmptyTitle({
 }: React.ComponentProps<"div">): React.ReactElement {
   return (
     <div
-      className={cn("font-bold font-heading text-xl", className)}
+      className={cn("font-heading text-xl font-bold", className)}
       data-slot="empty-title"
       {...props}
     />
@@ -108,7 +108,7 @@ export function EmptyDescription({
   return (
     <div
       className={cn(
-        "text-muted-foreground text-sm [&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4 [[data-slot=empty-title]+&]:mt-1",
+        "text-muted-foreground [&>a:hover]:text-primary text-sm [&>a]:underline [&>a]:underline-offset-4 [[data-slot=empty-title]+&]:mt-1",
         className,
       )}
       data-slot="empty-description"
@@ -124,7 +124,7 @@ export function EmptyContent({
   return (
     <div
       className={cn(
-        "flex w-full min-w-0 max-w-sm flex-col items-center gap-4 text-balance text-sm",
+        "flex w-full max-w-sm min-w-0 flex-col items-center gap-4 text-sm text-balance",
         className,
       )}
       data-slot="empty-content"

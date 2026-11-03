@@ -1,6 +1,6 @@
 "use client";
 
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
 import { ErrorState } from "@/components/patterns/error-state";
 import { LayoutGrid } from "@/lib/icons";
 import { AppCard } from "@/module/apps/apps.app.card";
@@ -49,7 +49,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
               className="space-y-3"
             >
               <div>
-                <h2 id="installed-apps-heading" className="font-medium text-sm">
+                <h2 id="installed-apps-heading" className="text-sm font-medium">
                   Installed apps
                 </h2>
                 <p className="text-muted-foreground text-xs">
@@ -78,7 +78,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
               className="space-y-3"
             >
               <div>
-                <h2 id="available-apps-heading" className="font-medium text-sm">
+                <h2 id="available-apps-heading" className="text-sm font-medium">
                   Available apps
                 </h2>
                 <p className="text-muted-foreground text-xs">
@@ -109,7 +109,7 @@ export function ProjectAppsDirectory({ slug }: { slug: string }) {
               <div>
                 <h2
                   id="uninstalled-apps-heading"
-                  className="font-medium text-sm"
+                  className="text-sm font-medium"
                 >
                   Recently uninstalled
                 </h2>

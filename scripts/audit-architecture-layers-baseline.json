@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "description": "Known layer dependency violations; CI fails only on NEW ids. Shrink by fixing code, then --write-baseline.",
+  "ids": []
+}

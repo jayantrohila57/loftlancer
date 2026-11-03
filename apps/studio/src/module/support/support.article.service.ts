@@ -1,6 +1,6 @@
 import "server-only";
 
-import { studioRouter } from "@loftlancer/api/routers/studio";
+import { studioRouter } from "@loftlancer/orpc/routers/studio";
 import { TRPCError } from "@trpc/server";
 
 export async function getSupportArticle(slug: string) {

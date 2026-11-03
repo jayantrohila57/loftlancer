@@ -1,6 +1,6 @@
 "use client";
 
-import { useHydrated } from "@loftlancer/ui/hooks/use-hydrated";
+import { useHydrated } from "@features/patterns/core/client/patterns.use-hydrated.hook";
 import { formatDate } from "@/lib/format";
 import { formatRelativeShort } from "@/lib/format-relative-short";
 

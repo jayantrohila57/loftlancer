@@ -1,7 +1,11 @@
 "use client";
 
-import { normalizeOrgRole } from "@loftlancer/actions";
-import { getMemberRemovalBlockReason } from "@loftlancer/auth/member-removal-policy";
+import { normalizeOrgRole } from "@features/authorization/utils";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { Button } from "@loftlancer/ui/button";
 import {
   Empty,
@@ -12,14 +16,10 @@ import {
   EmptyTitle,
 } from "@loftlancer/ui/empty";
 import { Input } from "@loftlancer/ui/input";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetDescription } from "@loftlancer/ui/sheet";
 import { Spinner } from "@loftlancer/ui/spinner";
 import { Textarea } from "@loftlancer/ui/textarea";
+import { getMemberRemovalBlockReason } from "@modules/organizations/utils/utils.member-removal-policy";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
@@ -921,7 +921,7 @@ export function OrganizationSettingsForm({
                       Delete organization
                     </Button>
                     {orgs.length <= 1 ? (
-                      <p className="max-w-[14rem] text-end text-muted-foreground text-xs">
+                      <p className="text-muted-foreground max-w-[14rem] text-end text-xs">
                         Create another organization before deleting this one.
                       </p>
                     ) : null}

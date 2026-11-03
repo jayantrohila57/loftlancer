@@ -1,7 +1,7 @@
 "use client";
 
-import type { ActionName } from "@loftlancer/actions";
-import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
+import type { ActionName } from "@features/authorization/utils";
+import { DelayedPageLoading } from "@features/patterns/core/client/patterns.delayed-page-loading";
 import { ErrorState } from "@/components/patterns/error-state";
 import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 

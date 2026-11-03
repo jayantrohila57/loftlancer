@@ -1,9 +1,9 @@
 "use client";
-import { Button } from "@loftlancer/ui/button";
 import {
   PageStatusEmpty,
   PageStatusError,
-} from "@loftlancer/ui/patterns/page-state";
+} from "@features/patterns/core/client/patterns.page-state";
+import { Button } from "@loftlancer/ui/button";
 export function TeamsResponseMessage({
   message,
   error,

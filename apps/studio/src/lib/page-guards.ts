@@ -1,6 +1,16 @@
 import "server-only";
 
-import type { ActionName } from "@loftlancer/actions";
+import type { ActionName } from "@features/authorization/utils";
+import {
+  isReservedOrgSlug,
+  isReservedProjectSlug,
+} from "@features/shell/utils/shell.studio-routes.utils";
+import type { RequirePageSessionResult } from "@loftlancer/better-auth/guards";
+import { requirePageSession } from "@loftlancer/better-auth/guards";
+import {
+  type AuthSession,
+  getSessionActiveOrganizationId,
+} from "@loftlancer/better-auth/session-types";
 import {
   assertOrganizationTeamForPage,
   assertProjectEnvironmentForPage,
@@ -10,18 +20,8 @@ import {
   resolveOrganizationForPage,
   resolveProjectForPage,
   runPageGuard,
-} from "@loftlancer/api/page-guards";
-import type { RequirePageSessionResult } from "@loftlancer/auth/guards";
-import { requirePageSession } from "@loftlancer/auth/guards";
-import {
-  type AuthSession,
-  getSessionActiveOrganizationId,
-} from "@loftlancer/auth/session-types";
-import { DEFAULT_STUDIO_URL } from "@loftlancer/env/platform";
-import {
-  isReservedOrgSlug,
-  isReservedProjectSlug,
-} from "@loftlancer/ui/studio-routes";
+} from "@loftlancer/orpc/page-guards";
+import { DEFAULT_STUDIO_URL } from "@loftlancer/t3-env/platform";
 import type { Route } from "next";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
@@ -189,7 +189,7 @@ export async function preflightOrgSubtree(orgSlug: string): Promise<void> {
 export async function guardSupportManagerPage(): Promise<AuthSession> {
   const session = await guardAuthenticatedPage();
   const { requireSupportManagerPage } = await import(
-    "@loftlancer/api/page-guards"
+    "@loftlancer/orpc/page-guards"
   );
   await runPageGuard(() => requireSupportManagerPage(session.user.id));
   return session;
@@ -200,7 +200,7 @@ export async function guardSupportTicketPage(
 ): Promise<AuthSession> {
   const session = await guardAuthenticatedPage();
   const { requireSupportTicketPage } = await import(
-    "@loftlancer/api/page-guards"
+    "@loftlancer/orpc/page-guards"
   );
   await runPageGuard(() => requireSupportTicketPage(session.user.id, ticketId));
   return session;

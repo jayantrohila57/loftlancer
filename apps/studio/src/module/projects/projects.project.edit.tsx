@@ -1,17 +1,17 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
+import { UnsavedChangesPageGuard } from "@features/patterns/core/client/patterns.unsaved-changes-page-guard";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ProjectOutput } from "@loftlancer/api/types";
-import { updateProjectInput } from "@loftlancer/api/validation";
 import { Button } from "@loftlancer/ui/button";
 import { Card, CardPanel } from "@loftlancer/ui/card";
 import { Input } from "@loftlancer/ui/input";
 import { Label } from "@loftlancer/ui/label";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
-import { UnsavedChangesPageGuard } from "@loftlancer/ui/patterns/unsaved-changes-page-guard";
 import { Switch } from "@loftlancer/ui/switch";
 import { Textarea } from "@loftlancer/ui/textarea";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
+import { updateProjectInput } from "@modules/projects/utils/validation/utils.project-environment.validation";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod/v3";
 import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
@@ -127,7 +127,7 @@ export function EditProject({
             </SettingsField>
           ) : (
             <div className="space-y-2">
-              <Label htmlFor={field.name} className="font-medium text-sm">
+              <Label htmlFor={field.name} className="text-sm font-medium">
                 Project Name <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -288,7 +288,7 @@ export function EditProject({
                   placeholder="Brief description…"
                   rows={4}
                   maxLength={500}
-                  className="wrap-anywhere resize-none"
+                  className="resize-none wrap-anywhere"
                   disabled={isUpdating}
                   aria-invalid={fieldState.invalid}
                 />
@@ -311,7 +311,7 @@ export function EditProject({
             </SettingsField>
           ) : (
             <div className="space-y-2">
-              <Label htmlFor={field.name} className="font-medium text-sm">
+              <Label htmlFor={field.name} className="text-sm font-medium">
                 Description
               </Label>
               <Textarea
@@ -320,7 +320,7 @@ export function EditProject({
                 placeholder="Provide a brief description of your project…"
                 rows={4}
                 maxLength={500}
-                className="wrap-anywhere resize-none"
+                className="resize-none wrap-anywhere"
                 disabled={isUpdating}
                 aria-invalid={fieldState.invalid}
               />
@@ -366,7 +366,7 @@ export function EditProject({
                 <Label htmlFor="edit-project-visibility" className="text-sm">
                   Public project
                 </Label>
-                <p className="wrap-anywhere text-muted-foreground text-xs">
+                <p className="text-muted-foreground text-xs wrap-anywhere">
                   When enabled, project metadata may be visible to others.
                 </p>
               </div>
@@ -407,7 +407,7 @@ export function EditProject({
             </SettingsField>
           ) : (
             <div className="space-y-2">
-              <Label htmlFor={field.name} className="font-medium text-sm">
+              <Label htmlFor={field.name} className="text-sm font-medium">
                 Repository URL
               </Label>
               <Input
@@ -453,7 +453,7 @@ export function EditProject({
             </SettingsField>
           ) : (
             <div className="space-y-2">
-              <Label htmlFor={field.name} className="font-medium text-sm">
+              <Label htmlFor={field.name} className="text-sm font-medium">
                 Website URL
               </Label>
               <Input

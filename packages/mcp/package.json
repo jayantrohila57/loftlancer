@@ -6,30 +6,24 @@
   "exports": {
     ".": {
       "default": "./src/index.ts"
-    },
-    "./*": {
-      "default": "./src/*.ts"
     }
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres SKIP_ENV_VALIDATION=1 node --import tsx --test src/mcp-auth.test.ts src/mcp-tools.test.ts"
+    "test": "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres SKIP_ENV_VALIDATION=1 node --import tsx --test tests/mcp.resource-auth.test.ts tests/mcp.rate-limit.test.ts"
   },
   "dependencies": {
-    "@loftlancer/actions": "workspace:*",
-    "@loftlancer/auth": "workspace:*",
-    "@loftlancer/api": "workspace:*",
-    "@loftlancer/db": "workspace:*",
-    "@loftlancer/env": "workspace:*",
+    "@loftlancer/better-auth": "workspace:*",
+    "@loftlancer/drizzle": "workspace:*",
+    "@loftlancer/t3-env": "workspace:*",
     "@better-auth/mcp": "^1.7.7",
     "drizzle-orm": "catalog:",
     "jose": "^6.2.12",
     "mcp-handler": "^2.3.0",
-    "@modelcontextprotocol/server": "^2.3.1",
-    "zod": "catalog:"
+    "@modelcontextprotocol/server": "^2.3.1"
   },
   "devDependencies": {
-    "@loftlancer/config": "workspace:*",
+    "@loftlancer/typescript-config": "workspace:*",
     "tsx": "^4.23.15",
     "typescript": "catalog:"
   }

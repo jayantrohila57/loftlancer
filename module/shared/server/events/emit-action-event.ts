@@ -1,4 +1,4 @@
-import type { ActionName } from "@loftlancer/actions";
+import type { ActionName } from "@features/authorization/utils";
 import type { ServiceResponse } from "../../utils/types/utils.service-response.types";
 import type { RunActionContext } from "../run-action";
 

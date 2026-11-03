@@ -1,8 +1,8 @@
 "use client";
 
-import { DataTablePagination } from "@loftlancer/ui/data-table/data-table-pagination";
-import { DataTableToolbar } from "@loftlancer/ui/data-table/data-table-toolbar";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
+import { DataTablePagination } from "@features/data-table/core/client/data-table.pagination";
+import { DataTableToolbar } from "@features/data-table/core/client/data-table.toolbar";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 
 export const INVITATION_PAGE_SIZE = 50;
 export const INVITATION_STATUSES = [

@@ -10,43 +10,43 @@
 
 Every oRPC procedure, Server Action, route handler JSON body, MCP tool result, and controller return uses **exactly**:
 
-| Field | Type | Rule |
-|-------|------|------|
-| `status` | `"success" \| "failed" \| "error"` | Exactly one |
-| `data` | `T \| T[] \| null` | See list rules below |
-| `message` | `string` | Required for every status (human-readable) |
-| `error` | `ServiceFieldErrors \| ServiceErrorDetail \| null \| undefined` | See below |
+| Field     | Type                                                            | Rule                                       |
+| --------- | --------------------------------------------------------------- | ------------------------------------------ |
+| `status`  | `"success" \| "failed" \| "error"`                              | Exactly one                                |
+| `data`    | `T \| T[] \| null`                                              | See list rules below                       |
+| `message` | `string`                                                        | Required for every status (human-readable) |
+| `error`   | `ServiceFieldErrors \| ServiceErrorDetail \| null \| undefined` | See below                                  |
 
 ### List operations
 
-| Case | Rule |
-|------|------|
+| Case               | Rule                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------- |
 | Success, zero rows | **`status: "success"`**, **`data: []`**, message e.g. “No teams yet” → UI **empty state** |
-| Success, rows | **`data: T[]`** |
-| Failed / error | **`data: null`** (not `[]`) |
+| Success, rows      | **`data: T[]`**                                                                           |
+| Failed / error     | **`data: null`** (not `[]`)                                                               |
 
 ### Single-object operations
 
-| Case | Rule |
-|------|------|
-| Success with payload | **`data: T`** |
+| Case                    | Rule             |
+| ----------------------- | ---------------- |
+| Success with payload    | **`data: T`**    |
 | Success with no payload | **`data: null`** |
-| Failed / error | **`data: null`** |
+| Failed / error          | **`data: null`** |
 
 ---
 
 ## `error` field by status
 
-| `status` | `error` |
-|----------|---------|
-| **`success`** | Omit or `null` |
-| **`failed`** | Optional **`ServiceFieldErrors`** for forms (field-level map) |
-| **`error`** | **Required **`ServiceErrorDetail`** (code + safe message; optional `cause` for logs) |
+| `status`      | `error`                                                                              |
+| ------------- | ------------------------------------------------------------------------------------ |
+| **`success`** | Omit or `null`                                                                       |
+| **`failed`**  | Optional **`ServiceFieldErrors`** for forms (field-level map)                        |
+| **`error`**   | **Required **`ServiceErrorDetail`** (code + safe message; optional `cause` for logs) |
 
 ### ServiceFieldErrors (validation / business)
 
 ```ts
-type ServiceFieldErrors = Record<string, string | string[]>
+type ServiceFieldErrors = Record<string, string | string[]>;
 ```
 
 Use keys matching form field names. Top-level `message` still required (summary for toast).
@@ -55,10 +55,10 @@ Use keys matching form field names. Top-level `message` still required (summary 
 
 ```ts
 type ServiceErrorDetail = {
-  code: string
-  message?: string
-  cause?: unknown
-}
+  code: string;
+  message?: string;
+  cause?: unknown;
+};
 ```
 
 Never expose stack traces or secrets in `message` on the wire.
@@ -69,11 +69,11 @@ Never expose stack traces or secrets in `message` on the wire.
 
 Do not construct raw objects without Zod parse at controller boundary.
 
-| Helper | Use |
-|--------|-----|
-| `createSuccess(data, message)` | Completed operation |
+| Helper                          | Use                                                 |
+| ------------------------------- | --------------------------------------------------- |
+| `createSuccess(data, message)`  | Completed operation                                 |
 | `createFailed(message, error?)` | Validation, business rule, expected permission deny |
-| `createError(message, error)` | System / unexpected failure |
+| `createError(message, error)`   | System / unexpected failure                         |
 
 Controllers call **`serviceResponseSchema.parse(...)`** (or `.safeParse` → map to `createError`) before return.
 
@@ -83,11 +83,11 @@ Controllers call **`serviceResponseSchema.parse(...)`** (or `.safeParse` → map
 
 Services return **`ServiceOutcome<T>`** (see `utils.service-outcome.types.ts`):
 
-| Outcome | Maps to ServiceResponse |
-|---------|-------------------------|
-| `{ kind: "success", data, message? }` | `createSuccess` |
-| `{ kind: "failed", message, fieldErrors? }` | `createFailed` |
-| `{ kind: "error", message, detail }` | `createError` |
+| Outcome                                     | Maps to ServiceResponse |
+| ------------------------------------------- | ----------------------- |
+| `{ kind: "success", data, message? }`       | `createSuccess`         |
+| `{ kind: "failed", message, fieldErrors? }` | `createFailed`          |
+| `{ kind: "error", message, detail }`        | `createError`           |
 
 **Rules:**
 
@@ -110,6 +110,6 @@ Controllers map outcome → factories → schema parse. **No UI** in controller.
 
 ## Related
 
-- [data-workflow.md](../data-workflow.md) — pipeline and UI mapping  
-- [client-layer.md](./client-layer.md) — boundaries and toast  
-- [actions-audit.md](./actions-audit.md) — deny → `failed`, not throw  
+- [data-workflow.md](../data-workflow.md) — pipeline and UI mapping
+- [client-layer.md](./client-layer.md) — boundaries and toast
+- [actions-audit.md](./actions-audit.md) — deny → `failed`, not throw

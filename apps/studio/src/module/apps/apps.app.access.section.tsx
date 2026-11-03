@@ -1,14 +1,14 @@
 "use client";
 
+import { DataTableActionsColumnHeader } from "@features/data-table/core/client/data-table.actions-column";
+import type { DataTableColumnDef } from "@features/data-table/core/client/data-table.table";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
+import { LoadingButton } from "@features/patterns/core/client/patterns.loading-button";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 import { Button } from "@loftlancer/ui/button";
-import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
@@ -108,7 +108,7 @@ export function AppAccessSection({
           <span className="block truncate font-medium">
             {row.original.name}
           </span>
-          <span className="block truncate text-muted-foreground text-xs">
+          <span className="text-muted-foreground block truncate text-xs">
             {row.original.detail}
           </span>
         </div>
@@ -146,7 +146,7 @@ export function AppAccessSection({
           <span className="block truncate font-medium">
             {row.original.name ?? row.original.email ?? row.original.userId}
           </span>
-          <span className="block truncate text-muted-foreground text-xs">
+          <span className="text-muted-foreground block truncate text-xs">
             {row.original.role ?? "Organization member"}
           </span>
         </div>
@@ -157,7 +157,7 @@ export function AppAccessSection({
       header: "Project access through",
       cell: ({ row }) => (
         <span
-          className="block max-w-64 whitespace-normal text-xs"
+          className="block max-w-64 text-xs whitespace-normal"
           title={row.original.projectSources.join(", ")}
         >
           {row.original.projectSources.join(", ")}
@@ -175,7 +175,7 @@ export function AppAccessSection({
             : "No app assignment";
         return (
           <span
-            className="block max-w-64 whitespace-normal text-xs"
+            className="block max-w-64 text-xs whitespace-normal"
             title={sources}
           >
             {sources}
@@ -320,7 +320,7 @@ export function AppAccessSection({
         />
         <section className="space-y-2">
           <div>
-            <h3 className="font-medium text-sm">Effective project members</h3>
+            <h3 className="text-sm font-medium">Effective project members</h3>
             <p className="text-muted-foreground text-xs">
               App access is always limited to people who already have access to
               this project.

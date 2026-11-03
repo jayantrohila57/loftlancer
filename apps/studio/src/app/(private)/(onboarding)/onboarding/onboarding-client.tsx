@@ -1,11 +1,11 @@
 "use client";
 
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
+import { UnsavedChangesPageGuard } from "@features/patterns/core/client/patterns.unsaved-changes-page-guard";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { isReservedOrgSlugForCreation } from "@loftlancer/env/reserved-slugs";
+import { isReservedOrgSlugForCreation } from "@loftlancer/t3-env/reserved-slugs";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
-import { UnsavedChangesPageGuard } from "@loftlancer/ui/patterns/unsaved-changes-page-guard";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
 import Link from "next/link";
@@ -102,13 +102,13 @@ function Stepper({ current }: { current: StepIndex }) {
               <span className="min-w-0">
                 <span
                   className={cn(
-                    "block truncate font-medium text-sm",
+                    "block truncate text-sm font-medium",
                     !active && !done && "text-muted-foreground",
                   )}
                 >
                   {step.title}
                 </span>
-                <span className="block truncate text-muted-foreground text-xs">
+                <span className="text-muted-foreground block truncate text-xs">
                   {step.description}
                 </span>
               </span>
@@ -304,7 +304,7 @@ export default function OnboardingClient() {
       {() => (
         <div className="space-y-6" data-testid="onboarding">
           <div className="space-y-1">
-            <h1 className="font-semibold text-xl tracking-tight">
+            <h1 className="text-xl font-semibold tracking-tight">
               Set up Loftlancer
             </h1>
             <p className="text-muted-foreground text-sm">
@@ -315,7 +315,7 @@ export default function OnboardingClient() {
           <Stepper current={step} />
 
           {/* Fixed-height panel: steps swap inside, the frame never resizes. */}
-          <div className="flex min-h-80 flex-col rounded-xl border border-border/60 bg-card p-4">
+          <div className="border-border/60 bg-card flex min-h-80 flex-col rounded-xl border p-4">
             {step === 0 ? (
               <form
                 className="flex flex-1 flex-col gap-4"
@@ -371,7 +371,7 @@ export default function OnboardingClient() {
                       />
                       <p
                         aria-live="polite"
-                        className="min-h-4 text-muted-foreground text-xs"
+                        className="text-muted-foreground min-h-4 text-xs"
                       >
                         {slugAvailability === "checking"
                           ? "Checking URL availability…"
@@ -469,12 +469,12 @@ export default function OnboardingClient() {
                 className="flex flex-1 flex-col items-center justify-center gap-4 text-center"
                 data-testid="onboarding-success"
               >
-                <span className="flex size-9 items-center justify-center rounded-full bg-muted">
-                  <CheckIcon className="size-5 text-foreground" />
+                <span className="bg-muted flex size-9 items-center justify-center rounded-full">
+                  <CheckIcon className="text-foreground size-5" />
                 </span>
                 <div className="space-y-1">
-                  <p className="font-medium text-sm">You're all set</p>
-                  <p className="max-w-xs text-muted-foreground text-xs">
+                  <p className="text-sm font-medium">You're all set</p>
+                  <p className="text-muted-foreground max-w-xs text-xs">
                     Your organization and project are ready. Add environments
                     and variables next.
                   </p>
@@ -509,7 +509,7 @@ function StepHeading({
 }) {
   return (
     <div className="space-y-0.5">
-      <h2 className="font-semibold text-sm">{title}</h2>
+      <h2 className="text-sm font-semibold">{title}</h2>
       <p className="text-muted-foreground text-xs">{description}</p>
     </div>
   );

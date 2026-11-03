@@ -1,10 +1,10 @@
 "use client";
 
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { Label } from "@loftlancer/ui/label";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import {
   Sheet,
   SheetDescription,
@@ -266,7 +266,7 @@ export function TaskDetailSheet({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="ms-auto text-destructive-foreground"
+                      className="text-destructive-foreground ms-auto"
                       onClick={() => setDeleteOpen(true)}
                     >
                       Delete task
@@ -275,8 +275,8 @@ export function TaskDetailSheet({
                 </div>
               ) : null}
 
-              <div className="flex flex-col gap-3 border-border/60 border-t pt-4">
-                <h3 className="font-medium text-sm">Comments</h3>
+              <div className="border-border/60 flex flex-col gap-3 border-t pt-4">
+                <h3 className="text-sm font-medium">Comments</h3>
                 {detail.data?.comments.length ? (
                   <ol className="flex flex-col gap-3">
                     {detail.data.comments.map((c) => (

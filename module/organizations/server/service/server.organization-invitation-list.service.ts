@@ -1,9 +1,9 @@
-import { db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
-import { invitation } from "@loftlancer/db/schema/organization";
-import { projectTeam } from "@loftlancer/db/schema/project-access";
-import { project } from "@loftlancer/db/schema/projects";
-import { team } from "@loftlancer/db/schema/team";
+import { db } from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
+import { invitation } from "@loftlancer/drizzle/schema/organization";
+import { projectTeam } from "@loftlancer/drizzle/schema/project-access";
+import { project } from "@loftlancer/drizzle/schema/projects";
+import { team } from "@loftlancer/drizzle/schema/team";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import {

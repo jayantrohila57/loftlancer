@@ -1,4 +1,4 @@
-import { requireAction } from "@loftlancer/api/actions/require-action";
+import { requireAction } from "@features/authorization/core/server/authorization.require-action";
 import {
   buildAccessContext,
   type RunActionContext,

@@ -1,4 +1,4 @@
-import { MarketingPageShell } from "@loftlancer/ui/marketing";
+import { MarketingPageShell } from "@features/marketing/core/client";
 import { ModeToggle } from "@/components/mode-toggle";
 
 /** Shared public marketing shell for secondary marketing pages. */

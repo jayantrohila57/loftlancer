@@ -28,10 +28,10 @@ export function OrganizationsDirectory({
     <div className="min-w-0 space-y-4">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="font-semibold text-2xl tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             Organizations
           </h1>
-          <p className="mt-1 text-muted-foreground text-sm">
+          <p className="text-muted-foreground mt-1 text-sm">
             Organizations you belong to, with members, teams, and access
             settings.
           </p>

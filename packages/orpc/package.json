@@ -1,0 +1,64 @@
+{
+  "name": "@loftlancer/orpc",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./mcp": {
+      "default": "./src/mcp/index.ts"
+    },
+    "./page-guards": {
+      "default": "./src/page-guards/index.ts"
+    },
+    "./core/orpc.create-context": {
+      "default": "./src/core/orpc.create-context.ts"
+    },
+    "./core/orpc.context": {
+      "default": "./src/core/orpc.context.ts"
+    },
+    "./utils/orpc.transformer": {
+      "default": "./src/utils/orpc.transformer.ts"
+    },
+    "./prefetch-with-caller": {
+      "default": "./src/prefetch-with-caller.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "SKIP_ENV_VALIDATION=1 node --import tsx --test src/actions/action-guard-input-order.test.ts src/actions/evaluate-rbac.test.ts src/actions/require-action-app-access.test.ts src/actions/require-action-membership.test.ts src/actions/require-user-action.test.ts src/audit-passive-actions.test.ts src/bulk-import-variables-plan.test.ts src/console-audit-context.test.ts src/console-operator-access.test.ts src/environment-access.test.ts src/invitation-preview.test.ts src/invitation-sync-auth.test.ts src/mcp/mcp-exposed-actions.test.ts src/mcp/mcp-tools.test.ts src/organization-branding-validation.test.ts src/organization-domain-verification.test.ts src/organization-ownership.test.ts src/organization-profile-validation.test.ts src/organization-settings-validation.test.ts src/orpc/orpc-surface.test.ts src/page-guards/page-guards.test.ts src/project-list.access.test.ts src/project-list.slug-read.test.ts src/project-restore.test.ts src/project-validation.test.ts src/routers/account-export-data.integration.test.ts src/routers/account-export-data.test.ts src/routers/audit-stats-mappers.test.ts src/routers/audit-stats-scope.test.ts src/routers/index.test.ts src/routers/notifications-action-guard.test.ts src/routers/sole-owner-blockers.test.ts src/routers/variables-create-batch-access.test.ts src/variable-audit-payload.test.ts"
+  },
+  "dependencies": {
+    "@loftlancer/better-auth": "workspace:*",
+    "@loftlancer/crypto": "workspace:*",
+    "@loftlancer/drizzle": "workspace:*",
+    "@loftlancer/mcp": "workspace:*",
+    "@loftlancer/t3-env": "workspace:*",
+    "@loftlancer/sentry": "workspace:*",
+    "@modelcontextprotocol/server": "^2.3.1",
+    "jose": "^6.2.12",
+    "@orpc/client": "2.0.0-beta.47",
+    "@orpc/server": "2.0.0-beta.47",
+    "@orpc/tanstack-query": "2.0.0-beta.47",
+    "@orpc/trpc": "2.0.0-beta.47",
+    "@tanstack/react-query": "^5.104.2",
+    "@trpc/client": "catalog:",
+    "@trpc/server": "catalog:",
+    "@types/pg": "catalog:",
+    "@vercel/blob": "^2.8.2",
+    "ai": "^7.0.159",
+    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
+    "next": "catalog:",
+    "superjson": "^2.2.6",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

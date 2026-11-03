@@ -1,5 +1,5 @@
-import { cleanupExpiredFileUploads } from "@loftlancer/api/modules/files/api/api.cleanup-expired-file-uploads";
-import { logger } from "@loftlancer/logger";
+import { logger } from "@loftlancer/sentry";
+import { cleanupExpiredFileUploads } from "@modules/files/server/api/api.cleanup-expired-file-uploads";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

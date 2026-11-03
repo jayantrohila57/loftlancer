@@ -1,6 +1,6 @@
 "use client";
 
-import { BreadcrumbTrail } from "@loftlancer/ui/patterns/breadcrumb-trail";
+import { BreadcrumbTrail } from "@features/patterns/core/client/patterns.breadcrumb-trail";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
@@ -10,6 +10,7 @@ import {
   resolveBreadcrumbLabel,
 } from "@/lib/breadcrumbs";
 import { useRouteNotFoundDepth } from "@/lib/route-not-found-store";
+import { serviceObject } from "@/lib/trpc-envelope";
 import { useProjects } from "@/module/projects/projects.use.projects";
 import { routes } from "@/utils/navigation";
 import { trpc } from "@/utils/trpc";
@@ -40,7 +41,7 @@ export function Breadcrumbs({ className }: { className?: string }) {
     enabled: Boolean(teamId),
     staleTime: 60_000,
   });
-  const teamName = teamQuery.data?.team?.name;
+  const teamName = serviceObject(teamQuery.data)?.name;
 
   const supportTicketId = breadcrumbs.find((c) => c.kind === "ticket")?.segment;
   const supportTicketQuery = useQuery({

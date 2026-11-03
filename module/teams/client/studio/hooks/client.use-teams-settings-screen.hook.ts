@@ -1,5 +1,5 @@
 "use client";
-import { useConfirm } from "@loftlancer/ui/patterns/confirm-dialog";
+import { useConfirm } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { studioORPC } from "@/lib/orpc";

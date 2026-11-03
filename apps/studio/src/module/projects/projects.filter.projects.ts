@@ -1,4 +1,4 @@
-import type { ProjectOutput } from "@loftlancer/api/types";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 
 export type ProjectsStatusFilter =
   | "active"

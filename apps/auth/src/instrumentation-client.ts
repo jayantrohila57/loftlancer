@@ -1,7 +1,7 @@
 import {
   buildSentryInitOptions,
   wireSentryLogger,
-} from "@loftlancer/logger/sentry-instrument";
+} from "@loftlancer/sentry/instrument";
 import * as Sentry from "@sentry/nextjs";
 
 const options = buildSentryInitOptions("auth", true);

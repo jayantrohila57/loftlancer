@@ -1,8 +1,8 @@
 "use client";
 
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetClose, SheetDescription } from "@loftlancer/ui/sheet";
 import {
   Tooltip,
@@ -128,7 +128,7 @@ export function EditEnvironmentSheet({
               />
             }
           >
-            <AppIcon name="edit" className="size-3.5 text-foreground" />
+            <AppIcon name="edit" className="text-foreground size-3.5" />
           </TooltipTrigger>
           <TooltipContent side="bottom" align="end">
             Edit environment

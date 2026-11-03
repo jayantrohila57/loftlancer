@@ -1,6 +1,6 @@
-import { purgeExpiredApps } from "@loftlancer/api/apps/purge";
-import { dbPurgeDeps } from "@loftlancer/api/apps/purge-db";
-import { logger } from "@loftlancer/logger";
+import { logger } from "@loftlancer/sentry";
+import { purgeExpiredApps } from "@modules/apps/server/purge";
+import { dbPurgeDeps } from "@modules/apps/server/purge-db";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

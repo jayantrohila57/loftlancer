@@ -1,4 +1,4 @@
-import { isReservedOrgSlug } from "@loftlancer/ui/studio-routes";
+import { isReservedOrgSlug } from "@features/shell/utils/shell.studio-routes.utils";
 
 /** First path segment when the request is under /[org]/… (basePath already stripped). */
 export function orgSlugFromRequestPath(

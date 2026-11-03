@@ -1,10 +1,10 @@
+import { PageHeaderDescription } from "@features/patterns/core/client/patterns.page-header-description";
 import {
   pageHeaderDescriptionGridClass,
   pageHeaderRootClass,
   pageHeaderTitleClass,
   pageHeaderTitleRowClass,
-} from "@loftlancer/ui/page-header-classes";
-import { PageHeaderDescription } from "@loftlancer/ui/patterns/page-header-description";
+} from "@features/patterns/utils/patterns.page-header-classes.utils";
 import type { ReactNode } from "react";
 import { AccountSettingsTabs } from "./settings.navigation";
 

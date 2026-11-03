@@ -1,9 +1,12 @@
-import { db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
-import { invitation, organization } from "@loftlancer/db/schema/organization";
-import { projectTeam } from "@loftlancer/db/schema/project-access";
-import { project } from "@loftlancer/db/schema/projects";
-import { team } from "@loftlancer/db/schema/team";
+import { db } from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
+import {
+  invitation,
+  organization,
+} from "@loftlancer/drizzle/schema/organization";
+import { projectTeam } from "@loftlancer/drizzle/schema/project-access";
+import { project } from "@loftlancer/drizzle/schema/projects";
+import { team } from "@loftlancer/drizzle/schema/team";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, eq, isNull } from "drizzle-orm";
 import { getPublicInvitationStatus } from "../../utils/utils.public-invitation-status";

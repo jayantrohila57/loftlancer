@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
 import {
@@ -12,8 +14,6 @@ import {
   DialogTitle,
 } from "@loftlancer/ui/dialog";
 import { Label } from "@loftlancer/ui/label";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { Textarea } from "@loftlancer/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -30,6 +30,7 @@ import { isNotificationsEnabledOnClient } from "@/lib/notifications-enabled";
 import { studioORPC } from "@/lib/orpc";
 import { captureEvent, STUDIO_EVENTS } from "@/lib/posthog";
 import { toast } from "@/lib/toast";
+import { serviceListItems } from "@/lib/trpc-envelope";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/module/auth/auth.auth.actions";
 import { useNotificationMutations } from "@/module/notifications/notifications.use.notifications";
@@ -130,7 +131,7 @@ export function BulkInviteDialog({
   );
   const valid = parsed.filter((p) => p.status === "valid");
   const problems = parsed.filter((p) => p.status !== "valid").length;
-  const teams = teamsQuery.data?.items ?? [];
+  const teams = serviceListItems(teamsQuery.data);
   const projects = projectsQuery.data?.data ?? [];
   const selectedTeamName =
     teams.find((team) => team.id === teamId)?.name ??
@@ -254,11 +255,11 @@ export function BulkInviteDialog({
               />
               {/* Fixed-height list so validation never resizes the dialog. */}
               <div
-                className="h-28 overflow-y-auto rounded-lg border border-border/60 bg-muted/30 p-1.5"
+                className="border-border/60 bg-muted/30 h-28 overflow-y-auto rounded-lg border p-1.5"
                 aria-live="polite"
               >
                 {parsed.length === 0 ? (
-                  <p className="flex h-full items-center justify-center text-muted-foreground text-xs">
+                  <p className="text-muted-foreground flex h-full items-center justify-center text-xs">
                     Recipients appear here as you type.
                   </p>
                 ) : (
@@ -291,7 +292,7 @@ export function BulkInviteDialog({
                   </ul>
                 )}
               </div>
-              <p className="flex gap-x-3 text-muted-foreground text-xs tabular-nums">
+              <p className="text-muted-foreground flex gap-x-3 text-xs tabular-nums">
                 <span>{valid.length} ready</span>
                 {problems > 0 ? (
                   <span className="text-destructive">{problems} skipped</span>
@@ -379,7 +380,7 @@ export function BulkInviteDialog({
                 Your role can't invite members
               </Badge>
             ) : null}
-            <p className="rounded-lg bg-muted/50 p-3 text-muted-foreground text-sm">
+            <p className="bg-muted/50 text-muted-foreground rounded-lg p-3 text-sm">
               {accessSummary}
             </p>
           </DialogPanel>

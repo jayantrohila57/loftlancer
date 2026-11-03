@@ -3,7 +3,7 @@ title: Notifications
 description: In-app notifications when NOTIFICATIONS_ENABLED is on.
 ---
 
-The `@loftlancer/notifications` package delivers in-app notifications for registry `notifyOn` events (for example invitation received/accepted).
+The `@features/notifications` feature delivers in-app notifications for registry `notifyOn` events (for example invitation received/accepted).
 
 ## Studio API
 
@@ -15,6 +15,6 @@ Procedures under the notifications router check notification actions:
 
 ## MCP
 
-Notification actions are `scope: "user"` in the registry. `listMcpExposedActions()` excludes user-scoped actions, so **notification tools are not registered** on the MCP server today even though handlers exist in `@loftlancer/api/mcp`. Use the studio notifications API or UI.
+Notification actions are `scope: "user"` in the registry. `listMcpExposedActions()` excludes user-scoped actions, so **notification tools are not registered** on the MCP server today even though handlers exist in `@loftlancer/orpc/mcp`. Use the studio notifications API or UI.
 
 Enable `NOTIFICATIONS_ENABLED` and `NEXT_PUBLIC_NOTIFICATIONS_ENABLED` together in production.
