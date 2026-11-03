@@ -16,6 +16,8 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.25.0] - 2026-11-03
+
 ### Added
 
 - CI gate **`pnpm audit:module-architecture`** with baseline debt file — fails on new controller/oRPC/app-route violations ([docs/tooling.md](./docs/tooling.md)); CI also runs **`pnpm check-routes`** on **`dev`** and **`main`**.
@@ -1043,7 +1045,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.24.0...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.25.0...HEAD
+[1.25.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.21.0...v1.22.0
