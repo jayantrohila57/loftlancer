@@ -24,7 +24,11 @@ Cursor rule **`.cursor/rules/agent-workflow.mdc`** (Cursor only; Codex: nested *
 | 7 | **Blocked dependency:** stop; add **`## TODO (blocked)`** in **`module/<domain>/README.md`** (and optional `// TODO(#issue)` in code). |
 | 8 | **Operational docs** for a domain live in **`module/<domain>/README.md`** ([README.template.md](./module/README.template.md)), not new long runbooks under `docs/`. |
 
-Mechanical gate: **`pnpm audit:module-architecture`** (CI fails on **new** violations). Full pre-merge stack: **`pnpm verify:dev-merge`**.
+Mechanical gates: **`pnpm audit:module-architecture`** (module/oRPC contracts) and **`pnpm audit:architecture-layers`** (Apps → Modules → Features → Packages imports). CI fails on **new** violations. Full pre-merge stack: **`pnpm verify:dev-merge`**.
+
+## Monorepo architecture
+
+The monorepo follows **Apps → Modules → Features → Packages**. **Apps** handle routing, layouts, and composition. **Modules** (`module/`) contain complete domain-specific functionality—server APIs, business logic, repositories, policies, permissions and action IDs, schemas, types, and client components. **Features** (`features/`) provide reusable, domain-independent systems such as RBAC/ABAC authorization, role management, forms, data tables, API middleware, validation, auditing, logging, and notifications that any module can consume. **Packages** (`packages/`) are strictly responsible for third-party integrations, SDK initialization, and low-level adapters (Drizzle, Better Auth, PostHog, Redis, email providers) without business logic. Each module and feature maintains **`server/`**, **`client/`**, and **`shared/`** (or **`utils/`** in modules per [naming.md](./docs/naming.md)) where applicable. Dependencies flow **apps → modules → features → packages**; features never import modules. Platform contracts: [docs/features.md](./docs/features.md), [docs/modules.md](./docs/modules.md), [docs/packages.md](./docs/packages.md). Per-domain runbooks stay in **`module/<domain>/README.md`** or **`features/<name>/README.md`**, not long docs under `docs/`.
 
 **Codex (OpenAI CLI / IDE / GitHub):** loads this file plus nested **`AGENTS.md`** (`module/`, `module/teams/`, `packages/api/`). Setup and Stop hook: **[.codex/README.md](./.codex/README.md)**. Cursor-only rules live under **`.cursor/rules/`** — Codex does not read `.mdc` files unless you paste them into AGENTS.md.
 
@@ -68,8 +72,8 @@ Product, UI, permissions, deploy, and database rules are **not** duplicated here
 - **Prescriptive gaps (greenfield):** [docs/architecture-gaps.md](./docs/architecture-gaps.md) · [docs/new-feature-checklist.md](./docs/new-feature-checklist.md)
 - **File naming:** [docs/naming.md](./docs/naming.md) — `utils.` / `server.` / `client.` prefix + role postfix
 - **UI/UX:** [docs/ui-ux-skills.md](./docs/ui-ux-skills.md) — read `.agents/skills/*/SKILL.md` before building or reviewing UI
-- **New product code:** `module/<feature>/` + oRPC only — **do not add tRPC procedures**; follow gaps docs, not legacy app paths as templates
-- **Architecture gate:** run **`pnpm audit:module-architecture`** before finishing module/oRPC work; CI fails on **new** violations ([docs/tooling.md](./docs/tooling.md))
+- **New product code:** `module/<domain>/` + oRPC only — **do not add tRPC procedures**; cross-domain reuse → **`features/`**; follow gaps docs, not legacy app paths as templates
+- **Architecture gates:** **`pnpm audit:module-architecture`** and **`pnpm audit:architecture-layers`** before finishing layer work; CI fails on **new** violations ([docs/tooling.md](./docs/tooling.md))
 - **Server APIs:** [docs/server-api.md](./docs/server-api.md)
 - **Rendering:** [docs/rendering.md](./docs/rendering.md)
 - **UI/UX skills:** [docs/ui-ux-skills.md](./docs/ui-ux-skills.md)
@@ -77,7 +81,8 @@ Product, UI, permissions, deploy, and database rules are **not** duplicated here
 - **Data workflow:** [docs/data-workflow.md](./docs/data-workflow.md)
 - **Layouts & routes:** [docs/layouts.md](./docs/layouts.md)
 - **App states:** [docs/app-states.md](./docs/app-states.md)
-- **Feature modules:** [docs/modules.md](./docs/modules.md)
+- **Domain modules:** [docs/modules.md](./docs/modules.md)
+- **Reusable features:** [docs/features.md](./docs/features.md)
 - **Platform packages:** [docs/packages.md](./docs/packages.md) — `packages/` infra; thin oRPC in `@loftlancer/api`
 - **Run locally:** [README.md](./README.md)
 
@@ -89,6 +94,7 @@ pnpm dev:web
 pnpm build
 pnpm check-types
 pnpm audit:module-architecture
+pnpm audit:architecture-layers
 pnpm verify:dev-merge   # before merging issue branch to dev
 pnpm db:push
 pnpm db:reset-seed   # destructive — see docs/database.md

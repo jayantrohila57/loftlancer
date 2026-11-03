@@ -2,7 +2,7 @@
 
 **`packages/`** holds **workspace libraries** (`@loftlancer/*`) shared across apps. These are **pnpm packages** with their own `package.json`.
 
-**Do not put product feature logic here.** Anything owned by a product domain (teams, projects, organizations, files, …) belongs under **[module/](./modules.md)**. Packages provide **infrastructure** that modules and apps depend on.
+**Do not put product or reusable application logic here.** Domain code belongs in **[module/](./modules.md)**; cross-domain reusable systems belong in **[features/](./features.md)**. Packages provide **third-party integrations and SDK initialization** that modules, features, and apps depend on.
 
 ---
 
@@ -102,16 +102,22 @@ Apps **must not** duplicate domain logic that should live in `module/`.
 
 ## Dependency direction
 
+Full stack: **[features.md](./features.md)**. Summary:
+
 ```text
-apps/*  →  module/<feature>/client  →  module/<feature>/utils
-apps/*  →  packages/api (client) / packages/ui / …
+apps/*       →  module/*, features/*, packages/*
+module/*     →  features/*, packages/*, module/shared/
+features/*   →  packages/* only
+packages/*   →  other packages (infra) — not module/* or features/* except API transport allowlist
 
-packages/api/orpc  →  module/<feature>/server  →  module/<feature>/utils
-module/shared      →  when truly cross-feature (not packages/api)
-module/*  →  packages/db, packages/actions, packages/env, …
+packages/api/orpc|mcp|routers  →  module/<domain>/server  (transport shells only)
+```
 
-module/*  ↛  apps/* (feature code does not import app internals)
-packages/*  ↛  module/client (platform packages do not import React feature UI)
+**Layer audit:** **`pnpm audit:architecture-layers`** fails on `features/* → module/*` and forbidden `packages/*` imports. Allowlisted transport paths are listed in [features.md](./features.md).
+
+```text
+module/*  ↛  apps/* (domain code does not import app internals)
+packages/*  ↛  module/client or features/client (platform packages do not import domain UI)
 ```
 
 ---
@@ -127,6 +133,7 @@ packages/*  ↛  module/client (platform packages do not import React feature UI
 ## Related
 
 - [server-api.md](./server-api.md) — oRPC, Server Actions, Next routes, bare `app/`  
-- [modules.md](./modules.md) — product feature modules  
+- [features.md](./features.md) — reusable features layer  
+- [modules.md](./modules.md) — domain modules  
 - [product.md](./product.md) — permissions and audit  
 - [index.md](./index.md) — doc map  

@@ -26,6 +26,7 @@ jobs:
       - run: pnpm lint:ci
       - run: pnpm check-routes
       - run: pnpm audit:module-architecture
+      - run: pnpm audit:architecture-layers
       - run: pnpm check-types
       - run: pnpm test
         env:

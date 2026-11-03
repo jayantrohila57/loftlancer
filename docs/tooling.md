@@ -109,7 +109,18 @@ node scripts/audit-module-architecture.mjs --write-baseline
 
 CI runs this on every push to **`dev`** and **`main`** and on pull requests ([forbidden-defaults.md](./gaps/forbidden-defaults.md)).
 
-**Before merging an issue branch to `dev`:** **`pnpm verify:dev-merge`** (lint, routes, audit, types, tests). Agent workflow: [AGENTS.md](../AGENTS.md), `.cursor/rules/agent-workflow.mdc`, **[.codex/README.md](../.codex/README.md)** (OpenAI Codex).
+## Architecture layers audit (CI gate)
+
+**`pnpm audit:architecture-layers`** runs **`scripts/audit-architecture-layers.mjs`**. It enforces import direction from [features.md](./features.md):
+
+| Rule | What it checks |
+|------|----------------|
+| `features-no-module` | No `features/*` imports from `module/*` or `@module/*` |
+| `packages-layer-import` | No `packages/*` imports from `module/*` or `features/*` except **`packages/api/src/orpc/`**, **`mcp/`**, **`routers/`** |
+
+Baseline: **`scripts/audit-architecture-layers-baseline.json`**. Same **`--write-baseline`** / **`--strict`** flags as the module audit.
+
+**Before merging an issue branch to `dev`:** **`pnpm verify:dev-merge`** (lint, routes, both audits, types, tests). Agent workflow: [AGENTS.md](../AGENTS.md), `.cursor/rules/agent-workflow.mdc`, **[.codex/README.md](../.codex/README.md)** (OpenAI Codex).
 
 **Note:** The audit script scans **`module/`** and oRPC procedures only. Feature-layer conventions are documented in **`features/README.md`** until a dedicated gate exists.
 

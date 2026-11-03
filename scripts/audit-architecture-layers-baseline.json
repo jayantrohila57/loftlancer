@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "description": "Known layer dependency violations; CI fails only on NEW ids. Shrink by fixing code, then --write-baseline.",
+  "ids": [
+    "packages-layer-import:packages/api/src/invitation-preview.ts:936fdc8ad097",
+    "packages-layer-import:packages/api/src/modules/teams/api/api.get-teams.ts:8f08c1520014",
+    "packages-layer-import:packages/api/src/project-access/service.ts:65326d2c8aec"
+  ]
+}

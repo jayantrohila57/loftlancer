@@ -19,7 +19,8 @@ All coding and ops docs live in this folder (flat). GitHub-facing files stay at 
 | [app-states.md](./app-states.md) | **App Router states** — loading/error/not-found/forbidden |
 | [rendering.md](./rendering.md) | **UI composition** — logic in functions, dynamic client islands |
 | [server-api.md](./server-api.md) | **Server APIs** — oRPC-only (target), module/server, bare Next `app/` |
-| [modules.md](./modules.md) | **`module/`** — product feature code (ownership, internal layout) |
+| [modules.md](./modules.md) | **`module/`** — domain modules (ownership, internal layout) |
+| [features.md](./features.md) | **`features/`** — reusable features layer; Apps → Modules → Features → Packages |
 | [packages.md](./packages.md) | **`packages/`** — platform; `@loftlancer/api` = oRPC transport shell |
 | [product.md](./product.md) | Permissions / audit recipe (code is the spec) |
 | [releasing.md](./releasing.md) | Semver, changelog, release workflow |

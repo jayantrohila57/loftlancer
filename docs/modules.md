@@ -1,8 +1,8 @@
-# Feature modules (`module/`)
+# Domain modules (`module/`)
 
-**`module/`** is where **product feature code** lives: everything tied to a user-facing domain (teams, projects, organizations, files, AI usage in product, notifications, …).
+**`module/`** is the **Modules** layer in **Apps → Modules → Features → Packages** ([features.md](./features.md)). It holds **complete domain-specific functionality**: server APIs, business logic, repositories, policies, action IDs, schemas, types, and domain client UI (teams, organizations, account, …).
 
-**Follow this document whenever you create or change feature behavior** — API operations, validation, Studio/Auth UI, hooks, loaders. **`packages/`** is platform-only; see **[packages.md](./packages.md)**.
+**Follow this document whenever you create or change domain behavior** — API operations, validation, Studio/Auth UI, hooks, loaders. Cross-domain reusable systems live in **`features/`**; vendor SDK wiring lives in **`packages/`** ([packages.md](./packages.md)).
 
 Legacy paths (`apps/studio/src/module/*`, `packages/api/src/modules/*`, fat router bodies) still exist during migration. **New work goes in `module/<feature>/` only**; move old code when your issue includes that domain.
 
@@ -97,7 +97,7 @@ Legacy examples in migration code may omit postfixes; **new files follow [naming
 
 **Import alias:** `@module/<feature>/…` — see [docs/tooling.md](../docs/tooling.md) and [docs/gaps/imports-paths.md](../docs/gaps/imports-paths.md).
 
-**Cross-feature:** `module/shared/` — see [module/shared/README.md](../module/shared/README.md).
+**Cross-domain helpers (still module layer):** `module/shared/` — see [module/shared/README.md](../module/shared/README.md). Prefer **`features/`** when logic is domain-independent and consumed by many modules ([features.md](./features.md)).
 
 ---
 
@@ -221,6 +221,7 @@ App route files are **bare**; layouts and UI live in **`module/`**.
 - [rendering.md](./rendering.md) — page composition, dynamic islands  , logic vs render  
 - [ui-ux-skills.md](./ui-ux-skills.md) — agent skills for UI/UX (shadcn, coss, ui-ux-pro-max, …)  
 - [server-api.md](./server-api.md) — oRPC, Server Actions, Next routes, pages  
+- [features.md](./features.md) — reusable features layer and dependency rules  
 - [packages.md](./packages.md) — platform packages and `@loftlancer/api` boundaries  
 - [product.md](./product.md) — permissions, audit, MCP exposure  
 - [index.md](./index.md) — doc map  

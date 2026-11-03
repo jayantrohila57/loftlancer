@@ -19,6 +19,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 ### Added
 
 - **`features/`** layer scaffold (`@features/*`, `@loftlancer/features-shared`) with initial authorization, audit, notifications, forms, and data-table folders; dependency rule documented (modules import features, not reverse).
+- Platform docs for **Apps → Modules → Features → Packages** ([docs/features.md](./docs/features.md), updated [docs/modules.md](./docs/modules.md) / [docs/packages.md](./docs/packages.md), [AGENTS.md](./AGENTS.md)); CI gate **`pnpm audit:architecture-layers`**.
 
 ## [1.25.1] - 2026-11-03
 
