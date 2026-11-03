@@ -1,0 +1,17 @@
+{
+  "description": "Loftlancer agent gates for OpenAI Codex (trust this .codex/ directory when prompted).",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/stop-architecture-audit.mjs\"",
+            "timeoutSec": 120,
+            "statusMessage": "Running module architecture audit"
+          }
+        ]
+      }
+    ]
+  }
+}

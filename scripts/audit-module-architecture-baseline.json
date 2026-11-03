@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "description": "Known architecture violations; CI fails only on NEW ids. Shrink by fixing code, then --write-baseline.",
+  "ids": [
+    "controller-response-schema:module/teams/server/controller/server.team-available-members.controller.ts:b815b7c57a18",
+    "controller-response-schema:module/teams/server/controller/server.team-delete.controller.ts:5898476c3ec6",
+    "controller-response-schema:module/teams/server/controller/server.team-invitation-context.controller.ts:02eee07aea6e",
+    "controller-response-schema:module/teams/server/controller/server.team-invitation-create.controller.ts:f50b92c9f540",
+    "controller-response-schema:module/teams/server/controller/server.team-invitation-list.controller.ts:f250536b5d7d",
+    "controller-response-schema:module/teams/server/controller/server.team-invitation-resend.controller.ts:f12643bab44c",
+    "controller-response-schema:module/teams/server/controller/server.team-invitation-revoke.controller.ts:cbb290caf2e0",
+    "controller-response-schema:module/teams/server/controller/server.team-linkable-projects.controller.ts:56d9031905f6",
+    "controller-response-schema:module/teams/server/controller/server.team-member-add.controller.ts:b2cb2c968d82",
+    "controller-response-schema:module/teams/server/controller/server.team-member-remove.controller.ts:26f86c7daf50",
+    "controller-response-schema:module/teams/server/controller/server.team-member-role-change.controller.ts:98be0a3c0a5c",
+    "controller-response-schema:module/teams/server/controller/server.team-members.controller.ts:119f78deb89c",
+    "controller-response-schema:module/teams/server/controller/server.team-project-assign.controller.ts:d87945c0ffab",
+    "controller-response-schema:module/teams/server/controller/server.team-project-remove.controller.ts:71c0361ce6a4",
+    "controller-response-schema:module/teams/server/controller/server.team-projects.controller.ts:7939389eb94d",
+    "controller-response-schema:module/teams/server/controller/server.team-restore.controller.ts:c675cda0d1e6",
+    "controller-response-schema:module/teams/server/controller/server.team-update.controller.ts:451008be70c1",
+    "legacy-unwrap:packages/api/src/modules/teams/api/api.get-teams.ts:456da8e3ced1",
+    "orpc-input-schema:packages/api/src/orpc/procedures/teams.ts:6e3c0098e454"
+  ]
+}

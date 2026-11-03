@@ -16,6 +16,12 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- CI gate **`pnpm audit:module-architecture`** with baseline debt file — fails on new controller/oRPC/app-route violations ([docs/tooling.md](./docs/tooling.md)); CI also runs **`pnpm check-routes`** on **`dev`** and **`main`**.
+- Strict **agent workflow** (sub-issues, one commit per sub-issue, **`pnpm verify:dev-merge`**, module README as runbook): [AGENTS.md](./AGENTS.md), `.cursor/rules/agent-workflow.mdc`, [module/README.template.md](./module/README.template.md), GitHub *Sub-task* issue template.
+- **OpenAI Codex:** nested **`AGENTS.md`** (`module/`, `teams/`, `packages/api/`), **`.codex/hooks.json`** Stop architecture audit, setup [.codex/README.md](./.codex/README.md).
+
 ### Changed
 
 - Complete the teams module migration with native invitation/project-link operations, server-loaded screen boundaries, shared UI infrastructure, and isolated scope/audit/delivery checks (#918).

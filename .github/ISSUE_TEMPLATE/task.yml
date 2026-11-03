@@ -1,7 +1,11 @@
-name: Task / feature
-description: A scoped piece of work with acceptance criteria
+name: Task / feature (parent)
+description: Outcome issue — break implementation into sub-task issues for agents
 labels: [enhancement]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        **Agents:** Do not implement the whole parent in one PR. Create **sub-task** issues (template: Sub-task) with one verifiable slice each. See [AGENTS.md](../../AGENTS.md) and `.cursor/rules/agent-workflow.mdc`.
   - type: textarea
     id: goal
     attributes: {label: Goal, description: What should be true when this is done, and why}

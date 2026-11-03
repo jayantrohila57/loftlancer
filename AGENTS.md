@@ -6,7 +6,40 @@ This repository uses **`dev`** for integration and **`main`** for production. Al
 
 - Every **task**, **bug**, and **docs** change starts as a [GitHub issue](https://github.com/jayantrohila57/loftlancer/issues) on the **loftlancer** GitHub Project.
 - **Cloud agents and automated workers must only implement work that is tied to an open issue** (title/description or explicit issue number in the handoff).
-- Commits that complete issue work use the footer: **`Fixes #<number>`** (or `Closes #<number>`).
+- **Parent issues** describe outcomes; **sub-task issues** (template: *Sub-task*) are the units agents implement — one verifiable chunk each, not one giant issue in a single PR.
+- Commits that complete sub-issue work use the footer: **`Fixes #<sub-issue>`** (or `Closes #<sub-issue>`). Use **`Refs #<parent>`** while the parent stays open.
+
+## Strict agent workflow
+
+Cursor rule **`.cursor/rules/agent-workflow.mdc`** (Cursor only; Codex: nested **`AGENTS.md`** + **`.codex/hooks.json`**). Summary:
+
+| # | Rule |
+|---|------|
+| 1 | **Never** ship by breaking architecture rules (audit, oRPC, module layout, thin routes). No “temporary” bypasses. |
+| 2 | Work **sub-issues**, not whole parent issues in one go. |
+| 3 | **Branch** from `dev` per parent issue; **one commit per sub-issue**; before merging to **`dev`**, run **`pnpm verify:dev-merge`** on the full branch. |
+| 4 | **Plan** before coding; small/fast models execute [new-feature-checklist.md](./docs/new-feature-checklist.md) **one section at a time**. |
+| 5 | **Migration:** new code follows **`module/`** + oRPC — not legacy `apps/studio/src/module/*` or `packages/api/src/modules/*` as templates. |
+| 6 | **Reference** `module/<domain>/` and `module/shared/` first; legacy paths are read-only for behavior, not copy sources. |
+| 7 | **Blocked dependency:** stop; add **`## TODO (blocked)`** in **`module/<domain>/README.md`** (and optional `// TODO(#issue)` in code). |
+| 8 | **Operational docs** for a domain live in **`module/<domain>/README.md`** ([README.template.md](./module/README.template.md)), not new long runbooks under `docs/`. |
+
+Mechanical gate: **`pnpm audit:module-architecture`** (CI fails on **new** violations). Full pre-merge stack: **`pnpm verify:dev-merge`**.
+
+**Codex (OpenAI CLI / IDE / GitHub):** loads this file plus nested **`AGENTS.md`** (`module/`, `module/teams/`, `packages/api/`). Setup and Stop hook: **[.codex/README.md](./.codex/README.md)**. Cursor-only rules live under **`.cursor/rules/`** — Codex does not read `.mdc` files unless you paste them into AGENTS.md.
+
+## Code Review Rules
+
+For **Codex code review on GitHub** and human reviewers — flag or request changes when:
+
+- A PR adds **new** architecture audit violations (run **`pnpm audit:module-architecture`** locally; compare to baseline).
+- New **tRPC** product procedures, **`z.unknown()`** oRPC inputs, or controllers missing outbound **`serviceResponseSchema(...).parse`**.
+- Domain logic in **`apps/*/src/app/**/page.tsx`** or new product code under **`packages/api/src/modules/*`** instead of **`module/<domain>/`**.
+- Implementation clearly **copied from legacy** `apps/studio/src/module/*` rather than module/gap patterns.
+- A single PR tries to close a **whole parent issue** without sub-issue breakdown, or merges without **`pnpm verify:dev-merge`** evidence on the branch.
+- Operational notes added under **`docs/`** that belong in **`module/<domain>/README.md`**.
+
+Safe path: thin oRPC → module controller → **`runAction`**; reference **`module/teams/`** or **`module/shared/`**; blocked deps documented in module README **TODO (blocked)**.
 
 ## Git & deploy
 
@@ -30,11 +63,13 @@ This repository uses **`dev`** for integration and **`main`** for production. Al
 
 Product, UI, permissions, deploy, and database rules are **not** duplicated here.
 
-- **Doc map:** [docs/index.md](./docs/index.md)
+- **Doc map:** [docs/index.md](./docs/index.md) — platform contracts and gaps index
+- **Per-domain runbooks:** **`module/<domain>/README.md`** (agents read this first for the domain they touch)
 - **Prescriptive gaps (greenfield):** [docs/architecture-gaps.md](./docs/architecture-gaps.md) · [docs/new-feature-checklist.md](./docs/new-feature-checklist.md)
 - **File naming:** [docs/naming.md](./docs/naming.md) — `utils.` / `server.` / `client.` prefix + role postfix
 - **UI/UX:** [docs/ui-ux-skills.md](./docs/ui-ux-skills.md) — read `.agents/skills/*/SKILL.md` before building or reviewing UI
 - **New product code:** `module/<feature>/` + oRPC only — **do not add tRPC procedures**; follow gaps docs, not legacy app paths as templates
+- **Architecture gate:** run **`pnpm audit:module-architecture`** before finishing module/oRPC work; CI fails on **new** violations ([docs/tooling.md](./docs/tooling.md))
 - **Server APIs:** [docs/server-api.md](./docs/server-api.md)
 - **Rendering:** [docs/rendering.md](./docs/rendering.md)
 - **UI/UX skills:** [docs/ui-ux-skills.md](./docs/ui-ux-skills.md)
@@ -53,6 +88,8 @@ pnpm install
 pnpm dev:web
 pnpm build
 pnpm check-types
+pnpm audit:module-architecture
+pnpm verify:dev-merge   # before merging issue branch to dev
 pnpm db:push
 pnpm db:reset-seed   # destructive — see docs/database.md
 ```

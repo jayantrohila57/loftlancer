@@ -2,7 +2,9 @@
 
 Product feature code lives here: `module/<domain>/{utils,server,client}/`. Cross-feature server/utils: **`module/shared/`** ([shared/README.md](./shared/README.md)).
 
-**Rules:** [docs/modules.md](../docs/modules.md) · [docs/naming.md](../docs/naming.md) · [docs/ui-ux-skills.md](../docs/ui-ux-skills.md) · [docs/layouts.md](../docs/layouts.md) · [docs/server-api.md](../docs/server-api.md) · [docs/rendering.md](../docs/rendering.md) · [docs/app-states.md](../docs/app-states.md) · [docs/packages.md](../docs/packages.md)
+**Rules:** [docs/modules.md](../docs/modules.md) · platform gaps in [docs/architecture-gaps.md](../docs/architecture-gaps.md)
+
+**Per-domain runbooks:** **`module/<domain>/README.md`** ([README.template.md](./README.template.md)) — agents update the module README, not new long docs under `docs/`.
 
 **Tier 1 shell** (sidebar, header, inset) → `module/studio-shell/` when rewritten; **Tier 2** sub-header/tabs → each module `client/studio/layout/`.
 
@@ -19,7 +21,7 @@ Product feature code lives here: `module/<domain>/{utils,server,client}/`. Cross
 | `projects` | `apps/studio/src/module/projects` | |
 | `support` | `apps/studio/src/module/support` | |
 | `tasks` | `apps/studio/src/module/tasks` | |
-| `teams` | `module/teams/client/studio` | `/[org]/teams/...` pilot implemented; see [teams/README.md](./teams/README.md) and [docs/reference-module-teams.md](../docs/reference-module-teams.md) |
+| `teams` | `module/teams/client/studio` | `/[org]/teams/...` pilot — **[teams/README.md](./teams/README.md)** (source of truth); tree reference [docs/reference-module-teams.md](../docs/reference-module-teams.md) |
 | `studio-shell` | — | Tier 1 Studio shell ([studio-shell/README.md](./studio-shell/README.md)) |
 | `account` | `apps/auth/src/module/` (legacy) | Auth settings; target `module/account/` |
 
