@@ -2,7 +2,19 @@
 
 **Purpose:** Configure monorepo so `@module/*` resolves everywhere new product code runs. Agents must not rely on undocumented relative paths.
 
-See: [gaps/imports-paths.md](./gaps/imports-paths.md), [modules.md](./modules.md).
+See: [gaps/imports-paths.md](./gaps/imports-paths.md), [modules.md](./modules.md), [features/README.md](../features/README.md).
+
+---
+
+## Path alias `@features/*`
+
+Map **`@features/*`** → **`../../features/*`** from apps and **`packages/api`** (same depth as `@module/*`).
+
+Registered in **`packages/config/tsconfig.base.json`**, **`apps/studio/tsconfig.json`**, **`packages/api/tsconfig.json`**, and **`module/tsconfig.json`** (modules consume features).
+
+Workspace package **`@loftlancer/features-shared`** (`features/package.json`) runs **`pnpm check-types`** over feature sources.
+
+**Dependency rule:** modules → features → packages; features must not import `@module/*`.
 
 ---
 
@@ -98,6 +110,8 @@ node scripts/audit-module-architecture.mjs --write-baseline
 CI runs this on every push to **`dev`** and **`main`** and on pull requests ([forbidden-defaults.md](./gaps/forbidden-defaults.md)).
 
 **Before merging an issue branch to `dev`:** **`pnpm verify:dev-merge`** (lint, routes, audit, types, tests). Agent workflow: [AGENTS.md](../AGENTS.md), `.cursor/rules/agent-workflow.mdc`, **[.codex/README.md](../.codex/README.md)** (OpenAI Codex).
+
+**Note:** The audit script scans **`module/`** and oRPC procedures only. Feature-layer conventions are documented in **`features/README.md`** until a dedicated gate exists.
 
 ---
 

@@ -4,7 +4,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
-      "@module/*": ["../../module/*"]
+      "@module/*": ["../../module/*"],
+      "@features/*": ["../../features/*"]
     }
   },
   "include": ["src"]

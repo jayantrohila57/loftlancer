@@ -16,6 +16,10 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Added
+
+- **`features/`** layer scaffold (`@features/*`, `@loftlancer/features-shared`) with initial authorization, audit, notifications, forms, and data-table folders; dependency rule documented (modules import features, not reverse).
+
 ## [1.25.1] - 2026-11-03
 
 - Complete the organizations module migration with controller-backed tRPC/MCP adapters and opt-in integration coverage.

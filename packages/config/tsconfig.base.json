@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["node"],
     "paths": {
-      "@module/*": ["../../module/*"]
+      "@module/*": ["../../module/*"],
+      "@features/*": ["../../features/*"]
     }
   }
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * Mechanical architecture gate for module/ + oRPC (docs/gaps/*).
+ * features/ is not scanned yet — see features/README.md and docs/tooling.md.
  * Fails on NEW violations vs baseline; use --strict to fail on all.
  *
  * Usage:
