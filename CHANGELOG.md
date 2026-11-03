@@ -19,6 +19,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 ### Fixed
 
 - Restore production sign-in after the `/better-auth` deploy: align platform Better Auth `basePath` with `app/api/auth`, accept legacy `/api/better-auth` on the auth app, redirect `/auth/*` to `/better-auth/*`, mount studio sibling handlers under `app/api/better-auth`, and fix magic-link / JWKS URLs.
+- Set `DATABASE_URL` on `test:teams` and `test:teams:integration` so `pnpm test` does not depend on shell env across `&&`.
 
 ## [1.26.1] - 2026-11-03
 
