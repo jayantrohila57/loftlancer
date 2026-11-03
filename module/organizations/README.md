@@ -28,7 +28,7 @@ Compatibility tRPC and MCP adapters should call the same module controllers and 
 
 ## Current migration state
 
-This is a partial migration. Shared invitation email parsing and invitation utilities are in this module, and invitation persistence/delivery is implemented by `server.invitation-create.service.ts`. Teams' invitation flow and the organization MCP invitation operation reuse that service. Organization screens, their hooks, and most product operations remain in the legacy Studio module and API router until their linked slices migrate them.
+This is a partial migration. Organization list, get-by-slug, and get-profile now have module validations, services, and read controllers. Shared invitation email parsing and invitation utilities are in this module, and invitation persistence/delivery is implemented by `server.invitation-create.service.ts`. Teams' invitation flow and the organization MCP invitation operation reuse that service. Organization screens, their hooks, and most product operations remain in the legacy Studio module and API router until their linked slices migrate them.
 
 ### Migration boundaries
 
@@ -44,9 +44,20 @@ This is a partial migration. Shared invitation email parsing and invitation util
 module/organizations/
 ├── utils/
 │   ├── utils.invite-emails.ts
-│   └── utils.invitations.ts
+│   ├── utils.invitations.ts
+│   └── validation/
+│       ├── utils.organization-list.validation.ts
+│       ├── utils.organization-get-by-slug.validation.ts
+│       └── utils.organization-get-profile.validation.ts
 ├── server/
+│   ├── controller/
+│   │   ├── server.organization-list.controller.ts
+│   │   ├── server.organization-get-by-slug.controller.ts
+│   │   └── server.organization-get-profile.controller.ts
 │   └── service/
+│       ├── server.organization-list.service.ts
+│       ├── server.organization-get-by-slug.service.ts
+│       ├── server.organization-get-profile.service.ts
 │       └── server.invitation-create.service.ts
 ├── client/                 # organization client migration slices
 ├── README.md
@@ -71,7 +82,7 @@ Implement in this order; do not skip ahead of an open dependency:
 | Sub-issue | Scope | Status |
 |-----------|-------|--------|
 | [#938](https://github.com/jayantrohila57/loftlancer/issues/938) | README, architecture prompt, module index | Implemented on this branch |
-| [#939](https://github.com/jayantrohila57/loftlancer/issues/939) | A — validations and read controllers | Open |
+| [#939](https://github.com/jayantrohila57/loftlancer/issues/939) | A — validations and read controllers | Implemented on this branch |
 | [#940](https://github.com/jayantrohila57/loftlancer/issues/940) | B — invitations and members controllers | Open |
 | [#973](https://github.com/jayantrohila57/loftlancer/issues/973) | C — settings, branding, roles, domains, lifecycle, member administration | Open |
 | [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | D — native oRPC organizations | Open |
