@@ -4,16 +4,21 @@ import { Button } from "@loftlancer/ui/button";
 import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
+import { DataTableColumnHeader } from "@loftlancer/ui/data-table/data-table-column-header";
+import { DataTableRowActions } from "@loftlancer/ui/data-table/data-table-row-actions";
 import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
+import { PageStatusError as ErrorState } from "@loftlancer/ui/patterns/page-state";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
-import { ErrorState } from "@/components/patterns/error-state";
-import { Can } from "@/shared/permissions/shared.permissions.can";
-import { useTeamMembersScreen } from "../hooks/client.use-teams-members-screen.hook";
-import { TeamsResponseMessage } from "./client.response.boundary";
+import type { useTeamMembersScreen } from "../hooks/client.use-teams-members-screen.hook";
+import { Can } from "./client.can";
 
-export function TeamMembersPage({ teamId }: { teamId: string }) {
+export function TeamMembersContent({
+  teamId,
+  state,
+}: {
+  teamId: string;
+  state: ReturnType<typeof useTeamMembersScreen>;
+}) {
   const {
     confirm,
     ConfirmDialog,
@@ -26,15 +31,7 @@ export function TeamMembersPage({ teamId }: { teamId: string }) {
     add,
     remove,
     changeRole,
-  } = useTeamMembersScreen(teamId);
-  if (members.response && members.response.status !== "success")
-    return (
-      <TeamsResponseMessage
-        message={members.response.message}
-        error={members.response.status === "error"}
-        retry={() => void members.refetch()}
-      />
-    );
+  } = state;
   const addable = availableMembers.data?.items ?? [];
   const memberRows = (members.data?.items ?? []).map((row) => ({
     id: row.id,

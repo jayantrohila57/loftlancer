@@ -113,7 +113,13 @@
     "./platform-status": "./src/lib/platform-status.ts",
     "./patterns/sign-in-options": "./src/patterns/sign-in-options.tsx",
     "./patterns/ai-stream-state": "./src/patterns/ai-stream-state.tsx",
-    "./patterns/sentry-test-panel": "./src/patterns/sentry-test-panel.tsx"
+    "./patterns/sentry-test-panel": "./src/patterns/sentry-test-panel.tsx",
+    "./patterns/guarded-dialog": "./src/patterns/guarded-dialog.tsx",
+    "./patterns/form-sheet-guard-context": "./src/patterns/form-sheet-guard-context.tsx",
+    "./patterns/required-fields-hint": "./src/patterns/required-fields-hint.tsx",
+    "./data-table/data-table-column-header": "./src/data-table/data-table-column-header.tsx",
+    "./data-table/data-table-row-actions": "./src/data-table/data-table-row-actions.tsx",
+    "./patterns/settings-row": "./src/patterns/settings-row.tsx"
   },
   "scripts": {
     "check-types": "tsc --noEmit",

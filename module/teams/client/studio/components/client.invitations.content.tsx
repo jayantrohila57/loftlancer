@@ -1,70 +1,29 @@
 "use client";
-
+import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
-import { Skeleton } from "@loftlancer/ui/skeleton";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import {
-  INVITATION_PAGE_SIZE,
-  InvitationListControls,
-  type InvitationStatusFilter,
-} from "@/components/org/invitation-list-controls";
-import { OrganizationInvitationsTable } from "@/components/org/organization-invitations-table";
-import { ErrorState } from "@/components/patterns/error-state";
-import { authClient } from "@/lib/auth-client";
-import {
-  cancelOrganizationInvitation,
-  pendingOrganizationInvitations,
-} from "@/lib/organization-invitations";
-import { toast } from "@/lib/toast";
-import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
-import { useOrganizationBySlug } from "@/module/organizations/organizations.use.organization.by.slug";
-import { Can } from "@/shared/permissions/shared.permissions.can";
-import { trpc } from "@/utils/trpc";
-
-export function TeamInvitationsPage({
-  slug,
-  teamId,
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogPopup,
+  DialogTitle,
+} from "@loftlancer/ui/dialog";
+import { Label } from "@loftlancer/ui/label";
+import { GuardedDialog } from "@loftlancer/ui/patterns/guarded-dialog";
+import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
+import { Textarea } from "@loftlancer/ui/textarea";
+import type { OrgInviteRole } from "@module/organizations/utils/utils.invite-emails";
+import type { useTeamInvitationsScreen } from "../hooks/client.use-teams-invitations-screen.hook";
+import { InvitationListControls } from "./client.invitation-controls";
+import { OrganizationInvitationsTable } from "./client.invitation-table";
+export function TeamInvitationsContent({
+  state,
 }: {
-  slug: string;
-  teamId: string;
+  state: ReturnType<typeof useTeamInvitationsScreen>;
 }) {
-  const { organization } = useOrganizationBySlug(slug);
-  const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
-  const [revokingId, setRevokingId] = useState<string | null>(null);
-  const [resendingId, setResendingId] = useState<string | null>(null);
-  const [status, setStatus] = useState<InvitationStatusFilter>("pending");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(0);
-  const query = useQuery({
-    ...trpc.organizations.listInvitations.queryOptions({
-      organizationId: organization?.id ?? "",
-      teamId,
-      status,
-      search: search.trim() || undefined,
-      limit: INVITATION_PAGE_SIZE,
-      offset: page * INVITATION_PAGE_SIZE,
-    }),
-    enabled: Boolean(organization?.id),
-  });
-  const refresh = () =>
-    queryClient.invalidateQueries({
-      queryKey: trpc.organizations.listInvitations.pathKey(),
-    });
-  const resend = useMutation(
-    trpc.organizations.resendInvitation.mutationOptions({
-      onSuccess: () => {
-        toast.success("Invitation resent");
-        void refresh();
-      },
-      onError: (error) => toast.error(error.message),
-      onSettled: () => setResendingId(null),
-    }),
-  );
-  const members = useQuery(trpc.organizations.listMembers.queryOptions());
-  const invitations = query.data?.rows ?? [];
-
+  const s = state;
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -75,76 +34,180 @@ export function TeamInvitationsPage({
             follows the team’s linked projects.
           </p>
         </div>
-        <Can action="member.invite">
-          <Button type="button" size="sm" onClick={() => setOpen(true)}>
+        {s.canInvite && (
+          <Button size="sm" onClick={() => s.setOpen(true)}>
             Invite member
           </Button>
-        </Can>
+        )}
       </div>
       <InvitationListControls
-        status={status}
-        page={page}
-        total={query.data?.total ?? 0}
-        search={search}
-        onSearchChange={(next) => {
-          setSearch(next);
-          setPage(0);
+        status={s.status}
+        page={s.page}
+        total={s.query.data?.total ?? 0}
+        search={s.search}
+        onSearchChange={(v) => {
+          s.setSearch(v);
+          s.setPage(0);
         }}
-        onStatusChange={(next) => {
-          setStatus(next);
-          setPage(0);
+        onStatusChange={(v) => {
+          s.setStatus(v);
+          s.setPage(0);
         }}
-        onPageChange={setPage}
+        onPageChange={s.setPage}
       />
-      {query.isPending ? (
-        <Skeleton className="h-36 rounded-md" />
-      ) : query.isError ? (
-        <ErrorState
-          title="Could not load team invitations"
-          description="Try loading invitations again."
-          onRetry={() => void query.refetch()}
-        />
-      ) : invitations.length === 0 ? (
-        <p className="rounded-md border bg-card p-4 text-muted-foreground text-sm">
-          No {status === "all" ? "" : `${status} `}invitations for this team.
-        </p>
-      ) : (
-        <OrganizationInvitationsTable
-          invitations={invitations}
-          caption="Team invitations"
-          scopeLabel="Team"
-          revokingId={revokingId}
-          resendingId={resendingId}
-          onRevoke={(id) => {
-            setRevokingId(id);
-            void cancelOrganizationInvitation(authClient.organization, id)
-              .then(() => {
-                toast.success("Invitation revoked");
-                return refresh();
-              })
-              .catch((error) => toast.error(error.message))
-              .finally(() => setRevokingId(null));
-          }}
-          onResend={(invite) => {
-            setResendingId(invite.id);
-            resend.mutate({ invitationId: invite.id });
-          }}
-          clientPagination={false}
-        />
-      )}
-      {organization ? (
-        <BulkInviteDialog
-          organizationId={organization.id}
-          fixedTeamId={teamId}
-          open={open}
-          onOpenChange={setOpen}
-          pendingEmails={pendingOrganizationInvitations(invitations).map(
-            (invite) => invite.email,
-          )}
-          memberEmails={members.data?.items.map((member) => member.email) ?? []}
-          onInvited={() => void refresh()}
-        />
-      ) : null}
+      <OrganizationInvitationsTable
+        invitations={s.query.data?.rows ?? []}
+        canInvite={s.canResend}
+        canRevoke={s.canRevoke}
+        caption="Team invitations"
+        scopeLabel="Team"
+        clientPagination={false}
+        revokingId={s.revoke.isPending ? s.revoke.variables.invitationId : null}
+        resendingId={
+          s.resend.isPending ? s.resend.variables.invitationId : null
+        }
+        onRevoke={(invitationId) =>
+          s.revoke.mutate({ teamId: s.teamId, invitationId })
+        }
+        onResend={(invite) =>
+          s.resend.mutate({ teamId: s.teamId, invitationId: invite.id })
+        }
+      />
+      <GuardedDialog
+        open={s.open}
+        onOpenChange={(open) => {
+          if (!s.sending) s.setOpen(open);
+        }}
+        isDirty={!s.sending && Boolean(s.raw.trim())}
+        onDiscard={s.reset}
+        onClosed={s.reset}
+        closeWithoutPromptRef={s.closeWithoutPromptRef}
+      >
+        <DialogPopup>
+          <form
+            className="contents"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void s.submit();
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Invite team members</DialogTitle>
+              <DialogDescription>
+                Invite people to the organization and this team. Linked projects
+                determine their team access.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogPanel className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="team-invite-emails">Email addresses</Label>
+                <Textarea
+                  id="team-invite-emails"
+                  value={s.raw}
+                  onChange={(e) => s.setRaw(e.target.value)}
+                  placeholder="alex@example.com, sam@example.com"
+                  disabled={s.sending}
+                  required
+                  aria-describedby="team-invite-help"
+                />
+                <p
+                  id="team-invite-help"
+                  className="text-muted-foreground text-xs"
+                >
+                  Separate addresses with commas, spaces, or new lines.
+                </p>
+              </div>
+              <SearchableCombobox
+                value={s.role}
+                onChange={(v) => s.setRole(v as OrgInviteRole)}
+                ariaLabel="Organization role"
+                options={s.roles.map((value) => ({
+                  value,
+                  label: value.charAt(0).toUpperCase() + value.slice(1),
+                }))}
+              />
+              <p className="text-muted-foreground text-sm">
+                Invitees join the team as members.
+              </p>
+              {s.context.isPending ? (
+                <p role="status">Checking existing members and invitations…</p>
+              ) : s.context.isError ||
+                s.context.response?.status !== "success" ? (
+                <p role="alert">
+                  Could not check existing invitations.{" "}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => void s.context.refetch()}
+                  >
+                    Retry
+                  </Button>
+                </p>
+              ) : null}
+              {s.parsed.some((p) => p.status === "duplicate") && (
+                <p className="text-muted-foreground text-xs">
+                  Duplicate addresses are included only once.
+                </p>
+              )}
+              <ul
+                className="max-h-44 space-y-1 overflow-y-auto"
+                aria-label="Invitation preview"
+              >
+                {s.parsed
+                  .filter((p) => p.status !== "duplicate")
+                  .map((p) => (
+                    <li
+                      key={p.email}
+                      className="flex flex-wrap items-center gap-2 text-sm"
+                    >
+                      <span className="break-all">{p.email}</span>
+                      <Badge variant="outline">
+                        {p.status === "valid"
+                          ? "Ready"
+                          : p.status === "member"
+                            ? "Already a member"
+                            : p.status === "pending"
+                              ? "Already invited"
+                              : p.status}
+                      </Badge>
+                      {s.failures[p.email] && (
+                        <span role="alert" className="text-destructive">
+                          {s.failures[p.email]}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+              </ul>
+            </DialogPanel>
+            <DialogFooter>
+              <DialogClose
+                render={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={s.sending}
+                  />
+                }
+              >
+                Cancel
+              </DialogClose>
+              <Button
+                type="submit"
+                disabled={
+                  s.sending ||
+                  !s.valid.length ||
+                  !s.roles.includes(s.role) ||
+                  s.context.response?.status !== "success"
+                }
+              >
+                {s.sending
+                  ? "Sending…"
+                  : `Send ${s.valid.length || ""} invitation${s.valid.length === 1 ? "" : "s"}`}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogPopup>
+      </GuardedDialog>
     </section>
   );
 }

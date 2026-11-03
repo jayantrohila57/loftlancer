@@ -30,6 +30,7 @@ export type RunActionInput<T> = {
   ctx: RunActionContext;
   audit?: boolean;
   handler: () => Promise<ServiceOutcome<T>>;
+  authorize?: () => Promise<void>;
   validate?: (response: ServiceResponse<T>) => ServiceResponse<T>;
 };
 export function buildAccessContext(ctx: RunActionContext) {
@@ -55,6 +56,7 @@ export async function runAction<T>(
   let authorized = false;
   try {
     await requireAction(input.action, buildAccessContext(input.ctx));
+    await input.authorize?.();
     authorized = true;
     response = mapOutcomeToResponse(await input.handler());
     response = serviceResponseUnknownSchema.parse(
@@ -74,6 +76,7 @@ export async function runAction<T>(
       result = "denied";
       response = createFailed(
         error instanceof Error ? error.message : "Not allowed",
+        { code: String(code) },
       );
     } else {
       logger.exception("Action failed", error, { action: input.action });
@@ -86,14 +89,13 @@ export async function runAction<T>(
     const data = response.data;
     const entityId =
       input.ctx.entityId ??
-      input.ctx.teamId ??
       (data &&
       !Array.isArray(data) &&
       typeof data === "object" &&
       "id" in data &&
       typeof data.id === "string"
         ? data.id
-        : null);
+        : (input.ctx.teamId ?? null));
     try {
       await writeAuditEvent({
         action: input.action,

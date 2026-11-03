@@ -59,6 +59,7 @@ test("mutations audit the terminal outcome once and preserve safe response contr
     },
   });
   assert.equal(denied.status, "failed");
+  assert.equal(denied.error?.code, "FORBIDDEN");
   assert.equal(called, false);
   assert.equal(audit.length, 1);
   assert.equal(audit[0]?.result, "denied");
@@ -93,4 +94,39 @@ test("mutations audit the terminal outcome once and preserve safe response contr
     handler: async () => ({ kind: "success", data: [], message: "No members" }),
   });
   assert.equal(audit.length, 0);
+});
+
+test("secondary authorization denial never executes a handler and audits only the terminal denial", async () => {
+  audit.length = 0;
+  let called = false;
+  const response = await runAction({
+    action: "member.invite",
+    ctx,
+    authorize: async () => {
+      throw Object.assign(new Error("Team access denied"), {
+        code: "FORBIDDEN",
+      });
+    },
+    handler: async () => {
+      called = true;
+      return { kind: "success", data: { id: "unexpected" } };
+    },
+  });
+  assert.equal(response.status, "failed");
+  assert.equal(called, false);
+  assert.equal(audit.length, 1);
+  assert.equal(audit[0]?.result, "denied");
+});
+
+test("create audits the returned entity while retaining parent team scope", async () => {
+  audit.length = 0;
+  const response = await runAction({
+    action: "member.invite",
+    ctx: { ...ctx, teamId: "parent-team", payload: { teamId: "parent-team" } },
+    handler: async () => ({ kind: "success", data: { id: "invitation-id" } }),
+  });
+  assert.equal(response.status, "success");
+  assert.equal(audit.length, 1);
+  assert.equal(audit[0]?.entityId, "invitation-id");
+  assert.deepEqual(audit[0]?.payload, { teamId: "parent-team" });
 });

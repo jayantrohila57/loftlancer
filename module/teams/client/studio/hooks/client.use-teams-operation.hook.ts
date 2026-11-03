@@ -2,22 +2,25 @@
 import type { ActionName } from "@loftlancer/actions";
 import { toastManager } from "@loftlancer/ui/toast";
 import { applyResponseToast } from "@module/shared/client/apply-response-toast";
+import { useModuleOrganizationId } from "@module/shared/client/client.scope.provider";
 import { trackActionIntent } from "@module/shared/client/track-action-intent";
 import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useActiveOrganization } from "@/lib/team-runtime";
 import { teamsQueryKeys } from "../../../utils/constants/utils.query-keys.constants";
 export function useTeamsOperationQuery<T>(
   operation: string,
   input: unknown,
   call: () => Promise<ServiceResponse<T>>,
   enabled = true,
+  initialData?: ServiceResponse<T>,
 ) {
-  const { activeOrganizationId } = useActiveOrganization();
+  const activeOrganizationId = useModuleOrganizationId();
   const query = useQuery({
     queryKey: teamsQueryKeys.operation(activeOrganizationId, operation, input),
     queryFn: call,
+    initialData,
+    staleTime: initialData ? 30_000 : 0,
     enabled: Boolean(activeOrganizationId) && enabled,
     meta: { toastOnError: false },
   });
@@ -35,8 +38,15 @@ export function useTeamsRowsQuery<T>(
   input: unknown,
   call: () => Promise<ServiceResponse<T>>,
   enabled = true,
+  initialData?: ServiceResponse<T>,
 ) {
-  const query = useTeamsOperationQuery(operation, input, call, enabled);
+  const query = useTeamsOperationQuery(
+    operation,
+    input,
+    call,
+    enabled,
+    initialData,
+  );
   return {
     ...query,
     data:
@@ -77,7 +87,7 @@ export function useTeamsOperationMutation<I, T>(
         await client.invalidateQueries({
           predicate: (query) =>
             Array.isArray(query.queryKey[0]) &&
-            ["teams", "permissions", "projectAccess"].includes(
+            ["teams", "permissions", "projectAccess", "organizations"].includes(
               String(query.queryKey[0][0]),
             ),
         });

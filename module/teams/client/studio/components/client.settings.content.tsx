@@ -3,26 +3,22 @@
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
+import { RequiredFieldsHint } from "@loftlancer/ui/patterns/required-fields-hint";
+import { SettingsRow } from "@loftlancer/ui/patterns/settings-row";
 import { Textarea } from "@loftlancer/ui/textarea";
-import { ErrorState } from "@/components/patterns/error-state";
-import { RequiredFieldsHint } from "@/components/patterns/required-fields-hint";
-import { SettingsRow } from "@/components/patterns/settings-layout";
-import { Can } from "@/shared/permissions/shared.permissions.can";
-import { useTeamSettingsScreen } from "../hooks/client.use-teams-settings-screen.hook";
-import { TeamsResponseMessage } from "./client.response.boundary";
+import type { useTeamSettingsScreen } from "../hooks/client.use-teams-settings-screen.hook";
+import { Can } from "./client.can";
 
-export function TeamSettingsPage({
-  slug,
+export function TeamSettingsContent({
   teamId,
+  state,
 }: {
-  slug: string;
   teamId: string;
+  state: ReturnType<typeof useTeamSettingsScreen>;
 }) {
   const {
     confirm,
     ConfirmDialog,
-    teams,
     team,
     name,
     setName,
@@ -32,37 +28,11 @@ export function TeamSettingsPage({
     setPurpose,
     update,
     remove,
-  } = useTeamSettingsScreen(slug, teamId);
-  if (teams.response && teams.response.status !== "success")
-    return (
-      <TeamsResponseMessage
-        message={teams.response.message}
-        error={teams.response.status === "error"}
-        retry={() => void teams.refetch()}
-      />
-    );
-
-  if (teams.isError) {
-    return (
-      <ErrorState
-        title="Could not load team settings"
-        description="Try loading the team settings again."
-        onRetry={() => void teams.refetch()}
-      />
-    );
-  }
-  if (teams.isPending || !team) {
-    return (
-      <>
-        <AccordionSectionSkeleton rows={2} />
-        <AccordionSectionSkeleton rows={1} />
-      </>
-    );
-  }
-
+  } = state;
+  if (!team) return null;
   return (
     <>
-      <Can action="team.update">
+      <Can action="team.update" teamId={teamId}>
         <AccordionSection
           title="Team profile"
           description="Give people a clear description of this team and its purpose."
@@ -72,6 +42,7 @@ export function TeamSettingsPage({
             <SettingsRow label="Team name" required>
               <Input
                 id="team-settings-name"
+                aria-label="Team name"
                 value={name}
                 maxLength={100}
                 onChange={(event) => setName(event.target.value)}
@@ -83,6 +54,7 @@ export function TeamSettingsPage({
               description="Up to 500 characters."
             >
               <Textarea
+                aria-label="Team description"
                 id="team-settings-description"
                 value={description}
                 maxLength={500}
@@ -97,6 +69,7 @@ export function TeamSettingsPage({
             >
               <Input
                 id="team-settings-purpose"
+                aria-label="Team purpose"
                 value={purpose}
                 maxLength={250}
                 onChange={(event) => setPurpose(event.target.value)}
@@ -127,7 +100,7 @@ export function TeamSettingsPage({
           </div>
         </AccordionSection>
       </Can>
-      <Can action="team.delete">
+      <Can action="team.delete" teamId={teamId}>
         <AccordionSection
           title="Delete team"
           description="Remove the team and its project access."

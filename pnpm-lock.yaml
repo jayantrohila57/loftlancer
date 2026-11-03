@@ -717,6 +717,9 @@ importers:
       '@loftlancer/api':
         specifier: workspace:*
         version: link:../packages/api
+      '@loftlancer/auth':
+        specifier: workspace:*
+        version: link:../packages/auth
       '@loftlancer/db':
         specifier: workspace:*
         version: link:../packages/db
@@ -729,6 +732,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.104.2
         version: 5.104.2(react@19.3.1)
+      '@tanstack/react-table':
+        specifier: ^9.3.1
+        version: 9.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       drizzle-orm:
         specifier: 'catalog:'
         version: 0.45.4(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.1)

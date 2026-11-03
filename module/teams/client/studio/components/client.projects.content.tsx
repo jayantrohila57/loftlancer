@@ -4,85 +4,37 @@ import { Button } from "@loftlancer/ui/button";
 import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
+import { DataTableColumnHeader } from "@loftlancer/ui/data-table/data-table-column-header";
+import { DataTableRowActions } from "@loftlancer/ui/data-table/data-table-row-actions";
+import { PageStatusError as ErrorState } from "@loftlancer/ui/patterns/page-state";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { Skeleton } from "@loftlancer/ui/skeleton";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Route } from "next";
 import Link from "next/link";
-import { useState } from "react";
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { DataTableRowActions } from "@/components/data-table/data-table-row-actions";
-import { ErrorState } from "@/components/patterns/error-state";
-import { useConfirm } from "@/hooks/use-confirm";
-import { studioORPC } from "@/lib/orpc";
-import { toast } from "@/lib/toast";
-import { Can } from "@/shared/permissions/shared.permissions.can";
-import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
-import { routes } from "@/utils/navigation";
-import { trpc } from "@/utils/trpc";
-import { useTeamsRowsQuery } from "../hooks/client.use-teams-operation.hook";
-import { TeamsResponseMessage } from "./client.response.boundary";
+import { routes } from "../config/client.routes";
+import type { useTeamProjectsScreen } from "../hooks/client.use-teams-projects-screen.hook";
+import { Can } from "./client.can";
 
-export function TeamProjectsPage({
+export function TeamProjectsContent({
   slug,
   teamId,
+  state,
 }: {
   slug: string;
   teamId: string;
+  state: ReturnType<typeof useTeamProjectsScreen>;
 }) {
-  const queryClient = useQueryClient();
-  const { confirm, ConfirmDialog } = useConfirm();
-  const [projectId, setProjectId] = useState("");
-  const canManageProjectLinks = useCan("member.list");
-  const linked = useTeamsRowsQuery("projects", { teamId }, () =>
-    studioORPC.teams.projects({ teamId }),
-  );
-  const linkable = useTeamsRowsQuery(
-    "linkableProjects",
-    { teamId },
-    () => studioORPC.teams.linkableProjects({ teamId }),
-    canManageProjectLinks.allowed,
-  );
-  const invalidate = () => {
-    void queryClient.invalidateQueries({
-      queryKey: ["teams"],
-    });
-    void queryClient.invalidateQueries({
-      queryKey: ["teams"],
-    });
-    void queryClient.invalidateQueries({
-      queryKey: trpc.projectAccess.getSummary.pathKey(),
-    });
-    void queryClient.invalidateQueries({
-      queryKey: trpc.permissions.snapshot.queryKey({}),
-    });
-  };
-  const assign = useMutation(
-    trpc.projectAccess.assignTeam.mutationOptions({
-      onSuccess: () => {
-        setProjectId("");
-        toast.success("Team added to project");
-        invalidate();
-      },
-      onError: (error) => toast.error(error.message),
-    }),
-  );
-  const remove = useMutation(
-    trpc.projectAccess.removeTeam.mutationOptions({
-      onSuccess: () => {
-        toast.success("Team removed from project");
-        invalidate();
-      },
-      onError: (error) => toast.error(error.message),
-    }),
-  );
-  if (linked.response && linked.response.status !== "success")
-    return (
-      <TeamsResponseMessage
-        message={linked.response.message}
-        error={linked.response.status === "error"}
-        retry={() => void linked.refetch()}
-      />
-    );
+  const {
+    linked,
+    linkable,
+    assign,
+    remove,
+    projectId,
+    setProjectId,
+    canManageProjectLinks,
+    confirm,
+    ConfirmDialog,
+  } = state;
   const linkedIds = new Set(linked.data?.items.map((item) => item.id) ?? []);
   const available = (linkable.data?.items ?? []).filter(
     (item) => !linkedIds.has(item.id),
@@ -97,7 +49,7 @@ export function TeamProjectsPage({
       cell: ({ row }) => (
         <div className="min-w-0">
           <Link
-            href={routes.project(slug, row.original.slug)}
+            href={routes.project(slug, row.original.slug) as Route}
             className="block truncate font-medium hover:underline"
           >
             {row.original.name}
@@ -120,7 +72,11 @@ export function TeamProjectsPage({
       meta: { role: "actions" },
       header: () => <DataTableActionsColumnHeader />,
       cell: ({ row }) => (
-        <Can action="project.assign_team" projectId={row.original.id}>
+        <Can
+          fallback={null}
+          action="project.assign_team"
+          projectId={row.original.id}
+        >
           <DataTableRowActions
             label={`Actions for ${row.original.name}`}
             actions={[
@@ -130,7 +86,7 @@ export function TeamProjectsPage({
                 disabled: remove.isPending,
                 onSelect: () =>
                   confirm({
-                    title: `Remove ${row.original.name} from this project?`,
+                    title: `Remove this team from ${row.original.name}?`,
                     description:
                       "Team members may lose project access. Individual access settings stay saved and apply while at least one team has access. Project managers keep their access.",
                     confirmLabel: "Remove team",
@@ -175,7 +131,11 @@ export function TeamProjectsPage({
               hint: item.slug,
             }))}
           />
-          <Can action="project.assign_team" projectId={projectId}>
+          <Can
+            fallback={null}
+            action="project.assign_team"
+            projectId={projectId}
+          >
             <Button
               type="button"
               size="sm"

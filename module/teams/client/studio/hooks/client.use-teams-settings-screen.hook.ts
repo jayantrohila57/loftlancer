@@ -1,29 +1,48 @@
 "use client";
+import { useConfirm } from "@loftlancer/ui/patterns/confirm-dialog";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { studioORPC } from "@/lib/orpc";
-import { useConfirm } from "@/lib/team-runtime";
 import { routes } from "../config/client.routes";
 import {
   useTeamsOperationMutation,
   useTeamsOperationQuery,
 } from "./client.use-teams-operation.hook";
-export function useTeamSettingsScreen(slug: string, teamId: string) {
+export type TeamSettingsInitial = Awaited<
+  ReturnType<typeof studioORPC.teams.get>
+>;
+export function useTeamSettingsScreen(
+  slug: string,
+  teamId: string,
+  initialData?: TeamSettingsInitial,
+) {
   const router = useRouter();
   const { confirm, ConfirmDialog } = useConfirm();
-  const teams = useTeamsOperationQuery("get", { teamId }, () =>
-    studioORPC.teams.get({ teamId }),
+  const teams = useTeamsOperationQuery(
+    "get",
+    { teamId },
+    () => studioORPC.teams.get({ teamId }),
+    true,
+    initialData,
   );
   const team = teams.data;
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [purpose, setPurpose] = useState("");
+  const [name, setName] = useState(team?.name ?? "");
+  const [description, setDescription] = useState(team?.description ?? "");
+  const [purpose, setPurpose] = useState(team?.purpose ?? "");
+  const previous = useRef(team);
   useEffect(() => {
-    if (team) {
-      setName(team.name);
-      setDescription(team.description ?? "");
-      setPurpose(team.purpose ?? "");
-    }
+    if (!team) return;
+    const old = previous.current;
+    setName((value) => (!old || value === old.name ? team.name : value));
+    setDescription((value) =>
+      !old || value === (old.description ?? "")
+        ? (team.description ?? "")
+        : value,
+    );
+    setPurpose((value) =>
+      !old || value === (old.purpose ?? "") ? (team.purpose ?? "") : value,
+    );
+    previous.current = team;
   }, [team]);
   const update = useTeamsOperationMutation(
     "team.update",

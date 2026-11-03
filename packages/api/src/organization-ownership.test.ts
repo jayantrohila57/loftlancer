@@ -9,6 +9,13 @@ const ownershipSource = readFileSync(
   join(sourceDir, "organization-ownership.ts"),
   "utf8",
 );
+const invitationCreateSource = readFileSync(
+  join(
+    dirname(fileURLToPath(import.meta.url)),
+    "../../../module/organizations/server/service/server.invitation-create.service.ts",
+  ),
+  "utf8",
+);
 const mcpSource = readFileSync(
   join(sourceDir, "mcp", "organization-ops.ts"),
   "utf8",
@@ -55,9 +62,13 @@ describe("organization ownership mutations", () => {
   });
 
   it("sends MCP invitations through the shared email flow and audits them", () => {
-    assert.match(mcpSource, /sendOrganizationInvitationEmail\(/);
-    assert.match(mcpSource, /invitation_already_pending/);
-    assert.match(mcpSource, /invitation_email_is_already_a_member/);
+    assert.match(invitationCreateSource, /sendOrganizationInvitationEmail\(/);
+    assert.match(mcpSource, /createOrganizationInvitation\(/);
+    assert.match(invitationCreateSource, /invitation_already_pending/);
+    assert.match(
+      invitationCreateSource,
+      /invitation_email_is_already_a_member/,
+    );
     assert.match(mcpSource, /action: "member\.invite"/);
     assert.match(mcpSource, /status: "cancelled"/);
   });

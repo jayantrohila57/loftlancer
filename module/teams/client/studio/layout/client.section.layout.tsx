@@ -1,3 +1,4 @@
+import { ModuleScopeProvider } from "@module/shared/client/client.scope.provider";
 import dynamic from "next/dynamic";
 import { type ReactNode, Suspense } from "react";
 import { loadTeamOverview } from "../../../server/page/server.team-overview.page";
@@ -19,9 +20,11 @@ async function TeamsSectionContent({
   if (response.status === "error") throw new Error(response.message);
   if (!response.data || Array.isArray(response.data)) return null;
   return (
-    <Tabs organizationName={organization.name} org={org} team={response.data}>
-      {children}
-    </Tabs>
+    <ModuleScopeProvider orgId={organization.id}>
+      <Tabs organizationName={organization.name} org={org} team={response.data}>
+        {children}
+      </Tabs>
+    </ModuleScopeProvider>
   );
 }
 
