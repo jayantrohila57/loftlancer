@@ -6,7 +6,7 @@ Greenfield target architecture is documented in [modules.md](./modules.md), [dat
 
 1. [new-feature-checklist.md](./new-feature-checklist.md) — ordered checklist for a new feature
 2. [reference-module-teams.md](./reference-module-teams.md) — canonical end-to-end example module
-3. [tooling.md](./tooling.md) — `@module/*` paths and typecheck scope
+3. [tooling.md](./tooling.md) — **`@modules/*`**, **`@features/*`**, **`@packages/*`** paths and typecheck
 
 ---
 

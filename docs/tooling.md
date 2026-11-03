@@ -1,6 +1,6 @@
 # Tooling: `module/` paths and typecheck
 
-**Purpose:** Configure monorepo so `@module/*` resolves everywhere new product code runs. Agents must not rely on undocumented relative paths.
+**Purpose:** Configure monorepo so **`@modules/*`** (dual **`@module/*`**) resolves everywhere new product code runs. Agents must not rely on undocumented relative paths.
 
 See: [gaps/imports-paths.md](./gaps/imports-paths.md), [modules.md](./modules.md), [features/README.md](../features/README.md).
 
@@ -18,9 +18,9 @@ Workspace packages **`@loftlancer/features-<name>`** (`features/<name>/package.j
 
 ---
 
-## Path alias `@module/*`
+## Path alias `@modules/*` (dual `@module/*`)
 
-Map **`@module/*`** → **`../../module/*`** from each app (adjust depth if app path differs).
+Map **`@modules/*`** and **`@module/*`** → **`../../module/*`** from each app (adjust depth if app path differs). Prefer **`@modules/*`** in new code ([AGENTS.md](../../AGENTS.md)).
 
 ### Studio (`apps/studio/tsconfig.json`)
 
@@ -29,6 +29,7 @@ Add under `compilerOptions.paths`:
 ```json
 {
   "@/*": ["./src/*"],
+  "@modules/*": ["../../module/*"],
   "@module/*": ["../../module/*"]
 }
 ```
@@ -46,13 +47,14 @@ Include module sources in `include` when TypeScript must resolve cross-root impo
 
 ### Auth (`apps/auth/tsconfig.json`)
 
-Same **`@module/*`** mapping as Studio.
+Same **`@modules/*`** / **`@module/*`** mapping as Studio.
 
 ### Packages API (`packages/orpc/tsconfig.json`)
 
-Add **`@module/*`** so procedure files import controllers:
+Add **`@modules/*`** (and dual **`@module/*`**) so procedure files import controllers:
 
 ```json
+"@modules/*": ["../../module/*"],
 "@module/*": ["../../module/*"]
 ```
 
@@ -73,9 +75,9 @@ Document the exact export names in this file when wired (`studioORPC`, `accountO
 
 **`module/package.json`** + **`module/tsconfig.json`** can run **`pnpm check-types`** over shared contracts without an app:
 
-- Depends on `zod`, `@loftlancer/actions` (types for `ActionName`).
+- Depends on `zod`, `@features/authorization/utils` (types for `ActionName`).
 - Extends `@loftlancer/typescript-config/tsconfig.base.json`.
-- `"paths": { "@module/*": ["./*"] }`
+- `"paths": { "@modules/*": ["./*"], "@module/*": ["./*"] }`
 
 Root **`pnpm check-types`** should include **`module`** when the package exists (turbo task).
 
@@ -95,7 +97,7 @@ When `module/package.json` exists, register **`check-types`** in turbo pipeline 
 | -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `controller-response-schema`           | Every `module/*/server/controller/*.controller.ts` returns **`serviceResponseSchema(...).parse(...)`**    |
 | `orpc-input-schema`                    | No **`z.unknown()`** or **`teamControllerInputSchema`** in `packages/orpc/src/orpc/procedures/`           |
-| `orpc-module-import`                   | Procedures import controllers/schemas from **`@module/*`**                                                |
+| `orpc-module-import`                   | Procedures import controllers/schemas from **`@modules/*`** or **`@module/*`**                            |
 | `legacy-unwrap`                        | **`unwrapTeam*`** only in allowlisted tRPC/MCP/legacy handler paths                                       |
 | `app-page-forbidden` / `app-page-thin` | Studio (and other) **`page.tsx`**: no DB/`requireAction`; teams routes stay thin **`@module`** re-exports |
 

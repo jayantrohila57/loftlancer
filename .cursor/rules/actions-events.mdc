@@ -1,6 +1,6 @@
 ---
 description: Registry action IDs; runAction wrapper; audit all outcomes; before/after events
-globs: packages/actions/**,packages/orpc/src/actions/**,module/**/server/**,module/shared/server/**
+globs: features/authorization/**,packages/orpc/src/actions/**,module/**/server/**,module/shared/server/**
 alwaysApply: false
 ---
 
@@ -10,7 +10,7 @@ Full spec: **[docs/actions-and-events.md](../docs/actions-and-events.md)**
 
 ## Action ID
 
-- Every gated mutation uses a name from **`packages/actions/src/registry-data.ts`** — RBAC, UI `Can`, audit, notifications, tracking.
+- Every gated mutation uses a name from **`features/authorization/src/constants/authorization.registry-data.ts`** (import **`@features/authorization/utils`**) — RBAC, UI `Can`, audit, notifications, tracking.
 - No new ad hoc strings.
 
 ## Server: `runAction` (target)

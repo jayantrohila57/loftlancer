@@ -1,15 +1,15 @@
 # Features layer
 
-Cross-cutting product capabilities live under **`features/<name>/src/{server,client,shared}/`**. Features are **reused by multiple modules**; they are not org-scoped product domains.
+Cross-cutting product capabilities live under **`features/<name>/src/`** (`core/server`, `core/client`, `config/`, `constants/`, `types/`, `utils/` — see [NAMING.md](./NAMING.md)). Features are **reused by multiple modules**; they are not org-scoped product domains.
 
 ## Layers (dependency direction)
 
-| Layer        | Path                   | Role                                                        |
-| ------------ | ---------------------- | ----------------------------------------------------------- |
-| **Apps**     | `apps/*`               | Routes, layouts, thin re-exports — no domain logic          |
-| **Modules**  | `module/<domain>/`     | Product domains (teams, organizations, …)                   |
-| **Features** | `features/<name>/src/` | Shared capabilities (api shell, auth, authz, …)             |
-| **Packages** | `packages/*`           | Platform infra (db, ui, api transport, actions registry, …) |
+| Layer        | Path                   | Role                                                              |
+| ------------ | ---------------------- | ----------------------------------------------------------------- |
+| **Apps**     | `apps/*`               | Routes, layouts, thin re-exports — no domain logic                |
+| **Modules**  | `module/<domain>/`     | Product domains (teams, organizations, …)                         |
+| **Features** | `features/<name>/src/` | Shared capabilities (api shell, auth, authz, …)                   |
+| **Packages** | `packages/*`           | Platform infra (db, ui, api transport, …) — no product registries |
 
 **Dependency rule (mandatory):**
 
@@ -40,7 +40,7 @@ features/
 ├── analytics/  observability/  patterns/  data-table/
 ├── shell/           # dashboard / public app chrome (from packages/ui)
 └── marketing/       # www + docs marketing chrome (from packages/ui)
-# Each feature: src/{server,client,shared}/ as needed — see features/<name>/README.md
+# Each feature: src/core/{server,client}/ + config|constants|types|utils — see NAMING.md and features/<name>/README.md
 ```
 
 Per-feature runbooks: **`features/<name>/README.md`** ([README.template.md](./README.template.md)).

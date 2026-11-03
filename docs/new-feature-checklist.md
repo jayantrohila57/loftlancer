@@ -70,7 +70,7 @@ Ordered steps for adding or extending a **product feature** under `module/<featu
 
 ## 7. App routes (thin)
 
-- [ ] `apps/studio/src/app/.../page.tsx` imports `@module/<feature>/...` only — no domain logic ([gaps/forbidden-defaults.md](./gaps/forbidden-defaults.md)).
+- [ ] `apps/studio/src/app/.../page.tsx` imports `@modules/<feature>/...` only — no domain logic ([gaps/forbidden-defaults.md](./gaps/forbidden-defaults.md)).
 - [ ] `loading.tsx` / `error.tsx` / `not-found.tsx` / `forbidden.tsx` per [app-states.md](./app-states.md).
 
 ---

@@ -73,13 +73,15 @@ Feature logic **must not** be added under `packages/orpc`; see [server-api.md](.
 
 ---
 
-## Other packages (internal sketch)
+## Package inventory (current workspace)
+
+Provider / infra only under **`packages/`** (no `packages/actions`, `packages/env`, `packages/logger`, or domain `packages/*` — merged into **features/** or renamed: **t3-env**, **sentry**, **typescript-config**).
 
 | Package                         | Typical layout                                                                                                                                                                                      |
 | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@loftlancer/drizzle`           | `src/{core,config,constants,types,utils}/`, `src/schema/`, migrations, soft-delete helpers                                                                                                          |
+| `@loftlancer/drizzle`           | `src/{core,config,constants,types,utils}/`, `src/schema/`, migrations — filenames like `drizzle.client.ts`                                                                                          |
 | `@loftlancer/ui`                | `src/components/ui/` (shadcn/coss CLI), `src/lib/utils.ts`, `globals.css` — **primitives only**; patterns in `features/patterns`, tables in `features/data-table`, shell chrome in `features/shell` |
-| `@loftlancer/auth`              | Better Auth config and server plugins                                                                                                                                                               |
+| `@loftlancer/better-auth`       | Better Auth server + React client (`/client` export); plugins and session wiring                                                                                                                    |
 | `@loftlancer/t3-env`            | `src/{core,config,constants,types,utils}/t3-env.*` — `@t3-oss/env-*` + Zod                                                                                                                          |
 | `@loftlancer/crypto`            | `src/{core,config,constants}/node-crypto.*.ts` — Node AES-256-GCM only                                                                                                                              |
 | `@loftlancer/resend`            | `src/{core,config,constants,types,utils}/resend.*.ts` + React Email templates under `core/templates/`                                                                                               |

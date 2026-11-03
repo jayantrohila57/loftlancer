@@ -13,7 +13,7 @@ src/
   types/mcp.types.ts
   utils/mcp.cors.ts
   utils/mcp.rate-limit.ts
-  utils/mcp.scopes.ts           # re-exports from @loftlancer/actions
+  utils/mcp.scopes.ts           # re-exports from @features/authorization/utils
   index.ts
 tests/
 ```

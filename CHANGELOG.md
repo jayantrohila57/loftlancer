@@ -18,6 +18,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ### Changed
 
+- Align platform docs and Cursor agent rules with **Apps → Modules → Features → Packages** layering.
 - Enforce **Apps → Modules → Features → Packages** layering across the monorepo; document in [docs/features.md](./docs/features.md) / [AGENTS.md](./AGENTS.md) and gate with **`pnpm audit:architecture-layers`**.
 - Split **`features/`** into per-feature workspace packages; move shared UI (patterns, data-table, shell) out of slimmed **`@loftlancer/ui`**.
 - Rename and re-layout platform packages (**`api` → `orpc`**, **`logger` → `sentry`**, **`config` → `typescript-config`**, **`env` → `t3-env`**) with provider-style folders for **`better-auth`**, **`resend`**, and **`orpc`**.

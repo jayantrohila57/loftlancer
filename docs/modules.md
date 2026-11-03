@@ -11,7 +11,7 @@ Legacy paths (`apps/studio/src/module/*`, `packages/orpc/src/modules/*`, fat rou
 ## What a module is
 
 - **One folder per product domain:** `module/teams/`, `module/projects/`, … (see [module/README.md](../module/README.md) for the current domain list).
-- **Not a pnpm package** — plain source under the repo root, imported via path alias (e.g. `@module/*` when configured).
+- **Not a pnpm package** — plain source under the repo root, imported via **`@modules/*`** (dual alias **`@module/*`**).
 - **Owns the feature end-to-end:** validation, server behavior, client UI, and **its route section layout** (Tier 2) — see [layouts.md](./layouts.md).
 
 ---
@@ -95,7 +95,7 @@ Tests: `server.get-team.service.test.ts` next to the source file.
 
 Legacy examples in migration code may omit postfixes; **new files follow [naming.md](./naming.md).**
 
-**Import alias:** `@module/<feature>/…` — see [docs/tooling.md](../docs/tooling.md) and [docs/gaps/imports-paths.md](../docs/gaps/imports-paths.md).
+**Import alias:** **`@modules/<feature>/…`** (dual **`@module/<feature>/…`**) — see [tooling.md](./tooling.md) and [gaps/imports-paths.md](./gaps/imports-paths.md).
 
 **Cross-domain helpers (still module layer):** `module/shared/` — see [module/shared/README.md](../module/shared/README.md). Prefer **`features/`** when logic is domain-independent and consumed by many modules ([features.md](./features.md)).
 
@@ -150,7 +150,7 @@ Repeat per screen and per server operation in other domains.
 | Mapping domain errors to UI states (loading, empty, error, …)                     | `module/<feature>/utils/` and `client/`    |
 | Tests for feature behavior                                                        | Next to the code under `module/<feature>/` |
 
-Permissions: **`@loftlancer/actions`** registry + **`runAction`** wrapper — audit **success, denied, failure** on mutations ([actions-and-events.md](./actions-and-events.md), [data-workflow.md](./data-workflow.md)).
+Permissions: action registry via **`@features/authorization/utils`** + **`runAction`** via **`@modules/shared/server/run-action`** — audit **success, denied, failure** on mutations ([actions-and-events.md](./actions-and-events.md), [data-workflow.md](./data-workflow.md)).
 
 ---
 
@@ -170,7 +170,7 @@ Browser (oRPC) / MCP / Server Action / route.ts / RSC page
     ↓
 module/<feature>/server/controller → service
     ↓
-module/<feature>/utils + @loftlancer/drizzle + @loftlancer/actions
+module/<feature>/utils + @packages/drizzle + @features/authorization/utils
 ```
 
 - **oRPC** is the only RPC protocol for new work; procedure shells live in `@loftlancer/orpc`, implementations in **`module/`**. tRPC is removed over time ([server-api.md](./server-api.md)).
@@ -211,6 +211,7 @@ App route files are **bare**; layouts and UI live in **`module/`**.
 - [ ] UI skills applied per [ui-ux-skills.md](./ui-ux-skills.md); audit pass (**web-design-guidelines** or **ui-ux-pro-max**) before merge.
 - [ ] oRPC (or shared controller for action/route) delegates to `module/<feature>/server`.
 - [ ] App / route files: import and call only.
+- [ ] **`pnpm audit:architecture-layers`** and **`pnpm audit:module-architecture`** — no new violations.
 - [ ] [CHANGELOG.md](../CHANGELOG.md) `[Unreleased]` when merged to `dev`.
 
 ---

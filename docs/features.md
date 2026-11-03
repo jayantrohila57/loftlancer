@@ -38,18 +38,25 @@ apps/*  →  module/*  →  features/*  →  packages/*
 
 ## Internal layout (`features/<name>/`)
 
-Mirror modules where the feature has server and UI surface:
+Each feature is a **pnpm workspace package** with sources under **`src/`**. Layout and filenames follow **[features/NAMING.md](../features/NAMING.md)** (feature prefix + purpose suffix, not `utils.` / `server.` / `client.` module prefixes):
 
 ```text
 features/<name>/
-├── shared/     # Types, Zod, mappers — no React, no DB unless feature-owned
-├── server/     # Server-only helpers consumed by module controllers or oRPC glue
-└── client/     # Reusable client components and hooks ("use client" at leaves)
+├── src/
+│   ├── core/client/     # React UI, hooks ("use client" at leaves)
+│   ├── core/server/     # Server-only behavior (requireAction, runAction, …)
+│   ├── config/ constants/ types/ utils/
+│   └── index.ts         # optional public barrel
+├── tests/
+├── package.json         # @loftlancer/features-<name> (workspace)
+└── tsconfig.json
 ```
 
-Not every feature needs all three; a server-only audit helper may omit `client/`. File naming follows the same layer-prefix rules as `module/` ([naming.md](./naming.md)).
+Not every subfolder is required; server-only features may omit `core/client/`. **Legacy** top-level `src/shared/`, `src/server/`, `src/client/` may remain until a feature migrates — **new files** use `core/` + prefixed names in [features/NAMING.md](../features/NAMING.md).
 
-**Import alias:** `@features/<name>/…` → `features/<name>/src/…` (see [tooling.md](./tooling.md)). Each feature is a workspace package: **`features/<name>/package.json`** (`@loftlancer/features-<name>`).
+**Import alias:** **`@features/<name>/<rest>`** → **`features/<name>/src/<rest>`** (no `src` in the import path). See [tooling.md](./tooling.md).
+
+**Workspace name:** **`@loftlancer/features-<name>`** (e.g. `@loftlancer/features-authorization`; authorization package is **`@loftlancer/feature-authorization`** — historical exception).
 
 ---
 
@@ -91,7 +98,7 @@ Everything else under `packages/` must not reference `module/` or `features/`. C
 ## Checklist (new or changed feature)
 
 - [ ] GitHub issue; scope is cross-domain reuse, not a single module’s rules
-- [ ] Code under `features/<name>/` with `shared/` \| `server/` \| `client/` as needed
+- [ ] Code under `features/<name>/src/` per [features/NAMING.md](../features/NAMING.md)
 - [ ] No imports from `@module/*` or `module/`
 - [ ] Module README or feature README documents consumption pattern
 - [ ] **`pnpm audit:architecture-layers`** — no new violations

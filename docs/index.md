@@ -9,7 +9,7 @@ All coding and ops docs live in this folder (flat). GitHub-facing files stay at 
 | [architecture-gaps.md](./architecture-gaps.md)           | **Prescriptive gaps** — index to `docs/gaps/*` (stop AI improvisation)              |
 | [new-feature-checklist.md](./new-feature-checklist.md)   | Ordered checklist for new `module/<feature>/` work                                  |
 | [reference-module-teams.md](./reference-module-teams.md) | Canonical greenfield **`module/teams`** tree + read/write flow                      |
-| [tooling.md](./tooling.md)                               | **`@module/*`** tsconfig paths and typecheck                                        |
+| [tooling.md](./tooling.md)                               | **`@modules/*`**, **`@features/*`**, **`@packages/*`** paths and typecheck          |
 | [access-control.md](./access-control.md)                 | **RBAC + ABAC** — roles, attributes, grants, evaluator                              |
 | [actions-and-events.md](./actions-and-events.md)         | Action IDs, audit, events                                                           |
 | [data-workflow.md](./data-workflow.md)                   | **ServiceResponse** — success / failed / error; toast + UI                          |

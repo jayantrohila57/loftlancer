@@ -7,7 +7,7 @@ Loftlancer uses **one action ID** ([actions-and-events.md](./actions-and-events.
 
 Both run inside **`requireAction` → `evaluatePermission`** before service logic. Deny → audit **`denied`** + ServiceResponse **`failed`**.
 
-Registry: `packages/actions/src/registry-data.ts` · Evaluator: `packages/actions/src/evaluate.ts` · Loader: `packages/orpc/src/actions/require-action.ts`
+Registry: `features/authorization/src/constants/authorization.registry-data.ts` · Evaluator: `features/authorization/src/utils/authorization.evaluate.ts` · Loader: `@features/authorization/core/server/authorization.require-action.ts` (re-export: `packages/orpc/src/actions/require-action.ts`)
 
 ---
 
@@ -27,7 +27,7 @@ Examples:
 - `team.create` — registry says which org roles may try it.
 - Owner often **allows all** org-scoped actions without extra attributes.
 
-**UI “RBAC”:** `useCan` / `<Can>` use snapshots from **`evaluatePermission`** with **partial** context (org role only) — may show **“grant”** (needs project/team) vs **yes/no** via `roleCapability` in `evaluate.ts`.
+**UI “RBAC”:** `useCan` / `<Can>` use snapshots from **`evaluatePermission`** with **partial** context (org role only) — may show **“grant”** (needs project/team) vs **yes/no** via `roleCapability` in `authorization.evaluate.ts`.
 
 RBAC alone is **not** enough for project-scoped or grant-gated actions.
 

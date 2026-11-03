@@ -41,6 +41,7 @@ Commands agents must run before marking a sub-issue done:
 
 ```bash
 pnpm audit:module-architecture
+pnpm audit:architecture-layers
 pnpm check-types
 # domain tests, e.g. pnpm test:<domain>
 ```

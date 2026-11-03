@@ -1,6 +1,6 @@
 ---
 description: RBAC + ABAC — registry action IDs, requireAction, evaluatePermission, runAction context
-globs: module/**/server/**,packages/actions/**,packages/orpc/src/actions/**
+globs: module/**/server/**,features/authorization/**,packages/orpc/src/actions/**
 alwaysApply: false
 ---
 
@@ -10,7 +10,7 @@ Full spec: **[docs/access-control.md](../docs/access-control.md)** · Prescripti
 
 ## One action ID
 
-- Same **`ActionName`** from `packages/actions` for RBAC, UI `useCan`, audit, MCP, and oRPC.
+- Same **`ActionName`** from **`@features/authorization/utils`** (registry in `features/authorization/src/constants/`) for RBAC, UI `useCan`, audit, MCP, and oRPC.
 - No separate ABAC-only IDs.
 
 ## Server

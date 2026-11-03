@@ -44,7 +44,7 @@ flowchart LR
 | `apps/studio`                | Product UI at `/studio`                                                                                                                                   |
 | `module/`                    | Product feature code + **all server API logic** (`server/`, `shared/`) — [docs/modules.md](./docs/modules.md), [docs/server-api.md](./docs/server-api.md) |
 | `packages/orpc`              | **oRPC transport shell** (tRPC legacy until removed) — [docs/packages.md](./docs/packages.md)                                                             |
-| `packages/actions`           | Canonical action registry, org roles, `requireAction` evaluation                                                                                          |
+| `features/authorization`     | Canonical action registry, org roles, `requireAction` / `runAction` (`@features/authorization/*`)                                                         |
 | `packages/auth`              | Better Auth (GitHub OAuth, organizations, teams)                                                                                                          |
 | `packages/auth-client`       | Shared Better Auth React client                                                                                                                           |
 | `packages/drizzle`           | Drizzle schema, migrations, soft-delete helpers, `db:reset-seed`                                                                                          |
@@ -64,7 +64,7 @@ flowchart LR
 | **Roles**            | Org **Owner**, **Manager**, **Member** (legacy `admin` → Manager). Platform **Admin** reserved for future console. |
 | **Teams**            | Better Auth teams under each organization                                                                          |
 | **Project access**   | Per-project manager rows, team links, and member **CRUD grants**                                                   |
-| **Actions**          | `@loftlancer/actions` names every gated operation; server uses `requireAction`                                     |
+| **Actions**          | `@features/authorization` registry names every gated operation; server uses `requireAction` / `runAction`          |
 | **Audit**            | `audit_event` + Timeline UIs when `ACTIONS_AUDIT_ENABLED=true`                                                     |
 | **Soft delete**      | `deleted_at` / `deleted_by` when `SOFT_DELETES_ENABLED=true`                                                       |
 | **Organizations**    | `/dashboard/organizations` hub (members, teams, invitations, roles, settings, timeline)                            |

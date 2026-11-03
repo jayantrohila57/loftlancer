@@ -200,6 +200,32 @@ Do **not** add `packages/orpc/src/modules/<domain>/` for new product logic ([for
 
 ---
 
+## `features/` (cross-domain)
+
+Not module layer prefixes. Follow **[features/NAMING.md](../features/NAMING.md)**:
+
+```text
+features/<feature>/src/core/server/<feature>.<purpose>.service.ts
+features/<feature>/src/utils/<feature>.<purpose>.utils.ts
+```
+
+Imports: **`@features/<feature>/<path>`** → `features/<feature>/src/<path>`.
+
+---
+
+## `packages/` (platform infra)
+
+Provider-prefixed filenames under typed folders — no `utils.` / `server.` / `client.` module pattern:
+
+```text
+packages/drizzle/src/core/drizzle.client.ts
+packages/t3-env/src/config/t3-env.server.config.ts
+```
+
+Import **`@packages/<pkg>`** or workspace **`@loftlancer/<pkg>`** ([packages.md](./packages.md)). No product rules in `packages/`.
+
+---
+
 ## Quick search cheatsheet
 
 | I want…                       | Ripgrep pattern                       |
