@@ -24,6 +24,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ### Changed
 
+- Complete the Teams architecture audit burn-down with validated controller responses, per-operation oRPC inputs, and an empty baseline (#921–#924).
 - Complete the teams module migration with native invitation/project-link operations, server-loaded screen boundaries, shared UI infrastructure, and isolated scope/audit/delivery checks (#918).
 
 - Move the teams pilot into root `module/teams` with shared section navigation, server-loaded list/overview, native oRPC controllers, and permission/audit-backed team mutations (#916).
