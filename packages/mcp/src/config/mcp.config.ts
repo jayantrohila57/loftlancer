@@ -30,7 +30,7 @@ export function resolveMcpResourceAuthConfig(): McpResourceAuthConfig {
   return {
     issuer: authUrl,
     audience: resource,
-    jwksUrl: `${authUrl}/api/better-auth/jwks`,
+    jwksUrl: `${authUrl}/api/auth/jwks`,
   };
 }
 

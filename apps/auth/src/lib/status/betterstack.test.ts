@@ -23,6 +23,10 @@ describe("status helpers", () => {
       monitorName("https://loftlancer.com/studio", null),
       "Dashboard",
     );
+    assert.equal(
+      monitorName("https://loftlancer.com/better-auth", null),
+      "Sign-in",
+    );
     assert.equal(monitorName("https://loftlancer.com/x", "X"), "X");
   });
 

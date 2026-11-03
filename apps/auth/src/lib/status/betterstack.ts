@@ -45,6 +45,7 @@ const NAMES_BY_PATH: Record<string, string> = {
   "/docs": "Documentation",
   "/studio": "Dashboard",
   "/auth": "Sign-in",
+  "/better-auth": "Sign-in",
 };
 const ORDER = ["Landing", "Documentation", "Dashboard", "Sign-in"];
 
