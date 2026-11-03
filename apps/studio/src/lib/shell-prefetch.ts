@@ -10,7 +10,7 @@ import { trpcQueryOptions } from "@/utils/trpc-query-options";
 
 export { orgSlugFromRequestPath, prefetchSidebarNavigatorSettled };
 
-/** Prefetch queries shared by the private dashboard shell (sidebar, gates). */
+/** Prefetch queries for private shell (projects list removed in product reset). */
 export async function dehydrateStudioShellQueries(
   session: AuthSession,
   options?: { urlOrgSlug?: string | null },
@@ -24,11 +24,6 @@ export async function dehydrateStudioShellQueries(
       queryClient,
       trpcQueryOptions.permissions.snapshot.queryOptions({}),
       () => caller.permissions.snapshot({}),
-    ),
-    prefetchWithCaller(
-      queryClient,
-      trpcQueryOptions.projects.list.queryOptions(),
-      () => caller.projects.list(),
     ),
     prefetchWithCaller(
       queryClient,

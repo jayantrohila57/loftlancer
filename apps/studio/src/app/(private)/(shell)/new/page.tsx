@@ -1,4 +1,6 @@
-export {
-  NewOrganizationPage as default,
-  newOrganizationMetadata as metadata,
-} from "@module/organizations/client/studio/rsc/client.organizations-directory.page";
+import { redirect } from "next/navigation";
+
+/** Create-organization entry removed with organizations domain. */
+export default function NewPage() {
+  redirect("/overview");
+}

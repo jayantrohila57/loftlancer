@@ -16,6 +16,11 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Removed
+
+- Product reset: removed teams, organizations, projects, and marketplace-apps domain modules, Studio routes, and related API/oRPC/MCP surfaces. Account and auth remain.
+
+
 ## [1.25.1] - 2026-11-03
 
 - Complete the organizations module migration with controller-backed tRPC/MCP adapters and opt-in integration coverage.

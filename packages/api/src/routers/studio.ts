@@ -7,22 +7,16 @@ import { environmentsRouter } from "./environments";
 import { filesRouter } from "./files";
 import { mailboxRouter } from "./mailbox";
 import { notificationsRouter } from "./notifications";
-import { organizationsRouter } from "./organizations";
 import { permissionsRouter } from "./permissions";
-import { projectAccessRouter } from "./project-access-router";
-import { projectAppsRouter } from "./project-apps";
-import { projectsRouter } from "./projects";
 import { sidebarRouter } from "./sidebar";
 import { supportRouter } from "./support";
 import { tasksRouter } from "./tasks";
-import { teamsRouter } from "./teams";
 import { environmentVariablesRouter } from "./variables";
 
-/** Product router for `apps/studio` — org/project/env surface without account settings. */
+/** Studio product router — org/teams/projects/marketplace-apps removed. */
 export const studioRouter = router({
   healthCheck: publicProcedure.query(() => "OK"),
   dashboard: dashboardRouter,
-  projects: projectsRouter,
   environments: environmentsRouter,
   files: filesRouter,
   environmentVariables: environmentVariablesRouter,
@@ -33,11 +27,7 @@ export const studioRouter = router({
   mailbox: mailboxRouter,
   sidebar: sidebarRouter,
   permissions: permissionsRouter,
-  organizations: organizationsRouter,
-  projectAccess: projectAccessRouter,
-  teams: teamsRouter,
   support: supportRouter,
-  projectApps: projectAppsRouter,
   tasks: tasksRouter,
 });
 

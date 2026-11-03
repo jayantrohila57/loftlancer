@@ -252,8 +252,21 @@ export async function softDeleteProjectManager(input: {
   return { ok: true };
 }
 
-export {
-  applyDefaultGrantsForTeamOnProject,
-  softDeleteProjectTeamLink,
-  upsertProjectTeamLink,
-} from "@module/teams/server/service/server.team-project-link.service";
+/** Product reset: teams project-link service removed. */
+export async function applyDefaultGrantsForTeamOnProject(
+  ..._args: unknown[]
+): Promise<void> {
+  throw new Error("Domain removed: teams project links");
+}
+
+export async function softDeleteProjectTeamLink(
+  ..._args: unknown[]
+): Promise<void> {
+  throw new Error("Domain removed: teams project links");
+}
+
+export async function upsertProjectTeamLink(
+  ..._args: unknown[]
+): Promise<void> {
+  throw new Error("Domain removed: teams project links");
+}

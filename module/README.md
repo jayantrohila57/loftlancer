@@ -4,25 +4,23 @@ Product feature code lives here: `module/<domain>/{utils,server,client}/`. Cross
 
 **Rules:** [docs/modules.md](../docs/modules.md) · platform gaps in [docs/architecture-gaps.md](../docs/architecture-gaps.md)
 
-**Per-domain runbooks:** **`module/<domain>/README.md`** ([README.template.md](./README.template.md)) — agents update the module README, not new long docs under `docs/`.
+**Per-domain runbooks:** **`module/<domain>/README.md`** ([README.template.md](./README.template.md)).
 
-**Tier 1 shell** (sidebar, header, inset) → `module/studio-shell/` when rewritten; **Tier 2** sub-header/tabs → each module `client/studio/layout/`.
+## Product reset (2026-11)
 
-| Domain | Studio (legacy) | Notes |
-|--------|-----------------|--------|
-| `activity` | `apps/studio/src/module/activity` | |
-| `ai` | — | API partially in `packages/api/src/modules/ai` |
-| `apps` | `apps/studio/src/module/apps` | Marketplace / installed apps |
-| `environments` | `apps/studio/src/module/environments` | |
-| `files` | — | API in `packages/api/src/modules/files` |
-| `notifications` | `apps/studio/src/module/notifications` | |
-| `organizations` | `apps/studio/src/module/organizations` | [organizations/README.md](./organizations/README.md) |
-| `overview` | `apps/studio/src/module/overview` | Org home |
-| `projects` | `apps/studio/src/module/projects` | |
-| `support` | `apps/studio/src/module/support` | |
-| `tasks` | `apps/studio/src/module/tasks` | |
-| `teams` | `module/teams/client/studio` | `/[org]/teams/...` pilot — **[teams/README.md](./teams/README.md)** (source of truth); tree reference [docs/reference-module-teams.md](../docs/reference-module-teams.md) |
-| `studio-shell` | — | Tier 1 Studio shell ([studio-shell/README.md](./studio-shell/README.md)) |
-| `account` | `apps/auth/src/module/` (legacy) | Auth settings; target `module/account/` |
+Removed domain modules (business logic + Studio surfaces):
 
-Auth settings / consent migrate from `apps/auth/src/module/` into **`module/account/`**.
+- `teams`
+- `organizations`
+- `projects`
+- `apps` (marketplace / installed apps — **not** the Next.js `apps/` workspace)
+
+**Kept:** `account` (auth settings target), `shared`, `studio-shell`, and other non-removed stubs (`activity`, `ai`, …) pending separate decisions.
+
+Auth / Better Auth organization **plugin** may still exist in `packages/` as infrastructure; product org/team/project **module** code is gone.
+
+| Domain | Notes |
+|--------|--------|
+| `account` | Auth settings; target `module/account/` |
+| `studio-shell` | Tier 1 Studio shell |
+| `shared` | Cross-feature helpers |
