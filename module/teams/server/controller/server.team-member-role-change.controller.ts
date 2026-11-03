@@ -2,7 +2,9 @@ import {
   type RunActionContext,
   runAction,
 } from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { teamMemberRoleInputSchema } from "../../utils/validation/utils.team-operations.validation";
+import { teamMemberRoleOutputSchema } from "../../utils/validation/utils.team-output.validation";
 import { teamMemberRoleChangeService } from "../service/server.team-member-role-change.service";
 export async function teamMemberRoleChangeController({
   input,
@@ -21,10 +23,12 @@ export async function teamMemberRoleChangeController({
         targetUserId: parsed.data.userId,
       }
     : ctx;
-  return runAction({
+  const response = await runAction({
     action: "team.member.role.change",
     ctx: scoped,
     audit: true,
+    validate: (result) =>
+      serviceResponseSchema(teamMemberRoleOutputSchema).parse(result),
     handler: async () => {
       if (!parsed.success)
         return {
@@ -35,4 +39,5 @@ export async function teamMemberRoleChangeController({
       return teamMemberRoleChangeService(ctx, parsed.data);
     },
   });
+  return serviceResponseSchema(teamMemberRoleOutputSchema).parse(response);
 }

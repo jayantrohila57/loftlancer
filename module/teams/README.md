@@ -26,7 +26,7 @@ All `/[org]/teams` routes use module page loaders, the same controllers as nativ
 
 `runAction` authorizes with the platform evaluator using `audit: false`, then records one terminal mutation outcome. It maps permission denial to `failed`, preserves field errors, and returns safe error details for unexpected failures. Create inserts the team and its creator's lead membership in one transaction. Member services retain organization checks, last-lead protection, and linked-project defaults.
 
-The native teams namespace includes list, get, create, update, delete, restore, members, availableMembers, addMember, removeMember, updateMemberRole, projects, linkableProjects, projectAssign, projectRemove, invitationList, invitationContext, invitationCreate, invitationResend, and invitationRevoke. Controllers own runtime Zod validation; **`pnpm audit:module-architecture`** still flags shared `teamControllerInputSchema` (`z.unknown()`) until per-procedure schemas land. Hooks validate/type their inputs.
+The native teams namespace includes list, get, create, update, delete, restore, members, availableMembers, addMember, removeMember, updateMemberRole, projects, linkableProjects, projectAssign, projectRemove, invitationList, invitationContext, invitationCreate, invitationResend, and invitationRevoke. Controllers own runtime Zod validation, and each oRPC procedure declares the matching per-operation input schema. Compatibility consumers receive the validated `ServiceResponse`; tRPC/MCP adapters unwrap it at the transport boundary.
 
 ---
 
@@ -77,11 +77,11 @@ Browser QA: create → overview, all tabs, project link/unlink, invitations, key
 
 ---
 
-## TODO (blocked / debt)
+## Architecture verification (#920)
 
-| Item | Notes |
-|------|--------|
-| Architecture baseline | Controllers missing outbound `serviceResponseSchema.parse`; oRPC `z.unknown()` input — agent handoff: [ARCHITECTURE-100-PROMPT.md](./ARCHITECTURE-100-PROMPT.md) |
+The architecture burn-down is implemented on `feat/920-teams-architecture-100` and is awaiting PR verification. All team controllers validate outbound `ServiceResponse` data, oRPC procedures use operation-specific schemas, and the legacy API returns the controller response without unwrapping it. The architecture audit baseline has no known violation ids.
+
+Verification: `pnpm audit:module-architecture --strict`, `pnpm check-types`, and `pnpm test:teams` pass per slice. The full `pnpm verify:dev-merge` result is recorded after the final branch check.
 
 Pilot checklist items in git history **do not override** CI or the audit.
 
@@ -95,9 +95,9 @@ Track open chunks in GitHub; update this table when filing sub-tasks.
 |-----------|--------|--------|
 | #916 / #918 | Parent migration | merged to `dev` |
 | [#920](https://github.com/jayantrohila57/loftlancer/issues/920) | Architecture 100% parent | open |
-| [#921](https://github.com/jayantrohila57/loftlancer/issues/921) | A — controller outbound parse | open |
-| [#922](https://github.com/jayantrohila57/loftlancer/issues/922) | B — oRPC Zod inputs | open |
-| [#923](https://github.com/jayantrohila57/loftlancer/issues/923) | C — legacy unwrap | open |
-| [#924](https://github.com/jayantrohila57/loftlancer/issues/924) | D — empty baseline + docs | open |
+| [#921](https://github.com/jayantrohila57/loftlancer/issues/921) | A — controller outbound parse | implemented in PR branch |
+| [#922](https://github.com/jayantrohila57/loftlancer/issues/922) | B — oRPC Zod inputs | implemented in PR branch |
+| [#923](https://github.com/jayantrohila57/loftlancer/issues/923) | C — legacy unwrap | implemented in PR branch |
+| [#924](https://github.com/jayantrohila57/loftlancer/issues/924) | D — empty baseline + docs | implemented in PR branch |
 
 GitHub exposed no open Loftlancer project when issue #916 was created, so no project item could be attached.

@@ -18,92 +18,104 @@ import { teamProjectRemoveController } from "@module/teams/server/controller/ser
 import { teamProjectsController } from "@module/teams/server/controller/server.team-projects.controller";
 import { teamRestoreController } from "@module/teams/server/controller/server.team-restore.controller";
 import { teamUpdateController } from "@module/teams/server/controller/server.team-update.controller";
-import { teamControllerInputSchema } from "@module/teams/utils/validation/utils.team-id.validation";
+import { teamCreateInputSchema } from "@module/teams/utils/validation/utils.create-team.validation";
+import {
+  teamInvitationCreateInputSchema,
+  teamInvitationListInputSchema,
+  teamInvitationTargetInputSchema,
+  teamProjectLinkInputSchema,
+} from "@module/teams/utils/validation/utils.team-extended.validation";
+import { teamGetInputSchema } from "@module/teams/utils/validation/utils.team-id.validation";
+import {
+  teamMemberInputSchema,
+  teamMemberRoleInputSchema,
+  teamUpdateInputSchema,
+} from "@module/teams/utils/validation/utils.team-operations.validation";
 import { protectedProcedure } from "../protected-procedure";
 export const teamsProcedures = {
   projectAssign: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamProjectLinkInputSchema)
     .handler(({ input, context }) =>
       teamProjectAssignController({ input, ctx: context }),
     ),
   projectRemove: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamProjectLinkInputSchema)
     .handler(({ input, context }) =>
       teamProjectRemoveController({ input, ctx: context }),
     ),
   invitationContext: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamGetInputSchema)
     .handler(({ input, context }) =>
       teamInvitationContextController({ input, ctx: context }),
     ),
   invitationList: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamInvitationListInputSchema)
     .handler(({ input, context }) =>
       teamInvitationListController({ input, ctx: context }),
     ),
   invitationCreate: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamInvitationCreateInputSchema)
     .handler(({ input, context }) =>
       teamInvitationCreateController({ input, ctx: context }),
     ),
   invitationResend: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamInvitationTargetInputSchema)
     .handler(({ input, context }) =>
       teamInvitationResendController({ input, ctx: context }),
     ),
   invitationRevoke: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamInvitationTargetInputSchema)
     .handler(({ input, context }) =>
       teamInvitationRevokeController({ input, ctx: context }),
     ),
 
   linkableProjects: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamGetInputSchema)
     .handler(({ input, context }) =>
       teamLinkableProjectsController({ input, ctx: context }),
     ),
   projects: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamGetInputSchema)
     .handler(({ input, context }) =>
       teamProjectsController({ input, ctx: context }),
     ),
   update: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamUpdateInputSchema)
     .handler(({ input, context }) =>
       teamUpdateController({ input, ctx: context }),
     ),
   delete: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamGetInputSchema)
     .handler(({ input, context }) =>
       teamDeleteController({ input, ctx: context }),
     ),
   restore: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamGetInputSchema)
     .handler(({ input, context }) =>
       teamRestoreController({ input, ctx: context }),
     ),
   addMember: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamMemberInputSchema)
     .handler(({ input, context }) =>
       teamMemberAddController({ input, ctx: context }),
     ),
   removeMember: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamMemberInputSchema)
     .handler(({ input, context }) =>
       teamMemberRemoveController({ input, ctx: context }),
     ),
   updateMemberRole: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamMemberRoleInputSchema)
     .handler(({ input, context }) =>
       teamMemberRoleChangeController({ input, ctx: context }),
     ),
   members: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamGetInputSchema)
     .handler(({ input, context }) =>
       teamMembersController({ input, ctx: context }),
     ),
   availableMembers: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamGetInputSchema)
     .handler(({ input, context }) =>
       teamAvailableMembersController({ input, ctx: context }),
     ),
@@ -112,12 +124,12 @@ export const teamsProcedures = {
     teamListController({ ctx: context }),
   ),
   get: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamGetInputSchema)
     .handler(({ input, context }) =>
       teamGetController({ input, ctx: context }),
     ),
   create: protectedProcedure
-    .input(teamControllerInputSchema)
+    .input(teamCreateInputSchema)
     .handler(({ input, context }) =>
       teamCreateController({ input, ctx: context }),
     ),

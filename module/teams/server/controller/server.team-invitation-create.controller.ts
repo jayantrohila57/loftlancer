@@ -4,9 +4,11 @@ import {
   type RunActionContext,
   runAction,
 } from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { teamInvitationCreateInputSchema } from "../../utils/validation/utils.team-extended.validation";
+import { teamInvitationCreateOutputSchema } from "../../utils/validation/utils.team-output.validation";
 import { teamInvitationCreateService } from "../service/server.team-invitation-create.service";
-export function teamInvitationCreateController({
+export async function teamInvitationCreateController({
   input,
   ctx,
 }: {
@@ -26,10 +28,12 @@ export function teamInvitationCreateController({
         },
       }
     : ctx;
-  return runAction({
+  const response = await runAction({
     action: "member.invite",
     ctx: scoped,
     audit: true,
+    validate: (result) =>
+      serviceResponseSchema(teamInvitationCreateOutputSchema).parse(result),
     authorize: async () => {
       if (!parsed.success) return;
       await requireAction("team.member.add", {
@@ -48,4 +52,7 @@ export function teamInvitationCreateController({
       return teamInvitationCreateService(ctx, parsed.data);
     },
   });
+  return serviceResponseSchema(teamInvitationCreateOutputSchema).parse(
+    response,
+  );
 }

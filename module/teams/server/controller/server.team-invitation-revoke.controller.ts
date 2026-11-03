@@ -2,9 +2,11 @@ import {
   type RunActionContext,
   runAction,
 } from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { teamInvitationTargetInputSchema } from "../../utils/validation/utils.team-extended.validation";
+import { teamInvitationTargetOutputSchema } from "../../utils/validation/utils.team-output.validation";
 import { teamInvitationRevokeService } from "../service/server.team-invitation-revoke.service";
-export function teamInvitationRevokeController({
+export async function teamInvitationRevokeController({
   input,
   ctx,
 }: {
@@ -24,10 +26,12 @@ export function teamInvitationRevokeController({
         },
       }
     : ctx;
-  return runAction({
+  const response = await runAction({
     action: "invitation.cancel",
     ctx: scoped,
     audit: true,
+    validate: (result) =>
+      serviceResponseSchema(teamInvitationTargetOutputSchema).parse(result),
     handler: async () => {
       if (!parsed.success)
         return {
@@ -38,4 +42,7 @@ export function teamInvitationRevokeController({
       return teamInvitationRevokeService(ctx, parsed.data);
     },
   });
+  return serviceResponseSchema(teamInvitationTargetOutputSchema).parse(
+    response,
+  );
 }

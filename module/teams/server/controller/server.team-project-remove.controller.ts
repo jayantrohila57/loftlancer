@@ -4,9 +4,11 @@ import {
   type RunActionContext,
   runAction,
 } from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { teamProjectLinkInputSchema } from "../../utils/validation/utils.team-extended.validation";
+import { teamProjectLinkOutputSchema } from "../../utils/validation/utils.team-output.validation";
 import { teamProjectRemoveService } from "../service/server.team-project-remove.service";
-export function teamProjectRemoveController({
+export async function teamProjectRemoveController({
   input,
   ctx,
 }: {
@@ -27,10 +29,12 @@ export function teamProjectRemoveController({
         },
       }
     : ctx;
-  return runAction({
+  const response = await runAction({
     action: "project.assign_team",
     ctx: scoped,
     audit: true,
+    validate: (result) =>
+      serviceResponseSchema(teamProjectLinkOutputSchema).parse(result),
     authorize: async () => {
       if (!parsed.success) return;
       await requireAction("project.read", {
@@ -49,4 +53,5 @@ export function teamProjectRemoveController({
       return teamProjectRemoveService(ctx, parsed.data);
     },
   });
+  return serviceResponseSchema(teamProjectLinkOutputSchema).parse(response);
 }
