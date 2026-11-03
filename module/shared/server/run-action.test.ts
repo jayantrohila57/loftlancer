@@ -94,3 +94,25 @@ test("mutations audit the terminal outcome once and preserve safe response contr
   });
   assert.equal(audit.length, 0);
 });
+
+test("secondary authorization denial never executes a handler and audits only the terminal denial", async () => {
+  audit.length = 0;
+  let called = false;
+  const response = await runAction({
+    action: "member.invite",
+    ctx,
+    authorize: async () => {
+      throw Object.assign(new Error("Team access denied"), {
+        code: "FORBIDDEN",
+      });
+    },
+    handler: async () => {
+      called = true;
+      return { kind: "success", data: { id: "unexpected" } };
+    },
+  });
+  assert.equal(response.status, "failed");
+  assert.equal(called, false);
+  assert.equal(audit.length, 1);
+  assert.equal(audit[0]?.result, "denied");
+});

@@ -9,9 +9,9 @@ import {
 } from "@loftlancer/ui/dialog";
 import { Field, FieldLabel } from "@loftlancer/ui/field";
 import { Input } from "@loftlancer/ui/input";
+import { GuardedDialog } from "@loftlancer/ui/patterns/guarded-dialog";
 import { Textarea } from "@loftlancer/ui/textarea";
 import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
-import { GuardedDialog } from "@/lib/team-dialog";
 import type { TeamDto } from "../../../utils/types/utils.team.dto";
 import { useTeamsListScreen } from "../hooks/client.use-teams-list-screen.hook";
 import { TeamsListSkeleton } from "../skeletons/client.team-list.skeleton";

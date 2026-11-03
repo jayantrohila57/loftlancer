@@ -2,10 +2,10 @@
 import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { useCan } from "@/lib/team-permissions";
 import type { TeamDto } from "../../../utils/types/utils.team.dto";
 import { teamCreateInputSchema } from "../../../utils/validation/utils.create-team.validation";
 import { routes } from "../config/client.routes";
+import { useCan } from "../hooks/client.use-teams-permission.hook";
 import { useTeamCreate } from "./client.use-teams-create.hook";
 import { useTeamsList } from "./client.use-teams-list.hook";
 export function useTeamsListScreen(

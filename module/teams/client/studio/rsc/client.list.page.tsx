@@ -1,3 +1,4 @@
+import { ModuleScopeProvider } from "@module/shared/client/client.scope.provider";
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import { loadTeamsList } from "../../../server/page/server.team-list.page";
@@ -25,11 +26,13 @@ export async function TeamsListPage({
   if (team) redirect(routes.team(org, team) as never);
   if (scope.response.status === "failed") redirect("/forbidden");
   return (
-    <Boundary
-      organizationName={scope.org.name}
-      orgId={scope.ctx.orgId}
-      slug={org}
-      response={scope.response}
-    />
+    <ModuleScopeProvider orgId={scope.ctx.orgId}>
+      <Boundary
+        organizationName={scope.org.name}
+        orgId={scope.ctx.orgId}
+        slug={org}
+        response={scope.response}
+      />
+    </ModuleScopeProvider>
   );
 }

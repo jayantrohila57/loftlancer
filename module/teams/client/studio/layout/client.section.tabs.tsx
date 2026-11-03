@@ -3,10 +3,10 @@ import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { useCan } from "@/lib/team-permissions";
 import type { TeamDto } from "../../../utils/types/utils.team.dto";
 import { teamDisplayName } from "../../../utils/utils.team-display-name";
 import { tabs } from "../config/client.routes";
+import { useCan } from "../hooks/client.use-teams-permission.hook";
 export function TeamsSectionTabs({
   org,
   team,

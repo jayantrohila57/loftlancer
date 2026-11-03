@@ -5,6 +5,9 @@ import {
 import { activeMemberWhere, db } from "@loftlancer/db";
 import { member } from "@loftlancer/db/schema/organization";
 import { projectMemberGrant } from "@loftlancer/db/schema/project-access";
+import { teamProjectAssignController } from "@module/teams/server/controller/server.team-project-assign.controller";
+import { teamProjectRemoveController } from "@module/teams/server/controller/server.team-project-remove.controller";
+import { unwrapTeamObject } from "@module/teams/server/handlers/server.legacy-response.handler";
 import { TRPCError } from "@trpc/server";
 import { and, eq, isNull } from "drizzle-orm";
 import { z } from "zod/v3";
@@ -14,9 +17,7 @@ import { assertProjectAccess } from "../org-access";
 import {
   loadProjectAccessSummary,
   softDeleteProjectManager,
-  softDeleteProjectTeamLink,
   upsertProjectManagerRow,
-  upsertProjectTeamLink,
 } from "../project-access/service";
 
 const projectIdInput = z.object({ projectId: z.string() });
@@ -216,53 +217,32 @@ export const projectAccessRouter = router({
 
   assignTeam: orgProcedure
     .input(z.object({ projectId: z.string(), teamId: z.string() }))
-    .use(
-      actionGuard("project.assign_team", (input) => ({
-        projectId: (input as { projectId: string }).projectId,
-      })),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "No active org" });
-      }
-
-      await assertProjectAccess(
-        ctx.session.user.id,
-        input.projectId,
-        organizationId,
-      );
-
-      return upsertProjectTeamLink({
-        organizationId,
-        projectId: input.projectId,
-        teamId: input.teamId,
-        createdBy: ctx.session.user.id,
-      });
-    }),
-
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamProjectAssignController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
   removeTeam: orgProcedure
     .input(z.object({ projectId: z.string(), teamId: z.string() }))
-    .use(
-      actionGuard("project.assign_team", (input) => ({
-        projectId: (input as { projectId: string }).projectId,
-      })),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const organizationId = ctx.activeOrganizationId;
-      if (!organizationId) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "No active org" });
-      }
-      await assertProjectAccess(
-        ctx.session.user.id,
-        input.projectId,
-        organizationId,
-      );
-      return softDeleteProjectTeamLink({
-        organizationId,
-        projectId: input.projectId,
-        teamId: input.teamId,
-        actorUserId: ctx.session.user.id,
-      });
-    }),
+    .mutation(async ({ ctx, input }) =>
+      unwrapTeamObject(
+        await teamProjectRemoveController({
+          input,
+          ctx: {
+            userId: ctx.session.user.id,
+            orgId: ctx.activeOrganizationId,
+            ip: ctx.ipAddress,
+            userAgent: ctx.userAgent,
+          },
+        }),
+      ),
+    ),
 });

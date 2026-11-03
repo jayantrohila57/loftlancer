@@ -30,6 +30,7 @@ export type RunActionInput<T> = {
   ctx: RunActionContext;
   audit?: boolean;
   handler: () => Promise<ServiceOutcome<T>>;
+  authorize?: () => Promise<void>;
   validate?: (response: ServiceResponse<T>) => ServiceResponse<T>;
 };
 export function buildAccessContext(ctx: RunActionContext) {
@@ -55,6 +56,7 @@ export async function runAction<T>(
   let authorized = false;
   try {
     await requireAction(input.action, buildAccessContext(input.ctx));
+    await input.authorize?.();
     authorized = true;
     response = mapOutcomeToResponse(await input.handler());
     response = serviceResponseUnknownSchema.parse(

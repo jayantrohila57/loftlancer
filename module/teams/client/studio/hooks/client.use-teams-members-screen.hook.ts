@@ -1,18 +1,29 @@
 "use client";
+import { useConfirm } from "@loftlancer/ui/patterns/confirm-dialog";
 import { useState } from "react";
 import { studioORPC } from "@/lib/orpc";
-import { useCan, useConfirm } from "@/lib/team-runtime";
 import {
   useTeamsOperationMutation,
   useTeamsRowsQuery,
 } from "./client.use-teams-operation.hook";
-export function useTeamMembersScreen(teamId: string) {
+import { useCan } from "./client.use-teams-permission.hook";
+export type TeamMembersInitial = Awaited<
+  ReturnType<typeof studioORPC.teams.members>
+>;
+export function useTeamMembersScreen(
+  teamId: string,
+  initialData?: TeamMembersInitial,
+) {
   const { confirm, ConfirmDialog } = useConfirm();
   const [userId, setUserId] = useState("");
   const canAddMembers = useCan("team.member.add", { teamId });
   const canChangeRoles = useCan("team.member.role.change", { teamId });
-  const members = useTeamsRowsQuery("members", { teamId }, () =>
-    studioORPC.teams.members({ teamId }),
+  const members = useTeamsRowsQuery(
+    "members",
+    { teamId },
+    () => studioORPC.teams.members({ teamId }),
+    true,
+    initialData,
   );
   const availableMembers = useTeamsRowsQuery(
     "availableMembers",

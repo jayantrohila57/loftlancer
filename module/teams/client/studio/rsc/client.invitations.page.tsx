@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { TeamOverviewSkeleton } from "../skeletons/client.team-overview.skeleton";
+import { loadTeamInvitations } from "../../../server/page/server.team-invitations.page";
+import { TeamTableSkeleton } from "../skeletons/client.team-table.skeleton";
 
 const TeamInvitationsPage = dynamic(
   () =>
     import(
-      "@module/teams/client/studio/components/client.invitations.content"
+      "@module/teams/client/studio/components/client.invitations.boundary"
     ).then((m) => m.TeamInvitationsPage),
-  { loading: () => <TeamOverviewSkeleton /> },
+  { loading: () => <TeamTableSkeleton /> },
 );
 
 export const metadata: Metadata = {
@@ -21,5 +22,8 @@ export default async function TeamInvitationsRoute({
   params: Promise<{ org: string; teamId: string }>;
 }) {
   const { org, teamId } = await params;
-  return <TeamInvitationsPage slug={org} teamId={teamId} />;
+  const initialData = await loadTeamInvitations(org, teamId);
+  return (
+    <TeamInvitationsPage initialData={initialData} slug={org} teamId={teamId} />
+  );
 }
