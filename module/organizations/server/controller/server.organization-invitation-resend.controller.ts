@@ -3,6 +3,7 @@ import {
   runAction,
 } from "@module/shared/server/run-action";
 import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
+import { toServiceFieldErrors } from "@module/shared/utils/validation/utils.zod-field-errors.validation";
 import {
   organizationInvitationIdInputSchema,
   organizationInvitationMutationOutputSchema,
@@ -37,7 +38,7 @@ export async function organizationInvitationResendController({
         return {
           kind: "failed" as const,
           message: "Check the invitation details.",
-          fieldErrors: parsed.error.flatten().fieldErrors,
+          fieldErrors: toServiceFieldErrors(parsed.error),
         };
       return organizationInvitationResendService(ctx, parsed.data);
     },

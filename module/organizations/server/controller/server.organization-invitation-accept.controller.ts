@@ -3,6 +3,7 @@ import {
   runAction,
 } from "@module/shared/server/run-action";
 import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
+import { toServiceFieldErrors } from "@module/shared/utils/validation/utils.zod-field-errors.validation";
 import {
   organizationInvitationAcceptInputSchema,
   organizationInvitationAcceptOutputSchema,
@@ -39,7 +40,7 @@ async function acceptInvitation({
         return {
           kind: "failed" as const,
           message: "Check the invitation details.",
-          fieldErrors: parsed.error.flatten().fieldErrors,
+          fieldErrors: toServiceFieldErrors(parsed.error),
         };
       if (!emailVerified)
         return {
@@ -53,7 +54,11 @@ async function acceptInvitation({
           invitationType,
         },
       );
-      if (outcome.kind === "success")
+      if (
+        outcome.kind === "success" &&
+        outcome.data &&
+        !Array.isArray(outcome.data)
+      )
         scoped.orgId = outcome.data.organizationId;
       return outcome;
     },

@@ -11,6 +11,7 @@ import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-ou
 import { and, eq, isNull } from "drizzle-orm";
 import type {
   OrganizationProfilePatch,
+  OrganizationSettingsOutput,
   OrganizationSettingsPatch,
 } from "../../utils/validation/utils.organization-admin.validation";
 
@@ -18,19 +19,7 @@ const failed = (message: string) => ({ kind: "failed" as const, message });
 
 export async function organizationSettingsGetService(
   ctx: RunActionContext,
-): Promise<
-  ServiceOutcome<{
-    timeZone: string;
-    locale: string;
-    dateFormat: "short" | "medium" | "long";
-    timeFormat: "12h" | "24h";
-    weekStart: number;
-    displayCurrency: string;
-    defaultProjectVisibility: "private" | "public";
-    notificationDefaults: { email: boolean; inApp: boolean; version: 1 };
-    canEdit: boolean;
-  }>
-> {
+): Promise<ServiceOutcome<OrganizationSettingsOutput>> {
   if (!ctx.orgId) return failed("Select an organization first.");
   const [row] = await db
     .select()
@@ -53,11 +42,14 @@ export async function organizationSettingsGetService(
     data: {
       timeZone: row?.timeZone ?? "UTC",
       locale: row?.locale ?? "en",
-      dateFormat: row?.dateFormat ?? "medium",
-      timeFormat: row?.timeFormat ?? "12h",
+      dateFormat: (row?.dateFormat ??
+        "medium") as OrganizationSettingsOutput["dateFormat"],
+      timeFormat: (row?.timeFormat ??
+        "12h") as OrganizationSettingsOutput["timeFormat"],
       weekStart: row?.weekStart ?? 1,
       displayCurrency: row?.displayCurrency ?? "USD",
-      defaultProjectVisibility: row?.defaultProjectVisibility ?? "private",
+      defaultProjectVisibility: (row?.defaultProjectVisibility ??
+        "private") as OrganizationSettingsOutput["defaultProjectVisibility"],
       notificationDefaults: row?.notificationDefaults ?? {
         email: true,
         inApp: true,

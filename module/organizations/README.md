@@ -93,6 +93,14 @@ pnpm audit:module-architecture
 pnpm check-types
 ```
 
+## Native oRPC procedures
+
+The `organizations` namespace is registered in `packages/api/src/orpc/studio-router.ts`. Its typed procedures call module controllers only:
+
+- Reads: `list`, `getBySlug`, `getProfile`, `members`, `invitationList`, `invitationPreview`, `settings`, `customRoles`, `securityDomains`, `memberAccessSummary`.
+- Invitations: `invitationCreate`, `invitationRevoke`, `invitationResend`, `acceptTeamInvitation`, `acceptProjectInvitation`.
+- Settings and administration: `updateSettings`, `updateProfile`, `updateBrandingLogo`, `createCustomRole`, `updateCustomRole`, `deleteCustomRole`, `assignCustomRole`, `createSecurityDomain`, `verifySecurityDomain`, `revokeSecurityDomain`, `archive`, `unarchive`, `transferOwnership`, `updateMemberProfile`, `setMemberSuspended`, `removeMember`.
+
 After slices A–G are complete, run `pnpm verify:dev-merge` on the full branch before opening the parent PR to `dev`.
 
 ## Sub-issues (parent #929)
@@ -105,7 +113,7 @@ Implement in this order; do not skip ahead of an open dependency:
 | [#939](https://github.com/jayantrohila57/loftlancer/issues/939) | A — validations and read controllers | Implemented on this branch |
 | [#940](https://github.com/jayantrohila57/loftlancer/issues/940) | B — invitations and members controllers | Implemented on this branch |
 | [#973](https://github.com/jayantrohila57/loftlancer/issues/973) | C — settings, branding, roles, domains, lifecycle, member administration | Implemented on this branch |
-| [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | D — native oRPC organizations | Open |
+| [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | D — native oRPC organizations | Implemented on this branch |
 | [#975](https://github.com/jayantrohila57/loftlancer/issues/975) | E — client migration, phase 1 | Open |
 | [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | F — client migration, phase 2 | Open |
 | [#977](https://github.com/jayantrohila57/loftlancer/issues/977) | G — compatibility adapters, integration, baseline, final verification | Open |

@@ -2,6 +2,7 @@ import {
   mapOutcomeToResponse,
   serviceResponseSchema,
 } from "@module/shared/utils/validation/utils.service-response.validation";
+import { toServiceFieldErrors } from "@module/shared/utils/validation/utils.zod-field-errors.validation";
 import {
   organizationInvitationPreviewInputSchema,
   organizationInvitationPreviewOutputSchema,
@@ -20,7 +21,7 @@ export async function organizationInvitationPreviewController({
       : {
           kind: "failed" as const,
           message: "Check the invitation details.",
-          fieldErrors: parsed.error.flatten().fieldErrors,
+          fieldErrors: toServiceFieldErrors(parsed.error),
         },
   );
   return serviceResponseSchema(organizationInvitationPreviewOutputSchema).parse(

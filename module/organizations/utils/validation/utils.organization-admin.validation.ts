@@ -206,7 +206,7 @@ export const organizationMemberAccessSummaryOutputSchema = z.object({
     userId: z.string(),
     name: z.string(),
     email: z.string(),
-    role: z.string(),
+    role: z.string().nullable(),
     suspended: z.boolean(),
     suspensionReason: z.string().nullable(),
     customRole: z.string().nullable(),
@@ -255,8 +255,17 @@ export const organizationMemberAccessSummaryOutputSchema = z.object({
 export type OrganizationSettingsPatch = z.infer<
   typeof organizationSettingsPatchSchema
 >;
+export type OrganizationSettingsOutput = z.infer<
+  typeof organizationSettingsOutputSchema
+>;
 export type OrganizationProfilePatch = z.infer<
   typeof organizationProfilePatchSchema
+>;
+export type OrganizationSecurityDomainListOutput = z.infer<
+  typeof organizationSecurityDomainListOutputSchema
+>;
+export type OrganizationMemberAccessSummaryOutput = z.infer<
+  typeof organizationMemberAccessSummaryOutputSchema
 >;
 export type OrganizationRoleCreateInput = z.infer<
   typeof organizationRoleCreateInputSchema

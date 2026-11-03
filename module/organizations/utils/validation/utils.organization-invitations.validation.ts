@@ -134,6 +134,9 @@ export type OrganizationInvitationListOutput = z.infer<
 export type OrganizationInvitationCreateOutput = z.infer<
   typeof organizationInvitationCreateOutputSchema
 >;
+export type OrganizationInvitationMutationOutput = z.infer<
+  typeof organizationInvitationMutationOutputSchema
+>;
 export type OrganizationInvitationPreviewOutput = z.infer<
   typeof organizationInvitationPreviewOutputSchema
 >;

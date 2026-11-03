@@ -3,6 +3,7 @@ import {
   runAction,
 } from "@module/shared/server/run-action";
 import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
+import { toServiceFieldErrors } from "@module/shared/utils/validation/utils.zod-field-errors.validation";
 import {
   organizationGetBySlugInputSchema,
   organizationGetBySlugOutputSchema,
@@ -28,7 +29,7 @@ export async function organizationGetBySlugController({
         return {
           kind: "failed" as const,
           message: "Check the organization details.",
-          fieldErrors: parsed.error.flatten().fieldErrors,
+          fieldErrors: toServiceFieldErrors(parsed.error),
         };
       return organizationGetBySlugService(ctx, parsed.data);
     },

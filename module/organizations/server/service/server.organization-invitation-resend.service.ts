@@ -16,6 +16,7 @@ export async function organizationInvitationResendService(
 ): Promise<ServiceOutcome<OrganizationInvitationMutationOutput>> {
   if (!ctx.orgId)
     return { kind: "failed", message: "Select an organization first." };
+  const organizationId = ctx.orgId;
   const [row] = await db
     .select({
       id: invitation.id,
@@ -28,7 +29,7 @@ export async function organizationInvitationResendService(
     .where(
       and(
         eq(invitation.id, input.invitationId),
-        eq(invitation.organizationId, ctx.orgId),
+        eq(invitation.organizationId, organizationId),
         eq(invitation.status, "pending"),
         isNull(invitation.deletedAt),
         isNull(organization.deletedAt),
@@ -47,10 +48,10 @@ export async function organizationInvitationResendService(
     invitationId: row.id,
     email: row.email,
     role: row.role,
-    organizationId: ctx.orgId,
+    organizationId,
     inviterUserId: ctx.userId,
     organizationName: row.organizationName,
-    inviterName: inviter?.name || inviter?.email,
+    inviterName: inviter?.name || inviter?.email || "Organization member",
   });
   await db
     .update(invitation)
@@ -62,7 +63,7 @@ export async function organizationInvitationResendService(
     .where(
       and(
         eq(invitation.id, row.id),
-        eq(invitation.organizationId, ctx.orgId),
+        eq(invitation.organizationId, organizationId),
         eq(invitation.status, "pending"),
       ),
     );

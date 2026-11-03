@@ -1,5 +1,6 @@
 import { toORPCRouter } from "@orpc/trpc";
 import { studioRouter } from "../routers/studio";
+import { organizationsProcedures } from "./procedures/organizations";
 import { teamsProcedures } from "./procedures/teams";
 
 /**
@@ -10,6 +11,7 @@ import { teamsProcedures } from "./procedures/teams";
 export const studioORPCRouter = {
   ...toORPCRouter(studioRouter),
   teams: teamsProcedures,
+  organizations: organizationsProcedures,
 };
 
 export type StudioORPCRouter = typeof studioORPCRouter;

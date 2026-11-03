@@ -3,6 +3,7 @@ import {
   runAction,
 } from "@module/shared/server/run-action";
 import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
+import { toServiceFieldErrors } from "@module/shared/utils/validation/utils.zod-field-errors.validation";
 import {
   organizationListInputSchema,
   organizationListOutputSchema,
@@ -28,7 +29,7 @@ export async function organizationListController({
         return {
           kind: "failed" as const,
           message: "Unable to load organizations.",
-          fieldErrors: parsed.error.flatten().fieldErrors,
+          fieldErrors: toServiceFieldErrors(parsed.error),
         };
       return organizationListService(ctx, parsed.data);
     },

@@ -5,6 +5,7 @@ import {
 } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
+import { toServiceFieldErrors } from "@module/shared/utils/validation/utils.zod-field-errors.validation";
 import type { z } from "zod";
 
 export async function organizationAdminAction<I, O>(input: {
@@ -34,7 +35,7 @@ export async function organizationAdminAction<I, O>(input: {
         return {
           kind: "failed" as const,
           message: input.failureMessage,
-          fieldErrors: parsed.error.flatten().fieldErrors,
+          fieldErrors: toServiceFieldErrors(parsed.error),
         };
       return input.handler(parsed.data);
     },
