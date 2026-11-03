@@ -16,6 +16,10 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Move public marketing, legal, status, changelog, and sign-in routes to `apps/www`; keep documentation and docs service endpoints in `apps/docs` (#1081).
+
 ### Fixed
 
 - Mount legacy `/better-auth/api/better-auth/*` on the auth app (Next route + Vercel redirect to `/api/auth`) so GitHub OAuth callbacks registered before the path migration keep working until the GitHub app settings are updated.

@@ -75,6 +75,32 @@
         }
       ]
     },
+    "www": {
+      "root": "apps/www",
+      "framework": "nextjs",
+      "installCommand": "cd ../.. && pnpm install",
+      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 pnpm turbo run build --filter=www",
+      "headers": [
+        {
+          "source": "/favicon/(.*)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=86400, stale-while-revalidate=604800"
+            }
+          ]
+        },
+        {
+          "source": "/favicon.ico",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=86400, stale-while-revalidate=604800"
+            }
+          ]
+        }
+      ]
+    },
     "auth": {
       "root": "apps/auth",
       "framework": "nextjs",
@@ -131,15 +157,63 @@
       }
     },
     {
-      "source": "/",
+      "source": "/docs-static/:path*",
       "destination": {
         "service": "docs"
       }
     },
     {
-      "source": "/:path*",
+      "source": "/docs",
       "destination": {
         "service": "docs"
+      }
+    },
+    {
+      "source": "/docs/:path*",
+      "destination": {
+        "service": "docs"
+      }
+    },
+    {
+      "source": "/api/health",
+      "destination": {
+        "service": "docs"
+      }
+    },
+    {
+      "source": "/api/mcp",
+      "destination": {
+        "service": "docs"
+      }
+    },
+    {
+      "source": "/sentry-test",
+      "destination": {
+        "service": "docs"
+      }
+    },
+    {
+      "source": "/robots.txt",
+      "destination": {
+        "service": "docs"
+      }
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": {
+        "service": "docs"
+      }
+    },
+    {
+      "source": "/",
+      "destination": {
+        "service": "www"
+      }
+    },
+    {
+      "source": "/:path*",
+      "destination": {
+        "service": "www"
       }
     }
   ]

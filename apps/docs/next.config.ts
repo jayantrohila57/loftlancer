@@ -20,6 +20,7 @@ const googleSignIn =
     ? "1"
     : "";
 const docsBasePath = process.env.NEXT_BASE_PATH ?? "";
+const isVercelServicesBuild = process.env.VERCEL_SERVICES === "1";
 
 const config: NextConfig = {
   // Serverless Next on Vercel (MCP at /api/mcp, health probe). Not `output: "export"` — API routes need a Node runtime.
@@ -34,8 +35,14 @@ const config: NextConfig = {
   reactStrictMode: true,
   typedRoutes: true,
   reactCompiler: true,
+  ...(isVercelServicesBuild ? { assetPrefix: "/docs-static" } : {}),
   transpilePackages: ["@loftlancer/ui"],
   ...(docsBasePath ? { basePath: docsBasePath } : {}),
+  async rewrites() {
+    return isVercelServicesBuild
+      ? [{ source: "/docs-static/:path*", destination: "/:path*" }]
+      : [];
+  },
   async redirects() {
     return [
       {
