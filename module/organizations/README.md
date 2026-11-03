@@ -28,7 +28,7 @@ Compatibility tRPC and MCP adapters should call the same module controllers and 
 
 ## Current migration state
 
-This is a partial migration. Organization list, get-by-slug, get-profile, member list/remove, invitation list/create/revoke/resend/preview, and team/project invitation acceptance now have module validations, services, and controllers. Shared invitation email parsing and invitation utilities are in this module, and invitation persistence/delivery is implemented by `server.invitation-create.service.ts`. Teams' invitation flow and the organization MCP invitation operation reuse that service. Organization screens, their hooks, and most product operations remain in the legacy Studio module and API router until their linked slices migrate them.
+This is a partial migration. Organization list, get-by-slug, get-profile, member list/remove, invitation list/create/revoke/resend/preview, team/project invitation acceptance, organization settings/profile/branding, custom-role operations, security domains, lifecycle, and member administration now have module validations, services, and controllers. Shared invitation email parsing and invitation utilities are in this module, and invitation persistence/delivery is implemented by `server.invitation-create.service.ts`. Teams' invitation flow and the organization MCP invitation operation reuse that service. Organization screens, their hooks, native oRPC procedures, and compatibility adapters remain in the legacy Studio module and API router until their linked slices migrate them.
 
 ### Migration boundaries
 
@@ -46,17 +46,24 @@ module/organizations/
 │   ├── utils.invite-emails.ts
 │   ├── utils.invitations.ts
 │   ├── utils.public-invitation-status.ts
+│   ├── utils.domain-verification.ts
 │   └── validation/
 │       ├── utils.organization-list.validation.ts
 │       ├── utils.organization-get-by-slug.validation.ts
 │       ├── utils.organization-get-profile.validation.ts
 │       ├── utils.organization-members.validation.ts
-│       └── utils.organization-invitations.validation.ts
+│       ├── utils.organization-invitations.validation.ts
+│       └── utils.organization-admin.validation.ts
 ├── server/
 │   ├── controller/
 │   │   ├── server.organization-list.controller.ts
 │   │   ├── server.organization-get-by-slug.controller.ts
 │   │   ├── server.organization-get-profile.controller.ts
+│   │   ├── server.organization-settings.controller.ts
+│   │   ├── server.organization-roles.controller.ts
+│   │   ├── server.organization-security-domains.controller.ts
+│   │   ├── server.organization-lifecycle.controller.ts
+│   │   ├── server.organization-member-admin.controller.ts
 │   │   ├── server.organization-members.controller.ts
 │   │   ├── server.organization-member-remove.controller.ts
 │   │   └── server.organization-invitation-*.controller.ts
@@ -64,6 +71,11 @@ module/organizations/
 │       ├── server.organization-list.service.ts
 │       ├── server.organization-get-by-slug.service.ts
 │       ├── server.organization-get-profile.service.ts
+│       ├── server.organization-settings.service.ts
+│       ├── server.organization-roles.service.ts
+│       ├── server.organization-security-domains.service.ts
+│       ├── server.organization-lifecycle.service.ts
+│       ├── server.organization-member-admin.service.ts
 │       ├── server.organization-member-*.service.ts
 │       ├── server.organization-invitation-*.service.ts
 │       └── server.invitation-create.service.ts
@@ -92,7 +104,7 @@ Implement in this order; do not skip ahead of an open dependency:
 | [#938](https://github.com/jayantrohila57/loftlancer/issues/938) | README, architecture prompt, module index | Implemented on this branch |
 | [#939](https://github.com/jayantrohila57/loftlancer/issues/939) | A — validations and read controllers | Implemented on this branch |
 | [#940](https://github.com/jayantrohila57/loftlancer/issues/940) | B — invitations and members controllers | Implemented on this branch |
-| [#973](https://github.com/jayantrohila57/loftlancer/issues/973) | C — settings, branding, roles, domains, lifecycle, member administration | Open |
+| [#973](https://github.com/jayantrohila57/loftlancer/issues/973) | C — settings, branding, roles, domains, lifecycle, member administration | Implemented on this branch |
 | [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | D — native oRPC organizations | Open |
 | [#975](https://github.com/jayantrohila57/loftlancer/issues/975) | E — client migration, phase 1 | Open |
 | [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | F — client migration, phase 2 | Open |
