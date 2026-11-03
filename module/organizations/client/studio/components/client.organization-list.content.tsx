@@ -3,38 +3,38 @@
 import { DataTableToolbar } from "@loftlancer/ui/data-table/data-table-toolbar";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
-import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
-import { useOrganizationFavorites } from "@/components/org/use-organization-favorites";
+import { ErrorState } from "@/components/patterns/error-state";
 import { appIcons } from "@/lib/icons";
-import { OrganizationCard } from "@/module/organizations/organizations.organization.card";
-import { OrganizationsListBodySkeleton } from "@/module/organizations/organizations.skeletons";
-import { trpc } from "@/utils/trpc";
+import type { OrganizationListOutput } from "../../../utils/validation/utils.organization-list.validation";
+import { useOrganizationFavorites } from "../hooks/client.use-organization-favorites.hook";
+import { useOrganizationList } from "../hooks/client.use-organization-list.hook";
+import { OrganizationListSkeleton } from "../skeletons/client.organization-skeleton";
+import { OrganizationCard } from "./client.organization-card";
 
-export function OrganizationsListContent() {
-  const { orgs, activeOrganizationId } = useActiveOrganization();
+export function OrganizationListContent() {
+  const { orgs: metadataOrgs, activeOrganizationId } = useActiveOrganization();
+  const listQuery = useOrganizationList();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("name");
   const { favorites, toggleFavorite, favoriteLimit } =
     useOrganizationFavorites();
-  const lifecycleQuery = useQuery(trpc.organizations.list.queryOptions());
 
-  const orgsWithLifecycle = useMemo(() => {
-    const byId = new Map(
-      (lifecycleQuery.data?.items ?? []).map((item) => [
-        item.id,
-        item.archivedAt,
-      ]),
-    );
-    return orgs.map((org) => ({
-      ...org,
-      archivedAt: byId.get(org.id) ?? null,
-    }));
-  }, [lifecycleQuery.data?.items, orgs]);
+  const organizations = useMemo(() => {
+    const metadataById = new Map(metadataOrgs.map((org) => [org.id, org]));
+    const listData =
+      listQuery.data?.status === "success" &&
+      !Array.isArray(listQuery.data.data)
+        ? listQuery.data.data
+        : null;
+    const items: OrganizationListOutput["items"] = listData?.items ?? [];
+    return items.map((org) => ({ ...metadataById.get(org.id), ...org }));
+  }, [listQuery.data, metadataOrgs]);
+
   const filtered = useMemo(() => {
     const query = search.trim().toLocaleLowerCase();
-    return orgsWithLifecycle
+    return organizations
       .filter(
         (org) =>
           !query ||
@@ -42,27 +42,43 @@ export function OrganizationsListContent() {
           org.slug.toLocaleLowerCase().includes(query),
       )
       .sort((a, b) => {
-        if (sort === "current") {
+        if (sort === "current")
           return (
             Number(b.id === activeOrganizationId) -
               Number(a.id === activeOrganizationId) ||
             a.name.localeCompare(b.name)
           );
-        }
-        if (sort === "favorites") {
+        if (sort === "favorites")
           return (
             Number(favorites.includes(b.id)) -
               Number(favorites.includes(a.id)) || a.name.localeCompare(b.name)
           );
-        }
         return a.name.localeCompare(b.name);
       });
-  }, [activeOrganizationId, favorites, orgsWithLifecycle, search, sort]);
+  }, [activeOrganizationId, favorites, organizations, search, sort]);
 
-  if (lifecycleQuery.isPending) return <OrganizationsListBodySkeleton />;
+  if (listQuery.isPending) return <OrganizationListSkeleton />;
+  if (listQuery.isError || listQuery.data?.status !== "success") {
+    return (
+      <ErrorState
+        title="Organizations unavailable"
+        description="Could not load your organizations. Try again."
+        onRetry={() => void listQuery.refetch()}
+      />
+    );
+  }
+  if (organizations.length === 0) {
+    return (
+      <EmptyState
+        icon={appIcons.organization}
+        title="No organizations yet"
+        description="Create an organization to manage people, teams, and projects."
+      />
+    );
+  }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       <DataTableToolbar
         searchPlaceholder="Search organizations…"
         searchValue={search}

@@ -3,8 +3,8 @@
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import { Skeleton } from "@loftlancer/ui/skeleton";
+import { OrganizationOverviewSkeleton } from "@module/organizations/client/studio/skeletons/client.organization-skeleton";
 import DashboardSection from "@/components/section-dashboard";
-import { OrganizationOverviewSectionsSkeleton } from "@/module/organizations/organizations.overview.sections";
 import { OrganizationSectionPage } from "@/module/organizations/organizations.section";
 
 const organizationsPageActionSkeleton = (
@@ -62,7 +62,7 @@ export function OrganizationsListSkeleton() {
 export function OrganizationDetailPageSkeleton() {
   return (
     <div className="min-w-0 space-y-4" role="status" aria-busy="true">
-      <OrganizationOverviewSectionsSkeleton />
+      <OrganizationOverviewSkeleton />
     </div>
   );
 }

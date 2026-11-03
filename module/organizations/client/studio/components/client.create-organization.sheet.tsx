@@ -1,15 +1,13 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { isReservedOrgSlugForCreation } from "@loftlancer/env/reserved-slugs";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetClose, SheetDescription } from "@loftlancer/ui/sheet";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
-import { z } from "zod/v3";
+import type { FormEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { OrgSlugInput } from "@/components/org/org-slug-input";
 import { FormField } from "@/components/patterns/form-field";
@@ -28,24 +26,6 @@ import { captureEvent, STUDIO_EVENTS } from "@/lib/posthog";
 import { toast } from "@/lib/toast";
 import { routes } from "@/utils/navigation";
 
-const schema = z.object({
-  name: z.string().trim().min(2, "Name is required").max(100),
-  slug: z
-    .string()
-    .trim()
-    .transform((value) => slugifyOrganizationName(value))
-    .pipe(
-      z
-        .string()
-        .min(2, "Slug is required")
-        .max(200)
-        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
-        .refine((slug) => !isReservedOrgSlugForCreation(slug), {
-          message: "That slug is reserved. Choose a different slug.",
-        }),
-    ),
-});
-
 type CreateOrganizationSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -58,31 +38,55 @@ export function CreateOrganizationSheet({
   const router = useRouter();
   const closeWithoutPromptRef = useRef<(() => void) | null>(null);
   const { afterOrganizationCreated } = useActiveOrganization();
-  const form = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: { name: "", slug: "" },
-    mode: "onChange",
-  });
-
-  const nameValue = useWatch({ control: form.control, name: "name" });
-  const slugTouched = form.formState.touchedFields.slug;
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [slugTouched, setSlugTouched] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [slugError, setSlugError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (slugTouched) return;
-    const next = slugifyOrganizationName(nameValue);
-    if (next) form.setValue("slug", next, { shouldValidate: true });
-  }, [nameValue, slugTouched, form]);
+    if (!slugTouched) setSlug(slugifyOrganizationName(name));
+  }, [name, slugTouched]);
 
   useEffect(() => {
-    if (!open) form.reset();
-  }, [open, form]);
+    if (open) return;
+    setName("");
+    setSlug("");
+    setSlugTouched(false);
+    setSlugError(null);
+  }, [open]);
 
-  const onSubmit = form.handleSubmit(async (values) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const normalizedName = name.trim();
+    const normalizedSlug = slugifyOrganizationName(slug);
+    const reserved = isReservedOrgSlugForCreation(normalizedSlug);
+    const invalidSlug =
+      normalizedSlug.length < 2 ||
+      normalizedSlug.length > 200 ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalizedSlug) ||
+      reserved;
+    if (
+      normalizedName.length < 2 ||
+      normalizedName.length > 100 ||
+      invalidSlug
+    ) {
+      setSlugError(
+        invalidSlug
+          ? reserved
+            ? "That slug is reserved. Choose a different slug."
+            : "Enter a valid organization slug."
+          : null,
+      );
+      return;
+    }
+
+    setPending(true);
     try {
       const result = await toast.promise(
         authClient.organization.create({
-          name: values.name,
-          slug: values.slug,
+          name: normalizedName,
+          slug: normalizedSlug,
         }),
         {
           loading: "Creating organization…",
@@ -90,28 +94,32 @@ export function CreateOrganizationSheet({
           error: "Could not create organization",
         },
       );
-      const orgId = result.data?.id;
-      if (orgId) {
-        captureEvent(STUDIO_EVENTS.organizationCreated, { source: "sheet" });
-        await afterOrganizationCreated(orgId);
-        const slug = result.data?.slug ?? values.slug;
-        closeWithoutPromptRef.current?.();
-        onOpenChange(false);
-        router.push(routes.org(slug));
-      }
+      const organizationId = result.data?.id;
+      if (!organizationId) return;
+      captureEvent(STUDIO_EVENTS.organizationCreated, { source: "sheet" });
+      await afterOrganizationCreated(organizationId);
+      const createdSlug = result.data?.slug ?? normalizedSlug;
+      closeWithoutPromptRef.current?.();
+      onOpenChange(false);
+      router.push(routes.org(createdSlug));
     } catch {
       // toast handles errors
+    } finally {
+      setPending(false);
     }
-  });
-
-  const pending = form.formState.isSubmitting;
+  };
 
   return (
     <FormSheet
       open={open}
       onOpenChange={onOpenChange}
-      isDirty={form.formState.isDirty}
-      onDiscard={() => form.reset()}
+      isDirty={Boolean(name || slug)}
+      onDiscard={() => {
+        setName("");
+        setSlug("");
+        setSlugTouched(false);
+        setSlugError(null);
+      }}
       closeWithoutPromptRef={closeWithoutPromptRef}
     >
       <FormSheetPopup>
@@ -128,8 +136,12 @@ export function CreateOrganizationSheet({
             <FormField id="org-create-name" label="Name" required>
               <Input
                 id="org-create-name"
-                {...form.register("name")}
+                value={name}
+                onChange={(event) => setName(event.target.value)}
                 autoComplete="organization"
+                required
+                minLength={2}
+                maxLength={100}
               />
             </FormField>
             <FormField
@@ -137,18 +149,16 @@ export function CreateOrganizationSheet({
               label="Slug"
               required
               hint="Lowercase letters, numbers, and hyphens."
-              error={form.formState.errors.slug?.message}
+              error={slugError ?? undefined}
             >
-              <Controller
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <OrgSlugInput
-                    id="org-create-slug"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
+              <OrgSlugInput
+                id="org-create-slug"
+                value={slug}
+                onChange={(value) => {
+                  setSlugTouched(true);
+                  setSlug(value);
+                  setSlugError(null);
+                }}
               />
             </FormField>
           </FormSheetBody>
@@ -163,7 +173,12 @@ export function CreateOrganizationSheet({
             <SubmitButton
               isLoading={pending}
               loadingLabel="Creating…"
-              disabled={!form.formState.isValid}
+              disabled={
+                pending ||
+                name.trim().length < 2 ||
+                name.trim().length > 100 ||
+                slugifyOrganizationName(slug).length < 2
+              }
             >
               Create organization
             </SubmitButton>
