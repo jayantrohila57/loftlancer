@@ -1,8 +1,8 @@
 "use client";
 
 import "../index.css";
-import { AppGlobalErrorPage } from "@loftlancer/ui/patterns/app-route-states";
-import { Auth5Content, Auth5Frame } from "@loftlancer/ui/patterns/auth-5";
+import { Auth5Content, Auth5Frame } from "@features/authentication/core/client";
+import { AppGlobalErrorPage } from "@features/patterns/core/client/patterns.app-route-states";
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 

@@ -1,4 +1,4 @@
-import { routes } from "@loftlancer/ui/studio-routes";
+import { routes } from "@features/shell/utils/shell.studio-routes.utils";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { isActionsAuditEnabledOnServer } from "@/lib/actions-audit-enabled";

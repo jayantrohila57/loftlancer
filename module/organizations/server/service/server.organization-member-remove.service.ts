@@ -1,17 +1,17 @@
-import {
-  getOwnerMutationBlockReason,
-  isOwnerRole,
-} from "@loftlancer/auth/member-removal-policy";
-import { db, softDeleteSet } from "@loftlancer/db";
-import { member, organization } from "@loftlancer/db/schema/organization";
+import { db, softDeleteSet } from "@loftlancer/drizzle";
+import { member, organization } from "@loftlancer/drizzle/schema/organization";
 import {
   projectManager,
   projectMemberGrant,
-} from "@loftlancer/db/schema/project-access";
-import { team, teamMember } from "@loftlancer/db/schema/team";
-import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
+} from "@loftlancer/drizzle/schema/project-access";
+import { team, teamMember } from "@loftlancer/drizzle/schema/team";
+import { isSoftDeletesEnabled } from "@loftlancer/t3-env/soft-deletes";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
+import {
+  getOwnerMutationBlockReason,
+  isOwnerRole,
+} from "@modules/organizations/utils/utils.member-removal-policy";
 import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import type {
   OrganizationMemberRemoveInput,

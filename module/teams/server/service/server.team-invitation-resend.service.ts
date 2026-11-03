@@ -1,7 +1,10 @@
-import { sendOrganizationInvitationEmail } from "@loftlancer/auth/organization-invitation-email";
-import { db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
-import { invitation, organization } from "@loftlancer/db/schema/organization";
+import { sendOrganizationInvitationEmail } from "@features/authentication/core/server/authentication.organization-invitation-email";
+import { db } from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
+import {
+  invitation,
+  organization,
+} from "@loftlancer/drizzle/schema/organization";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import { and, eq, isNull } from "drizzle-orm";
 import type { TeamInvitationTargetInput } from "../../utils/validation/utils.team-extended.validation";

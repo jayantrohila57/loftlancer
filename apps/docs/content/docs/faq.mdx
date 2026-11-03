@@ -13,7 +13,7 @@ Organization roles are **owner**, **manager**, and **member** (legacy `admin` â†
 
 ## Does MCP expose every action?
 
-No. `listMcpExposedActions()` includes actions that have handlers in `@loftlancer/api/mcp`, excludes `platform.*` and user-scoped account actions, and adds `permissions_snapshot` from `@loftlancer/mcp`.
+No. `listMcpExposedActions()` includes actions that have handlers in `@loftlancer/orpc/mcp`, excludes `platform.*` and user-scoped account actions, and adds `permissions_snapshot` from the same transport registrar.
 
 ## How are tool names formed?
 

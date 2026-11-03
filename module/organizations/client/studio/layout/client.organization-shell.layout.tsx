@@ -1,6 +1,6 @@
 "use client";
 
-import { SettingsFrame } from "@loftlancer/ui/patterns/settings-frame";
+import { SettingsFrame } from "@features/patterns/core/client/patterns.settings-frame";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";

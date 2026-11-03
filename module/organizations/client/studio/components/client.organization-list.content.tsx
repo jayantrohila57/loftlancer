@@ -1,8 +1,8 @@
 "use client";
 
-import { DataTableToolbar } from "@loftlancer/ui/data-table/data-table-toolbar";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
+import { DataTableToolbar } from "@features/data-table/core/client/data-table.toolbar";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 import { useMemo, useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { ErrorState } from "@/components/patterns/error-state";

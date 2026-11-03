@@ -35,7 +35,8 @@ export function parseChangelog(markdown: string): ChangelogRelease[] {
     summary.length = 0;
   };
 
-  for (const line of markdown.split("\n")) {
+  for (const rawLine of markdown.split("\n")) {
+    const line = rawLine.replace(/\r$/, "");
     const heading = RELEASE_HEADING.exec(line);
     if (heading) {
       finishSummary();

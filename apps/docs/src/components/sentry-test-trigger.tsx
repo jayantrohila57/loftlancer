@@ -3,7 +3,7 @@
 import {
   SentryTestPanel,
   type SentryTestResult,
-} from "@loftlancer/ui/patterns/sentry-test-panel";
+} from "@features/observability/core/client";
 import * as Sentry from "@sentry/nextjs";
 
 const APP = "docs";

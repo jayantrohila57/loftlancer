@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Button } from "@loftlancer/ui/button";
 import {
   Menu,
@@ -11,12 +11,12 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@loftlancer/ui/menu";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@loftlancer/ui/tooltip";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { EditProjectSheet } from "@/module/projects/projects.edit.project.sheet";

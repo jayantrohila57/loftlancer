@@ -1,0 +1,27 @@
+{
+  "name": "@loftlancer/features-data-table",
+  "description": "TanStack table UI on the design system.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core/client": "./src/core/client/index.ts",
+    "./core/client/*": "./src/core/client/*",
+    "./types/*": "./src/types/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@loftlancer/features-shell": "workspace:*",
+    "@loftlancer/ui": "workspace:*",
+    "@tanstack/react-table": "^9.3.1",
+    "lucide-react": "^1.56.0",
+    "react": "^19.3.0"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "typescript": "catalog:"
+  }
+}

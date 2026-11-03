@@ -3,7 +3,7 @@
 import type {
   CommandGroup,
   FavoriteProject,
-} from "@loftlancer/ui/patterns/sidebar-kit";
+} from "@features/patterns/core/client/patterns.sidebar-kit";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { trpc } from "@/utils/trpc";

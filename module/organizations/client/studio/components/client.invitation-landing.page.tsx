@@ -72,23 +72,23 @@ export function InvitationLandingPage({
 
   const metadata =
     preview.status !== "not_found" ? (
-      <div className="space-y-1 text-muted-foreground text-sm">
+      <div className="text-muted-foreground space-y-1 text-sm">
         <p>
           Organization:{" "}
-          <span className="font-medium text-foreground">
+          <span className="text-foreground font-medium">
             {preview.organizationName}
           </span>
         </p>
         <p>
           Role:{" "}
-          <span className="font-medium text-foreground capitalize">
+          <span className="text-foreground font-medium capitalize">
             {preview.role}
           </span>
         </p>
         {preview.projectName ? (
           <p>
             Project:{" "}
-            <span className="font-medium text-foreground">
+            <span className="text-foreground font-medium">
               {preview.projectName}
             </span>
           </p>
@@ -97,17 +97,17 @@ export function InvitationLandingPage({
           <>
             <p>
               Team:{" "}
-              <span className="font-medium text-foreground">
+              <span className="text-foreground font-medium">
                 {preview.teamName}
               </span>
             </p>
             <p>
               Team role:{" "}
-              <span className="font-medium text-foreground">Member</span>
+              <span className="text-foreground font-medium">Member</span>
             </p>
             <p>
               Team project access:{" "}
-              <span className="font-medium text-foreground">
+              <span className="text-foreground font-medium">
                 {preview.linkedProjects.length
                   ? preview.linkedProjects.map((item) => item.name).join(", ")
                   : "No projects are currently linked"}
@@ -302,10 +302,10 @@ export function InvitationLandingPage({
 
 function InvitationLayout({ children }: { children: ReactNode }) {
   return (
-    <main className="flex min-h-svh items-center justify-center bg-background p-6">
-      <section className="flex min-h-64 w-full max-w-lg flex-col justify-center gap-5 rounded-xl border bg-card p-6 shadow-sm">
+    <main className="bg-background flex min-h-svh items-center justify-center p-6">
+      <section className="bg-card flex min-h-64 w-full max-w-lg flex-col justify-center gap-5 rounded-xl border p-6 shadow-sm">
         <Link
-          className="text-muted-foreground text-sm hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground text-sm"
           href={routes.organizationsDirectory()}
         >
           ← Back to Loftlancer
@@ -330,7 +330,7 @@ function InvitationState({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <h1 className="font-semibold text-xl">{title}</h1>
+        <h1 className="text-xl font-semibold">{title}</h1>
         {description ? (
           <p className="text-muted-foreground text-sm">{description}</p>
         ) : null}

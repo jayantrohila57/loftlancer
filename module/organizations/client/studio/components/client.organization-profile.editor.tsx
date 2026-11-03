@@ -1,9 +1,9 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { FormField } from "@/components/patterns/form-field";
@@ -162,7 +162,7 @@ function OrganizationProfileSection({
             {type === "textarea" ? (
               <textarea
                 id={`organization-profile-${key}`}
-                className="min-h-24 w-full rounded-md border bg-background px-3 py-2 text-sm"
+                className="bg-background min-h-24 w-full rounded-md border px-3 py-2 text-sm"
                 disabled={!canEdit}
                 value={draft[key]}
                 placeholder={placeholder}
@@ -171,7 +171,7 @@ function OrganizationProfileSection({
             ) : type === "select" ? (
               <select
                 id={`organization-profile-${key}`}
-                className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                className="bg-background h-10 w-full rounded-md border px-3 text-sm"
                 disabled={!canEdit}
                 value={draft[key]}
                 onChange={(event) => set(key, event.target.value)}

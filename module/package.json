@@ -6,21 +6,23 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@loftlancer/actions": "workspace:*",
     "zod": "catalog:",
-    "@loftlancer/api": "workspace:*",
-    "@loftlancer/db": "workspace:*",
-    "@loftlancer/logger": "workspace:*",
+    "@loftlancer/orpc": "workspace:*",
+    "@loftlancer/drizzle": "workspace:*",
+    "@loftlancer/sentry": "workspace:*",
     "@loftlancer/ui": "workspace:*",
     "@tanstack/react-query": "^5.104.2",
     "react": "^19.3.0",
     "next": "catalog:",
     "drizzle-orm": "catalog:",
-    "@loftlancer/auth": "workspace:*",
+    "@loftlancer/better-auth": "workspace:*",
+    "@trpc/server": "catalog:",
+    "@vercel/blob": "^2.8.2",
+    "ai": "^7.0.159",
     "@tanstack/react-table": "^9.3.1"
   },
   "devDependencies": {
-    "@loftlancer/config": "workspace:*",
+    "@loftlancer/typescript-config": "workspace:*",
     "typescript": "catalog:",
     "@types/react": "^19.3.0"
   }

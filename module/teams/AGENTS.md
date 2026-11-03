@@ -8,7 +8,7 @@
 
 - Implement **one sub-issue** for parent **#916** (or linked sub-task), not the full pilot.
 - Branch: `feat/916-<slug>` from **`dev`**; commit **`Fixes #<sub-issue>`**.
-- Do **not** copy `packages/api/src/modules/teams/*` or removed `apps/studio/src/lib/team-*` for new behavior.
+- Do **not** copy `packages/orpc/src/modules/teams/*` or removed `apps/studio/src/lib/team-*` for new behavior.
 
 ## Done when
 

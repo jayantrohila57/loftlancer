@@ -1,4 +1,4 @@
-import { routes } from "@loftlancer/ui/studio-routes";
+import { routes } from "@features/shell/utils/shell.studio-routes.utils";
 export const basePath = (org: string) => routes.orgSection(org, "teams");
 export const sidebarSegment = "teams";
 export function tabs(org: string, teamId: string) {

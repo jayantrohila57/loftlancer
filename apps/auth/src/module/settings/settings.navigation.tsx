@@ -1,8 +1,8 @@
 "use client";
 
+import { resolveSettingsTabHref } from "@features/patterns/config/patterns.settings-tabs.config";
+import { PageHeaderTabsRow } from "@features/patterns/core/client/patterns.page-header";
 import { GithubIcon } from "@loftlancer/ui/github-icon";
-import { PageHeaderTabsRow } from "@loftlancer/ui/patterns/page-header";
-import { resolveSettingsTabHref } from "@loftlancer/ui/settings-tabs";
 import { Bell, Monitor, ShieldAlert, ShieldCheck, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

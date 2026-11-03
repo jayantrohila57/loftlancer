@@ -1,10 +1,10 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { RequiredFieldsHint } from "@features/patterns/core/client/patterns.required-fields-hint";
+import { SettingsRow } from "@features/patterns/core/client/patterns.settings-row";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { RequiredFieldsHint } from "@loftlancer/ui/patterns/required-fields-hint";
-import { SettingsRow } from "@loftlancer/ui/patterns/settings-row";
 import { Textarea } from "@loftlancer/ui/textarea";
 import type { useTeamSettingsScreen } from "../hooks/client.use-teams-settings-screen.hook";
 import { Can } from "./client.can";

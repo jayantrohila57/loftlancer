@@ -1,8 +1,8 @@
 import "server-only";
 
-import { prefetchWithCaller } from "@loftlancer/api/prefetch-with-caller";
-import { studioRouter } from "@loftlancer/api/routers/studio";
-import type { AuthSession } from "@loftlancer/auth/session-types";
+import type { AuthSession } from "@loftlancer/better-auth/session-types";
+import { prefetchWithCaller } from "@loftlancer/orpc/prefetch-with-caller";
+import { studioRouter } from "@loftlancer/orpc/routers/studio";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { orgSlugFromRequestPath } from "@/lib/org-slug-from-request-path";
 import { prefetchSidebarNavigatorSettled } from "@/lib/shell-prefetch.shared";

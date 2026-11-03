@@ -1,16 +1,16 @@
 "use client";
 
-import { errorAttributes, logger } from "@loftlancer/logger";
-import { resolveAuthAppOrigin } from "@loftlancer/ui/auth-links";
-import { Badge, type BadgeProps } from "@loftlancer/ui/badge";
-import { Button } from "@loftlancer/ui/button";
+import { resolveAuthAppOrigin } from "@features/authentication/utils/auth-links";
 import type {
   MonitorState,
   OverallState,
   PlatformIncident,
   PlatformMonitor,
   PlatformStatus,
-} from "@loftlancer/ui/platform-status";
+} from "@features/shell/utils/shell.platform-status.utils";
+import { errorAttributes, logger } from "@loftlancer/sentry";
+import { Badge, type BadgeProps } from "@loftlancer/ui/badge";
+import { Button } from "@loftlancer/ui/button";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import {
   Tooltip,
@@ -155,14 +155,14 @@ function MonitorRow({
             state?.dot ?? "bg-muted-foreground/40",
           )}
         />
-        <span className="font-medium text-sm">{name}</span>
+        <span className="text-sm font-medium">{name}</span>
         {monitor ? (
           <Tooltip>
             <TooltipTrigger
               render={
                 <a
                   aria-label={`Open ${name} monitor at ${monitor.url}`}
-                  className="hidden min-w-0 cursor-help truncate text-muted-foreground text-xs md:inline"
+                  className="text-muted-foreground hidden min-w-0 cursor-help truncate text-xs md:inline"
                   href={monitor.url}
                   rel="noreferrer"
                   target="_blank"
@@ -182,7 +182,7 @@ function MonitorRow({
       <div className="hidden text-right text-sm tabular-nums sm:block">
         <Value loading={loading}>{percent(monitor?.uptime90d)}</Value>
       </div>
-      <div className="hidden text-right text-muted-foreground text-xs tabular-nums sm:block">
+      <div className="text-muted-foreground hidden text-right text-xs tabular-nums sm:block">
         <Value loading={loading} width="w-14">
           {relative(monitor?.lastCheckedAt, now)}
         </Value>
@@ -209,23 +209,23 @@ function IncidentList({
 }) {
   if (incidents.length === 0) {
     return (
-      <p className="py-3 text-muted-foreground text-sm">
+      <p className="text-muted-foreground py-3 text-sm">
         No incidents in the last 90 days.
       </p>
     );
   }
   return (
-    <ul className="divide-y divide-border/60">
+    <ul className="divide-border/60 divide-y">
       {incidents.map((incident) => (
         <li
           key={incident.id}
           className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 py-3"
         >
           <div className="flex min-w-0 flex-col gap-0.5">
-            <span className="font-medium text-sm">
+            <span className="text-sm font-medium">
               {incident.monitorName}
               {incident.cause ? (
-                <span className="font-normal text-muted-foreground">
+                <span className="text-muted-foreground font-normal">
                   {" "}
                   · {incident.cause}
                 </span>
@@ -315,7 +315,7 @@ export function StatusBoard() {
       {/* Overall */}
       <section
         aria-live="polite"
-        className="grid gap-2 border-foreground/15 border-y py-4 sm:flex sm:items-center sm:justify-between sm:gap-4"
+        className="border-foreground/15 grid gap-2 border-y py-4 sm:flex sm:items-center sm:justify-between sm:gap-4"
       >
         <div className="flex min-w-0 items-center gap-2">
           <span
@@ -328,7 +328,7 @@ export function StatusBoard() {
           {loading ? (
             <Skeleton className="h-5 w-44 rounded-sm" />
           ) : (
-            <span className="truncate font-medium text-sm">
+            <span className="truncate text-sm font-medium">
               {banner?.label ?? "Status unavailable"}
             </span>
           )}
@@ -357,15 +357,15 @@ export function StatusBoard() {
       </section>
 
       {/* Monitors */}
-      <section className="mt-8 overflow-hidden border-foreground/15 border-b">
-        <div className="hidden grid-cols-[1fr_4.5rem_4.5rem_5.5rem_5.5rem] gap-x-4 border-border/70 border-b py-2 text-[10px] text-muted-foreground uppercase tracking-[0.08em] sm:grid">
+      <section className="border-foreground/15 mt-8 overflow-hidden border-b">
+        <div className="border-border/70 text-muted-foreground hidden grid-cols-[1fr_4.5rem_4.5rem_5.5rem_5.5rem] gap-x-4 border-b py-2 text-[10px] tracking-[0.08em] uppercase sm:grid">
           <span>Service</span>
           <span className="text-right">30 days</span>
           <span className="text-right">90 days</span>
           <span className="text-right">Checked</span>
           <span className="text-right">Status</span>
         </div>
-        <ul className="divide-y divide-border/70">
+        <ul className="divide-border/70 divide-y">
           {SURFACES.map((name) => (
             <MonitorRow
               key={name}
@@ -388,8 +388,8 @@ export function StatusBoard() {
       </section>
 
       {/* Incidents */}
-      <section className="mt-8 overflow-hidden border-foreground/15 border-b">
-        <h2 className="mt-0! border-border/70 border-b pb-2 font-mono! font-normal! text-[10px]! text-muted-foreground! uppercase tracking-[0.08em]!">
+      <section className="border-foreground/15 mt-8 overflow-hidden border-b">
+        <h2 className="border-border/70 text-muted-foreground! mt-0! border-b pb-2 font-mono! text-[10px]! font-normal! tracking-[0.08em]! uppercase">
           Recent incidents
         </h2>
         {available ? (
@@ -411,7 +411,7 @@ export function StatusBoard() {
         incident history on the{" "}
         <a
           href="https://loftlancer.betteruptime.com/"
-          className="underline underline-offset-2 hover:text-foreground"
+          className="hover:text-foreground underline underline-offset-2"
         >
           Better Stack status page
         </a>

@@ -13,7 +13,7 @@ All `/[org]/teams` routes use module page loaders, the same controllers as nativ
 1. Pick a **sub-issue** — not an entire parent issue in one PR.
 2. Branch from **`dev`**: `feat/<issue>-<slug>`.
 3. **Plan** before code if the slice spans utils + server + oRPC + client.
-4. **Reference** `module/teams/` and `module/shared/` — not legacy `apps/studio/src/module/*` or `packages/api/src/modules/*` as templates.
+4. **Reference** `module/teams/` and `module/shared/` — not legacy `apps/studio/src/module/*` or `packages/orpc/src/modules/*` as templates.
 5. One **commit per sub-issue** (`Fixes #sub`); before PR to **`dev`**: **`pnpm verify:dev-merge`**.
 
 ---
@@ -22,7 +22,7 @@ All `/[org]/teams` routes use module page loaders, the same controllers as nativ
 
 `app route re-export → module RSC → server/page → controller → runAction → service`
 
-`client hook → @/lib/orpc → packages/api/src/orpc/procedures/teams.ts → same controller`
+`client hook → @/lib/orpc → packages/orpc/src/orpc/procedures/teams.ts → same controller`
 
 `runAction` authorizes with the platform evaluator using `audit: false`, then records one terminal mutation outcome. It maps permission denial to `failed`, preserves field errors, and returns safe error details for unexpected failures. Create inserts the team and its creator's lead membership in one transaction. Member services retain organization checks, last-lead protection, and linked-project defaults.
 
@@ -42,7 +42,7 @@ The native teams namespace includes list, get, create, update, delete, restore, 
 - `runAction.authorize` supports additional permission gates before a handler runs, while recording one terminal mutation audit. Read/context operations set `audit: false`.
 - Module-only typecheck covers shared contracts and teams server/utils. Studio covers RSC/client sources. The existing `@loftlancer/module-shared` workspace supplies dependencies for root module source; no teams package was added. Turbo hashes `module/**`, and Studio Tailwind scans it.
 
-**Do not copy as templates:** `packages/api/src/modules/teams/*` (read-only compat), removed `apps/studio/src/lib/team-*`.
+**Do not copy as templates:** `packages/orpc/src/modules/teams/*` (read-only compat), removed `apps/studio/src/lib/team-*`.
 
 ---
 
@@ -91,13 +91,13 @@ Pilot checklist items in git history **do not override** CI or the audit.
 
 Track open chunks in GitHub; update this table when filing sub-tasks.
 
-| Sub-issue | Scope | Status |
-|-----------|--------|--------|
-| #916 / #918 | Parent migration | merged to `dev` |
-| [#920](https://github.com/jayantrohila57/loftlancer/issues/920) | Architecture 100% parent | open |
+| Sub-issue                                                       | Scope                         | Status                   |
+| --------------------------------------------------------------- | ----------------------------- | ------------------------ |
+| #916 / #918                                                     | Parent migration              | merged to `dev`          |
+| [#920](https://github.com/jayantrohila57/loftlancer/issues/920) | Architecture 100% parent      | open                     |
 | [#921](https://github.com/jayantrohila57/loftlancer/issues/921) | A — controller outbound parse | implemented in PR branch |
-| [#922](https://github.com/jayantrohila57/loftlancer/issues/922) | B — oRPC Zod inputs | implemented in PR branch |
-| [#923](https://github.com/jayantrohila57/loftlancer/issues/923) | C — legacy unwrap | implemented in PR branch |
-| [#924](https://github.com/jayantrohila57/loftlancer/issues/924) | D — empty baseline + docs | implemented in PR branch |
+| [#922](https://github.com/jayantrohila57/loftlancer/issues/922) | B — oRPC Zod inputs           | implemented in PR branch |
+| [#923](https://github.com/jayantrohila57/loftlancer/issues/923) | C — legacy unwrap             | implemented in PR branch |
+| [#924](https://github.com/jayantrohila57/loftlancer/issues/924) | D — empty baseline + docs     | implemented in PR branch |
 
 GitHub exposed no open Loftlancer project when issue #916 was created, so no project item could be attached.

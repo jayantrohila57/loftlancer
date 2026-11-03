@@ -13,9 +13,8 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
-    "@loftlancer/actions": "workspace:*",
-    "@loftlancer/api": "workspace:*",
-    "@loftlancer/logger": "workspace:*",
+    "@loftlancer/orpc": "workspace:*",
+    "@loftlancer/sentry": "workspace:*",
     "@loftlancer/mcp": "workspace:*",
     "@loftlancer/ui": "workspace:*",
     "@next/third-parties": "^16.4.3",
@@ -38,7 +37,7 @@
     "zod-to-json-schema": "^3.25.2"
   },
   "devDependencies": {
-    "@loftlancer/config": "workspace:*",
+    "@loftlancer/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/mdx": "^2.0.14",
     "@types/node": "^26",

@@ -1,6 +1,6 @@
 "use client";
 
-import { layoutGapClass } from "@loftlancer/ui/layout-spacing";
+import { layoutGapClass } from "@features/shell/utils/shell.layout-spacing.utils";
 import type { ReactNode } from "react";
 import { DataTableClearFiltersButton } from "@/components/data-table/data-table-clear-filters-button";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";

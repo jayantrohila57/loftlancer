@@ -22,7 +22,7 @@ The target flow is:
 
 `app route re-export → module RSC → server/page → controller → runAction → service`
 
-`client hook → @/lib/orpc → packages/api/src/orpc/procedures/organizations.ts → same controller`
+`client hook → @/lib/orpc → packages/orpc/src/orpc/procedures/organizations.ts → same controller`
 
 Compatibility tRPC and MCP adapters should call the same module controllers and unwrap `ServiceResponse` only at their transport boundary. Outbound controller responses must be validated with `serviceResponseSchema(...).parse`.
 
@@ -33,8 +33,8 @@ The organizations migration is complete for the linked scope. Organization reads
 ### Migration boundaries
 
 - New organization product logic belongs in `module/organizations/{utils,server,client}/` and native oRPC. Keep routes thin and preserve existing route behavior as each client slice lands.
-- `apps/studio/src/module/organizations/` and `packages/api/src/routers/organizations.ts` are compatibility and behavior references only. Do not copy them as implementation templates.
-- `packages/api/src/modules/organizations/` is legacy compatibility code; do not add new product logic there.
+- `apps/studio/src/module/organizations/` and `packages/orpc/src/routers/organizations.ts` are compatibility and behavior references only. Do not copy them as implementation templates.
+- `packages/orpc/src/modules/organizations/` is legacy compatibility code; do not add new product logic there.
 - Keep shared invitation behavior compatible with its Teams and MCP consumers. Prefer the existing service/controller seams over direct cross-domain writes.
 - Do not add product tRPC procedures or `z.unknown()` oRPC inputs. Controllers validate their inputs and parse outbound `ServiceResponse` values.
 
@@ -45,6 +45,7 @@ module/organizations/
 ├── utils/
 │   ├── utils.invite-emails.ts
 │   ├── utils.invitations.ts
+│   ├── utils.member-removal-policy.ts
 │   ├── utils.public-invitation-status.ts
 │   ├── utils.domain-verification.ts
 │   └── validation/
@@ -103,7 +104,7 @@ pnpm check-types
 
 ## Native oRPC procedures
 
-The `organizations` namespace is registered in `packages/api/src/orpc/studio-router.ts`. Its typed procedures call module controllers only:
+The `organizations` namespace is registered in `packages/orpc/src/orpc/studio-router.ts`. Its typed procedures call module controllers only:
 
 - Reads: `list`, `getBySlug`, `getProfile`, `members`, `myInvitations`, `invitationList`, `invitationPreview`, `settings`, `customRoles`, `securityDomains`, `memberAccessSummary`.
 - Invitations: `invitationCreate`, `invitationRevoke`, `invitationResend`, `acceptTeamInvitation`, `acceptProjectInvitation`.
@@ -117,22 +118,23 @@ Opt-in integration coverage for invitation delivery, member removal, and custom-
 
 Implement in this order; do not skip ahead of an open dependency:
 
-| Sub-issue | Scope | Status |
-|-----------|-------|--------|
-| [#938](https://github.com/jayantrohila57/loftlancer/issues/938) | README, architecture prompt, module index | Implemented on this branch |
-| [#939](https://github.com/jayantrohila57/loftlancer/issues/939) | A — validations and read controllers | Implemented on this branch |
-| [#940](https://github.com/jayantrohila57/loftlancer/issues/940) | B — invitations and members controllers | Implemented on this branch |
+| Sub-issue                                                       | Scope                                                                    | Status                     |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------- |
+| [#938](https://github.com/jayantrohila57/loftlancer/issues/938) | README, architecture prompt, module index                                | Implemented on this branch |
+| [#939](https://github.com/jayantrohila57/loftlancer/issues/939) | A — validations and read controllers                                     | Implemented on this branch |
+| [#940](https://github.com/jayantrohila57/loftlancer/issues/940) | B — invitations and members controllers                                  | Implemented on this branch |
 | [#973](https://github.com/jayantrohila57/loftlancer/issues/973) | C — settings, branding, roles, domains, lifecycle, member administration | Implemented on this branch |
-| [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | D — native oRPC organizations | Implemented on this branch |
-| [#975](https://github.com/jayantrohila57/loftlancer/issues/975) | E — client migration, phase 1 | Implemented on this branch |
-| [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | F — client migration, phase 2 | Implemented on this branch |
-| [#977](https://github.com/jayantrohila57/loftlancer/issues/977) | G — compatibility adapters, integration, baseline, final verification | Implemented on this branch |
+| [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | D — native oRPC organizations                                            | Implemented on this branch |
+| [#975](https://github.com/jayantrohila57/loftlancer/issues/975) | E — client migration, phase 1                                            | Implemented on this branch |
+| [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | F — client migration, phase 2                                            | Implemented on this branch |
+| [#977](https://github.com/jayantrohila57/loftlancer/issues/977) | G — compatibility adapters, integration, baseline, final verification    | Implemented on this branch |
 
 ## TODO (blocked)
 
-| Item | Blocked on | Issue | Notes |
-|------|------------|-------|-------|
-| None currently recorded | — | — | Add a row only when a concrete dependency blocks a slice. |
+| Item                                                                                                  | Blocked on                                                                                    | Issue | Notes                                                                                                     |
+| ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------- |
+| MCP `organization-ops` still calls `server.organization-transfer-ownership.legacy` (TRPCError throws) | Switch MCP to `organizationTransferOwnershipController` + ServiceResponse unwrap at transport | —     | Legacy helper lives under this module so `@loftlancer/orpc` stays a shim; delete legacy after MCP cutover |
+| Root `@loftlancer/orpc/organization-*-validation` shims                                               | Apps/MCP import `@modules/organizations/...` directly                                         | —     | Schemas are canonical in `utils/validation/utils.organization-admin.validation.ts`                        |
 
 ## Changelog
 

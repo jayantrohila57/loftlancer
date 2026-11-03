@@ -4,4 +4,4 @@
 export {
   type ConfirmRequest,
   useConfirm,
-} from "@loftlancer/ui/patterns/confirm-dialog";
+} from "@features/patterns/core/client/patterns.confirm-dialog";

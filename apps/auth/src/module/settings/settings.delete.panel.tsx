@@ -1,7 +1,7 @@
 "use client";
-import { landingUrl } from "@loftlancer/ui/auth-links";
+import { landingUrl } from "@features/authentication/utils/auth-links";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Button } from "@loftlancer/ui/button";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -63,7 +63,7 @@ export function AccountDeletePanel({ email }: { email: string }) {
           ) : null}
           {deleteBlockersQuery.isLoading ? (
             <p
-              className="px-4 py-3 text-muted-foreground text-sm"
+              className="text-muted-foreground px-4 py-3 text-sm"
               role="status"
             >
               Checking account ownership…
@@ -74,7 +74,7 @@ export function AccountDeletePanel({ email }: { email: string }) {
               label="Ownership"
               description="Transfer ownership before deleting."
             >
-              <ul className="max-w-md space-y-1 text-end text-muted-foreground text-xs">
+              <ul className="text-muted-foreground max-w-md space-y-1 text-end text-xs">
                 {soleOwnerOrgs.map((org) => (
                   <li key={org.organizationId}>
                     Sole owner of <strong>{org.name}</strong> ({org.slug})

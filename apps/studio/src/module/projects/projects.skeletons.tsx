@@ -1,7 +1,7 @@
 "use client";
 
-import { DataTableToolbar } from "@loftlancer/ui/data-table/data-table-toolbar";
-import { layoutSectionStackClass } from "@loftlancer/ui/layout-spacing";
+import { DataTableToolbar } from "@features/data-table/core/client/data-table.toolbar";
+import { layoutSectionStackClass } from "@features/shell/utils/shell.layout-spacing.utils";
 import { PageHeaderActionButton } from "@/components/layout/app-layout";
 import DashboardSection from "@/components/section-dashboard";
 import { ProjectsListFiltersBar } from "@/module/projects/projects.projects.list.filters";

@@ -1,4 +1,4 @@
-import { PageStatusNotFound } from "@loftlancer/ui/patterns/page-state";
+import { PageStatusNotFound } from "@features/patterns/core/client/patterns.page-state";
 export function TeamsNotFound() {
   return (
     <PageStatusNotFound

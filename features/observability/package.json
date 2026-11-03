@@ -1,0 +1,23 @@
+{
+  "name": "@loftlancer/features-observability",
+  "description": "Shared Sentry test-error panel.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core/client": "./src/core/client/index.ts",
+    "./types/*": "./src/types/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@loftlancer/ui": "workspace:*",
+    "react": "^19.3.0"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "typescript": "catalog:"
+  }
+}

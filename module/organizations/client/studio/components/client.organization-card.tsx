@@ -30,29 +30,29 @@ export function OrganizationCard({
   return (
     <Card
       className={cn(
-        "flex h-full min-w-0 flex-col transition-colors hover:border-primary/30",
-        isActive && "border-primary/40 ring-1 ring-primary/20",
+        "hover:border-primary/30 flex h-full min-w-0 flex-col transition-colors",
+        isActive && "border-primary/40 ring-primary/20 ring-1",
       )}
     >
       <CardHeader className="gap-2 p-4 pb-2">
         <div className="flex items-start gap-3">
           <Avatar className="size-9 shrink-0">
             <AvatarImage src={org.logo ?? undefined} alt="" />
-            <AvatarFallback className="bg-muted font-medium text-xs">
+            <AvatarFallback className="bg-muted text-xs font-medium">
               {initialsFromLabel(org.name, "OR")}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
             <Link
               href={href}
-              className="truncate font-medium text-sm leading-tight hover:underline"
+              className="truncate text-sm leading-tight font-medium hover:underline"
             >
               {org.name}
             </Link>
-            <p className="mt-1 font-mono text-muted-foreground text-xs">
+            <p className="text-muted-foreground mt-1 font-mono text-xs">
               {org.slug}
             </p>
-            <p className="mt-2 text-muted-foreground text-xs">
+            <p className="text-muted-foreground mt-2 text-xs">
               {isPersonalOrganization(org) ? "Personal" : "Team"} ·{" "}
               {org.archivedAt ? "Archived" : "Active"}
               {isActive ? " · Current" : null}
@@ -77,7 +77,7 @@ export function OrganizationCard({
         </Button>
         <Link
           href={href}
-          className="inline-flex items-center gap-1 text-primary text-xs hover:underline"
+          className="text-primary inline-flex items-center gap-1 text-xs hover:underline"
         >
           Open <AppIcon name="chevronRight" className="size-3.5" />
         </Link>

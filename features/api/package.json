@@ -1,0 +1,23 @@
+{
+  "name": "@loftlancer/features-api",
+  "description": "Shared API helpers (friendly errors, oRPC shell stubs).",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./core/server": "./src/core/server/index.ts",
+    "./core/server/*": "./src/core/server/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@trpc/server": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

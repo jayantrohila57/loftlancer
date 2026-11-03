@@ -1,13 +1,12 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { ProjectPinMenu } from "@features/patterns/core/client/patterns.sidebar-kit";
 import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
 import {
   Collapsible,
   CollapsiblePanel,
   CollapsibleTrigger,
 } from "@loftlancer/ui/collapsible";
-import { ProjectPinMenu } from "@loftlancer/ui/patterns/sidebar-kit";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -17,6 +16,7 @@ import {
   SidebarMenuItem,
   SidebarMenuSkeleton,
 } from "@loftlancer/ui/sidebar";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { ChevronRight, ChevronUp, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -124,13 +124,13 @@ export function SidebarProjectsGroup({
       <SidebarGroup className="p-2">
         <CollapsibleTrigger
           render={
-            <SidebarGroupLabel className="cursor-pointer gap-1 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
+            <SidebarGroupLabel className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer gap-1" />
           }
         >
           <span className="min-w-0 flex-1 truncate">Projects</span>
           <ChevronRight
             className={cn(
-              "size-4 shrink-0 text-muted-foreground transition-transform duration-200",
+              "text-muted-foreground size-4 shrink-0 transition-transform duration-200",
               groupOpen && "rotate-90",
             )}
             aria-hidden
@@ -207,7 +207,7 @@ export function SidebarProjectsGroup({
                         }
                       >
                         <Avatar className="size-5 shrink-0">
-                          <AvatarFallback className="bg-muted font-medium text-[9px]">
+                          <AvatarFallback className="bg-muted text-[9px] font-medium">
                             {initialsFromLabel(project.name, "PR")}
                           </AvatarFallback>
                         </Avatar>
@@ -240,9 +240,9 @@ export function SidebarProjectsGroup({
                       aria-hidden
                     >
                       {listExpanded ? (
-                        <ChevronUp className="size-3.5 text-muted-foreground" />
+                        <ChevronUp className="text-muted-foreground size-3.5" />
                       ) : (
-                        <MoreHorizontal className="size-3.5 text-muted-foreground" />
+                        <MoreHorizontal className="text-muted-foreground size-3.5" />
                       )}
                     </span>
                     <span className="truncate">

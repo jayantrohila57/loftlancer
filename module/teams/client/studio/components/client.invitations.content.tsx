@@ -1,4 +1,6 @@
 "use client";
+import { GuardedDialog } from "@features/patterns/core/client/patterns.guarded-dialog";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
 import {
@@ -11,8 +13,6 @@ import {
   DialogTitle,
 } from "@loftlancer/ui/dialog";
 import { Label } from "@loftlancer/ui/label";
-import { GuardedDialog } from "@loftlancer/ui/patterns/guarded-dialog";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { Textarea } from "@loftlancer/ui/textarea";
 import type { OrgInviteRole } from "@module/organizations/utils/utils.invite-emails";
 import type { useTeamInvitationsScreen } from "../hooks/client.use-teams-invitations-screen.hook";
@@ -28,8 +28,8 @@ export function TeamInvitationsContent({
     <section className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-semibold text-xl tracking-tight">Invitations</h2>
-          <p className="mt-1 text-muted-foreground text-sm">
+          <h2 className="text-xl font-semibold tracking-tight">Invitations</h2>
+          <p className="text-muted-foreground mt-1 text-sm">
             People invited here join the organization and this team; team access
             follows the team’s linked projects.
           </p>

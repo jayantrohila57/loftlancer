@@ -5,7 +5,7 @@ export function AccountSettingsSkeleton() {
   return (
     <div className="min-w-0 space-y-2" role="status" aria-busy="true">
       <span className="sr-only">Loading settings</span>
-      <div className="divide-y rounded-md border bg-card" aria-hidden="true">
+      <div className="bg-card divide-y rounded-md border" aria-hidden="true">
         {Array.from({ length: 4 }, (_, index) => `row-${index}`).map((row) => (
           <div
             key={row}

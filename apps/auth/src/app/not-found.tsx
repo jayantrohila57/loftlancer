@@ -1,5 +1,5 @@
-import { AppNotFoundPage } from "@loftlancer/ui/patterns/app-route-states";
-import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
+import { Auth5Panel } from "@features/authentication/core/client";
+import { AppNotFoundPage } from "@features/patterns/core/client/patterns.app-route-states";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

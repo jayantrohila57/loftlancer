@@ -1,4 +1,4 @@
-import { VersionBadge } from "@loftlancer/ui/patterns/version-badge";
+import { VersionBadge } from "@features/patterns/core/client/patterns.version-badge";
 import { cn } from "@loftlancer/ui/utils";
 
 const LINKS = [
@@ -16,7 +16,7 @@ export function SiteFooter({ className }: { className?: string }) {
   return (
     <footer
       className={cn(
-        "flex flex-wrap items-center gap-x-3 gap-y-1.5 text-muted-foreground text-xs",
+        "text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs",
         className,
       )}
     >
@@ -26,7 +26,7 @@ export function SiteFooter({ className }: { className?: string }) {
             key={link.href}
             href={link.href}
             // 24px hit area (WCAG 2.5.8, #390); -my-1 keeps the 16px line box.
-            className="-my-1 inline-flex min-h-6 items-center transition-colors hover:text-foreground"
+            className="hover:text-foreground -my-1 inline-flex min-h-6 items-center transition-colors"
           >
             {link.label}
           </a>

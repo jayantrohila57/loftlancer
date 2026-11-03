@@ -1,12 +1,6 @@
 "use client";
 
 import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from "@loftlancer/ui/empty";
-import {
   type ActivityFilterOption,
   type ActivityResult,
   ActivityTimeline,
@@ -14,7 +8,13 @@ import {
   auditActorFilterOptions,
   auditProjectFilterOptions,
   auditRowToActivityItem,
-} from "@loftlancer/ui/patterns/activity-timeline";
+} from "@features/patterns/core/client/patterns.activity-timeline";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@loftlancer/ui/empty";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useMemo, useState } from "react";

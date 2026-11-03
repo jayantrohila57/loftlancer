@@ -10,7 +10,7 @@ See also: [modules.md](./modules.md), [packages.md](./packages.md), [data-workfl
 
 ## One rule
 
-**Every server entrypoint** (oRPC procedure, Server Action, Next `route.ts`, MCP tool, RSC page loader) calls into **`module/…/server`** — never implements DB, permissions, or domain rules in `apps/` or fat handlers in `packages/api`.
+**Every server entrypoint** (oRPC procedure, Server Action, Next `route.ts`, MCP tool, RSC page loader) calls into **`module/…/server`** — never implements DB, permissions, or domain rules in `apps/` or fat handlers in `packages/orpc`.
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
@@ -23,7 +23,7 @@ See also: [modules.md](./modules.md), [packages.md](./packages.md), [data-workfl
   oRPC HTTP              Server Action          app/api/route.ts
   /api/orpc              "use server"           (streams, cron, …)
      │                       │                       │
-     └─────────── packages/api (thin wire only) ──┘
+     └─────────── packages/orpc (thin wire only) ──┘
                              │
                     RSC page / layout in module
                     (server fn → props → client component)
@@ -33,14 +33,14 @@ See also: [modules.md](./modules.md), [packages.md](./packages.md), [data-workfl
 
 ## Where code lives
 
-| Kind | Logic | App / package surface |
-|------|--------|------------------------|
-| **oRPC** (product JSON API) | `module/<feature>/server` | `@loftlancer/api` oRPC router: auth context, procedure shell, → controller |
-| **Server Action** | `module/<feature>/server` | `apps/.../actions.ts` or re-export: `"use server"` → one controller call |
-| **Next Route Handler** | `module/<feature>/server` | `apps/.../route.ts`: session/cron/webhook check → controller |
-| **RSC pages** | `module/<feature>/server` + `client/…/rsc` | `apps/.../page.tsx`: import server fn + client component; **pass data as props** |
-| **MCP tools** | `module/<feature>/server` | `@loftlancer/mcp` + `packages/api/mcp` → controller |
-| **Shared across features** | `module/shared/server`, `module/shared/utils` | Not `packages/api` |
+| Kind                        | Logic                                         | App / package surface                                                            |
+| --------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------- |
+| **oRPC** (product JSON API) | `module/<feature>/server`                     | `@loftlancer/orpc` oRPC router: auth context, procedure shell, → controller      |
+| **Server Action**           | `module/<feature>/server`                     | `apps/.../actions.ts` or re-export: `"use server"` → one controller call         |
+| **Next Route Handler**      | `module/<feature>/server`                     | `apps/.../route.ts`: session/cron/webhook check → controller                     |
+| **RSC pages**               | `module/<feature>/server` + `client/…/rsc`    | `apps/.../page.tsx`: import server fn + client component; **pass data as props** |
+| **MCP tools**               | `module/<feature>/server`                     | `@loftlancer/mcp` (SDK) + `@loftlancer/orpc/mcp` → controller                    |
+| **Shared across features**  | `module/shared/server`, `module/shared/utils` | Not `packages/orpc`                                                              |
 
 **`packages/`** stays platform (db, actions, auth, env, oRPC/tRPC bootstrap during migration). See [packages.md](./packages.md).
 
@@ -48,12 +48,12 @@ See also: [modules.md](./modules.md), [packages.md](./packages.md), [data-workfl
 
 ## oRPC (only RPC protocol going forward)
 
-| Layer | Responsibility |
-|-------|----------------|
-| **`module/<feature>/server`** | Controllers + services — **all** reads/writes |
-| **`packages/api`** | Request context, procedure registration, permission middleware, map errors — **delegate to module** |
-| **`apps/*/src/app/api/orpc/`** | Single catch-all handler: `RPCHandler` + `createContextWithAuth` — **no procedures here** |
-| **Client** | `@orpc/client` + TanStack Query from module `client/…/hooks` — **not** tRPC |
+| Layer                          | Responsibility                                                                                      |
+| ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| **`module/<feature>/server`**  | Controllers + services — **all** reads/writes                                                       |
+| **`packages/orpc`**            | Request context, procedure registration, permission middleware, map errors — **delegate to module** |
+| **`apps/*/src/app/api/orpc/`** | Single catch-all handler: `RPCHandler` + `createContextWithAuth` — **no procedures here**           |
+| **Client**                     | `@orpc/client` + TanStack Query from module `client/…/hooks` — **not** tRPC                         |
 
 During migration, existing tRPC routes and `toORPCRouter(trpcRouter)` remain until removed; **new endpoints are oRPC-first** and implemented under `module/…/server` only once.
 
@@ -66,7 +66,7 @@ Studio mounts **`studioORPCRouter`**; Auth settings mounts **`accountORPCRouter`
 **Allowed in `apps/*/src/app/**`:**
 
 - `page.tsx` / `layout.tsx`: metadata, re-export or **one line** calling a **module** server page function; render module client component with **props**
-- `route.ts`: import handler from `module/…/server` or `@loftlancer/api` platform helper; call it
+- `route.ts`: import handler from `module/…/server` or `@loftlancer/orpc` platform helper; call it
 - Platform-only: Better Auth catch-all, health, cron entry (still delegate business steps to module when product-related)
 
 **Not allowed in `app/`:**
@@ -90,7 +90,11 @@ Or, if the app file stays explicit:
 import { loadTeamOverview } from "@module/teams/server/page/server.team-overview.page";
 import { TeamOverviewContent } from "@module/teams/client/studio/components/client.overview.content";
 
-export default async function Page({ params }: { params: Promise<{ teamId: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ teamId: string }>;
+}) {
   const { teamId } = await params;
   const data = await loadTeamOverview(teamId);
   return <TeamOverviewContent initial={data} teamId={teamId} />;
@@ -144,7 +148,7 @@ Documented in [rendering.md](./rendering.md): server page functions → props �
 
 - [ ] Implementation in `module/<feature>/server/` (controller + service).
 - [ ] Schemas in `module/<feature>/utils/validation/`.
-- [ ] oRPC procedure wired in `@loftlancer/api` (not duplicated in app).
+- [ ] oRPC procedure wired in `@loftlancer/orpc` (not duplicated in app).
 - [ ] If Server Action or `route.ts`: app file imports module only.
 - [ ] No new tRPC.
 - [ ] [product.md](./product.md) if gated; [CHANGELOG.md](../CHANGELOG.md) on merge to `dev`.
@@ -153,6 +157,6 @@ Documented in [rendering.md](./rendering.md): server page functions → props �
 
 ## Related
 
-- [modules.md](./modules.md) — module internal layout  
-- [packages.md](./packages.md) — `@loftlancer/api` transport  
-- [product.md](./product.md) — permissions and audit  
+- [modules.md](./modules.md) — module internal layout
+- [packages.md](./packages.md) — `@loftlancer/orpc` transport
+- [product.md](./product.md) — permissions and audit

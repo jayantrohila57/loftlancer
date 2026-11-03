@@ -1,14 +1,14 @@
 "use client";
 
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createProjectInput } from "@loftlancer/api/validation";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { Label } from "@loftlancer/ui/label";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetClose, SheetDescription } from "@loftlancer/ui/sheet";
 import { Switch } from "@loftlancer/ui/switch";
 import { Textarea } from "@loftlancer/ui/textarea";
+import { createProjectInput } from "@modules/projects/utils/validation/utils.project-environment.validation";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -132,7 +132,7 @@ export function CreateProjectSheet({
               control={form.control}
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
-                  <Label htmlFor={field.name} className="font-medium text-sm">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     Project Name <span className="text-destructive">*</span>
                   </Label>
                   <Input
@@ -155,7 +155,7 @@ export function CreateProjectSheet({
               control={form.control}
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
-                  <Label htmlFor={field.name} className="font-medium text-sm">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     Description
                   </Label>
                   <Textarea
@@ -164,7 +164,7 @@ export function CreateProjectSheet({
                     placeholder="Brief description of your project…"
                     rows={4}
                     maxLength={500}
-                    className="wrap-anywhere resize-none"
+                    className="resize-none wrap-anywhere"
                     disabled={isCreating}
                     aria-invalid={fieldState.invalid}
                   />
@@ -254,7 +254,7 @@ export function CreateProjectSheet({
               control={form.control}
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
-                  <Label htmlFor={field.name} className="font-medium text-sm">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     Repository URL
                   </Label>
                   <Input
@@ -278,7 +278,7 @@ export function CreateProjectSheet({
               control={form.control}
               render={({ field, fieldState }) => (
                 <div className="space-y-2">
-                  <Label htmlFor={field.name} className="font-medium text-sm">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     Website URL
                   </Label>
                   <Input
@@ -306,7 +306,7 @@ export function CreateProjectSheet({
                     <Label htmlFor="project-visibility" className="text-sm">
                       Public project
                     </Label>
-                    <p className="wrap-anywhere text-muted-foreground text-xs">
+                    <p className="text-muted-foreground text-xs wrap-anywhere">
                       Private by default. Public projects may expose metadata to
                       others.
                     </p>

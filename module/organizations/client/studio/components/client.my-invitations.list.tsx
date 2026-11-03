@@ -1,9 +1,9 @@
 "use client";
 
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Button } from "@loftlancer/ui/button";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -33,7 +33,7 @@ export function MyOrganizationInvitationsList() {
             <div className="truncate font-medium">
               {row.original.organizationName}
             </div>
-            <div className="truncate text-muted-foreground text-xs">
+            <div className="text-muted-foreground truncate text-xs">
               Invited by {row.original.inviterName ?? "an organization member"}
             </div>
           </div>

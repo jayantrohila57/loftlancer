@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import {
   type QueryClient,
   useMutation,

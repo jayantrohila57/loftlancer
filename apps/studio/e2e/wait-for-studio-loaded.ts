@@ -7,7 +7,7 @@ const LOADING_SELECTOR = [
   ".animate-spin",
 ].join(", ");
 
-/** Kept in sync with `packages/db/src/e2e-demo-project.ts`. */
+/** Kept in sync with `packages/drizzle/src/e2e-demo-project.ts`. */
 export const E2E_DEMO_PROJECT_NAME = "E2E Demo Project";
 
 export type StudioLoadedExpectations = {

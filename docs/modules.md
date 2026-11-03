@@ -1,17 +1,17 @@
-# Feature modules (`module/`)
+# Domain modules (`module/`)
 
-**`module/`** is where **product feature code** lives: everything tied to a user-facing domain (teams, projects, organizations, files, AI usage in product, notifications, …).
+**`module/`** is the **Modules** layer in **Apps → Modules → Features → Packages** ([features.md](./features.md)). It holds **complete domain-specific functionality**: server APIs, business logic, repositories, policies, action IDs, schemas, types, and domain client UI (teams, organizations, account, …).
 
-**Follow this document whenever you create or change feature behavior** — API operations, validation, Studio/Auth UI, hooks, loaders. **`packages/`** is platform-only; see **[packages.md](./packages.md)**.
+**Follow this document whenever you create or change domain behavior** — API operations, validation, Studio/Auth UI, hooks, loaders. Cross-domain reusable systems live in **`features/`**; vendor SDK wiring lives in **`packages/`** ([packages.md](./packages.md)).
 
-Legacy paths (`apps/studio/src/module/*`, `packages/api/src/modules/*`, fat router bodies) still exist during migration. **New work goes in `module/<feature>/` only**; move old code when your issue includes that domain.
+Legacy paths (`apps/studio/src/module/*`, `packages/orpc/src/modules/*`, fat router bodies) still exist during migration. **New work goes in `module/<feature>/` only**; move old code when your issue includes that domain.
 
 ---
 
 ## What a module is
 
 - **One folder per product domain:** `module/teams/`, `module/projects/`, … (see [module/README.md](../module/README.md) for the current domain list).
-- **Not a pnpm package** — plain source under the repo root, imported via path alias (e.g. `@module/*` when configured).
+- **Not a pnpm package** — plain source under the repo root, imported via **`@modules/*`** (dual alias **`@module/*`**).
 - **Owns the feature end-to-end:** validation, server behavior, client UI, and **its route section layout** (Tier 2) — see [layouts.md](./layouts.md).
 
 ---
@@ -44,36 +44,36 @@ Optional: `client/studio/state/` for client-only view-state hooks if you prefer 
 
 ### `utils/`
 
-| Subfolder | Holds | Example files |
-|-----------|--------|-----------------|
-| `types/` | Shapes returned to UI or API clients | `utils.team.dto.ts`, `utils.member.dto.ts` |
-| `validation/` | Zod + exported input types | `utils.create-team.validation.ts`, `utils.team-id.validation.ts` |
-| `state/` | Shared UI status model | `utils.response-to-ui.mapper.ts` |
+| Subfolder     | Holds                                | Example files                                                    |
+| ------------- | ------------------------------------ | ---------------------------------------------------------------- |
+| `types/`      | Shapes returned to UI or API clients | `utils.team.dto.ts`, `utils.member.dto.ts`                       |
+| `validation/` | Zod + exported input types           | `utils.create-team.validation.ts`, `utils.team-id.validation.ts` |
+| `state/`      | Shared UI status model               | `utils.response-to-ui.mapper.ts`                                 |
 
 Pure helpers (formatters, URL parsers) live in `utils/` as `utils.<name>.ts` or `utils/<name>.ts` next to subfolders — keep them free of React and DB.
 
 ### `server/`
 
-| Subfolder | Holds |
-|-----------|--------|
-| `controller/` | Entry from oRPC, MCP, Server Actions, route handlers, RSC loaders: validate, call service |
-| `service/` | Domain rules and persistence; may call `requireAction`, write audit, use `@loftlancer/db` |
+| Subfolder     | Holds                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------- |
+| `controller/` | Entry from oRPC, MCP, Server Actions, route handlers, RSC loaders: validate, call service      |
+| `service/`    | Domain rules and persistence; may call `requireAction`, write audit, use `@loftlancer/drizzle` |
 
 One **read or write operation** → pair `server.<op>.ts` (controller) + `server.<op>.service.ts` (service) unless the op is trivial enough to keep a single service file.
 
 Optional subfolders under `server/`: `handlers/` (Next `route.ts` targets), `actions/` (Server Action entrypoints), `page/` (RSC data loaders for pages).
 
-Permission checks: `requireAction` / registry in **service or controller**; oRPC middleware in `@loftlancer/api` may mirror `actionGuard` — see [product.md](./product.md) and [server-api.md](./server-api.md).
+Permission checks: `requireAction` / registry in **service or controller**; oRPC middleware in `@loftlancer/orpc` may mirror `actionGuard` — see [product.md](./product.md) and [server-api.md](./server-api.md).
 
 ### `client/`
 
-| Subfolder | Holds |
-|-----------|--------|
-| `loaders/` | Server-side data prep for a route or layout (no `"use client"`) |
-| `rsc/` | Page/shell Server Components: metadata wiring, `<Suspense>`, `next/dynamic` |
-| `skeletons/` | Fallback UI matching `rsc/` and boundaries |
-| `components/` | Interactive UI; **`"use client"` only here** (and in `hooks/` if needed) |
-| `hooks/` | oRPC client hooks; form submit via oRPC or Server Action that calls same controller |
+| Subfolder     | Holds                                                                               |
+| ------------- | ----------------------------------------------------------------------------------- |
+| `loaders/`    | Server-side data prep for a route or layout (no `"use client"`)                     |
+| `rsc/`        | Page/shell Server Components: metadata wiring, `<Suspense>`, `next/dynamic`         |
+| `skeletons/`  | Fallback UI matching `rsc/` and boundaries                                          |
+| `components/` | Interactive UI; **`"use client"` only here** (and in `hooks/` if needed)            |
+| `hooks/`      | oRPC client hooks; form submit via oRPC or Server Action that calls same controller |
 
 Per **screen**: module **server** loads data → app **page** passes props → **client** component. Client refetch uses oRPC hooks when needed. Details: [server-api.md](./server-api.md).
 
@@ -85,19 +85,19 @@ Per **screen**: module **server** loads data → app **page** passes props → *
 
 Summary:
 
-| Layer | Pattern | Example |
-|--------|---------|---------|
-| `utils.` | `utils.<topic>.validation.ts`, `utils.<topic>.dto.ts` | `utils.create-team.validation.ts` |
-| `server.` | `server.<op>.controller.ts` + `server.<op>.service.ts` | `server.get-team.controller.ts` |
-| `client.` | `client.<screen>.<role>.tsx`, hooks `client.use-<feature>-<op>.hook.ts` | `client.overview.boundary.tsx` |
+| Layer     | Pattern                                                                 | Example                           |
+| --------- | ----------------------------------------------------------------------- | --------------------------------- |
+| `utils.`  | `utils.<topic>.validation.ts`, `utils.<topic>.dto.ts`                   | `utils.create-team.validation.ts` |
+| `server.` | `server.<op>.controller.ts` + `server.<op>.service.ts`                  | `server.get-team.controller.ts`   |
+| `client.` | `client.<screen>.<role>.tsx`, hooks `client.use-<feature>-<op>.hook.ts` | `client.overview.boundary.tsx`    |
 
 Tests: `server.get-team.service.test.ts` next to the source file.
 
 Legacy examples in migration code may omit postfixes; **new files follow [naming.md](./naming.md).**
 
-**Import alias:** `@module/<feature>/…` — see [docs/tooling.md](../docs/tooling.md) and [docs/gaps/imports-paths.md](../docs/gaps/imports-paths.md).
+**Import alias:** **`@modules/<feature>/…`** (dual **`@module/<feature>/…`**) — see [tooling.md](./tooling.md) and [gaps/imports-paths.md](./gaps/imports-paths.md).
 
-**Cross-feature:** `module/shared/` — see [module/shared/README.md](../module/shared/README.md).
+**Cross-domain helpers (still module layer):** `module/shared/` — see [module/shared/README.md](../module/shared/README.md). Prefer **`features/`** when logic is domain-independent and consumed by many modules ([features.md](./features.md)).
 
 ---
 
@@ -142,22 +142,22 @@ Repeat per screen and per server operation in other domains.
 
 ## What modules are responsible for
 
-| Responsibility | Module |
-|----------------|--------|
-| Zod schemas and DTO types for the feature | `module/<feature>/utils/` |
-| Server operations (DB, permissions, audit, oRPC/MCP/action/route implementations) | `module/<feature>/server/` |
-| Screens, components, hooks, loaders for the feature | `module/<feature>/client/` |
-| Mapping domain errors to UI states (loading, empty, error, …) | `module/<feature>/utils/` and `client/` |
-| Tests for feature behavior | Next to the code under `module/<feature>/` |
+| Responsibility                                                                    | Module                                     |
+| --------------------------------------------------------------------------------- | ------------------------------------------ |
+| Zod schemas and DTO types for the feature                                         | `module/<feature>/utils/`                  |
+| Server operations (DB, permissions, audit, oRPC/MCP/action/route implementations) | `module/<feature>/server/`                 |
+| Screens, components, hooks, loaders for the feature                               | `module/<feature>/client/`                 |
+| Mapping domain errors to UI states (loading, empty, error, …)                     | `module/<feature>/utils/` and `client/`    |
+| Tests for feature behavior                                                        | Next to the code under `module/<feature>/` |
 
-Permissions: **`@loftlancer/actions`** registry + **`runAction`** wrapper — audit **success, denied, failure** on mutations ([actions-and-events.md](./actions-and-events.md), [data-workflow.md](./data-workflow.md)).
+Permissions: action registry via **`@features/authorization/utils`** + **`runAction`** via **`@modules/shared/server/run-action`** — audit **success, denied, failure** on mutations ([actions-and-events.md](./actions-and-events.md), [data-workflow.md](./data-workflow.md)).
 
 ---
 
 ## What modules must not do
 
 - **Do not** implement generic infra (DB schema, auth server, design system) — use `packages/`.
-- **Do not** define oRPC procedure **implementations** in `apps/` or fat bodies in `packages/api` — wire in `@loftlancer/api`, logic in **`module/…/server`** ([server-api.md](./server-api.md)).
+- **Do not** define oRPC procedure **implementations** in `apps/` or fat bodies in `packages/orpc` — wire in `@loftlancer/orpc`, logic in **`module/…/server`** ([server-api.md](./server-api.md)).
 - **Do not** import from `apps/*/src` (no `@/` app internals from module code).
 - **Do not** import `module/<feature>/server` from **client components** — pass props from server pages or call **oRPC** from hooks.
 
@@ -170,10 +170,10 @@ Browser (oRPC) / MCP / Server Action / route.ts / RSC page
     ↓
 module/<feature>/server/controller → service
     ↓
-module/<feature>/utils + @loftlancer/db + @loftlancer/actions
+module/<feature>/utils + @packages/drizzle + @features/authorization/utils
 ```
 
-- **oRPC** is the only RPC protocol for new work; procedure shells live in `@loftlancer/api`, implementations in **`module/`**. tRPC is removed over time ([server-api.md](./server-api.md)).
+- **oRPC** is the only RPC protocol for new work; procedure shells live in `@loftlancer/orpc`, implementations in **`module/`**. tRPC is removed over time ([server-api.md](./server-api.md)).
 - **Next `app/`** files import and call module server — no domain logic in apps.
 - MCP tools return **ServiceResponse** shape (or equivalent fields) — [data-workflow.md](./data-workflow.md)
 
@@ -196,7 +196,7 @@ App route files are **bare**; layouts and UI live in **`module/`**.
 1. **Feature ownership** — If it only exists because of one domain, it lives under that `module/<feature>/`.
 2. **Server-first** — Loaders + RSC; client components at the leaves ([Client architecture](#client-architecture-five-rules)).
 3. **Single validation source** — `utils/validation/`; routers import schemas for `.input()`.
-4. **Transport vs logic** — oRPC/MCP/action/route **wiring** in `packages/api` or thin app files; **all logic** in `module/…/server`.
+4. **Transport vs logic** — oRPC/MCP/action/route **wiring** in `packages/orpc` or thin app files; **all logic** in `module/…/server`.
 5. **No new tRPC** — oRPC + module server only ([server-api.md](./server-api.md)).
 6. **ServiceResponse everywhere** — same JSON for oRPC, actions, routes, MCP ([data-workflow.md](./data-workflow.md)).
 
@@ -211,17 +211,19 @@ App route files are **bare**; layouts and UI live in **`module/`**.
 - [ ] UI skills applied per [ui-ux-skills.md](./ui-ux-skills.md); audit pass (**web-design-guidelines** or **ui-ux-pro-max**) before merge.
 - [ ] oRPC (or shared controller for action/route) delegates to `module/<feature>/server`.
 - [ ] App / route files: import and call only.
+- [ ] **`pnpm audit:architecture-layers`** and **`pnpm audit:module-architecture`** — no new violations.
 - [ ] [CHANGELOG.md](../CHANGELOG.md) `[Unreleased]` when merged to `dev`.
 
 ---
 
 ## Related
 
-- [data-workflow.md](./data-workflow.md) — ServiceResponse, toast, UI by status  
-- [rendering.md](./rendering.md) — page composition, dynamic islands  , logic vs render  
-- [ui-ux-skills.md](./ui-ux-skills.md) — agent skills for UI/UX (shadcn, coss, ui-ux-pro-max, …)  
-- [server-api.md](./server-api.md) — oRPC, Server Actions, Next routes, pages  
-- [packages.md](./packages.md) — platform packages and `@loftlancer/api` boundaries  
-- [product.md](./product.md) — permissions, audit, MCP exposure  
-- [index.md](./index.md) — doc map  
-- [../AGENTS.md](../AGENTS.md) — workflow  
+- [data-workflow.md](./data-workflow.md) — ServiceResponse, toast, UI by status
+- [rendering.md](./rendering.md) — page composition, dynamic islands , logic vs render
+- [ui-ux-skills.md](./ui-ux-skills.md) — agent skills for UI/UX (shadcn, coss, ui-ux-pro-max, …)
+- [server-api.md](./server-api.md) — oRPC, Server Actions, Next routes, pages
+- [features.md](./features.md) — reusable features layer and dependency rules
+- [packages.md](./packages.md) — platform packages and `@loftlancer/orpc` boundaries
+- [product.md](./product.md) — permissions, audit, MCP exposure
+- [index.md](./index.md) — doc map
+- [../AGENTS.md](../AGENTS.md) — workflow

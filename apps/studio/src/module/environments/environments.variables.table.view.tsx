@@ -1,10 +1,10 @@
 "use client";
 
+import { DataTableActionsColumnHeader } from "@features/data-table/core/client/data-table.actions-column";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { variablesTableEmpty } from "@/components/data-table/data-table-empty-presets";
@@ -249,7 +249,7 @@ export function VariablesTableView({
           className: variableColumnClassNames.key,
         },
         header: () => (
-          <span className="font-medium text-muted-foreground text-xs">Key</span>
+          <span className="text-muted-foreground text-xs font-medium">Key</span>
         ),
         cell: ({ row }) => {
           const variable = row.original;
@@ -259,7 +259,7 @@ export function VariablesTableView({
               <div className="hidden min-w-0 sm:block">
                 <TableLeadingCell leading={<AppIcon name="variable" />}>
                   <div className="flex min-w-0 items-center gap-1.5">
-                    <span className="block truncate font-medium font-mono text-sm">
+                    <span className="block truncate font-mono text-sm font-medium">
                       {variable.key}
                     </span>
                     {variablesV2 && variable.type ? (
@@ -274,13 +274,13 @@ export function VariablesTableView({
                 </TableLeadingCell>
               </div>
               <div className="min-w-0 sm:hidden">
-                <span className="block truncate font-medium font-mono text-xs">
+                <span className="block truncate font-mono text-xs font-medium">
                   {variable.key}
                 </span>
                 <SecretValue
                   revealed={isRevealed}
                   value={variable.value}
-                  className="mt-0.5 text-muted-foreground text-xs"
+                  className="text-muted-foreground mt-0.5 text-xs"
                 />
               </div>
             </div>
@@ -319,7 +319,7 @@ export function VariablesTableView({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    className="size-10 shrink-0 text-muted-foreground sm:size-7"
+                    className="text-muted-foreground size-10 shrink-0 sm:size-7"
                     aria-label={
                       isRevealed
                         ? `Hide ${variable.key}`
@@ -336,7 +336,7 @@ export function VariablesTableView({
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  className="size-10 shrink-0 text-muted-foreground sm:size-7"
+                  className="text-muted-foreground size-10 shrink-0 sm:size-7"
                   aria-label={`Copy ${variable.key}`}
                   onClick={() => void copyValue(variable)}
                   data-testid="variable-copy"
@@ -405,7 +405,7 @@ export function VariablesTableView({
                     icon: (
                       <AppIcon
                         name={isRevealed ? "hide" : "reveal"}
-                        className="me-2 text-foreground"
+                        className="text-foreground me-2"
                       />
                     ),
                     disabled: isConfig || revealingIds?.has(variable.id),
@@ -414,21 +414,21 @@ export function VariablesTableView({
                   {
                     label: "Copy value",
                     icon: (
-                      <AppIcon name="copy" className="me-2 text-foreground" />
+                      <AppIcon name="copy" className="text-foreground me-2" />
                     ),
                     onSelect: () => void copyValue(variable),
                   },
                   {
                     label: "Edit",
                     icon: (
-                      <AppIcon name="edit" className="me-2 text-foreground" />
+                      <AppIcon name="edit" className="text-foreground me-2" />
                     ),
                     onSelect: () => handleEdit(variable),
                   },
                   {
                     label: "Delete",
                     icon: (
-                      <AppIcon name="delete" className="me-2 text-foreground" />
+                      <AppIcon name="delete" className="text-foreground me-2" />
                     ),
                     destructive: true,
                     onSelect: () => handleDelete(variable),

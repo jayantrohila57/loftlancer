@@ -48,7 +48,7 @@ export default function AuditLogs() {
         icon: (
           <AppIcon
             name="projectFolder"
-            className="size-4 text-muted-foreground"
+            className="text-muted-foreground size-4"
           />
         ),
       })),
@@ -76,7 +76,7 @@ export default function AuditLogs() {
           value: ALL_PROJECTS,
           label: "All projects",
           icon: (
-            <AppIcon name="project" className="size-4 text-muted-foreground" />
+            <AppIcon name="project" className="text-muted-foreground size-4" />
           ),
         },
         ...projectOptions,

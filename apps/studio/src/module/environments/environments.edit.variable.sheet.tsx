@@ -1,12 +1,12 @@
 "use client";
 
-import { variableKeySchema } from "@loftlancer/api/validation";
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetClose, SheetDescription } from "@loftlancer/ui/sheet";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { Textarea } from "@loftlancer/ui/textarea";
+import { variableKeySchema } from "@modules/projects/utils/validation/utils.project-environment.validation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormField } from "@/components/patterns/form-field";
 import {
@@ -198,7 +198,7 @@ export function EditVariableSheet({
                   placeholder="your-value-here"
                   rows={3}
                   disabled={isLoadingValue}
-                  className="wrap-anywhere max-h-72 min-h-24 overflow-y-auto font-mono"
+                  className="max-h-72 min-h-24 overflow-y-auto font-mono wrap-anywhere"
                   autoComplete="off"
                   style={
                     type === "secret"

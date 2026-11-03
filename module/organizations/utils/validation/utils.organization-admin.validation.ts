@@ -2,6 +2,14 @@ import { z } from "zod";
 
 const emptyInput = z.object({}).strict();
 const successOutput = z.object({ success: z.literal(true) });
+const nonEmptyText = (max: number) => z.string().trim().min(1).max(max);
+
+/** Shared http(s) URL check for profile / MCP branding inputs. */
+export const safeHttpUrlSchema = z
+  .string()
+  .url()
+  .max(2048)
+  .refine((value) => ["http:", "https:"].includes(new URL(value).protocol));
 
 export const organizationSettingsInputSchema = emptyInput;
 export const organizationSettingsPatchSchema = z
@@ -45,18 +53,12 @@ export const organizationSettingsPatchSchema = z
   .strict();
 export const organizationSettingsOutputSchema =
   organizationSettingsPatchSchema.extend({ canEdit: z.boolean() });
-export const organizationProfilePatchSchema = z
+export const organizationProfileFieldsSchema = z
   .object({
-    description: z.string().trim().min(1).max(2000).nullable().optional(),
-    legalName: z.string().trim().min(1).max(200).nullable().optional(),
-    websiteUrl: z
-      .string()
-      .url()
-      .max(2048)
-      .refine((value) => ["http:", "https:"].includes(new URL(value).protocol))
-      .nullable()
-      .optional(),
-    industry: z.string().trim().min(1).max(120).nullable().optional(),
+    description: nonEmptyText(2000).nullable().optional(),
+    legalName: nonEmptyText(200).nullable().optional(),
+    websiteUrl: safeHttpUrlSchema.nullable().optional(),
+    industry: nonEmptyText(120).nullable().optional(),
     sizeBand: z
       .enum(["1-10", "11-50", "51-200", "201-1000", "1001+"])
       .nullable()
@@ -69,41 +71,41 @@ export const organizationProfilePatchSchema = z
       .nullable()
       .optional(),
     contactEmail: z.string().trim().email().max(320).nullable().optional(),
-    contactPhone: z.string().trim().min(1).max(64).nullable().optional(),
-    supportUrl: z
-      .string()
-      .url()
-      .max(2048)
-      .refine((value) => ["http:", "https:"].includes(new URL(value).protocol))
-      .nullable()
-      .optional(),
+    contactPhone: nonEmptyText(64).nullable().optional(),
+    supportUrl: safeHttpUrlSchema.nullable().optional(),
     countryCode: z
       .string()
       .regex(/^[A-Za-z]{2}$/)
       .nullable()
       .optional(),
-    region: z.string().trim().min(1).max(120).nullable().optional(),
-    city: z.string().trim().min(1).max(120).nullable().optional(),
-    postalCode: z.string().trim().min(1).max(32).nullable().optional(),
-    addressLine1: z.string().trim().min(1).max(200).nullable().optional(),
-    addressLine2: z.string().trim().min(1).max(200).nullable().optional(),
+    region: nonEmptyText(120).nullable().optional(),
+    city: nonEmptyText(120).nullable().optional(),
+    postalCode: nonEmptyText(32).nullable().optional(),
+    addressLine1: nonEmptyText(200).nullable().optional(),
+    addressLine2: nonEmptyText(200).nullable().optional(),
   })
-  .strict()
-  .refine(
+  .strict();
+export const organizationProfilePatchSchema =
+  organizationProfileFieldsSchema.refine(
     (input) => Object.keys(input).length > 0,
     "Provide at least one profile field.",
   );
+/** HTTPS-only logo URL (nullable clears branding). */
+export const organizationBrandingLogoSchema = z
+  .string()
+  .url()
+  .max(2048)
+  .refine((value) => {
+    try {
+      return new URL(value).protocol === "https:";
+    } catch {
+      return false;
+    }
+  }, "Logo URL must use HTTPS.")
+  .nullable();
 export const organizationLogoInputSchema = z
   .object({
-    logo: z
-      .string()
-      .url()
-      .max(2048)
-      .refine(
-        (value) => new URL(value).protocol === "https:",
-        "Logo URL must use HTTPS.",
-      )
-      .nullable(),
+    logo: organizationBrandingLogoSchema,
   })
   .strict();
 export const organizationSettingsMutationOutputSchema = successOutput;

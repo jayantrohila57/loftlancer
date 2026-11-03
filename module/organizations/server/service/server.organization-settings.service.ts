@@ -1,11 +1,11 @@
-import { normalizeOrgRole } from "@loftlancer/actions";
-import { db } from "@loftlancer/db";
+import { normalizeOrgRole } from "@features/authorization/utils";
+import { db } from "@loftlancer/drizzle";
 import {
   member,
   organization,
   organizationProfile,
   organizationSettings,
-} from "@loftlancer/db/schema/organization";
+} from "@loftlancer/drizzle/schema/organization";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, eq, isNull } from "drizzle-orm";

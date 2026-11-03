@@ -1,7 +1,7 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import { Button } from "@loftlancer/ui/button";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { useEffect, useState } from "react";
 import { FormField } from "@/components/patterns/form-field";
 import { studioORPC } from "@/lib/orpc";
@@ -82,7 +82,7 @@ export function OrganizationPreferencesEditor() {
     options: readonly { value: string; label: string }[],
   ) => (
     <select
-      className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+      className="bg-background h-10 w-full rounded-md border px-3 text-sm"
       value={String(draft[key])}
       disabled={!saved.canEdit || mutation.isPending}
       onChange={(event) =>
@@ -120,7 +120,7 @@ export function OrganizationPreferencesEditor() {
         <FormField id="org-time-zone" label="Time zone">
           <input
             id="org-time-zone"
-            className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+            className="bg-background h-10 w-full rounded-md border px-3 text-sm"
             value={draft.timeZone}
             disabled={!saved.canEdit}
             onChange={(event) => update("timeZone", event.target.value)}
@@ -130,7 +130,7 @@ export function OrganizationPreferencesEditor() {
         <FormField id="org-locale" label="Locale">
           <input
             id="org-locale"
-            className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+            className="bg-background h-10 w-full rounded-md border px-3 text-sm"
             value={draft.locale}
             disabled={!saved.canEdit}
             onChange={(event) => update("locale", event.target.value)}
@@ -160,7 +160,7 @@ export function OrganizationPreferencesEditor() {
         <FormField id="org-currency" label="Display currency">
           <input
             id="org-currency"
-            className="h-10 w-full rounded-md border bg-background px-3 text-sm uppercase"
+            className="bg-background h-10 w-full rounded-md border px-3 text-sm uppercase"
             value={draft.displayCurrency}
             maxLength={3}
             disabled={!saved.canEdit}
@@ -176,7 +176,7 @@ export function OrganizationPreferencesEditor() {
           ])}
         </FormField>
         <div className="flex flex-col gap-3 rounded-md border p-3">
-          <p className="font-medium text-sm">
+          <p className="text-sm font-medium">
             Notification defaults for new members
           </p>
           {(["email", "inApp"] as const).map((key) => (

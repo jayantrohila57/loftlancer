@@ -1,4 +1,4 @@
-import type { SettingsTab } from "@loftlancer/ui/patterns/settings-frame";
+import type { SettingsTab } from "@features/patterns/core/client/patterns.settings-frame";
 import { routes } from "@/utils/navigation";
 
 export function getProjectTabs({

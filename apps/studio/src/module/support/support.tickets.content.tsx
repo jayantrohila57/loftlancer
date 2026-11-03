@@ -1,9 +1,9 @@
 "use client";
 
+import type { DataTableColumnDef } from "@features/data-table/core/client/data-table.table";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 import { Badge } from "@loftlancer/ui/badge";
-import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

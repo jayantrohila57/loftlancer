@@ -1,0 +1,259 @@
+import { activeMemberWhere, db, softDeleteSet } from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
+import { member } from "@loftlancer/drizzle/schema/organization";
+import {
+  projectManager,
+  projectMemberGrant,
+  projectTeam,
+} from "@loftlancer/drizzle/schema/project-access";
+import { project } from "@loftlancer/drizzle/schema/projects";
+import { team, teamMember } from "@loftlancer/drizzle/schema/team";
+import { isSoftDeletesEnabled } from "@loftlancer/t3-env/soft-deletes";
+import { and, eq, inArray, isNull } from "drizzle-orm";
+import { getEffectiveProjectAccess } from "./effective-access";
+
+export async function loadProjectAccessSummary(projectId: string) {
+  const [projectRow] = await db
+    .select({
+      creatorUserId: project.userId,
+      organizationId: project.organizationId,
+    })
+    .from(project)
+    .where(and(eq(project.id, projectId), isNull(project.deletedAt)))
+    .limit(1);
+  const managers = await db
+    .select({
+      id: projectManager.id,
+      userId: projectManager.userId,
+      name: user.name,
+      email: user.email,
+    })
+    .from(projectManager)
+    .innerJoin(user, eq(projectManager.userId, user.id))
+    .where(
+      and(
+        eq(projectManager.projectId, projectId),
+        eq(projectManager.organizationId, projectRow?.organizationId ?? ""),
+        isNull(projectManager.deletedAt),
+      ),
+    );
+
+  const teamsOnProject = await db
+    .select({
+      id: projectTeam.id,
+      teamId: projectTeam.teamId,
+      teamName: team.name,
+    })
+    .from(projectTeam)
+    .innerJoin(team, eq(projectTeam.teamId, team.id))
+    .where(
+      and(
+        eq(projectTeam.projectId, projectId),
+        eq(projectTeam.organizationId, projectRow?.organizationId ?? ""),
+        isNull(projectTeam.deletedAt),
+        isNull(team.deletedAt),
+      ),
+    );
+
+  const grants = await db
+    .select({
+      id: projectMemberGrant.id,
+      userId: projectMemberGrant.userId,
+      grants: projectMemberGrant.grants,
+      name: user.name,
+      email: user.email,
+    })
+    .from(projectMemberGrant)
+    .innerJoin(user, eq(projectMemberGrant.userId, user.id))
+    .where(
+      and(
+        eq(projectMemberGrant.projectId, projectId),
+        eq(projectMemberGrant.organizationId, projectRow?.organizationId ?? ""),
+        isNull(projectMemberGrant.deletedAt),
+      ),
+    );
+
+  const organizationMembers = projectRow?.organizationId
+    ? await db
+        .select({
+          userId: member.userId,
+          role: member.role,
+          name: user.name,
+          email: user.email,
+        })
+        .from(member)
+        .innerJoin(user, eq(member.userId, user.id))
+        .where(
+          and(
+            eq(member.organizationId, projectRow.organizationId),
+            isNull(member.deletedAt),
+          ),
+        )
+    : [];
+
+  const linkedTeamIds = teamsOnProject.map((row) => row.teamId);
+  const linkedTeamMembers = linkedTeamIds.length
+    ? await db
+        .select({
+          userId: teamMember.userId,
+          teamId: teamMember.teamId,
+          teamName: team.name,
+        })
+        .from(teamMember)
+        .innerJoin(team, eq(teamMember.teamId, team.id))
+        .where(
+          and(
+            inArray(teamMember.teamId, linkedTeamIds),
+            eq(team.organizationId, projectRow?.organizationId ?? ""),
+            isNull(team.deletedAt),
+          ),
+        )
+    : [];
+
+  const managersByUser = new Set(managers.map((row) => row.userId));
+  const grantsByUser = new Map(grants.map((row) => [row.userId, row.grants]));
+  const teamsByUser = new Map<string, Set<string>>();
+  for (const row of linkedTeamMembers) {
+    const names = teamsByUser.get(row.userId) ?? new Set<string>();
+    names.add(row.teamName);
+    teamsByUser.set(row.userId, names);
+  }
+  const accessPeople = organizationMembers.flatMap((person) => {
+    const linkedTeams = [...(teamsByUser.get(person.userId) ?? [])];
+    const memberGrants = grantsByUser.get(person.userId) ?? [];
+    const access = getEffectiveProjectAccess({
+      role: person.role,
+      isProjectCreator: projectRow?.creatorUserId === person.userId,
+      isProjectManager: managersByUser.has(person.userId),
+      linkedTeams,
+      memberGrants,
+    });
+    return access.effectiveActions.length
+      ? [
+          {
+            userId: person.userId,
+            name: person.name,
+            email: person.email,
+            role: access.role,
+            sources: access.sources,
+            effectiveActions: access.effectiveActions,
+          },
+        ]
+      : [];
+  });
+
+  return {
+    creatorUserId: projectRow?.creatorUserId ?? null,
+    managers,
+    teams: teamsOnProject,
+    memberGrants: grants,
+    accessPeople,
+  };
+}
+
+export async function upsertProjectManagerRow(input: {
+  organizationId: string;
+  projectId: string;
+  userId: string;
+  createdBy: string;
+}) {
+  const [projectRow] = await db
+    .select({ id: project.id })
+    .from(project)
+    .where(
+      and(
+        eq(project.id, input.projectId),
+        eq(project.organizationId, input.organizationId),
+        isNull(project.deletedAt),
+      ),
+    )
+    .limit(1);
+  if (!projectRow) throw new Error("project_not_found");
+
+  const [activeOrganizationMember] = await db
+    .select({ id: member.id })
+    .from(member)
+    .where(
+      activeMemberWhere(
+        and(
+          eq(member.organizationId, input.organizationId),
+          eq(member.userId, input.userId),
+        ),
+      ),
+    )
+    .limit(1);
+  if (!activeOrganizationMember) throw new Error("active_member_required");
+
+  const [existing] = await db
+    .select({ id: projectManager.id, deletedAt: projectManager.deletedAt })
+    .from(projectManager)
+    .where(
+      and(
+        eq(projectManager.projectId, input.projectId),
+        eq(projectManager.userId, input.userId),
+      ),
+    )
+    .limit(1);
+
+  if (existing?.deletedAt === null) {
+    return { ok: true, id: existing.id };
+  }
+
+  if (existing && isSoftDeletesEnabled()) {
+    await db
+      .update(projectManager)
+      .set({
+        deletedAt: null,
+        deletedBy: null,
+        createdBy: input.createdBy,
+      })
+      .where(eq(projectManager.id, existing.id));
+    return { ok: true, id: existing.id };
+  }
+
+  const id = crypto.randomUUID();
+  await db.insert(projectManager).values({
+    id,
+    organizationId: input.organizationId,
+    projectId: input.projectId,
+    userId: input.userId,
+    createdBy: input.createdBy,
+  });
+  return { ok: true, id };
+}
+
+export async function softDeleteProjectManager(input: {
+  projectId: string;
+  userId: string;
+  actorUserId: string;
+}) {
+  if (!isSoftDeletesEnabled()) {
+    await db
+      .delete(projectManager)
+      .where(
+        and(
+          eq(projectManager.projectId, input.projectId),
+          eq(projectManager.userId, input.userId),
+        ),
+      );
+    return { ok: true };
+  }
+
+  await db
+    .update(projectManager)
+    .set(softDeleteSet(input.actorUserId))
+    .where(
+      and(
+        eq(projectManager.projectId, input.projectId),
+        eq(projectManager.userId, input.userId),
+        isNull(projectManager.deletedAt),
+      ),
+    );
+  return { ok: true };
+}
+
+export {
+  applyDefaultGrantsForTeamOnProject,
+  softDeleteProjectTeamLink,
+  upsertProjectTeamLink,
+} from "@module/teams/server/service/server.team-project-link.service";

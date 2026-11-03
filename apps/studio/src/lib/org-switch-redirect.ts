@@ -1,7 +1,7 @@
 import {
   isReservedOrgSlug,
   isReservedProjectSlug,
-} from "@loftlancer/ui/studio-routes";
+} from "@features/shell/utils/shell.studio-routes.utils";
 import type { Route } from "next";
 import type { OrgListItem } from "@/components/org/active-organization-context";
 import { routes } from "@/utils/navigation";

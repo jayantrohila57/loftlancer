@@ -1,5 +1,5 @@
+import { PageStatusForbidden } from "@features/patterns/core/client/patterns.page-state";
 import { Button } from "@loftlancer/ui/button";
-import { PageStatusForbidden } from "@loftlancer/ui/patterns/page-state";
 import { ShieldX } from "lucide-react";
 import type { Metadata, Route } from "next";
 import Link from "next/link";

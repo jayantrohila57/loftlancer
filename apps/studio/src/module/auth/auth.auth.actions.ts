@@ -1,6 +1,6 @@
 "use client";
 
-import { performPlatformSignOut } from "@loftlancer/ui/platform-sign-out";
+import { performPlatformSignOut } from "@features/authentication/utils/platform-sign-out";
 import type { QueryClient } from "@tanstack/react-query";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { accountSettingsUrl } from "@/lib/account-url";

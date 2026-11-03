@@ -1,5 +1,7 @@
 "use client";
 
+import { DataTableActionsColumnHeader } from "@features/data-table/core/client/data-table.actions-column";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
 import { Button } from "@loftlancer/ui/button";
 import {
   Card,
@@ -8,8 +10,6 @@ import {
   CardPanel,
   CardTitle,
 } from "@loftlancer/ui/card";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import type { ReactNode } from "react";
@@ -98,7 +98,7 @@ const loadedVariableColumns = (variablesV2: boolean) => [
     id: "key",
     meta: { className: variableColumnClassNames.key },
     header: () => (
-      <span className="font-medium text-muted-foreground text-xs">Key</span>
+      <span className="text-muted-foreground text-xs font-medium">Key</span>
     ),
     cell: () => null,
   }),
@@ -183,7 +183,7 @@ export function ProjectEnvironmentsSkeleton() {
       >
         <span className="sr-only">Loading environments…</span>
         <div className="flex min-w-0 flex-col gap-3">
-          <div className="rounded-md border bg-card">
+          <div className="bg-card rounded-md border">
             <div className="flex min-h-12 items-center justify-between px-4 py-3">
               <Skeleton className="h-4 w-28" />
               <Skeleton className="size-4 rounded" />
@@ -195,7 +195,7 @@ export function ProjectEnvironmentsSkeleton() {
               <VariablesTableSkeleton />
             </div>
           </div>
-          <div className="rounded-md border bg-card">
+          <div className="bg-card rounded-md border">
             <div className="flex min-h-12 items-center justify-between px-4 py-3">
               <Skeleton className="h-4 w-20" />
               <Skeleton className="size-4 rounded" />

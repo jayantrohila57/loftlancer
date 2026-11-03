@@ -25,7 +25,7 @@ export function FormField({
 }: FormFieldProps) {
   return (
     <div className={cn("space-y-2", className)}>
-      <Label htmlFor={id} className="font-medium text-sm">
+      <Label htmlFor={id} className="text-sm font-medium">
         {label}
         {required && (
           <span className="text-destructive" aria-hidden>

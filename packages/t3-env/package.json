@@ -1,0 +1,41 @@
+{
+  "name": "@loftlancer/t3-env",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "node --import tsx --test src/tests/t3-env.encryption-key-schema.test.ts src/tests/t3-env.server-github-oauth.test.ts src/tests/t3-env.feature-flags.test.ts src/tests/t3-env.console.test.ts"
+  },
+  "exports": {
+    "./server": "./src/config/t3-env.server.ts",
+    "./web": "./src/config/t3-env.web.ts",
+    "./organizations": "./src/utils/t3-env.organizations.ts",
+    "./soft-deletes": "./src/utils/t3-env.soft-deletes.ts",
+    "./feature-flags": "./src/utils/t3-env.feature-flags.ts",
+    "./www": "./src/config/t3-env.www.ts",
+    "./console": "./src/config/t3-env.console.ts",
+    "./auth-app": "./src/config/t3-env.auth-app.ts",
+    "./studio": "./src/config/t3-env.studio.ts",
+    "./account": "./src/config/t3-env.account.ts",
+    "./platform": "./src/config/t3-env.platform.ts",
+    "./mcp-app": "./src/config/t3-env.mcp-app.ts",
+    "./vercel-services": "./src/utils/t3-env.vercel-services.ts",
+    "./next-service-base-path": "./src/utils/t3-env.next-service-base-path.ts",
+    "./reserved-slugs": "./src/utils/t3-env.reserved-slugs.ts",
+    "./support": "./src/config/t3-env.support.ts",
+    "./notifications": "./src/utils/t3-env.notifications.ts"
+  },
+  "dependencies": {
+    "@t3-oss/env-core": "^0.13.11",
+    "@t3-oss/env-nextjs": "^0.13.11",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

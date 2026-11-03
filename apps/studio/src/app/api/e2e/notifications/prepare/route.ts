@@ -1,9 +1,10 @@
-import { auth } from "@loftlancer/auth";
-import { resolveE2eRouteAccess } from "@loftlancer/auth/e2e-route-access";
-import { e2ePasswordlessSignIn } from "@loftlancer/auth/passwordless";
-import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
-import { env } from "@loftlancer/env/server";
-import { prepareE2eInvitationNotifications } from "@loftlancer/notifications/e2e/prepare-invitation";
+import "@features/authentication/core/server/authentication.register-better-auth-product-hooks";
+import { prepareE2eInvitationNotifications } from "@features/notifications/core/server/notifications.e2e-prepare";
+import { auth } from "@loftlancer/better-auth";
+import { resolveE2eRouteAccess } from "@loftlancer/better-auth/e2e-route-access";
+import { e2ePasswordlessSignIn } from "@loftlancer/better-auth/passwordless";
+import { isOrganizationsEnabled } from "@loftlancer/t3-env/organizations";
+import { env } from "@loftlancer/t3-env/server";
 import { NextResponse } from "next/server";
 import { e2ePersonaCredentials } from "@/lib/e2e-users";
 

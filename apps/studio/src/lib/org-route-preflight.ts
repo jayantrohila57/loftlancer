@@ -1,5 +1,5 @@
-import { getAppManifest } from "@loftlancer/actions";
-import { isReservedProjectSlug } from "@loftlancer/env/reserved-slugs";
+import { getAppManifest } from "@features/authorization/utils";
+import { isReservedProjectSlug } from "@loftlancer/t3-env/reserved-slugs";
 
 /**
  * Route-shape check for everything below /[org] (#306, #309).

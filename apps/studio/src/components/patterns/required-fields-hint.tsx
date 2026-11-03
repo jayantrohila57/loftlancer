@@ -1,2 +1,2 @@
 "use client";
-export * from "@loftlancer/ui/patterns/required-fields-hint";
+export * from "@features/patterns/core/client/patterns.required-fields-hint";

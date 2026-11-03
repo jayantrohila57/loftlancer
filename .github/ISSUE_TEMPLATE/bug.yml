@@ -4,19 +4,24 @@ labels: [bug]
 body:
   - type: textarea
     id: what
-    attributes: {label: What happens, description: Include a screenshot or log lines}
-    validations: {required: true}
+    attributes:
+      { label: What happens, description: Include a screenshot or log lines }
+    validations: { required: true }
   - type: textarea
     id: expected
-    attributes: {label: Expected}
-    validations: {required: true}
+    attributes: { label: Expected }
+    validations: { required: true }
   - type: textarea
     id: steps
-    attributes: {label: Steps to reproduce, value: "1. "}
+    attributes: { label: Steps to reproduce, value: "1. " }
   - type: input
     id: where
-    attributes: {label: Where, description: "URL, app (docs/auth/studio) and version or deploy"}
+    attributes:
+      {
+        label: Where,
+        description: "URL, app (docs/better-auth/studio) and version or deploy",
+      }
   - type: textarea
     id: done
-    attributes: {label: Done when, value: "- [ ] "}
-    validations: {required: true}
+    attributes: { label: Done when, value: "- [ ] " }
+    validations: { required: true }

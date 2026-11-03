@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import "@loftlancer/env/server";
-import "@loftlancer/env/studio";
-import { withServiceBasePath } from "@loftlancer/env/next-service-base-path";
+import "@loftlancer/t3-env/server";
+import "@loftlancer/t3-env/studio";
+import { withServiceBasePath } from "@loftlancer/t3-env/next-service-base-path";
 import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 

@@ -1,12 +1,11 @@
-import { logger } from "@loftlancer/logger";
-
 import {
   type MonitorState,
   overallFromMonitors,
   type PlatformIncident,
   type PlatformMonitor,
   type PlatformStatus,
-} from "@loftlancer/ui/platform-status";
+} from "@features/shell/utils/shell.platform-status.utils";
+import { logger } from "@loftlancer/sentry";
 
 /**
  * Better Stack Uptime API → public PlatformStatus (#369). Server-only: the

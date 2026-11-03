@@ -1,7 +1,7 @@
 "use client";
 
+import { PageStatusEmpty } from "@features/patterns/core/client/patterns.page-state";
 import { Button } from "@loftlancer/ui/button";
-import { PageStatusEmpty } from "@loftlancer/ui/patterns/page-state";
 import { AlertTriangle } from "lucide-react";
 import { useEffect } from "react";
 import { getClientErrorMessage } from "@/lib/errors/client-errors";

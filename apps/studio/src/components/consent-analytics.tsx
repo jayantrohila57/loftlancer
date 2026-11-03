@@ -3,7 +3,7 @@
 import {
   AnalyticsConsentBanner,
   useAnalyticsConsent,
-} from "@loftlancer/ui/patterns/analytics-consent";
+} from "@features/analytics/core/client";
 import { useEffect } from "react";
 import { applyPostHogConsent, posthogKey } from "@/lib/posthog";
 

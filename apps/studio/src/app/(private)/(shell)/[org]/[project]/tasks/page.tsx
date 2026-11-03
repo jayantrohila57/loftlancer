@@ -1,4 +1,4 @@
-import { routes } from "@loftlancer/ui/studio-routes";
+import { routes } from "@features/shell/utils/shell.studio-routes.utils";
 import type { Metadata, Route } from "next";
 import { redirect } from "next/navigation";
 

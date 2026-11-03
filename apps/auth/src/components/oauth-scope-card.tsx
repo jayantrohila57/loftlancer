@@ -1,6 +1,6 @@
 "use client";
 
-import { describeMcpOAuthScopes } from "@loftlancer/actions";
+import { describeMcpOAuthScopes } from "@features/authorization/utils";
 import { Button } from "@loftlancer/ui/button";
 import { Spinner } from "@loftlancer/ui/spinner";
 import { ArrowLeftRightIcon, CheckIcon, KeyRoundIcon } from "lucide-react";
@@ -31,20 +31,20 @@ export function OAuthScopeCard({
   const initial = appName?.trim().charAt(0).toUpperCase() || "?";
 
   return (
-    <div className="flex flex-col gap-3 rounded-md p-4 ring-1 ring-border/60">
+    <div className="ring-border/60 flex flex-col gap-3 rounded-md p-4 ring-1">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5">
           <span
             aria-hidden
-            className="flex size-8 items-center justify-center rounded-lg bg-muted font-semibold text-sm"
+            className="bg-muted flex size-8 items-center justify-center rounded-lg text-sm font-semibold"
           >
             {initial}
           </span>
           <ArrowLeftRightIcon
             aria-hidden
-            className="size-3.5 text-muted-foreground"
+            className="text-muted-foreground size-3.5"
           />
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg">
             <svg
               viewBox="0 0 24 24"
               aria-label="Loftlancer"
@@ -56,11 +56,11 @@ export function OAuthScopeCard({
         </div>
         <div className="flex min-w-0 flex-col">
           {appName ? (
-            <span className="truncate font-medium text-sm">{appName}</span>
+            <span className="truncate text-sm font-medium">{appName}</span>
           ) : (
-            <span className="h-5 w-32 animate-pulse rounded bg-muted" />
+            <span className="bg-muted h-5 w-32 animate-pulse rounded" />
           )}
-          <span className="truncate text-muted-foreground text-xs">
+          <span className="text-muted-foreground truncate text-xs">
             {appMeta ?? "wants access to your Loftlancer account"}
           </span>
         </div>
@@ -69,7 +69,7 @@ export function OAuthScopeCard({
       <div className="border-border/60 border-t" />
 
       <div className="flex flex-col gap-1.5">
-        <p className="font-medium text-muted-foreground text-xs">
+        <p className="text-muted-foreground text-xs font-medium">
           This will allow it to
         </p>
         {scopeItems.length === 0 ? (
@@ -82,11 +82,11 @@ export function OAuthScopeCard({
               <li key={item.scope} className="flex items-start gap-2 text-sm">
                 <CheckIcon
                   aria-hidden
-                  className="mt-0.5 size-3.5 shrink-0 text-primary"
+                  className="text-primary mt-0.5 size-3.5 shrink-0"
                 />
                 <span className="flex min-w-0 flex-col">
                   <span>{item.description}</span>
-                  <code className="font-mono text-muted-foreground text-xs">
+                  <code className="text-muted-foreground font-mono text-xs">
                     {item.scope}
                   </code>
                 </span>

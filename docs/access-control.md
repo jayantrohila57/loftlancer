@@ -7,7 +7,7 @@ Loftlancer uses **one action ID** ([actions-and-events.md](./actions-and-events.
 
 Both run inside **`requireAction` → `evaluatePermission`** before service logic. Deny → audit **`denied`** + ServiceResponse **`failed`**.
 
-Registry: `packages/actions/src/registry-data.ts` · Evaluator: `packages/actions/src/evaluate.ts` · Loader: `packages/api/src/actions/require-action.ts`
+Registry: `features/authorization/src/constants/authorization.registry-data.ts` · Evaluator: `features/authorization/src/utils/authorization.evaluate.ts` · Loader: `@features/authorization/core/server/authorization.require-action.ts` (re-export: `packages/orpc/src/actions/require-action.ts`)
 
 ---
 
@@ -15,19 +15,19 @@ Registry: `packages/actions/src/registry-data.ts` · Evaluator: `packages/action
 
 **Question:** “Is this **role** allowed to attempt this action at all?”
 
-| Input | Source |
-|-------|--------|
-| **Org role** | `owner` \| `manager` \| `member` on `member.role` |
-| **Team role** | `lead` \| `member` when action has `teamRoles` |
-| **Platform** | Platform admin flag (bypass org checks when enabled) |
-| **Registry** | `orgRoles`, `teamRoles`, `scope` per action row |
+| Input         | Source                                               |
+| ------------- | ---------------------------------------------------- |
+| **Org role**  | `owner` \| `manager` \| `member` on `member.role`    |
+| **Team role** | `lead` \| `member` when action has `teamRoles`       |
+| **Platform**  | Platform admin flag (bypass org checks when enabled) |
+| **Registry**  | `orgRoles`, `teamRoles`, `scope` per action row      |
 
 Examples:
 
 - `team.create` — registry says which org roles may try it.
 - Owner often **allows all** org-scoped actions without extra attributes.
 
-**UI “RBAC”:** `useCan` / `<Can>` use snapshots from **`evaluatePermission`** with **partial** context (org role only) — may show **“grant”** (needs project/team) vs **yes/no** via `roleCapability` in `evaluate.ts`.
+**UI “RBAC”:** `useCan` / `<Can>` use snapshots from **`evaluatePermission`** with **partial** context (org role only) — may show **“grant”** (needs project/team) vs **yes/no** via `roleCapability` in `authorization.evaluate.ts`.
 
 RBAC alone is **not** enough for project-scoped or grant-gated actions.
 
@@ -41,15 +41,15 @@ Attributes passed into **`evaluatePermission`** (and extra checks in **`requireA
 
 ### Evaluator attributes (`EvaluatePermissionInput`)
 
-| Attribute | Meaning |
-|-----------|---------|
-| **`project.isProjectCreator`** | User created the project |
-| **`project.isProjectManager`** | Manager assignment on project |
-| **`project.hasTeamLink`** | Member access via team ↔ project link |
-| **`project.memberGrants`** | Grant keys (e.g. `project.permission.grant`) for members |
-| **`team.belongsToOrganization`** | Team in active org |
-| **`team.role`** | Team lead/member for `teamRoles` on action |
-| **`customOrganizationActions`** | Delegated org-scope actions (product currently returns **none** — hook for future custom roles) |
+| Attribute                        | Meaning                                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **`project.isProjectCreator`**   | User created the project                                                                        |
+| **`project.isProjectManager`**   | Manager assignment on project                                                                   |
+| **`project.hasTeamLink`**        | Member access via team ↔ project link                                                           |
+| **`project.memberGrants`**       | Grant keys (e.g. `project.permission.grant`) for members                                        |
+| **`team.belongsToOrganization`** | Team in active org                                                                              |
+| **`team.role`**                  | Team lead/member for `teamRoles` on action                                                      |
+| **`customOrganizationActions`**  | Delegated org-scope actions (product currently returns **none** — hook for future custom roles) |
 
 Registry flags that turn on ABAC:
 
@@ -59,13 +59,13 @@ Registry flags that turn on ABAC:
 
 ### Environmental / resource checks (`requireAction` — not in `evaluatePermission`)
 
-| Attribute / state | Effect |
-|-------------------|--------|
-| **Organization archived** | Deny mutations except restore/unarchive/delete |
-| **Project/team org mismatch** | Deny / NOT_FOUND |
-| **App not installed** on project | Deny when action maps to project app |
-| **`isActionBlocked`** | Per-user/org/project blocks |
-| **Membership active** | Must be org member (soft-delete aware) |
+| Attribute / state                | Effect                                         |
+| -------------------------------- | ---------------------------------------------- |
+| **Organization archived**        | Deny mutations except restore/unarchive/delete |
+| **Project/team org mismatch**    | Deny / NOT_FOUND                               |
+| **App not installed** on project | Deny when action maps to project app           |
+| **`isActionBlocked`**            | Per-user/org/project blocks                    |
+| **Membership active**            | Must be org member (soft-delete aware)         |
 
 These are **ABAC**: decisions depend on **resource and environment**, not role alone.
 
@@ -98,11 +98,11 @@ runAction / requireAction(actionId, ctx)
 
 `roleCapability()` returns:
 
-| Value | Meaning |
-|-------|---------|
-| **`yes`** | Org role + `evaluatePermission` passes **without** project context |
+| Value       | Meaning                                                                                   |
+| ----------- | ----------------------------------------------------------------------------------------- |
+| **`yes`**   | Org role + `evaluatePermission` passes **without** project context                        |
 | **`grant`** | Role may perform **only if** ABAC attributes satisfied (assignment, team link, grant key) |
-| **`no`** | Role cannot perform |
+| **`no`**    | Role cannot perform                                                                       |
 
 Studio copy: **Owner / Manager / Member** + “grant” paths for project/team — RBAC matrix in registry, ABAC at runtime.
 
@@ -110,11 +110,11 @@ Studio copy: **Owner / Manager / Member** + “grant” paths for project/team �
 
 ## Where to implement new rules
 
-| Change | Where |
-|--------|--------|
-| New action ID, which roles may try | **`registry-data.ts`** (RBAC matrix) |
+| Change                                      | Where                                                                                                     |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| New action ID, which roles may try          | **`registry-data.ts`** (RBAC matrix)                                                                      |
 | New attribute (e.g. env lock, billing tier) | **`evaluatePermission`** and/or **`requireAction`**, plus pass context from **module service/controller** |
-| Module-specific rule (e.g. sole owner) | **Module service** after `requireAction`, or extend shared evaluator if cross-cutting |
+| Module-specific rule (e.g. sole owner)      | **Module service** after `requireAction`, or extend shared evaluator if cross-cutting                     |
 
 Prefer **registry + evaluator** for reusable ABAC; one-off business rules in **service** still use **`failed`** (not **`error`**) when expected.
 
@@ -131,6 +131,6 @@ There is **no second ID system** for ABAC. One **`team.update`** action:
 
 ## Related
 
-- [actions-and-events.md](./actions-and-events.md) — `runAction`, audit, events  
-- [product.md](./product.md) — registry recipe  
-- [data-workflow.md](./data-workflow.md) — deny → `failed`  
+- [actions-and-events.md](./actions-and-events.md) — `runAction`, audit, events
+- [product.md](./product.md) — registry recipe
+- [data-workflow.md](./data-workflow.md) — deny → `failed`

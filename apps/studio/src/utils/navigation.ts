@@ -1,4 +1,4 @@
-import { routes as rawRoutes } from "@loftlancer/ui/studio-routes";
+import { routes as rawRoutes } from "@features/shell/utils/shell.studio-routes.utils";
 import type { Route } from "next";
 
 export {
@@ -7,7 +7,7 @@ export {
   type OrgSection,
   type ProjectSection,
   platformNavHref,
-} from "@loftlancer/ui/studio-routes";
+} from "@features/shell/utils/shell.studio-routes.utils";
 
 type Builders = typeof rawRoutes;
 type Typed = {

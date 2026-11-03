@@ -1,6 +1,6 @@
 ---
 description: ServiceResponse success|failed|error; controller validates; UI toast + boundary
-globs: module/**/server/**,module/**/client/hooks/**,module/shared/utils/**,packages/api/**
+globs: module/**/server/**,module/**/client/hooks/**,module/shared/utils/**,packages/orpc/**
 alwaysApply: false
 ---
 

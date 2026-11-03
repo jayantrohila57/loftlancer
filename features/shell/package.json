@@ -1,0 +1,30 @@
+{
+  "name": "@loftlancer/features-shell",
+  "description": "Dashboard and public app chrome.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core/client": "./src/core/client/index.ts",
+    "./core/client/*": "./src/core/client/*",
+    "./utils": "./src/utils/index.ts",
+    "./utils/*": "./src/utils/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@loftlancer/t3-env": "workspace:*",
+    "@loftlancer/ui": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "next": "catalog:",
+    "react": "^19.3.0"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

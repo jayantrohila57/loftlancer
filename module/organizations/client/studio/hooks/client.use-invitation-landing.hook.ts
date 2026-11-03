@@ -1,6 +1,9 @@
 "use client";
 
-import { resolveAuthAppOrigin, studioHomeUrl } from "@loftlancer/ui/auth-links";
+import {
+  resolveAuthAppOrigin,
+  studioHomeUrl,
+} from "@features/authentication/utils/auth-links";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";

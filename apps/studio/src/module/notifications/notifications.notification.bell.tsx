@@ -1,5 +1,7 @@
 "use client";
 
+import { CountBadge } from "@features/patterns/core/client/patterns.count-badge";
+import { LoadingButton } from "@features/patterns/core/client/patterns.loading-button";
 import { Button } from "@loftlancer/ui/button";
 import {
   Menu,
@@ -8,8 +10,6 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@loftlancer/ui/menu";
-import { CountBadge } from "@loftlancer/ui/patterns/count-badge";
-import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { headerIconButtonClassName } from "@loftlancer/ui/utils";
 import Link from "next/link";
@@ -61,14 +61,14 @@ export function NotificationBell() {
         <CountBadge
           count={unread}
           tone="primary"
-          className="absolute -end-1.5 -top-1.5 ring-2 ring-background"
+          className="ring-background absolute -end-1.5 -top-1.5 ring-2"
         />
       </MenuTrigger>
       <MenuPopup align="end" className="w-[min(100vw-2rem,24rem)] p-2">
         {/* Header after ReUI Sheet 7: title + mark all read.
             The action is always rendered (disabled at 0) so nothing reflows. */}
         <div className="flex h-8 items-center justify-between gap-2 px-1 pb-1">
-          <span className="font-medium text-sm">Notifications</span>
+          <span className="text-sm font-medium">Notifications</span>
           <LoadingButton
             type="button"
             variant="ghost"
@@ -84,10 +84,10 @@ export function NotificationBell() {
         </div>
         <div
           role="list"
-          className="flex h-80 flex-col divide-y divide-border/60 overflow-y-auto overflow-x-hidden"
+          className="divide-border/60 flex h-80 flex-col divide-y overflow-x-hidden overflow-y-auto"
         >
           {listQuery.isError ? (
-            <p className="px-2 py-6 text-center text-muted-foreground text-sm">
+            <p className="text-muted-foreground px-2 py-6 text-center text-sm">
               Could not load notifications. Try again shortly.
             </p>
           ) : listQuery.isLoading ? (
@@ -115,7 +115,7 @@ export function NotificationBell() {
               ))}
             </>
           ) : items.length === 0 ? (
-            <p className="flex flex-1 items-center justify-center px-2 text-center text-muted-foreground text-sm">
+            <p className="text-muted-foreground flex flex-1 items-center justify-center px-2 text-center text-sm">
               {unread > 0
                 ? "Unread notifications could not be displayed."
                 : "You're all caught up."}

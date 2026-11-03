@@ -1,0 +1,44 @@
+{
+  "name": "@loftlancer/features-authentication",
+  "description": "Session and Better Auth product UX.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./utils/*": "./src/utils/*",
+    "./types/*": "./src/types/*",
+    "./constants/*": "./src/constants/*",
+    "./config/*": "./src/config/*",
+    "./core/server": "./src/core/server/index.ts",
+    "./core/server/*": "./src/core/server/*",
+    "./core/client": "./src/core/client/index.ts",
+    "./core/client/*": "./src/core/client/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "node --import tsx --import ./tests/test-env.ts --test tests/authentication.*.test.ts"
+  },
+  "dependencies": {
+    "@loftlancer/features-authorization": "workspace:*",
+    "@loftlancer/features-notifications": "workspace:*",
+    "@loftlancer/better-auth": "workspace:*",
+    "@loftlancer/drizzle": "workspace:*",
+    "@loftlancer/resend": "workspace:*",
+    "@loftlancer/t3-env": "workspace:*",
+    "@loftlancer/ui": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "lucide-react": "^1.56.0",
+    "next": "catalog:",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

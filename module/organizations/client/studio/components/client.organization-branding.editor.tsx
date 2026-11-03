@@ -1,9 +1,9 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { AppIcon } from "@/components/patterns/app-icon";

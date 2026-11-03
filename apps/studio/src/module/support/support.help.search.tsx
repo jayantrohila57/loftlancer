@@ -1,9 +1,12 @@
 "use client";
 
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
+import { VersionBadge } from "@features/patterns/core/client/patterns.version-badge";
+import {
+  docsSiteUrl,
+  docsUrl,
+} from "@features/shell/utils/shell.platform-urls.utils";
 import { Input } from "@loftlancer/ui/input";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { VersionBadge } from "@loftlancer/ui/patterns/version-badge";
-import { docsSiteUrl, docsUrl } from "@loftlancer/ui/platform-urls";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
@@ -57,13 +60,13 @@ export function SupportHelpSearch({
       ) : null}
       {[...byCategory.entries()].map(([category, items]) => (
         <section key={category} className="space-y-2">
-          <h2 className="font-medium text-sm capitalize">{category}</h2>
+          <h2 className="text-sm font-medium capitalize">{category}</h2>
           <ul className="divide-y rounded-md border">
             {items?.map((item) => (
               <li key={item.id}>
                 <Link
                   href={routes.supportArticle(item.slug)}
-                  className="block px-3 py-2 text-sm hover:bg-muted"
+                  className="hover:bg-muted block px-3 py-2 text-sm"
                 >
                   {item.title}
                 </Link>

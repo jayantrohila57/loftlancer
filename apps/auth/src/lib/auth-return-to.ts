@@ -1,8 +1,8 @@
 import {
   DEFAULT_AUTH_URL,
   trimTrailingSlash,
-} from "@loftlancer/auth/platform-urls";
-import { validateReturnTo } from "@loftlancer/auth/return-to";
+} from "@loftlancer/better-auth/platform-urls";
+import { validateReturnTo } from "@loftlancer/better-auth/return-to";
 
 /** Absolute HTTPS return URL for post–sign-in flows on the auth app (device, consent). */
 export function authAppReturnTo(pathWithQuery: string): string {

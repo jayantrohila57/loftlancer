@@ -27,7 +27,7 @@ The MCP resource handler returns **401** JSON-RPC for unauthenticated requests (
 
 ## Rate limits (defaults)
 
-Configured in `@loftlancer/mcp` (`rate-limit.ts`) and documented in [MCP setup](/docs/mcp/setup):
+Configured in `@loftlancer/mcp` (`utils/mcp.rate-limit.ts`) and documented in [MCP setup](/docs/mcp/setup):
 
 - **120** read-class calls per **60s** per user + client + tool (default)
 - **60** write-class calls per window
@@ -59,7 +59,7 @@ Default phase-1 hostname: `https://loftlancer.com` (`DEFAULT_MCP_URL` in `@loftl
 
 ### How do I see which tools exist?
 
-Use `permissions_snapshot` or the [tool index](/docs/mcp/tools). Generated from `listMcpExposedActions()` in `@loftlancer/api/mcp`.
+Use `permissions_snapshot` or the [tool index](/docs/mcp/tools). Generated from `listMcpExposedActions()` in `@loftlancer/orpc/mcp`.
 
 ### Why are notification tools missing?
 

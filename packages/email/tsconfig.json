@@ -1,9 +1,0 @@
-{
-  "extends": "@loftlancer/config/tsconfig.base.json",
-  "compilerOptions": {
-    "noEmit": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "react-jsx"
-  },
-  "include": ["src"]
-}

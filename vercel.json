@@ -79,7 +79,7 @@
       "root": "apps/auth",
       "framework": "nextjs",
       "installCommand": "cd ../.. && pnpm install",
-      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 NEXT_BASE_PATH=/auth pnpm turbo run build --filter=auth"
+      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 NEXT_BASE_PATH=/better-auth pnpm turbo run build --filter=auth"
     },
     "studio": {
       "root": "apps/studio",
@@ -90,13 +90,13 @@
   },
   "rewrites": [
     {
-      "source": "/auth",
+      "source": "/better-auth",
       "destination": {
         "service": "auth"
       }
     },
     {
-      "source": "/auth/:path*",
+      "source": "/better-auth/:path*",
       "destination": {
         "service": "auth"
       }

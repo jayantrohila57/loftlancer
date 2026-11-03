@@ -1,8 +1,8 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
-import { DataTableToolbar } from "@loftlancer/ui/data-table/data-table-toolbar";
-import { layoutSectionStackClass } from "@loftlancer/ui/layout-spacing";
+import { DataTableToolbar } from "@features/data-table/core/client/data-table.toolbar";
+import { layoutSectionStackClass } from "@features/shell/utils/shell.layout-spacing.utils";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { useCallback, useMemo, useState } from "react";
 import { projectsTableEmpty } from "@/components/data-table/data-table-empty-presets";
 import { runDataTableClearAllFilters } from "@/components/data-table/run-data-table-clear-all-filters";

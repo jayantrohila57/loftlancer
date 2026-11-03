@@ -1,6 +1,6 @@
 "use client";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import { PageStatusEmpty } from "@loftlancer/ui/patterns/page-state";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import { PageStatusEmpty } from "@features/patterns/core/client/patterns.page-state";
 import Link from "next/link";
 import type { TeamDto } from "../../../utils/types/utils.team.dto";
 import { teamDisplayName } from "../../../utils/utils.team-display-name";
@@ -41,7 +41,7 @@ export function TeamsListContent({
               >
                 {teamDisplayName(row.original.name, organizationName)}
               </Link>
-              <span className="mt-1 block max-w-md truncate text-muted-foreground text-xs">
+              <span className="text-muted-foreground mt-1 block max-w-md truncate text-xs">
                 {row.original.purpose ||
                   row.original.description ||
                   "No team description"}

@@ -1,7 +1,7 @@
-import { activeMemberWhere, db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
-import { invitation, member } from "@loftlancer/db/schema/organization";
-import { team } from "@loftlancer/db/schema/team";
+import { activeMemberWhere, db } from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
+import { invitation, member } from "@loftlancer/drizzle/schema/organization";
+import { team } from "@loftlancer/drizzle/schema/team";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { teamOutcome } from "./server.team-outcome.service";

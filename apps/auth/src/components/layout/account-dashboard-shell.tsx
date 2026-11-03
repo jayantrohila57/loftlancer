@@ -1,5 +1,5 @@
-import { AppShell } from "@loftlancer/ui/patterns/app-shell";
-import { ModeToggle } from "@loftlancer/ui/patterns/mode-toggle";
+import { ModeToggle } from "@features/patterns/core/client/patterns.mode-toggle";
+import { AppShell } from "@features/shell/core/client";
 import { AccountSettingsSidebar } from "@/components/account-settings-sidebar";
 import { SettingsBreadcrumbs } from "@/components/settings-breadcrumbs";
 import { UserMenu } from "@/domain/auth/components/user-menu";

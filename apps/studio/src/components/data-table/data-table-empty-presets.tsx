@@ -1,5 +1,5 @@
+import type { DataTableEmptyConfig } from "@features/data-table/types/data-table.empty.types";
 import { Button } from "@loftlancer/ui/button";
-import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
 import type { ReactNode } from "react";
 import { appIcons } from "@/lib/icons";
 

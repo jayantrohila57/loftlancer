@@ -1,16 +1,16 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { DataTableActionsColumnHeader } from "@features/data-table/core/client/data-table.actions-column";
+import type { DataTableColumnDef } from "@features/data-table/core/client/data-table.table";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
 import { Button } from "@loftlancer/ui/button";
-import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
-import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@loftlancer/ui/tooltip";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import type { Route } from "next";
 import Link from "next/link";
@@ -64,7 +64,7 @@ export function createProjectsTableColumns(
           <TableLeadingCell
             leading={
               <Avatar className="size-7">
-                <AvatarFallback className="bg-muted font-medium text-[10px]">
+                <AvatarFallback className="bg-muted text-[10px] font-medium">
                   {initialsFromLabel(project.name, "PR")}
                 </AvatarFallback>
               </Avatar>
@@ -85,7 +85,7 @@ export function createProjectsTableColumns(
               <span className="block truncate font-medium">{project.name}</span>
             )}
             <span
-              className="block max-w-full truncate text-muted-foreground text-xs"
+              className="text-muted-foreground block max-w-full truncate text-xs"
               title={description}
             >
               {description}
@@ -125,7 +125,7 @@ export function createProjectsTableColumns(
         <DataTableColumnHeader column={column} title="Updated" />
       ),
       cell: ({ getValue }) => (
-        <span className="flex items-center gap-2 text-muted-foreground text-xs">
+        <span className="text-muted-foreground flex items-center gap-2 text-xs">
           <AppIcon name="calendar" />
           <LocalDateTime value={getValue()} className="truncate" />
         </span>

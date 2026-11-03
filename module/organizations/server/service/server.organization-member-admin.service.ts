@@ -1,9 +1,9 @@
-import { normalizeOrgRole } from "@loftlancer/actions";
-import { loadMemberAccessSummary } from "@loftlancer/api/member-access/service";
-import { db } from "@loftlancer/db";
-import { member } from "@loftlancer/db/schema/organization";
+import { normalizeOrgRole } from "@features/authorization/utils";
+import { db } from "@loftlancer/drizzle";
+import { member } from "@loftlancer/drizzle/schema/organization";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
+import { loadMemberAccessSummary } from "@modules/organizations/server/member-access/service";
 import { and, eq, isNull } from "drizzle-orm";
 import type {
   OrganizationMemberAccessSummaryOutput,

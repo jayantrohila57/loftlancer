@@ -1,4 +1,4 @@
-import type { ActionName } from "@loftlancer/actions";
+import type { ActionName } from "@features/authorization/utils";
 import {
   type RunActionContext,
   runAction,

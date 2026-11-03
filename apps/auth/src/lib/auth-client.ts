@@ -1,6 +1,6 @@
-import { createLoftlancerAuthClient } from "@loftlancer/auth-client";
-import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
-import { resolvePublicServiceUrl } from "@loftlancer/env/vercel-services";
+import { createLoftlancerAuthClient } from "@loftlancer/better-auth/client";
+import { isOrganizationsEnabled } from "@loftlancer/t3-env/organizations";
+import { resolvePublicServiceUrl } from "@loftlancer/t3-env/vercel-services";
 
 export const authClient = createLoftlancerAuthClient({
   baseURL:

@@ -6,7 +6,7 @@
 
 1. Read **`module/<domain>/README.md`** for the domain you touch ([README.template.md](./README.template.md) for new domains).
 2. Work a **single sub-issue**; plan in chat if the slice spans utils + server + oRPC + client.
-3. **Reference code:** `module/<domain>/`, `module/shared/` — not `apps/studio/src/module/*` or `packages/api/src/modules/*`.
+3. **Reference code:** `module/<domain>/`, `module/shared/` — not `apps/studio/src/module/*` or `packages/orpc/src/modules/*`.
 
 ## Forbidden (mechanical + policy)
 

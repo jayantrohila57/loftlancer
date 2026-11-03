@@ -1,4 +1,5 @@
 "use client";
+import { GuardedDialog } from "@features/patterns/core/client/patterns.guarded-dialog";
 import { Button } from "@loftlancer/ui/button";
 import {
   DialogContent,
@@ -9,7 +10,6 @@ import {
 } from "@loftlancer/ui/dialog";
 import { Field, FieldLabel } from "@loftlancer/ui/field";
 import { Input } from "@loftlancer/ui/input";
-import { GuardedDialog } from "@loftlancer/ui/patterns/guarded-dialog";
 import { Textarea } from "@loftlancer/ui/textarea";
 import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
 import type { TeamDto } from "../../../utils/types/utils.team.dto";
@@ -35,8 +35,8 @@ export function TeamsListBoundary({
     <section className="flex min-w-0 flex-col gap-4">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-semibold text-xl tracking-tight">Teams</h2>
-          <p className="mt-1 text-muted-foreground text-sm">
+          <h2 className="text-xl font-semibold tracking-tight">Teams</h2>
+          <p className="text-muted-foreground mt-1 text-sm">
             Group organization members and connect teams to projects.
           </p>
         </div>

@@ -1,0 +1,30 @@
+{
+  "name": "@loftlancer/resend",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "node --import tsx --test tests/resend.send.test.ts tests/resend.mailbox.test.ts",
+    "preview": "email dev --dir src/core/templates"
+  },
+  "dependencies": {
+    "@loftlancer/drizzle": "workspace:*",
+    "@loftlancer/sentry": "workspace:*",
+    "@react-email/components": "^1.0.12",
+    "drizzle-orm": "catalog:",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "resend": "^6.33.0"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "react-email": "^6.11.2",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

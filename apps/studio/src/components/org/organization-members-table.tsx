@@ -1,11 +1,11 @@
 "use client";
 
-import { normalizeOrgRole } from "@loftlancer/actions";
+import { normalizeOrgRole } from "@features/authorization/utils";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import type { DataTableEmptyConfig } from "@features/data-table/types/data-table.empty.types";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import {
   type LegacyColumnDef,
   legacyCreateColumnHelper,
@@ -74,7 +74,7 @@ export function OrganizationMembersTable({
           <TableLeadingCell
             leading={
               <Avatar className="size-7">
-                <AvatarFallback className="bg-muted font-medium text-[10px]">
+                <AvatarFallback className="bg-muted text-[10px] font-medium">
                   {initialsFromLabel(label, "MB")}
                 </AvatarFallback>
               </Avatar>
@@ -83,11 +83,11 @@ export function OrganizationMembersTable({
             <span className="block truncate font-medium">
               {member.user.name}
             </span>
-            <span className="block truncate text-muted-foreground text-xs">
+            <span className="text-muted-foreground block truncate text-xs">
               {member.user.email}
             </span>
             {[member.jobTitle, member.department].filter(Boolean).length ? (
-              <span className="block truncate text-muted-foreground text-xs md:hidden">
+              <span className="text-muted-foreground block truncate text-xs md:hidden">
                 {[member.jobTitle, member.department]
                   .filter(Boolean)
                   .join(" · ")}

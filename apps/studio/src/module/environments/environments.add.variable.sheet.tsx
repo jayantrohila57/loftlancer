@@ -1,9 +1,8 @@
 "use client";
 
-import { variableKeySchema } from "@loftlancer/api/validation";
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { Separator } from "@loftlancer/ui/separator";
 import {
   SheetClose,
@@ -11,6 +10,7 @@ import {
   SheetTrigger,
 } from "@loftlancer/ui/sheet";
 import { Textarea } from "@loftlancer/ui/textarea";
+import { variableKeySchema } from "@modules/projects/utils/validation/utils.project-environment.validation";
 import { useMemo, useRef, useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { FormField } from "@/components/patterns/form-field";
@@ -231,7 +231,7 @@ export function AddVariableSheet({
                 <div key={row.id} className="flex flex-col gap-3">
                   {index > 0 ? <Separator /> : null}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-medium text-muted-foreground text-xs">
+                    <span className="text-muted-foreground text-xs font-medium">
                       Variable {index + 1}
                     </span>
                     {rows.length > 1 ? (
@@ -239,7 +239,7 @@ export function AddVariableSheet({
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="h-7 px-2 text-muted-foreground"
+                        className="text-muted-foreground h-7 px-2"
                         onClick={() =>
                           setRows((prev) =>
                             prev.filter((item) => item.id !== row.id),
@@ -282,7 +282,7 @@ export function AddVariableSheet({
                       }
                       placeholder="your-value-here"
                       rows={row.type === "secret" ? 3 : 4}
-                      className="wrap-anywhere max-h-72 min-h-20 overflow-y-auto font-mono"
+                      className="max-h-72 min-h-20 overflow-y-auto font-mono wrap-anywhere"
                       autoComplete="off"
                       spellCheck={row.type === "config"}
                       data-1p-ignore

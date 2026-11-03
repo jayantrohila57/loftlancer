@@ -1,8 +1,8 @@
 import { withBasePath } from "@/lib/base-path";
 import "server-only";
 
-import type { StudioRouter } from "@loftlancer/api/routers/studio";
-import { transformer } from "@loftlancer/api/transformer";
+import type { StudioRouter } from "@loftlancer/orpc/routers/studio";
+import { transformer } from "@loftlancer/orpc/utils/orpc.transformer";
 import { QueryClient } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";

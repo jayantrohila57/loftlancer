@@ -1,2 +1,2 @@
 "use client";
-export * from "@loftlancer/ui/patterns/guarded-dialog";
+export * from "@features/patterns/core/client/patterns.guarded-dialog";

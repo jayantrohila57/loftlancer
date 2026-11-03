@@ -2,31 +2,30 @@
 
 **`packages/`** holds **workspace libraries** (`@loftlancer/*`) shared across apps. These are **pnpm packages** with their own `package.json`.
 
-**Do not put product feature logic here.** Anything owned by a product domain (teams, projects, organizations, files, …) belongs under **[module/](./modules.md)**. Packages provide **infrastructure** that modules and apps depend on.
+**Do not put product or reusable application logic here.** Domain code belongs in **[module/](./modules.md)**; cross-domain reusable systems belong in **[features/](./features.md)**. Packages provide **third-party integrations and SDK initialization** that modules, features, and apps depend on.
 
 ---
 
 ## What packages are responsible for
 
-| Responsibility | Owner |
-|----------------|--------|
-| Database schema and migrations | `@loftlancer/db` |
-| Action IDs, org roles, RBAC evaluation data | `@loftlancer/actions` |
-| Authentication server (Better Auth) | `@loftlancer/auth` |
-| Auth client for React apps | `@loftlancer/auth-client` |
-| Design system and generic UI patterns | `@loftlancer/ui` |
-| Environment variables and feature flags | `@loftlancer/env` |
-| Encryption for secret values | `@loftlancer/crypto` |
-| Notification types and delivery helpers | `@loftlancer/notifications` |
-| Transactional email | `@loftlancer/email`, `@loftlancer/mail` |
-| Logging | `@loftlancer/logger` |
-| MCP tool catalog and MCP-specific glue | `@loftlancer/mcp` |
-| Shared TS/Biome config | `@loftlancer/config` |
-| **RPC transport shell** (oRPC routers — thin; tRPC legacy until removed) | `@loftlancer/api` |
+| Responsibility                                                                         | Owner                            |
+| -------------------------------------------------------------------------------------- | -------------------------------- |
+| Database schema and migrations                                                         | `@loftlancer/drizzle`            |
+| Action IDs, org roles, RBAC evaluation data                                            | `@features/authorization/utils`  |
+| Authentication server (Better Auth)                                                    | `@loftlancer/better-auth`        |
+| Auth client for React apps                                                             | `@loftlancer/better-auth/client` |
+| Design system and generic UI patterns (naming exception — see `packages/ui/README.md`) | `@loftlancer/ui`                 |
+| Environment variables and feature flags                                                | `@loftlancer/t3-env`             |
+| Encryption for secret values (Node `node:crypto` AES-256-GCM)                          | `@loftlancer/crypto`             |
+| Transactional email (Resend + React Email)                                             | `@loftlancer/resend`             |
+| Sentry (error reporting + Logs sink)                                                   | `@loftlancer/sentry`             |
+| MCP SDK init / resource auth / CORS / rate-limit glue                                  | `@loftlancer/mcp`                |
+| Shared TypeScript base config                                                          | `@loftlancer/typescript-config`  |
+| **RPC transport shell** (oRPC routers — thin; tRPC legacy until removed)               | `@loftlancer/orpc`               |
 
 ---
 
-## `@loftlancer/api` — transport only
+## `@loftlancer/orpc` — transport only
 
 The API package wires **how** clients call the backend, not **what** each feature does. **All implementations live in `module/…/server`.** See [server-api.md](./server-api.md).
 
@@ -37,7 +36,7 @@ The API package wires **how** clients call the backend, not **what** each featur
 - oRPC router definitions that **delegate** to `module/<feature>/server/controller`
 - Request context (`create-context`), shared error formatting, procedure middleware (org session, action guards)
 - MCP HTTP wiring → module controllers
-- Page guards for Next.js (action names from `@loftlancer/actions`)
+- Page guards for Next.js (action names from `@features/authorization/utils`)
 - **During migration:** tRPC init, `toORPCRouter(trpcRouter)`, old routers — delete as domains move to oRPC + module
 
 **Must not contain (use `module/` instead):**
@@ -52,12 +51,12 @@ During migration, old paths may still exist; **new and moved code** follows the 
 
 ---
 
-## Internal layout (`packages/api`)
+## Internal layout (`packages/orpc`)
 
 Feature logic **must not** be added here; only wiring and platform glue.
 
 ```text
-packages/api/src/
+packages/orpc/src/
 ├── create-context.ts        # Session, org, IP, user-agent
 ├── orpc/                    # Studio + account oRPC routers (target: native oRPC, not tRPC mirror)
 ├── mcp/                     # Tool registration → module controllers
@@ -70,31 +69,34 @@ Apps mount **`/api/orpc`** for product RPC. **`/api/trpc`** is removed with tRPC
 
 **Target procedure:** schema from `@module/…/utils/validation`, middleware for gated actions, handler → `module/…/server/controller`.
 
-Feature logic **must not** be added under `packages/api`; see [server-api.md](./server-api.md).
+Feature logic **must not** be added under `packages/orpc`; see [server-api.md](./server-api.md).
 
 ---
 
-## Other packages (internal sketch)
+## Package inventory (current workspace)
 
-| Package | Typical layout |
-|---------|----------------|
-| `@loftlancer/db` | `src/schema/*.ts`, migrations, soft-delete helpers |
-| `@loftlancer/actions` | `src/registry-data.ts` → generated registry |
-| `@loftlancer/ui` | `src/components/`, `src/patterns/` — generic UI only |
-| `@loftlancer/auth` | Better Auth config and server plugins |
-| `@loftlancer/env` | `src/*.ts` Zod env + feature flags |
-| `@loftlancer/mcp` | Tool metadata/docs; execution delegates through `@loftlancer/api` → `module/` |
-| `@loftlancer/config` | Shared `tsconfig`, Biome — no product code |
+Provider / infra only under **`packages/`** (no `packages/actions`, `packages/env`, `packages/logger`, or domain `packages/*` — merged into **features/** or renamed: **t3-env**, **sentry**, **typescript-config**).
+
+| Package                         | Typical layout                                                                                                                                                                                      |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@loftlancer/drizzle`           | `src/{core,config,constants,types,utils}/`, `src/schema/`, migrations — filenames like `drizzle.client.ts`                                                                                          |
+| `@loftlancer/ui`                | `src/components/ui/` (shadcn/coss CLI), `src/lib/utils.ts`, `globals.css` — **primitives only**; patterns in `features/patterns`, tables in `features/data-table`, shell chrome in `features/shell` |
+| `@loftlancer/better-auth`       | Better Auth server + React client (`/client` export); plugins and session wiring                                                                                                                    |
+| `@loftlancer/t3-env`            | `src/{core,config,constants,types,utils}/t3-env.*` — `@t3-oss/env-*` + Zod                                                                                                                          |
+| `@loftlancer/crypto`            | `src/{core,config,constants}/node-crypto.*.ts` — Node AES-256-GCM only                                                                                                                              |
+| `@loftlancer/resend`            | `src/{core,config,constants,types,utils}/resend.*.ts` + React Email templates under `core/templates/`                                                                                               |
+| `@loftlancer/mcp`               | MCP SDK HTTP/auth/CORS/rate-limit; tool catalogs via `@loftlancer/orpc/mcp` → `module/`                                                                                                             |
+| `@loftlancer/typescript-config` | Shared `tsconfig.base.json` — no product code; Biome stays at repo root                                                                                                                             |
 
 ---
 
 ## Apps (`apps/*`) vs packages
 
-| Path | Role |
-|------|------|
-| `apps/docs`, `apps/auth`, `apps/studio` | Next.js apps: routing, layouts, deploy boundaries |
-| `apps/*/src/app/**` | **Import and call only** — pages, layouts, `route.ts`, Server Action re-exports; logic in `module/` ([server-api.md](./server-api.md)) |
-| `packages/*` | Importable libraries — **no** Next routes |
+| Path                                    | Role                                                                                                                                   |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/docs`, `apps/auth`, `apps/studio` | Next.js apps: routing, layouts, deploy boundaries                                                                                      |
+| `apps/*/src/app/**`                     | **Import and call only** — pages, layouts, `route.ts`, Server Action re-exports; logic in `module/` ([server-api.md](./server-api.md)) |
+| `packages/*`                            | Importable libraries — **no** Next routes                                                                                              |
 
 Apps **must not** duplicate domain logic that should live in `module/`.
 
@@ -102,16 +104,22 @@ Apps **must not** duplicate domain logic that should live in `module/`.
 
 ## Dependency direction
 
+Full stack: **[features.md](./features.md)**. Summary:
+
 ```text
-apps/*  →  module/<feature>/client  →  module/<feature>/utils
-apps/*  →  packages/api (client) / packages/ui / …
+apps/*       →  module/*, features/*, packages/*
+module/*     →  features/*, packages/*, module/shared/
+features/*   →  packages/* only
+packages/*   →  other packages (infra) — not module/* or features/* except API transport allowlist
 
-packages/api/orpc  →  module/<feature>/server  →  module/<feature>/utils
-module/shared      →  when truly cross-feature (not packages/api)
-module/*  →  packages/db, packages/actions, packages/env, …
+packages/orpc/orpc|mcp|routers  →  module/<domain>/server  (transport shells only)
+```
 
-module/*  ↛  apps/* (feature code does not import app internals)
-packages/*  ↛  module/client (platform packages do not import React feature UI)
+**Layer audit:** **`pnpm audit:architecture-layers`** fails on `features/* → module/*` and forbidden `packages/*` imports. Allowlisted transport paths are listed in [features.md](./features.md).
+
+```text
+module/*  ↛  apps/* (domain code does not import app internals)
+packages/*  ↛  module/client or features/client (platform packages do not import domain UI)
 ```
 
 ---
@@ -126,7 +134,8 @@ packages/*  ↛  module/client (platform packages do not import React feature UI
 
 ## Related
 
-- [server-api.md](./server-api.md) — oRPC, Server Actions, Next routes, bare `app/`  
-- [modules.md](./modules.md) — product feature modules  
-- [product.md](./product.md) — permissions and audit  
-- [index.md](./index.md) — doc map  
+- [server-api.md](./server-api.md) — oRPC, Server Actions, Next routes, bare `app/`
+- [features.md](./features.md) — reusable features layer
+- [modules.md](./modules.md) — domain modules
+- [product.md](./product.md) — permissions and audit
+- [index.md](./index.md) — doc map

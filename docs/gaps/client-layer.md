@@ -8,13 +8,13 @@ See: [rendering.md](../rendering.md), [data-workflow.md](../data-workflow.md), [
 
 ## Source of truth for UI state
 
-| UI state | Source |
-|----------|--------|
-| **Loading** | Route `loading.tsx` or hook **`isPending`** — no ServiceResponse yet |
-| **Success content** | `status === "success"` and data present |
-| **Empty** | `status === "success"` and (`data === null` or `data.length === 0` for arrays) |
-| **Validation / business** | `status === "failed"` |
-| **System fault** | `status === "error"` |
+| UI state                  | Source                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| **Loading**               | Route `loading.tsx` or hook **`isPending`** — no ServiceResponse yet           |
+| **Success content**       | `status === "success"` and data present                                        |
+| **Empty**                 | `status === "success"` and (`data === null` or `data.length === 0` for arrays) |
+| **Validation / business** | `status === "failed"`                                                          |
+| **System fault**          | `status === "error"`                                                           |
 
 **Do not** add a separate **`ViewState`** enum that duplicates `ServiceResponse.status`. Optional **`utils.response-to-ui.mapper.ts`** derives display props from response + `isPending` only.
 
@@ -22,30 +22,29 @@ See: [rendering.md](../rendering.md), [data-workflow.md](../data-workflow.md), [
 
 ## Hook naming
 
-| Pattern | Example |
-|---------|---------|
-| File | `client/hooks/client.use-<domain>-<operation>.hook.ts` |
-| Export | `useTeamGet`, `useTeamCreate` (see [naming.md](../naming.md)) |
+| Pattern | Example                                                       |
+| ------- | ------------------------------------------------------------- |
+| File    | `client/hooks/client.use-<domain>-<operation>.hook.ts`        |
+| Export  | `useTeamGet`, `useTeamCreate` (see [naming.md](../naming.md)) |
 
 **Mutation hooks must:**
 
-1. Call oRPC via `@/lib/orpc`  
-2. Call **`applyResponseToast(response, toastAdapter)`** unless `{ skipToast: true }`  
-3. Return **`ServiceResponse`** (or typed data + response) to boundary  
+1. Call oRPC via `@/lib/orpc`
+2. Call **`applyResponseToast(response, toastAdapter)`** unless `{ skipToast: true }`
+3. Return **`ServiceResponse`** (or typed data + response) to boundary
+   **Query hooks must:**
 
-**Query hooks must:**
-
-- Use query keys from **`module/<feature>/utils/constants/query-keys.ts`**  
+- Use query keys from **`module/<feature>/utils/constants/query-keys.ts`**
 - Accept **`initialData`** from server page only (avoid double fetch)
 
 ---
 
 ## Boundary + content
 
-| Component | Role |
-|-----------|------|
+| Component                      | Role                                                        |
+| ------------------------------ | ----------------------------------------------------------- |
 | `client.<screen>.boundary.tsx` | Switch on `isPending`, then `status`, empty check on `data` |
-| `client.<screen>.content.tsx` | Props only — assumes success + data (called from boundary) |
+| `client.<screen>.content.tsx`  | Props only — assumes success + data (called from boundary)  |
 
 **Forbidden:** fetch, permission checks, or toast inside **content** components.
 
@@ -68,11 +67,11 @@ Skeleton must match final layout ([app-states.md](../app-states.md)). Exceptions
 
 ## Toast colors
 
-| `status` | Toast variant |
-|----------|----------------|
-| `success` | Success (green) |
-| `failed` | Warning (yellow) — show field errors from `error` when present |
-| `error` | Error (red) — generic safe `message` |
+| `status`  | Toast variant                                                  |
+| --------- | -------------------------------------------------------------- |
+| `success` | Success (green)                                                |
+| `failed`  | Warning (yellow) — show field errors from `error` when present |
+| `error`   | Error (red) — generic safe `message`                           |
 
 Use **`applyResponseToast`** — see `module/shared/client/apply-response-toast.ts`.
 
@@ -80,7 +79,7 @@ Use **`applyResponseToast`** — see `module/shared/client/apply-response-toast.
 
 ## Permission UI
 
-- **`useCan(actionId)`** / **`<Can action={}>`** only — same ID as [registry](../product.md).  
+- **`useCan(actionId)`** / **`<Can action={}>`** only — same ID as [registry](../product.md).
 - **`trackActionIntent(actionId)`** before mutation click (unless `meta.silent`).
 
 Optional shared **`ActionButton`** in `module/shared/client` when wired — props: `action`, `onPerform`.
@@ -89,5 +88,5 @@ Optional shared **`ActionButton`** in `module/shared/client` when wired — prop
 
 ## Related
 
-- [imports-paths.md](./imports-paths.md)  
-- [layouts-routes.md](./layouts-routes.md) — Tier 2 section layout  
+- [imports-paths.md](./imports-paths.md)
+- [layouts-routes.md](./layouts-routes.md) — Tier 2 section layout

@@ -1,15 +1,15 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Avatar, AvatarFallback } from "@loftlancer/ui/avatar";
 import { Button } from "@loftlancer/ui/button";
 import { Card, CardHeader, CardPanel } from "@loftlancer/ui/card";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@loftlancer/ui/tooltip";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import type { Route } from "next";
 import Link from "next/link";
 import { AppIcon } from "@/components/patterns/app-icon";
@@ -34,7 +34,7 @@ export function ProjectCard({ project }: { project: ProjectOutput }) {
       <CardHeader className="gap-2 p-3 pb-2">
         <div className="flex min-w-0 items-start gap-2.5">
           <Avatar className="size-8 shrink-0">
-            <AvatarFallback className="bg-muted font-medium text-xs">
+            <AvatarFallback className="bg-muted text-xs font-medium">
               {initialsFromLabel(project.name, "PR")}
             </AvatarFallback>
           </Avatar>
@@ -42,7 +42,7 @@ export function ProjectCard({ project }: { project: ProjectOutput }) {
             <div className="flex min-w-0 items-start gap-2">
               <Link
                 href={href}
-                className="min-w-0 flex-1 truncate font-medium text-sm leading-tight hover:underline"
+                className="min-w-0 flex-1 truncate text-sm leading-tight font-medium hover:underline"
                 onMouseEnter={() =>
                   prefetchProjectDetail(queryClient, project.slug)
                 }
@@ -55,7 +55,7 @@ export function ProjectCard({ project }: { project: ProjectOutput }) {
               </div>
             </div>
             {description ? (
-              <p className="mt-1 line-clamp-2 text-muted-foreground text-xs">
+              <p className="text-muted-foreground mt-1 line-clamp-2 text-xs">
                 {description}
               </p>
             ) : null}
@@ -70,7 +70,7 @@ export function ProjectCard({ project }: { project: ProjectOutput }) {
           </div>
         </div>
       </CardHeader>
-      <CardPanel className="flex flex-wrap items-center justify-between gap-2 px-3 pt-1 pb-3 text-muted-foreground text-xs">
+      <CardPanel className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 px-3 pt-1 pb-3 text-xs">
         <span className="tabular-nums">
           Updated <LocalDateTime value={project.updatedAt} showTimeOnHover />
         </span>

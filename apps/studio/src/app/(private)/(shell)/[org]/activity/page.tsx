@@ -1,4 +1,4 @@
-import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
+import { isOrganizationsEnabled } from "@loftlancer/t3-env/organizations";
 import { OrganizationSectionPage } from "@module/organizations/client/studio/components/client.organization-section.page";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";

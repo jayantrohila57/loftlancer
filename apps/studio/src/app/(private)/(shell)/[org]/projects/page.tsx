@@ -1,5 +1,5 @@
-import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
-import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
+import { DelayedPageLoading } from "@features/patterns/core/client/patterns.delayed-page-loading";
+import { isSoftDeletesEnabled } from "@loftlancer/t3-env/soft-deletes";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { guardPageAction } from "@/lib/page-guards";

@@ -1,7 +1,10 @@
 "use client";
 
-import { type MatrixCell, PERMISSION_MATRIX_ROWS } from "@loftlancer/actions";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import {
+  type MatrixCell,
+  PERMISSION_MATRIX_ROWS,
+} from "@features/authorization/utils";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import {
   Table,
   TableBody,

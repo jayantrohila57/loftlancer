@@ -1,4 +1,4 @@
-import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
+import { isOrganizationsEnabled } from "@loftlancer/t3-env/organizations";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { guardOrganizationSlugPage } from "@/lib/page-guards";

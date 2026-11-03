@@ -1,16 +1,16 @@
 import "server-only";
 
-import type { ActionName } from "@loftlancer/actions";
-import { requirePageAction, runPageGuard } from "@loftlancer/api/page-guards";
+import type { ActionName } from "@features/authorization/utils";
 import {
   type RequirePageSessionResult,
   requirePageSession,
-} from "@loftlancer/auth/guards";
+} from "@loftlancer/better-auth/guards";
 import {
   type AuthSession,
   getSessionActiveOrganizationId,
-} from "@loftlancer/auth/session-types";
-import { DEFAULT_AUTH_URL } from "@loftlancer/env/platform";
+} from "@loftlancer/better-auth/session-types";
+import { requirePageAction, runPageGuard } from "@loftlancer/orpc/page-guards";
+import { DEFAULT_AUTH_URL } from "@loftlancer/t3-env/platform";
 import type { Route } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";

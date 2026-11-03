@@ -1,15 +1,15 @@
 "use client";
 
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createEnvironmentInput } from "@loftlancer/api/validation";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import {
   SheetClose,
   SheetDescription,
   SheetTrigger,
 } from "@loftlancer/ui/sheet";
+import { createEnvironmentInput } from "@modules/projects/utils/validation/utils.project-environment.validation";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod/v3";

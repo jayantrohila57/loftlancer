@@ -1,10 +1,10 @@
-import { appendOttToUrl, isCrossOriginReturnTo } from "@loftlancer/auth";
-import { validateReturnTo } from "@loftlancer/auth/return-to";
-import { env } from "@loftlancer/env/server";
+import { appendOttToUrl, isCrossOriginReturnTo } from "@loftlancer/better-auth";
+import { validateReturnTo } from "@loftlancer/better-auth/return-to";
+import { env } from "@loftlancer/t3-env/server";
 import {
   resolveAuthPublicUrl,
   resolveAuthServiceUrl,
-} from "@loftlancer/env/vercel-services";
+} from "@loftlancer/t3-env/vercel-services";
 import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import { platformAuth } from "@/lib/platform-auth";

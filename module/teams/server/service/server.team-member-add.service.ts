@@ -1,6 +1,6 @@
-import { activeMemberWhere, db } from "@loftlancer/db";
-import { member } from "@loftlancer/db/schema/organization";
-import { team, teamMember } from "@loftlancer/db/schema/team";
+import { activeMemberWhere, db } from "@loftlancer/drizzle";
+import { member } from "@loftlancer/drizzle/schema/organization";
+import { team, teamMember } from "@loftlancer/drizzle/schema/team";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import type { z } from "zod";

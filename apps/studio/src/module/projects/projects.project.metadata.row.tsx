@@ -1,13 +1,13 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Button } from "@loftlancer/ui/button";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@loftlancer/ui/tooltip";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";

@@ -1,18 +1,22 @@
 ---
-description: Layer prefix + role postfix file naming under module/ (searchable kebab-case)
-globs: module/**,apps/**/app/**,packages/api/src/orpc/**
+description: Layer prefix + role postfix file naming (modules, features, packages)
+globs: module/**,features/**,packages/**,apps/**/app/**,packages/orpc/src/orpc/**
 alwaysApply: false
 ---
 
 # Naming
 
-Full spec: **[docs/naming.md](../docs/naming.md)**
+| Area | Spec |
+| ---- | ---- |
+| **`module/`** | **[docs/naming.md](../docs/naming.md)** — `utils.` \| `server.` \| `client.` + kebab slug + role postfix |
+| **`features/`** | **[features/NAMING.md](../features/NAMING.md)** — `<feature>.<purpose>.<suffix>` under `src/{core/client,core/server,config,constants,types,utils}/` |
+| **`packages/`** | Provider prefix + suffix under `src/{core,config,constants,types,utils}/` — **[docs/packages.md](../docs/packages.md)** |
 
-## Pattern
+## Module pattern (required on new files)
 
 `<layer>.<kebab-slug>.<role>.<ext>` — layer is **`utils.`** | **`server.`** | **`client.`**
 
-## Must
+## Module must
 
 - Controller: `server.<op>.controller.ts` + service: `server.<op>.service.ts`
 - Zod: `utils.<topic>.validation.ts`
@@ -20,8 +24,12 @@ Full spec: **[docs/naming.md](../docs/naming.md)**
 - Hooks: `client.use-<feature>-<op>.hook.ts`
 - Tier 2: `client.section.layout.tsx`; Tier 1: `client.shell.layout.tsx`
 
-## Forbidden
+## Module forbidden
 
 - Files without layer prefix (`get-team.ts`)
 - camelCase filenames
 - Duplicate operation slug without `.controller` / `.service` postfix
+
+## oRPC transport
+
+New procedure wiring only: **`packages/orpc/src/orpc/procedures/<domain>.ts`** — delegate to **`@modules/.../server/...`**, not new logic under `packages/orpc/src/modules/`.

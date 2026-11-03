@@ -1,4 +1,4 @@
-import { MarketingLanding } from "@loftlancer/ui/marketing";
+import { MarketingLanding } from "@features/marketing/core/client";
 import { getSignInHref } from "@/lib/sign-in-href";
 
 const pagesBaseUrl =

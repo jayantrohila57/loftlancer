@@ -4,14 +4,18 @@ import {
   accountSettingsNav,
   type PlatformNavKey,
   platformNav,
-} from "@loftlancer/actions/nav";
+} from "@features/authorization/config/authorization.nav";
 import {
   NavCountBadge,
   SidebarBrand,
   SidebarFavorites,
   SidebarSearch,
   SidebarUserMenu,
-} from "@loftlancer/ui/patterns/sidebar-kit";
+} from "@features/patterns/core/client/patterns.sidebar-kit";
+import {
+  platformNavHref,
+  routes,
+} from "@features/shell/utils/shell.studio-routes.utils";
 import {
   Sidebar,
   SidebarContent,
@@ -26,7 +30,6 @@ import {
   SidebarRail,
 } from "@loftlancer/ui/sidebar";
 import { Skeleton } from "@loftlancer/ui/skeleton";
-import { platformNavHref, routes } from "@loftlancer/ui/studio-routes";
 import type { LucideIcon } from "lucide-react";
 import { BellIcon, Building2, ClockIcon, FolderClosedIcon } from "lucide-react";
 import type { Route } from "next";
@@ -162,7 +165,7 @@ export function AccountSettingsSidebar({
         <SidebarFavorites items={nav.favorites} />
       </SidebarContent>
 
-      <SidebarFooter className="mt-auto shrink-0 border-sidebar-border border-t bg-sidebar">
+      <SidebarFooter className="border-sidebar-border bg-sidebar mt-auto shrink-0 border-t">
         {_userMenuReady ? (
           <SidebarUserMenu {...userMenuProps} />
         ) : (

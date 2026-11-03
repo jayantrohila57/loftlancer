@@ -1,5 +1,5 @@
-import { AppNotFoundPage } from "@loftlancer/ui/patterns/app-route-states";
-import { Auth5Content, Auth5Frame } from "@loftlancer/ui/patterns/auth-5";
+import { Auth5Content, Auth5Frame } from "@features/authentication/core/client";
+import { AppNotFoundPage } from "@features/patterns/core/client/patterns.app-route-states";
 import type { Metadata } from "next";
 import { studioRouteStateLinks } from "@/lib/route-state-links";
 import { NOT_FOUND_DOCUMENT_TITLE } from "@/lib/siteConfig";

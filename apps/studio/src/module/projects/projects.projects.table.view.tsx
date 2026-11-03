@@ -1,9 +1,9 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import type { DataTableEmptyConfig } from "@features/data-table/types/data-table.empty.types";
 import { Button } from "@loftlancer/ui/button";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { useMemo } from "react";
 import { projectsTableEmpty } from "@/components/data-table/data-table-empty-presets";
 import { AppIcon } from "@/components/patterns/app-icon";

@@ -1,7 +1,7 @@
 "use client";
 
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -87,13 +87,13 @@ export function OrgSwitcher() {
         <span className="truncate font-medium">
           {active?.name ?? "Select organization"}
         </span>
-        <span className="truncate text-muted-foreground text-xs">
+        <span className="text-muted-foreground truncate text-xs">
           {orgSubtitle(active)}
         </span>
       </div>
       {!isMobile ? (
         <ChevronsUpDown
-          className="ms-auto size-4 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden"
+          className="text-muted-foreground ms-auto size-4 shrink-0 group-data-[collapsible=icon]:hidden"
           aria-hidden
         />
       ) : null}
@@ -120,7 +120,7 @@ export function OrgSwitcher() {
             label: org.name,
             hint: orgSubtitle(org),
             icon: (
-              <Building2 className="size-4 text-muted-foreground" aria-hidden />
+              <Building2 className="text-muted-foreground size-4" aria-hidden />
             ),
           }))}
           trigger={
@@ -138,13 +138,13 @@ export function OrgSwitcher() {
                 className={linkClass}
               >
                 <Settings
-                  className="size-4 text-muted-foreground"
+                  className="text-muted-foreground size-4"
                   aria-hidden
                 />
                 Manage organizations
               </Link>
               <Link href={routes.newOrganization()} className={linkClass}>
-                <Plus className="size-4 text-muted-foreground" aria-hidden />
+                <Plus className="text-muted-foreground size-4" aria-hidden />
                 New organization
               </Link>
             </>

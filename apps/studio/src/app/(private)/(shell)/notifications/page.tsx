@@ -1,4 +1,4 @@
-import { env } from "@loftlancer/env/server";
+import { env } from "@loftlancer/t3-env/server";
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";

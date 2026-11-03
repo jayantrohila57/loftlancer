@@ -1,6 +1,6 @@
 "use client";
 
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { useOrganizationBySlug } from "../hooks/client.use-organization-by-slug.hook";

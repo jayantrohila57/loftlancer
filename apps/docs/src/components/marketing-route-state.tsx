@@ -1,5 +1,5 @@
+import { PageContainer } from "@features/marketing/core/client";
 import { Button } from "@loftlancer/ui/button";
-import { PageContainer } from "@loftlancer/ui/marketing";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export function MarketingRouteState({
@@ -22,20 +22,20 @@ export function MarketingRouteState({
   secondaryAction?: () => void;
 }) {
   return (
-    <section className="flex min-h-[56svh] items-center border-foreground/15 border-b py-14 md:min-h-[62svh] md:py-20">
+    <section className="border-foreground/15 flex min-h-[56svh] items-center border-b py-14 md:min-h-[62svh] md:py-20">
       <PageContainer className="grid gap-7 md:grid-cols-[0.42fr_1.58fr] md:gap-12">
-        <p className="font-mono text-muted-foreground text-xs tabular-nums md:pt-3">
+        <p className="text-muted-foreground font-mono text-xs tabular-nums md:pt-3">
           {code}{" "}
-          <span aria-hidden className="px-1.5 text-border">
+          <span aria-hidden className="text-border px-1.5">
             /
           </span>{" "}
           LOFTLANCER
         </p>
         <div className="max-w-4xl">
-          <h1 className="text-balance font-medium text-[clamp(3.25rem,8vw,6.5rem)] leading-[0.9] tracking-[-0.065em]">
+          <h1 className="text-[clamp(3.25rem,8vw,6.5rem)] leading-[0.9] font-medium tracking-[-0.065em] text-balance">
             {title}
           </h1>
-          <p className="mt-5 max-w-2xl text-muted-foreground leading-7 md:text-lg">
+          <p className="text-muted-foreground mt-5 max-w-2xl leading-7 md:text-lg">
             {description}
           </p>
           <div className="mt-7 flex flex-wrap gap-2.5">

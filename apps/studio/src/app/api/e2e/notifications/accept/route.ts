@@ -1,8 +1,9 @@
-import { auth } from "@loftlancer/auth";
-import { resolveE2eRouteAccess } from "@loftlancer/auth/e2e-route-access";
-import { e2ePasswordlessSignIn } from "@loftlancer/auth/passwordless";
-import { env } from "@loftlancer/env/server";
-import { resolveAuthServiceUrl } from "@loftlancer/env/vercel-services";
+import "@features/authentication/core/server/authentication.register-better-auth-product-hooks";
+import { auth } from "@loftlancer/better-auth";
+import { resolveE2eRouteAccess } from "@loftlancer/better-auth/e2e-route-access";
+import { e2ePasswordlessSignIn } from "@loftlancer/better-auth/passwordless";
+import { env } from "@loftlancer/t3-env/server";
+import { resolveAuthServiceUrl } from "@loftlancer/t3-env/vercel-services";
 import { NextResponse } from "next/server";
 import { e2ePersonaCredentials } from "@/lib/e2e-users";
 
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
     "",
   );
   const accept = await fetch(
-    `${baseUrl}/api/auth/organization/accept-invitation`,
+    `${baseUrl}/api/better-auth/organization/accept-invitation`,
     {
       method: "POST",
       headers: {
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
   }
 
   const { notifyInvitationAccepted } = await import(
-    "@loftlancer/notifications"
+    "@features/notifications/core/server/notifications.invitations.trigger"
   );
   await notifyInvitationAccepted(body.invitationId);
 

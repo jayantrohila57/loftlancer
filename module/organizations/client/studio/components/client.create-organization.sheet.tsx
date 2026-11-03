@@ -1,9 +1,9 @@
 "use client";
 
-import { isReservedOrgSlugForCreation } from "@loftlancer/env/reserved-slugs";
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
+import { isReservedOrgSlugForCreation } from "@loftlancer/t3-env/reserved-slugs";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetClose, SheetDescription } from "@loftlancer/ui/sheet";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";

@@ -2,7 +2,7 @@ import {
   layoutContentClass,
   layoutSectionStackClass,
   layoutToolbarClass,
-} from "@loftlancer/ui/layout-spacing";
+} from "@features/shell/utils/shell.layout-spacing.utils";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +41,7 @@ export function PageStack({
 export {
   DashboardPageHeaderBar as PageHeaderBar,
   DashboardPageHeaderRow as PageHeaderRow,
-} from "@loftlancer/ui/app-shell";
+} from "@features/shell/core/client";
 
 export function PageToolbar({
   className,
@@ -53,4 +53,4 @@ export function PageToolbar({
   return <div className={cn(layoutToolbarClass, className)}>{children}</div>;
 }
 
-export { layoutFormStackClass } from "@loftlancer/ui/layout-spacing";
+export { layoutFormStackClass } from "@features/shell/utils/shell.layout-spacing.utils";

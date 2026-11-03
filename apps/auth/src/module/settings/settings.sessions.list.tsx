@@ -1,13 +1,13 @@
 "use client";
 
-import { Badge } from "@loftlancer/ui/badge";
-import { Button } from "@loftlancer/ui/button";
+import { DataTableActionsColumnHeader } from "@features/data-table/core/client/data-table.actions-column";
 import {
   DataTable,
   type DataTableColumnDef,
-} from "@loftlancer/ui/data-table/data-table";
-import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
-import { useHydrated } from "@loftlancer/ui/hooks/use-hydrated";
+} from "@features/data-table/core/client/data-table.table";
+import { useHydrated } from "@features/patterns/core/client/patterns.use-hydrated.hook";
+import { Badge } from "@loftlancer/ui/badge";
+import { Button } from "@loftlancer/ui/button";
 import { Spinner } from "@loftlancer/ui/spinner";
 import { Monitor, MonitorSmartphone, Smartphone, Tablet } from "lucide-react";
 import { ClientRelativeTime } from "@/components/patterns/client-relative-time";
@@ -88,8 +88,8 @@ export function SessionsList({
         const Icon = DEVICE_ICONS[parseSessionDevice(r.userAgent).kind];
         return (
           <div className="flex min-w-0 items-center gap-2">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted ring-1 ring-border/60">
-              <Icon className="size-4 text-muted-foreground" aria-hidden />
+            <span className="bg-muted ring-border/60 flex size-7 shrink-0 items-center justify-center rounded-md ring-1">
+              <Icon className="text-muted-foreground size-4" aria-hidden />
             </span>
             <span className="truncate font-medium">
               {sessionDeviceLabel(r.userAgent)}

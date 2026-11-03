@@ -1,16 +1,16 @@
 import {
   DEFAULT_TEAM_PROJECT_GRANTS,
   mergeProjectMemberGrants,
-} from "@loftlancer/actions";
-import { db, softDeleteSet } from "@loftlancer/db";
-import { member } from "@loftlancer/db/schema/organization";
+} from "@features/authorization/utils";
+import { db, softDeleteSet } from "@loftlancer/drizzle";
+import { member } from "@loftlancer/drizzle/schema/organization";
 import {
   projectMemberGrant,
   projectTeam,
-} from "@loftlancer/db/schema/project-access";
-import { project } from "@loftlancer/db/schema/projects";
-import { team, teamMember } from "@loftlancer/db/schema/team";
-import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
+} from "@loftlancer/drizzle/schema/project-access";
+import { project } from "@loftlancer/drizzle/schema/projects";
+import { team, teamMember } from "@loftlancer/drizzle/schema/team";
+import { isSoftDeletesEnabled } from "@loftlancer/t3-env/soft-deletes";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 export async function applyDefaultGrantsForTeamOnProject(input: {
   organizationId: string;

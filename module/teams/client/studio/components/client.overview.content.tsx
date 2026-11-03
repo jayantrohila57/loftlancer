@@ -1,11 +1,11 @@
 "use client";
 
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 
 import {
   LOCAL_DATE_TIME_FORMAT,
   LocalDateTime,
-} from "@loftlancer/ui/patterns/local-date-time";
+} from "@features/patterns/core/client/patterns.local-date-time";
 
 import type { ReactNode } from "react";
 
@@ -38,7 +38,7 @@ export function TeamOverviewContent({
             {team.description ? (
               <div>
                 <p className="text-muted-foreground text-xs">Description</p>
-                <p className="mt-1 whitespace-pre-wrap text-sm">
+                <p className="mt-1 text-sm whitespace-pre-wrap">
                   {team.description}
                 </p>
               </div>
