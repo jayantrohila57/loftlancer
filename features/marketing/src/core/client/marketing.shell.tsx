@@ -8,7 +8,6 @@ import {
 } from "@loftlancer/ui/menu";
 import { cn } from "@loftlancer/ui/utils";
 import { ArrowUpRight, LayersIcon, MenuIcon } from "lucide-react";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { marketingSiteConfig } from "../../config/marketing.site-config";
 
@@ -116,9 +115,9 @@ function NavLink({
     );
   }
   return (
-    <Link href={item.href as "/"} className={className}>
+    <a href={item.href} className={className}>
       {item.label}
-    </Link>
+    </a>
   );
 }
 
@@ -168,13 +167,13 @@ export function MarketingSiteHeader({
           "flex h-[4.25rem] items-center justify-between gap-3 md:h-[4.5rem] md:gap-6",
         )}
       >
-        <Link
+        <a
           href="/"
           className="focus-visible:ring-ring flex min-w-0 items-center gap-2.5 rounded-md outline-none focus-visible:ring-2"
           aria-label={`${marketingSiteConfig.name} home`}
         >
           <MarketingLogo />
-        </Link>
+        </a>
         <div className="flex items-center gap-3 md:gap-6">
           <nav
             className="hidden items-center gap-5 md:flex"
@@ -248,12 +247,12 @@ export function MarketingSiteFooter({
       <div className={cn(marketingContainerClass, "py-10 md:py-14")}>
         <div className="border-background/15 grid gap-10 border-b pb-10 md:grid-cols-[1.25fr_1fr] md:gap-14 md:pb-14">
           <div className="max-w-lg">
-            <Link
+            <a
               href="/"
               className="focus-visible:ring-ring flex w-fit items-center gap-2.5 rounded-md outline-none focus-visible:ring-2"
             >
               <MarketingLogo inverse />
-            </Link>
+            </a>
             <p className="mt-5 max-w-md text-sm leading-6 text-neutral-50/65 dark:text-neutral-100/65">
               {marketingSiteConfig.description}
             </p>
