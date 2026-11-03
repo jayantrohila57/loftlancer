@@ -16,6 +16,8 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.26.0] - 2026-11-03
+
 ### Changed
 
 - Align platform docs and Cursor agent rules with **Apps → Modules → Features → Packages** layering.
@@ -1056,7 +1058,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.25.1...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.0...HEAD
+[1.26.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.25.1...v1.26.0
 [1.25.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.25.0...v1.25.1
 [1.25.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.23.0...v1.24.0

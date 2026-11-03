@@ -28,6 +28,7 @@ if (compareSemver(version, baseVersion) <= 0) {
 }
 const heading = changelog
   .split("\n")
+  .map((line) => line.replace(/\r$/, ""))
   .find((line) => line.startsWith(`## [${version}]`));
 if (!heading || !/ - \d{4}-\d{2}-\d{2}$/.test(heading)) {
   errors.push(`CHANGELOG.md needs a "## [${version}] - YYYY-MM-DD" section.`);
