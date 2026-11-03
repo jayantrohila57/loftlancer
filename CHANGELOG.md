@@ -16,6 +16,8 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+- Complete the organizations module migration with controller-backed tRPC/MCP adapters and opt-in integration coverage.
+
 ## [1.25.0] - 2026-11-03
 
 ### Added

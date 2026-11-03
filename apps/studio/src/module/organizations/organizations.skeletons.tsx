@@ -1,11 +1,13 @@
 "use client";
 
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { SettingsPanelSkeleton } from "@loftlancer/ui/patterns/settings-panel-skeleton";
 import { Skeleton } from "@loftlancer/ui/skeleton";
+import { OrganizationSectionPage } from "@module/organizations/client/studio/components/client.organization-section.page";
+import { OrganizationSettingsContentSkeleton } from "@module/organizations/client/studio/skeletons/client.organization-settings-content.skeleton";
+import { OrganizationOverviewSkeleton } from "@module/organizations/client/studio/skeletons/client.organization-skeleton";
 import DashboardSection from "@/components/section-dashboard";
-import { OrganizationOverviewSectionsSkeleton } from "@/module/organizations/organizations.overview.sections";
-import { OrganizationSectionPage } from "@/module/organizations/organizations.section";
+
+export { OrganizationSettingsContentSkeleton } from "@module/organizations/client/studio/skeletons/client.organization-settings-content.skeleton";
 
 const organizationsPageActionSkeleton = (
   <Skeleton className="size-8 rounded-md sm:h-8 sm:w-auto sm:min-w-[8.5rem]" />
@@ -62,7 +64,7 @@ export function OrganizationsListSkeleton() {
 export function OrganizationDetailPageSkeleton() {
   return (
     <div className="min-w-0 space-y-4" role="status" aria-busy="true">
-      <OrganizationOverviewSectionsSkeleton />
+      <OrganizationOverviewSkeleton />
     </div>
   );
 }
@@ -72,26 +74,6 @@ export function OrganizationSectionRouteSkeleton() {
   return (
     <div className="min-w-0 space-y-4" role="status" aria-busy="true">
       <SettingsPanelSkeleton rows={4} />
-    </div>
-  );
-}
-
-/** Mirrors the complete organization settings route while its data loads. */
-export function OrganizationSettingsContentSkeleton() {
-  return (
-    <div
-      className="flex min-w-0 flex-col gap-4"
-      role="status"
-      aria-busy="true"
-      aria-live="polite"
-    >
-      <AccordionSectionSkeleton rows={2} />
-      <AccordionSectionSkeleton rows={1} />
-      <AccordionSectionSkeleton rows={3} />
-      <AccordionSectionSkeleton rows={3} />
-      <AccordionSectionSkeleton rows={4} />
-      <AccordionSectionSkeleton rows={2} />
-      <AccordionSectionSkeleton rows={2} />
     </div>
   );
 }

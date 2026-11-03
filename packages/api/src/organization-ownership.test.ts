@@ -39,6 +39,20 @@ const teamDefaultsSource = readFileSync(
   ),
   "utf8",
 );
+const invitationAcceptSource = readFileSync(
+  join(
+    sourceDir,
+    "../../../module/organizations/server/service/server.organization-invitation-accept.service.ts",
+  ),
+  "utf8",
+);
+const invitationAcceptControllerSource = readFileSync(
+  join(
+    sourceDir,
+    "../../../module/organizations/server/controller/server.organization-invitation-accept.controller.ts",
+  ),
+  "utf8",
+);
 
 describe("organization ownership mutations", () => {
   it("transfers ownership within a locked database transaction and records the audit event", () => {
@@ -82,11 +96,11 @@ describe("organization ownership mutations", () => {
       actionRegistrySource,
       /name: "invitation\.reject",\s+scope: "user",[\s\S]*?selfOnly: true/,
     );
-    assert.equal(
-      (mcpSource.match(/targetUserId: userId/g) ?? []).length >= 4,
-      true,
+    assert.match(invitationAcceptControllerSource, /targetUserId: ctx\.userId/);
+    assert.match(
+      invitationAcceptControllerSource,
+      /action: "invitation\.accept"/,
     );
-    assert.match(mcpSource, /action: "invitation\.accept"/);
     assert.match(mcpSource, /action: "invitation\.reject"/);
   });
 
@@ -135,8 +149,9 @@ describe("organization ownership mutations", () => {
     );
     assert.match(
       mcpSource.slice(acceptStart, acceptEnd),
-      /applyTeamProjectDefaults\(tx/,
+      /organizationInvitationAcceptController/,
     );
+    assert.match(invitationAcceptSource, /applyTeamProjectDefaults\(tx/);
 
     assert.match(teamAddSource, /applyTeamProjectDefaults\(tx/);
   });

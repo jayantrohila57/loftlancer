@@ -1,6 +1,6 @@
 import { DelayedPageLoading } from "@loftlancer/ui/patterns/delayed-page-loading";
-import { OrganizationSectionRouteSkeleton } from "@/module/organizations/organizations.skeletons";
+import { OrganizationRouteSkeleton } from "@module/organizations/client/studio/skeletons/client.organization-skeleton";
 
 export default function OrganizationSlugLoading() {
-  return <DelayedPageLoading fallback={<OrganizationSectionRouteSkeleton />} />;
+  return <DelayedPageLoading fallback={<OrganizationRouteSkeleton />} />;
 }
