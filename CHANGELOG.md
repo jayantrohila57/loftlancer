@@ -16,6 +16,8 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.26.2] - 2026-11-03
+
 ### Fixed
 
 - Restore production sign-in after the `/better-auth` deploy: align platform Better Auth `basePath` with `app/api/auth`, accept legacy `/api/better-auth` on the auth app, redirect `/auth/*` to `/better-auth/*`, mount studio sibling handlers under `app/api/better-auth`, and fix magic-link / JWKS URLs.
@@ -1069,7 +1071,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.1...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.2...HEAD
+[1.26.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.1...v1.26.2
 [1.26.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.0...v1.26.1
 [1.26.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.25.1...v1.26.0
 [1.25.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.25.0...v1.25.1
