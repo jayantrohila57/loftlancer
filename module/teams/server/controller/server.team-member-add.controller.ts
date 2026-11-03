@@ -2,7 +2,9 @@ import {
   type RunActionContext,
   runAction,
 } from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { teamMemberInputSchema } from "../../utils/validation/utils.team-operations.validation";
+import { teamMemberOutputSchema } from "../../utils/validation/utils.team-output.validation";
 import { teamMemberAddService } from "../service/server.team-member-add.service";
 export async function teamMemberAddController({
   input,
@@ -20,10 +22,12 @@ export async function teamMemberAddController({
         targetUserId: parsed.data.userId,
       }
     : ctx;
-  return runAction({
+  const response = await runAction({
     action: "team.member.add",
     ctx: scoped,
     audit: true,
+    validate: (result) =>
+      serviceResponseSchema(teamMemberOutputSchema).parse(result),
     handler: async () => {
       if (!parsed.success)
         return {
@@ -34,4 +38,5 @@ export async function teamMemberAddController({
       return teamMemberAddService(ctx, parsed.data);
     },
   });
+  return serviceResponseSchema(teamMemberOutputSchema).parse(response);
 }

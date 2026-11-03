@@ -2,7 +2,9 @@ import {
   type RunActionContext,
   runAction,
 } from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { teamUpdateInputSchema } from "../../utils/validation/utils.team-operations.validation";
+import { teamUpdateOutputSchema } from "../../utils/validation/utils.team-output.validation";
 import { teamUpdateService } from "../service/server.team-update.service";
 export async function teamUpdateController({
   input,
@@ -20,10 +22,12 @@ export async function teamUpdateController({
         payload: { name: parsed.data.name },
       }
     : ctx;
-  return runAction({
+  const response = await runAction({
     action: "team.update",
     ctx: scoped,
     audit: true,
+    validate: (result) =>
+      serviceResponseSchema(teamUpdateOutputSchema).parse(result),
     handler: async () => {
       if (!parsed.success)
         return {
@@ -34,4 +38,5 @@ export async function teamUpdateController({
       return teamUpdateService(ctx, parsed.data);
     },
   });
+  return serviceResponseSchema(teamUpdateOutputSchema).parse(response);
 }

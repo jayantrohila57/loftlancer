@@ -2,9 +2,11 @@ import {
   type RunActionContext,
   runAction,
 } from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { teamGetInputSchema } from "../../utils/validation/utils.team-id.validation";
+import { teamInvitationContextOutputSchema } from "../../utils/validation/utils.team-output.validation";
 import { teamInvitationContextService } from "../service/server.team-invitation-context.service";
-export function teamInvitationContextController({
+export async function teamInvitationContextController({
   input,
   ctx,
 }: {
@@ -19,10 +21,12 @@ export function teamInvitationContextController({
         payload: { operation: "invitation-context", scope: "team" },
       }
     : ctx;
-  return runAction({
+  const response = await runAction({
     action: "member.list",
     ctx: scoped,
     audit: false,
+    validate: (result) =>
+      serviceResponseSchema(teamInvitationContextOutputSchema).parse(result),
     handler: async () => {
       if (!parsed.success)
         return {
@@ -33,4 +37,7 @@ export function teamInvitationContextController({
       return teamInvitationContextService(ctx, parsed.data);
     },
   });
+  return serviceResponseSchema(teamInvitationContextOutputSchema).parse(
+    response,
+  );
 }

@@ -4,9 +4,11 @@ import {
   type RunActionContext,
   runAction,
 } from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { teamProjectLinkInputSchema } from "../../utils/validation/utils.team-extended.validation";
+import { teamProjectLinkOutputSchema } from "../../utils/validation/utils.team-output.validation";
 import { teamProjectAssignService } from "../service/server.team-project-assign.service";
-export function teamProjectAssignController({
+export async function teamProjectAssignController({
   input,
   ctx,
 }: {
@@ -27,10 +29,12 @@ export function teamProjectAssignController({
         },
       }
     : ctx;
-  return runAction({
+  const response = await runAction({
     action: "project.assign_team",
     ctx: scoped,
     audit: true,
+    validate: (result) =>
+      serviceResponseSchema(teamProjectLinkOutputSchema).parse(result),
     authorize: async () => {
       if (!parsed.success) return;
       await requireAction("project.read", {
@@ -49,4 +53,5 @@ export function teamProjectAssignController({
       return teamProjectAssignService(ctx, parsed.data);
     },
   });
+  return serviceResponseSchema(teamProjectLinkOutputSchema).parse(response);
 }
