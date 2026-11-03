@@ -1,19 +1,22 @@
 "use client";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+
 import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
+import type { ReactNode } from "react";
 import type { TeamDto } from "../../../utils/types/utils.team.dto";
 import { useTeamGet } from "../hooks/client.use-teams-get.hook";
 import { TeamOverviewSkeleton } from "../skeletons/client.team-overview.skeleton";
-import { TeamOverviewContent } from "./client.overview.content";
 import { TeamsResponseMessage } from "./client.response.boundary";
+
 export function TeamOverviewBoundary({
   orgId,
   teamId,
   response,
+  children,
 }: {
   orgId: string;
   teamId: string;
   response: ServiceResponse<TeamDto>;
+  children: ReactNode;
 }) {
   const query = useTeamGet(orgId, teamId, response);
   if (query.isPending) return <TeamOverviewSkeleton />;
@@ -36,18 +39,5 @@ export function TeamOverviewBoundary({
     );
   if (!result.data || Array.isArray(result.data))
     return <TeamsResponseMessage message="Team not found." />;
-  return (
-    <TeamOverviewContent team={result.data}>
-      <AccordionSection
-        title="How team access works"
-        description="Teams connect organization membership to project access."
-      >
-        <p className="max-w-3xl text-muted-foreground text-sm">
-          Add organization members in Members, then choose which projects this
-          team can access in Projects. Project Access shows what each person can
-          do.
-        </p>
-      </AccordionSection>
-    </TeamOverviewContent>
-  );
+  return <section className="flex flex-col gap-4">{children}</section>;
 }

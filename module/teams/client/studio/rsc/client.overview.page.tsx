@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import { loadTeamOverview } from "../../../server/page/server.team-overview.page";
 import { TeamOverviewSkeleton } from "../skeletons/client.team-overview.skeleton";
+import { TeamOverviewAccessGuideSection } from "./client.overview.access-guide.section";
+import { TeamOverviewProfileSection } from "./client.overview.profile.section";
 
 const Boundary = dynamic(
   () =>
@@ -20,5 +22,16 @@ export async function TeamOverviewPage({
 }) {
   const { org, teamId } = await params;
   const { response, ctx } = await loadTeamOverview(org, teamId);
-  return <Boundary orgId={ctx.orgId} teamId={teamId} response={response} />;
+  const team =
+    response.status === "success" &&
+    response.data &&
+    !Array.isArray(response.data)
+      ? response.data
+      : null;
+  return (
+    <Boundary orgId={ctx.orgId} teamId={teamId} response={response}>
+      {team ? <TeamOverviewProfileSection team={team} /> : null}
+      <TeamOverviewAccessGuideSection />
+    </Boundary>
+  );
 }
