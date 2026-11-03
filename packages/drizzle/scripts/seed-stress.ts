@@ -58,12 +58,12 @@ const APPS_LABELS = new Set([
 ]);
 
 /**
- * Deterministic RFC 4122 v5-style UUID for a seed key. Projects, environments,
+ * Deterministic RFC 4122-style UUID for a seed key (SHA-256). Projects, environments,
  * variables, apps and tasks must use UUIDs: the API validates those ids with
  * z.string().uuid(), so `seed-proj-0126`-style ids 400 (#248, #250).
  */
 function seedUuid(key: string): string {
-  const h = createHash("sha1").update(`loftlancer-seed:${key}`).digest();
+  const h = createHash("sha256").update(`loftlancer-seed:${key}`).digest();
   h[6] = ((h[6] ?? 0) & 0x0f) | 0x50;
   h[8] = ((h[8] ?? 0) & 0x3f) | 0x80;
   const x = h.subarray(0, 16).toString("hex");

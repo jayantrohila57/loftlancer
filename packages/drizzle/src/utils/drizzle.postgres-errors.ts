@@ -43,7 +43,8 @@ export function isPostgresMissingColumnError(error: unknown): boolean {
   if (errorCode(root) === "42703") {
     return true;
   }
-  return /column .+ does not exist/i.test(errorMessage(root));
+  const message = errorMessage(root).toLowerCase();
+  return message.includes("column") && message.includes("does not exist");
 }
 
 /**

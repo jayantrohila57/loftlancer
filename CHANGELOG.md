@@ -16,6 +16,10 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Security
+
+- Harden `return_to` validation (block `vbscript:` and related schemes), replace ReDoS-prone parsing in env and Postgres error helpers, use `randomUUID` in verify scripts, SHA-256 for stress-seed ids, and explicit CI workflow `permissions`.
+
 ## [1.26.0] - 2026-11-03
 
 ### Changed
