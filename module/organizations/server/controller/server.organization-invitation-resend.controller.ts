@@ -1,0 +1,48 @@
+import {
+  type RunActionContext,
+  runAction,
+} from "@module/shared/server/run-action";
+import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
+import {
+  organizationInvitationIdInputSchema,
+  organizationInvitationMutationOutputSchema,
+} from "../../utils/validation/utils.organization-invitations.validation";
+import { organizationInvitationResendService } from "../service/server.organization-invitation-resend.service";
+
+export async function organizationInvitationResendController({
+  input,
+  ctx,
+}: {
+  input?: unknown;
+  ctx: RunActionContext;
+}) {
+  const parsed = organizationInvitationIdInputSchema.safeParse(input);
+  const scoped = parsed.success
+    ? {
+        ...ctx,
+        entityId: parsed.data.invitationId,
+        payload: { operation: "resend" },
+      }
+    : ctx;
+  const response = await runAction({
+    action: "member.invite",
+    ctx: scoped,
+    audit: true,
+    validate: (result) =>
+      serviceResponseSchema(organizationInvitationMutationOutputSchema).parse(
+        result,
+      ),
+    handler: async () => {
+      if (!parsed.success)
+        return {
+          kind: "failed" as const,
+          message: "Check the invitation details.",
+          fieldErrors: parsed.error.flatten().fieldErrors,
+        };
+      return organizationInvitationResendService(ctx, parsed.data);
+    },
+  });
+  return serviceResponseSchema(
+    organizationInvitationMutationOutputSchema,
+  ).parse(response);
+}
