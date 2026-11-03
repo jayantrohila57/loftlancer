@@ -40,8 +40,8 @@
     "release:publish": "bash scripts/release/publish.sh",
     "generate:pwa-maskable-icons": "pnpm --filter studio exec tsx ../../scripts/generate-pwa-maskable-icons.mts",
     "capture:pwa-screenshots": "pnpm --filter studio exec tsx ../../scripts/capture-pwa-screenshots.mts",
-    "test:teams": "SKIP_ENV_VALIDATION=1 pnpm --filter @loftlancer/orpc exec node --experimental-test-module-mocks --import tsx --test ../../module/shared/server/run-action.test.ts ../../module/shared/utils/validation/utils.service-response.validation.test.ts ../../module/teams/server/controller/server.team-create.controller.test.ts",
-    "test:teams:integration": "SKIP_ENV_VALIDATION=1 ORGANIZATIONS_ENABLED=true SOFT_DELETES_ENABLED=true pnpm --filter @loftlancer/orpc exec node --experimental-test-module-mocks --import tsx --test ../../module/teams/server/service/server.teams.integration.test.ts ../../module/teams/server/service/server.teams-migration.integration.test.ts",
+    "test:teams": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test pnpm --filter @loftlancer/orpc exec node --experimental-test-module-mocks --import tsx --test ../../module/shared/server/run-action.test.ts ../../module/shared/utils/validation/utils.service-response.validation.test.ts ../../module/teams/server/controller/server.team-create.controller.test.ts",
+    "test:teams:integration": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test ORGANIZATIONS_ENABLED=true SOFT_DELETES_ENABLED=true pnpm --filter @loftlancer/orpc exec node --experimental-test-module-mocks --import tsx --test ../../module/teams/server/service/server.teams.integration.test.ts ../../module/teams/server/service/server.teams-migration.integration.test.ts",
     "test:organizations:integration": "SKIP_ENV_VALIDATION=1 ORGANIZATIONS_ENABLED=true SOFT_DELETES_ENABLED=true pnpm --filter @loftlancer/orpc exec node --experimental-test-module-mocks --import tsx --test ../../module/organizations/server/service/server.organizations-migration.integration.test.ts"
   },
   "dependencies": {
