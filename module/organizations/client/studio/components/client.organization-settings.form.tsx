@@ -20,7 +20,7 @@ import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import { SheetDescription } from "@loftlancer/ui/sheet";
 import { Spinner } from "@loftlancer/ui/spinner";
 import { Textarea } from "@loftlancer/ui/textarea";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
   type ReactNode,
@@ -71,12 +71,17 @@ import {
   pendingOrganizationInvitations,
   resendOrganizationInvitation,
 } from "@/lib/organization-invitations";
+import { studioORPC } from "@/lib/orpc";
 import { toast } from "@/lib/toast";
 import { useSession } from "@/module/auth/auth.auth.actions";
 import { useNotificationMutations } from "@/module/notifications/notifications.use.notifications";
-import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
 import { routes } from "@/utils/navigation";
-import { trpc } from "@/utils/trpc";
+import {
+  organizationQueryKeys,
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
+import { BulkInviteDialog } from "./client.bulk-invite.dialog";
 
 type MemberRow = {
   id: string;
@@ -179,10 +184,12 @@ export function OrganizationSettingsForm({
   const { syncInvitationReceived } = useNotificationMutations();
   const { refreshOrganizations, orgs, setActiveOrganization } =
     useActiveOrganization();
-  const memberProfiles = useQuery({
-    ...trpc.organizations.listMembers.queryOptions(),
-    enabled: mode === "members" && Boolean(organizationId),
-  });
+  const memberProfiles = useOrganizationOperationQuery(
+    "members",
+    {},
+    () => studioORPC.organizations.members({}),
+    mode === "members" && Boolean(organizationId),
+  );
 
   const [members, setMembers] = useState<MemberRow[]>([]);
   const [invitations, setInvitations] = useState<OrganizationInvitationRow[]>(
@@ -290,39 +297,51 @@ export function OrganizationSettingsForm({
         query: { organizationId: targetOrgId, limit: MEMBER_PAGE_LIMIT },
       });
       setMembers((list.data?.members ?? []) as MemberRow[]);
-      const inviteData = await queryClient.fetchQuery(
-        trpc.organizations.listInvitations.queryOptions({
-          organizationId: targetOrgId,
-          status: "pending",
-          limit: PENDING_INVITATIONS_LIMIT,
-          offset: 0,
-        }),
-      );
-      setInvitations((inviteData.rows ?? []) as OrganizationInvitationRow[]);
+      const invitationInput = {
+        organizationId: targetOrgId,
+        status: "pending" as const,
+        limit: PENDING_INVITATIONS_LIMIT,
+        offset: 0,
+      };
+      const inviteResponse = await queryClient.fetchQuery({
+        queryKey: organizationQueryKeys.operation(
+          targetOrgId,
+          "invitationList",
+          invitationInput,
+        ),
+        queryFn: () => studioORPC.organizations.invitationList(invitationInput),
+      });
+      if (
+        inviteResponse.status !== "success" ||
+        inviteResponse.data === null ||
+        Array.isArray(inviteResponse.data)
+      ) {
+        throw new Error(inviteResponse.message || "Could not load invitations");
+      }
+      setInvitations(inviteResponse.data.rows as OrganizationInvitationRow[]);
     },
     [queryClient],
   );
 
-  const removeMemberMutation = useMutation(
-    trpc.organizations.removeMember.mutationOptions(),
+  const removeMemberMutation = useOrganizationOperationMutation(
+    "member.remove",
+    (input: { userId: string; reason?: string }) =>
+      studioORPC.organizations.removeMember(input),
   );
 
-  const transferOwnershipMutation = useMutation(
-    trpc.organizations.transferOwnership.mutationOptions({
+  const transferOwnershipMutation = useOrganizationOperationMutation(
+    "organization.transfer_ownership",
+    (input: { targetUserId: string }) =>
+      studioORPC.organizations.transferOwnership(input),
+    {
       onSuccess: async () => {
-        const target = members.find((m) => m.user.id === transferTargetUserId);
-        toast.success(
-          `Ownership transferred to ${target?.user.name || target?.user.email || "the selected member"}`,
-        );
         setTransferConfirmOpen(false);
         setTransferSheetOpen(false);
         setTransferTargetUserId("");
         await loadOrganization(organizationId);
         await refreshOrganizations();
       },
-      onError: (error) =>
-        toast.error(error.message || "Could not transfer ownership"),
-    }),
+    },
   );
 
   useEffect(() => {
@@ -469,11 +488,11 @@ export function OrganizationSettingsForm({
 
     setMemberRemovalPendingId(member.id);
     try {
-      await removeMemberMutation.mutateAsync({
+      const response = await removeMemberMutation.mutateAsync({
         userId: targetUserId,
         reason: memberRemovalReason.trim() || undefined,
       });
-      toast.success(`Removed ${member.user.name || member.user.email}`);
+      if (response.status !== "success") throw new Error(response.message);
       setMemberRemovalConfirmOpen(false);
       setPendingMemberRemoval(null);
       setMemberRemovalReason("");

@@ -8,72 +8,69 @@ import {
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useConfirm } from "@/hooks/use-confirm";
-import { toast } from "@/lib/toast";
+import { studioORPC } from "@/lib/orpc";
 import { Can } from "@/shared/permissions/shared.permissions.can";
-import { trpc } from "@/utils/trpc";
+import {
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
 
 export function OrganizationCustomRoles() {
-  const client = useQueryClient();
   const { confirm, ConfirmDialog } = useConfirm();
-  const roles = useQuery(trpc.organizations.listCustomRoles.queryOptions());
-  const members = useQuery(trpc.organizations.listMembers.queryOptions());
+  const roles = useOrganizationOperationQuery("customRoles", {}, () =>
+    studioORPC.organizations.customRoles({}),
+  );
+  const members = useOrganizationOperationQuery("members", {}, () =>
+    studioORPC.organizations.members({}),
+  );
+  const roleItems =
+    roles.response?.status === "success" && Array.isArray(roles.response.data)
+      ? roles.response.data
+      : [];
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
-  const create = useMutation(
-    trpc.organizations.createCustomRole.mutationOptions({
+  const create = useOrganizationOperationMutation(
+    "organization.role.create",
+    (input: { name: string; description?: string; actions: string[] }) =>
+      studioORPC.organizations.createCustomRole(input),
+    {
       onSuccess: () => {
-        toast.success("Organization role created");
         setName("");
         setDescription("");
         setSelected([]);
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.listCustomRoles.queryKey(),
-        });
       },
-      onError: (error) => toast.error(error.message),
-    }),
+    },
   );
-  const remove = useMutation(
-    trpc.organizations.deleteCustomRole.mutationOptions({
-      onSuccess: () => {
-        toast.success("Organization role deleted");
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.listCustomRoles.queryKey(),
-        });
-      },
-      onError: (error) => toast.error(error.message),
-    }),
+  const remove = useOrganizationOperationMutation(
+    "organization.role.delete",
+    (input: { roleId: string }) =>
+      studioORPC.organizations.deleteCustomRole(input),
   );
-  const assign = useMutation(
-    trpc.organizations.assignCustomRole.mutationOptions({
-      onSuccess: () => {
-        toast.success("Member role updated");
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.listCustomRoles.queryKey(),
-        });
-      },
-      onError: (error) => toast.error(error.message),
-    }),
+  const assign = useOrganizationOperationMutation(
+    "organization.role.assign",
+    (input: { memberId: string; roleId: string | null }) =>
+      studioORPC.organizations.assignCustomRole(input),
   );
-  const update = useMutation(
-    trpc.organizations.updateCustomRole.mutationOptions({
+  const update = useOrganizationOperationMutation(
+    "organization.role.update",
+    (input: {
+      roleId: string;
+      name: string;
+      description?: string;
+      actions: string[];
+    }) => studioORPC.organizations.updateCustomRole(input),
+    {
       onSuccess: () => {
-        toast.success("Organization role updated");
         setEditingRoleId(null);
         setName("");
         setDescription("");
         setSelected([]);
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.listCustomRoles.queryKey(),
-        });
       },
-      onError: (error) => toast.error(error.message),
-    }),
+    },
   );
 
   return (
@@ -178,7 +175,7 @@ export function OrganizationCustomRoles() {
             Could not load custom roles: {roles.error.message}
           </p>
         ) : null}
-        {roles.data?.length && members.data?.items.length ? (
+        {roleItems.length && members.data?.items.length ? (
           <Can action="organization.role.assign">
             <div className="mt-5 border-t pt-4">
               <h3 className="mb-2 font-medium text-sm">
@@ -192,7 +189,7 @@ export function OrganizationCustomRoles() {
                       !member.suspendedAt,
                   )
                   .map((member) => {
-                    const currentRole = roles.data.find((role) =>
+                    const currentRole = roleItems.find((role) =>
                       role.memberIds.includes(member.id),
                     );
                     return (
@@ -216,7 +213,7 @@ export function OrganizationCustomRoles() {
                           }
                         >
                           <option value="">Built-in role only</option>
-                          {roles.data.map((role) => (
+                          {roleItems.map((role) => (
                             <option value={role.id} key={role.id}>
                               {role.name}
                             </option>
@@ -229,9 +226,9 @@ export function OrganizationCustomRoles() {
             </div>
           </Can>
         ) : null}
-        {roles.data?.length ? (
+        {roleItems.length ? (
           <ul className="mt-4 divide-y">
-            {roles.data.map((role) => (
+            {roleItems.map((role) => (
               <li
                 key={role.id}
                 className="flex items-center justify-between gap-3 py-3"
@@ -282,7 +279,7 @@ export function OrganizationCustomRoles() {
               </li>
             ))}
           </ul>
-        ) : roles.isSuccess ? (
+        ) : !roles.isPending && !roles.isError ? (
           <p className="mt-4 text-muted-foreground text-sm">
             No custom roles yet.
           </p>

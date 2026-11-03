@@ -6,6 +6,7 @@ import { PageHeaderActionButton } from "@/components/layout/app-layout";
 import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { routes } from "@/utils/navigation";
 import { CreateOrganizationSheet } from "./client.create-organization.sheet";
+import { MyOrganizationInvitationsList } from "./client.my-invitations.list";
 import { OrganizationListContent } from "./client.organization-list.content";
 
 export function OrganizationsDirectory({
@@ -43,10 +44,7 @@ export function OrganizationsDirectory({
         ) : null}
       </header>
       {searchParams.get("tab") === "invites" ? (
-        <div className="rounded-lg border p-4 text-muted-foreground text-sm">
-          Organization invitations are available from the organization
-          invitation workflow.
-        </div>
+        <MyOrganizationInvitationsList />
       ) : (
         <OrganizationListContent />
       )}

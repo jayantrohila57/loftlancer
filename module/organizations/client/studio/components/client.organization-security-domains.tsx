@@ -4,64 +4,82 @@ import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { FormField } from "@/components/patterns/form-field";
+import { studioORPC } from "@/lib/orpc";
 import { toast } from "@/lib/toast";
-import { trpc } from "@/utils/trpc";
+import {
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
 
 type Challenge = { name: string; value: string };
 
 export function OrganizationSecurityDomains() {
-  const client = useQueryClient();
   const { orgs, activeOrganizationId } = useActiveOrganization();
   const canManage =
     orgs.find((org) => org.id === activeOrganizationId)?.role === "owner";
-  const query = useQuery(trpc.organizations.listSecurityDomains.queryOptions());
+  const query = useOrganizationOperationQuery("securityDomains", {}, () =>
+    studioORPC.organizations.securityDomains({}),
+  );
   const [hostname, setHostname] = useState("");
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [revokeId, setRevokeId] = useState<string | null>(null);
-  const invalidate = () =>
-    client.invalidateQueries({
-      queryKey: trpc.organizations.listSecurityDomains.queryKey(),
-    });
-  const create = useMutation(
-    trpc.organizations.createSecurityDomain.mutationOptions({
-      onSuccess: async (result) => {
-        setChallenge(result.txtRecord);
+  const create = useOrganizationOperationMutation(
+    "organization.settings.update",
+    (input: { hostname: string }) =>
+      studioORPC.organizations.createSecurityDomain(input),
+    {
+      onSuccess: (response) => {
+        if (
+          response.status !== "success" ||
+          response.data === null ||
+          Array.isArray(response.data)
+        )
+          return;
+        setChallenge(response.data.txtRecord);
         setHostname("");
-        await invalidate();
-        toast.success(
-          "Domain added. Publish the TXT record to prove ownership.",
-        );
       },
-      onError: () => toast.error("Could not add this domain."),
-    }),
+    },
   );
-  const verify = useMutation(
-    trpc.organizations.verifySecurityDomain.mutationOptions({
-      onSuccess: async (result) => {
-        if (result.verified) {
-          toast.success(result.message);
-          setChallenge(null);
-        } else toast.error(result.message);
-        await invalidate();
-      },
-      onError: () => toast.error("Could not verify domain ownership."),
-    }),
+  const verify = useOrganizationOperationMutation(
+    "organization.settings.update",
+    (input: { domainId: string }) =>
+      studioORPC.organizations.verifySecurityDomain(input),
+    { responseToast: false },
   );
-  const revoke = useMutation(
-    trpc.organizations.revokeSecurityDomain.mutationOptions({
-      onSuccess: async () => {
-        setRevokeId(null);
-        await invalidate();
-        toast.success("Domain removed.");
-      },
-      onError: () => toast.error("Could not remove domain."),
-    }),
+  const revoke = useOrganizationOperationMutation(
+    "organization.settings.update",
+    (input: { domainId: string }) =>
+      studioORPC.organizations.revokeSecurityDomain(input),
+    { onSuccess: () => setRevokeId(null) },
   );
   const domainToRevoke = query.data?.items.find((item) => item.id === revokeId);
+
+  const verifyDomain = async (domainId: string) => {
+    try {
+      const response = await verify.mutateAsync({ domainId });
+      if (response.status !== "success") {
+        toast.error(response.message);
+        return;
+      }
+      if (response.data === null || Array.isArray(response.data)) {
+        toast.error("Could not verify the domain. Try again.");
+        return;
+      }
+      if (response.data.verified) {
+        setChallenge(null);
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Could not verify the domain.",
+      );
+    }
+  };
 
   return (
     <>
@@ -152,7 +170,7 @@ export function OrganizationSecurityDomains() {
                     variant="outline"
                     size="sm"
                     disabled={!canManage || verify.isPending}
-                    onClick={() => verify.mutate({ domainId: item.id })}
+                    onClick={() => void verifyDomain(item.id)}
                   >
                     Verify
                   </Button>

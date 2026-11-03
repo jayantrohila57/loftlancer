@@ -3,9 +3,9 @@
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
-import { OrganizationMemberProfiles } from "@/module/organizations/organizations.organization.member.profile";
-import { OrganizationSettingsForm } from "@/module/organizations/organizations.organization.settings.form";
-import { useOrganizationBySlug } from "@/module/organizations/organizations.use.organization.by.slug";
+import { useOrganizationBySlug } from "../hooks/client.use-organization-by-slug.hook";
+import { OrganizationMemberProfiles } from "./client.organization-member-profile";
+import { OrganizationSettingsForm } from "./client.organization-settings.form";
 
 export function OrganizationMembersPage({ slug }: { slug: string }) {
   const { organization, status, error, reload } = useOrganizationBySlug(slug);

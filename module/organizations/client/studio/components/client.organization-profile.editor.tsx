@@ -4,13 +4,15 @@ import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { FormField } from "@/components/patterns/form-field";
-import { toast } from "@/lib/toast";
+import { studioORPC } from "@/lib/orpc";
 import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
-import { trpc } from "@/utils/trpc";
+import {
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
 
 type Field = readonly [
   string,
@@ -62,7 +64,9 @@ type Profile = Record<string, string | number | Date | boolean | null>;
 
 export function OrganizationProfileEditor() {
   const canEdit = useCan("organization.settings.update").allowed;
-  const query = useQuery(trpc.organizations.getProfile.queryOptions());
+  const query = useOrganizationOperationQuery("getProfile", {}, () =>
+    studioORPC.organizations.getProfile({}),
+  );
 
   if (query.isPending) {
     return (
@@ -107,22 +111,14 @@ function OrganizationProfileSection({
   profile: Profile;
   canEdit: boolean;
 }) {
-  const queryClient = useQueryClient();
   const initialDraft = Object.fromEntries(
     group.fields.map(([key]) => [key, String(profile[key] ?? "")]),
   );
   const [draft, setDraft] = useState(initialDraft);
-  const mutation = useMutation(
-    trpc.organizations.updateProfile.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: trpc.organizations.getProfile.queryKey(),
-        });
-        toast.success(`${group.title} saved.`);
-      },
-      onError: () =>
-        toast.error(`Could not save ${group.title.toLowerCase()}.`),
-    }),
+  const mutation = useOrganizationOperationMutation(
+    "organization.settings.update",
+    (input: Record<string, string | number | null>) =>
+      studioORPC.organizations.updateProfile(input as never),
   );
   const isDirty = group.fields.some(
     ([key]) => draft[key] !== initialDraft[key],

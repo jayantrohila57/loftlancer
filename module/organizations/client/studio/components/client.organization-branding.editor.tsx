@@ -4,36 +4,37 @@ import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { FormField } from "@/components/patterns/form-field";
 import { useConfirm } from "@/hooks/use-confirm";
-import { toast } from "@/lib/toast";
-import { trpc } from "@/utils/trpc";
+import { studioORPC } from "@/lib/orpc";
+import {
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
 
 export function OrganizationBrandingEditor() {
-  const queryClient = useQueryClient();
   const { confirm, ConfirmDialog } = useConfirm();
   const { refreshOrganizations } = useActiveOrganization();
-  const query = useQuery(trpc.organizations.getProfile.queryOptions());
+  const query = useOrganizationOperationQuery("getProfile", {}, () =>
+    studioORPC.organizations.getProfile({}),
+  );
   const canEdit = query.data?.canManageBranding === true;
   const [draft, setDraft] = useState<string | null>(null);
   const current = query.data?.logo ?? "";
   const value = draft ?? current;
-  const mutation = useMutation(
-    trpc.organizations.updateBrandingLogo.mutationOptions({
+  const mutation = useOrganizationOperationMutation(
+    "organization.settings.update",
+    (input: { logo: string | null }) =>
+      studioORPC.organizations.updateBrandingLogo(input),
+    {
       onSuccess: async () => {
         setDraft(null);
-        await queryClient.invalidateQueries({
-          queryKey: trpc.organizations.getProfile.queryKey(),
-        });
         await refreshOrganizations();
-        toast.success("Organization logo saved.");
       },
-      onError: () => toast.error("Could not save organization logo."),
-    }),
+    },
   );
 
   return (

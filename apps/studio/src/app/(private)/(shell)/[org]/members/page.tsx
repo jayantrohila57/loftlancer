@@ -1,27 +1,4 @@
-import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { guardOrganizationSlugPage } from "@/lib/page-guards";
-import { OrganizationMembersPageView } from "@/module/organizations/organizations.members.view";
-import { OrganizationsFeatureGate } from "@/module/organizations/organizations.organizations.feature.gate";
-import { routes } from "@/utils/navigation";
-
-export const metadata: Metadata = {
-  title: "Members",
-  description: "Organization members and roles.",
-};
-
-export default async function OrganizationMembersRoute({
-  params,
-}: {
-  params: Promise<{ org: string }>;
-}) {
-  if (!isOrganizationsEnabled()) redirect(routes.home());
-  const { org: slug } = await params;
-  await guardOrganizationSlugPage(slug, "members");
-  return (
-    <OrganizationsFeatureGate>
-      <OrganizationMembersPageView slug={slug} />
-    </OrganizationsFeatureGate>
-  );
-}
+export {
+  OrganizationMembersPage as default,
+  organizationMembersMetadata as metadata,
+} from "@module/organizations/client/studio/rsc/client.organization-members.page";

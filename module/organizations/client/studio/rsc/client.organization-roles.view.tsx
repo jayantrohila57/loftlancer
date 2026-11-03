@@ -1,5 +1,5 @@
-import { OrganizationRolesPage } from "./organizations.roles.content";
-import { OrganizationSectionPage } from "./organizations.section";
+import { OrganizationRolesPage } from "../components/client.organization-roles.content";
+import { OrganizationSectionPage } from "../components/client.organization-section.page";
 
 export function OrganizationRolesPageView({ slug }: { slug: string }) {
   return (

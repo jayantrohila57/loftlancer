@@ -2,11 +2,13 @@
 
 import { Button } from "@loftlancer/ui/button";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FormField } from "@/components/patterns/form-field";
-import { toast } from "@/lib/toast";
-import { trpc } from "@/utils/trpc";
+import { studioORPC } from "@/lib/orpc";
+import {
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
 
 type SettingsDraft = {
   timeZone: string;
@@ -20,20 +22,14 @@ type SettingsDraft = {
 };
 
 export function OrganizationPreferencesEditor() {
-  const client = useQueryClient();
-  const query = useQuery(trpc.organizations.getSettings.queryOptions());
+  const query = useOrganizationOperationQuery("settings", {}, () =>
+    studioORPC.organizations.settings({}),
+  );
   const [draft, setDraft] = useState<SettingsDraft | null>(null);
-  const mutation = useMutation(
-    trpc.organizations.updateSettings.mutationOptions({
-      onSuccess: async () => {
-        await client.invalidateQueries({
-          queryKey: trpc.organizations.getSettings.queryKey(),
-        });
-        setDraft(null);
-        toast.success("Organization defaults saved.");
-      },
-      onError: () => toast.error("Could not save organization defaults."),
-    }),
+  const mutation = useOrganizationOperationMutation(
+    "organization.settings.update",
+    (input: SettingsDraft) => studioORPC.organizations.updateSettings(input),
+    { onSuccess: () => setDraft(null) },
   );
   const saved = query.data;
   useEffect(() => {

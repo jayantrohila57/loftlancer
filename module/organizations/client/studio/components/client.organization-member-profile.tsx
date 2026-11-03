@@ -8,16 +8,18 @@ import {
   LOCAL_DATE_TIME_FORMAT,
   LocalDateTime,
 } from "@loftlancer/ui/patterns/local-date-time";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
 import { useConfirm } from "@/hooks/use-confirm";
-import { toast } from "@/lib/toast";
+import { studioORPC } from "@/lib/orpc";
 import { Can } from "@/shared/permissions/shared.permissions.can";
 import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { routes } from "@/utils/navigation";
-import { trpc } from "@/utils/trpc";
+import {
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
 
 export function OrganizationMemberProfiles({
   memberId,
@@ -28,50 +30,31 @@ export function OrganizationMemberProfiles({
   organizationSlug: string;
   onClose: () => void;
 }) {
-  const client = useQueryClient();
-  const members = useQuery(trpc.organizations.listMembers.queryOptions());
-  const access = useQuery(
-    trpc.organizations.getMemberAccessSummary.queryOptions({ memberId }),
+  const members = useOrganizationOperationQuery("members", {}, () =>
+    studioORPC.organizations.members({}),
+  );
+  const access = useOrganizationOperationQuery(
+    "memberAccessSummary",
+    { memberId },
+    () => studioORPC.organizations.memberAccessSummary({ memberId }),
   );
   const profilePermission = useCan("member.profile.update");
   const [drafts, setDrafts] = useState<
     Record<string, { jobTitle: string; department: string }>
   >({});
   const { confirm, ConfirmDialog } = useConfirm();
-  const update = useMutation(
-    trpc.organizations.updateMemberProfile.mutationOptions({
-      onSuccess: () => {
-        toast.success("Member profile updated");
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.listMembers.queryKey(),
-        });
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.getMemberAccessSummary.queryKey({
-            memberId,
-          }),
-        });
-      },
-      onError: (error) => toast.error(error.message),
-    }),
+  const update = useOrganizationOperationMutation(
+    "member.profile.update",
+    (input: {
+      memberId: string;
+      jobTitle: string | null;
+      department: string | null;
+    }) => studioORPC.organizations.updateMemberProfile(input),
   );
-  const suspension = useMutation(
-    trpc.organizations.setMemberSuspended.mutationOptions({
-      onSuccess: () => {
-        toast.success("Member access updated");
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.listMembers.queryKey(),
-        });
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.listCustomRoles.queryKey(),
-        });
-        void client.invalidateQueries({
-          queryKey: trpc.organizations.getMemberAccessSummary.queryKey({
-            memberId,
-          }),
-        });
-      },
-      onError: (error) => toast.error(error.message),
-    }),
+  const suspension = useOrganizationOperationMutation(
+    "member.suspend",
+    (input: { memberId: string; suspended: boolean; reason?: string }) =>
+      studioORPC.organizations.setMemberSuspended(input),
   );
 
   return (

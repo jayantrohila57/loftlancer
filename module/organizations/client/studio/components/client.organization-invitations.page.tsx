@@ -9,7 +9,7 @@ import {
   EmptyTitle,
 } from "@loftlancer/ui/empty";
 import { Skeleton } from "@loftlancer/ui/skeleton";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { invitationsEmpty } from "@/components/data-table/data-table-empty-presets";
 import {
@@ -25,12 +25,16 @@ import {
   pendingOrganizationInvitations,
   sortOrganizationInvitations,
 } from "@/lib/organization-invitations";
-import { toast } from "@/lib/toast";
-import { BulkInviteDialog } from "@/module/organizations/organizations.bulk.invite.dialog";
-import { OrganizationSectionPage } from "@/module/organizations/organizations.section";
-import { useOrganizationBySlug } from "@/module/organizations/organizations.use.organization.by.slug";
+import { studioORPC } from "@/lib/orpc";
 import { Can } from "@/shared/permissions/shared.permissions.can";
-import { trpc } from "@/utils/trpc";
+import { useOrganizationBySlug } from "../hooks/client.use-organization-by-slug.hook";
+import {
+  organizationQueryKeys,
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
+import { BulkInviteDialog } from "./client.bulk-invite.dialog";
+import { OrganizationSectionPage } from "./client.organization-section.page";
 
 export function OrganizationInvitationsPage({ slug }: { slug: string }) {
   const queryClient = useQueryClient();
@@ -46,34 +50,37 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [resendingId, setResendingId] = useState<string | null>(null);
-  const revoke = useMutation(
-    trpc.organizations.revokeInvitation.mutationOptions(),
+  const revoke = useOrganizationOperationMutation(
+    "invitation.cancel",
+    (input: { invitationId: string }) =>
+      studioORPC.organizations.invitationRevoke(input),
   );
-  const resend = useMutation(
-    trpc.organizations.resendInvitation.mutationOptions(),
+  const resend = useOrganizationOperationMutation(
+    "member.invite",
+    (input: { invitationId: string }) =>
+      studioORPC.organizations.invitationResend(input),
   );
-  const listQuery = useQuery({
-    ...trpc.organizations.listInvitations.queryOptions({
-      organizationId: organization?.id ?? "",
-      status,
-      search: search.trim() || undefined,
-      limit: INVITATION_PAGE_SIZE,
-      offset: page * INVITATION_PAGE_SIZE,
-    }),
-    enabled: Boolean(organization?.id),
-    placeholderData: (prev) => prev,
-  });
+  const invitationInput = {
+    organizationId: organization?.id ?? "",
+    status,
+    search: search.trim() || undefined,
+    limit: INVITATION_PAGE_SIZE,
+    offset: page * INVITATION_PAGE_SIZE,
+  };
+  const listQuery = useOrganizationOperationQuery(
+    "invitationList",
+    invitationInput,
+    () => studioORPC.organizations.invitationList(invitationInput),
+    Boolean(organization?.id),
+  );
   const invitations = (listQuery.data?.rows ??
     []) as OrganizationInvitationRow[];
   const counts = listQuery.data?.counts;
   const total = listQuery.data?.total ?? 0;
   const loading = listQuery.isPending;
   const loadInvitations = useCallback(
-    async (_organizationId: string) => {
-      await queryClient.invalidateQueries({
-        queryKey: trpc.organizations.listInvitations.pathKey(),
-      });
-    },
+    async (_organizationId: string) =>
+      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all }),
     [queryClient],
   );
 
@@ -81,19 +88,10 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     if (!organization?.id) return;
     setRevokingId(invitationId);
     try {
-      await toast.promise(revoke.mutateAsync({ invitationId }), {
-        loading: "Revoking invitation…",
-        success: "Invitation revoked",
-        error: "Could not revoke invitation",
-      });
-      await loadInvitations(organization.id);
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === "Revoke is not available for this organization."
-      ) {
-        toast.error(error.message);
-      }
+      const response = await revoke.mutateAsync({ invitationId });
+      if (response.status !== "success") throw new Error(response.message);
+    } catch {
+      // The operation hook presents the response or transport error.
     } finally {
       setRevokingId(null);
     }
@@ -103,12 +101,8 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
     if (!organization?.id) return;
     setResendingId(invite.id);
     try {
-      await toast.promise(resend.mutateAsync({ invitationId: invite.id }), {
-        loading: "Resending invitation…",
-        success: "Invitation resent",
-        error: "Could not resend invitation",
-      });
-      await loadInvitations(organization.id);
+      const response = await resend.mutateAsync({ invitationId: invite.id });
+      if (response.status !== "success") throw new Error(response.message);
     } finally {
       setResendingId(null);
     }
@@ -143,7 +137,8 @@ export function OrganizationInvitationsPage({ slug }: { slug: string }) {
         />
       ) : orgStatus === "loading" || !organization ? (
         <Skeleton className="h-48 w-full rounded-xl" />
-      ) : listQuery.isError ? (
+      ) : listQuery.isError ||
+        (listQuery.response && listQuery.response.status !== "success") ? (
         <ErrorState
           title="Could not load invitations"
           description="Try loading the invitations again."

@@ -1,26 +1,29 @@
 "use client";
 
-import type { StudioRouter } from "@loftlancer/api/routers/studio";
 import { Button } from "@loftlancer/ui/button";
 import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
-import { useQuery } from "@tanstack/react-query";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
-import type { inferRouterOutputs } from "@trpc/server";
 import Link from "next/link";
 import { useMemo } from "react";
+import { ErrorState } from "@/components/patterns/error-state";
 import { appIcons } from "@/lib/icons";
 import { routes } from "@/utils/navigation";
-import { trpc } from "@/utils/trpc";
+import type { OrganizationMyInvitationsOutput } from "../../../utils/validation/utils.organization-invitations.validation";
+import { useMyOrganizationInvitations } from "../hooks/client.use-my-organization-invitations.hook";
 
-type InvitationItem =
-  inferRouterOutputs<StudioRouter>["organizations"]["listMyInvitations"]["items"][number];
-
+type InvitationItem = OrganizationMyInvitationsOutput["items"][number];
 const columnHelper = legacyCreateColumnHelper<InvitationItem>();
 
-export function OrganizationsListInvitations() {
-  const query = useQuery(trpc.organizations.listMyInvitations.queryOptions());
+export function MyOrganizationInvitationsList() {
+  const query = useMyOrganizationInvitations();
+  const items =
+    query.data?.status === "success" &&
+    query.data.data !== null &&
+    !Array.isArray(query.data.data)
+      ? query.data.data.items
+      : [];
   const columns = useMemo(
     () => [
       columnHelper.accessor("organizationName", {
@@ -65,7 +68,16 @@ export function OrganizationsListInvitations() {
     [],
   );
 
-  if (!query.isPending && (query.data?.items.length ?? 0) === 0) {
+  if (query.isError || (query.data && query.data.status !== "success")) {
+    return (
+      <ErrorState
+        title="Invitations unavailable"
+        description="Could not load invitations sent to you."
+        onRetry={() => void query.refetch()}
+      />
+    );
+  }
+  if (!query.isPending && items.length === 0) {
     return (
       <EmptyState
         icon={appIcons.invite}
@@ -74,10 +86,9 @@ export function OrganizationsListInvitations() {
       />
     );
   }
-
   return (
     <DataTable
-      data={query.data?.items ?? []}
+      data={items}
       columns={columns}
       isLoading={query.isPending}
       caption="Invitations sent to you"

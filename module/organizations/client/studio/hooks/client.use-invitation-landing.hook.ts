@@ -4,21 +4,31 @@ import { resolveAuthAppOrigin, studioHomeUrl } from "@loftlancer/ui/auth-links";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { studioORPC } from "@/lib/orpc";
 import { useSession } from "@/module/auth/auth.auth.actions";
 import {
   classifyInvitationAccessFailure,
   getInvitationSignInUrl,
-} from "@/module/organizations/organizations.invitation.access";
-import { trpc } from "@/utils/trpc";
+} from "../../../utils/utils.invitation-access";
+import { useOrganizationOperationMutation } from "./client.use-organization-operation.hook";
 
 export function useInvitationLanding(invitationId: string) {
   const queryClient = useQueryClient();
   const { data: session, isPending: sessionPending } = useSession();
   const [declined, setDeclined] = useState(false);
-  const previewQuery = useQuery(
-    trpc.organizations.getInvitationPreview.queryOptions({ invitationId }),
-  );
-  const preview = previewQuery.data;
+  const previewQuery = useQuery({
+    queryKey: ["organizations", "invitation-preview", invitationId],
+    queryFn: () => studioORPC.organizations.invitationPreview({ invitationId }),
+    staleTime: 15_000,
+    meta: { toastOnError: false },
+  });
+  const previewResponse = previewQuery.data;
+  const preview =
+    previewResponse?.status === "success" &&
+    previewResponse.data !== null &&
+    !Array.isArray(previewResponse.data)
+      ? previewResponse.data
+      : undefined;
 
   const detailsQuery = useQuery({
     queryKey: [
@@ -52,16 +62,26 @@ export function useInvitationLanding(invitationId: string) {
     },
     onSuccess: () => queryClient.clear(),
   });
-  const acceptProjectMutation = useMutation(
-    trpc.organizations.acceptProjectInvitation.mutationOptions({
-      onSuccess: () => queryClient.clear(),
-    }),
+  const acceptProjectMutation = useOrganizationOperationMutation(
+    "invitation.accept",
+    (input: { invitationId: string }) =>
+      studioORPC.organizations.acceptProjectInvitation(input),
+    { responseToast: false, onSuccess: () => queryClient.clear() },
   );
-  const acceptTeamMutation = useMutation(
-    trpc.organizations.acceptTeamInvitation.mutationOptions({
-      onSuccess: () => queryClient.clear(),
-    }),
+  const acceptTeamMutation = useOrganizationOperationMutation(
+    "invitation.accept",
+    (input: { invitationId: string }) =>
+      studioORPC.organizations.acceptTeamInvitation(input),
+    { responseToast: false, onSuccess: () => queryClient.clear() },
   );
+
+  const acceptThroughOrganization = async (
+    mutation: typeof acceptProjectMutation,
+  ) => {
+    const response = await mutation.mutateAsync({ invitationId });
+    if (response.status !== "success") throw new Error(response.message);
+    return response.data;
+  };
 
   const rejectMutation = useMutation({
     mutationFn: async () => {
@@ -89,7 +109,9 @@ export function useInvitationLanding(invitationId: string) {
     sessionPending,
     preview,
     previewPending: previewQuery.isPending,
-    previewError: previewQuery.isError,
+    previewError:
+      previewQuery.isError ||
+      (previewResponse !== undefined && previewResponse.status !== "success"),
     refetchPreview: previewQuery.refetch,
     details: detailsQuery.data,
     detailsPending:
@@ -98,10 +120,10 @@ export function useInvitationLanding(invitationId: string) {
     accessFailure,
     declined,
     acceptInvitation: () =>
-      preview?.status !== "not_found" && preview?.projectId
-        ? acceptProjectMutation.mutateAsync({ invitationId })
-        : preview?.teamId
-          ? acceptTeamMutation.mutateAsync({ invitationId })
+      preview && preview.status !== "not_found" && preview.projectId
+        ? acceptThroughOrganization(acceptProjectMutation)
+        : preview && preview.status !== "not_found" && preview.teamId
+          ? acceptThroughOrganization(acceptTeamMutation)
           : acceptMutation.mutateAsync(),
     accepting:
       acceptMutation.isPending ||

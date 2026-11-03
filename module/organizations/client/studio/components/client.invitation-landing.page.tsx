@@ -7,8 +7,8 @@ import type { ReactNode } from "react";
 import { useConfirm } from "@/hooks/use-confirm";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/lib/toast";
-import { useInvitationLanding } from "@/module/organizations/organizations.use.invitation.landing";
 import { routes } from "@/utils/navigation";
+import { useInvitationLanding } from "../hooks/client.use-invitation-landing.hook";
 
 export function InvitationLandingPage({
   invitationId,
@@ -25,7 +25,7 @@ export function InvitationLandingPage({
       if (kind === "accept") {
         await invite.acceptInvitation();
         toast.success("Invitation accepted");
-        if (preview?.organizationSlug) {
+        if (preview && preview.status !== "not_found") {
           router.replace(
             preview.projectSlug
               ? routes.project(preview.organizationSlug, preview.projectSlug)

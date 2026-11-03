@@ -3,37 +3,30 @@
 import { Button } from "@loftlancer/ui/button";
 import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "@/lib/toast";
+import { studioORPC } from "@/lib/orpc";
 import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
-import { trpc } from "@/utils/trpc";
+import {
+  useOrganizationOperationMutation,
+  useOrganizationOperationQuery,
+} from "../hooks/client.use-organization-operation.hook";
 
 export function OrganizationLifecycleSection() {
-  const queryClient = useQueryClient();
-  const profile = useQuery(trpc.organizations.getProfile.queryOptions());
+  const profile = useOrganizationOperationQuery("getProfile", {}, () =>
+    studioORPC.organizations.getProfile({}),
+  );
   const canArchive = useCan("organization.archive").allowed;
   const canRestore = useCan("organization.unarchive").allowed;
   const [confirmOpen, setConfirmOpen] = useState(false);
   const archived = Boolean(profile.data?.archivedAt);
-  const archive = useMutation(
-    trpc.organizations.archive.mutationOptions({
-      onSuccess: async () => {
-        setConfirmOpen(false);
-        await queryClient.invalidateQueries();
-        toast.success("Organization archived.");
-      },
-      onError: () => toast.error("Could not archive the organization."),
-    }),
+  const archive = useOrganizationOperationMutation(
+    "organization.archive",
+    () => studioORPC.organizations.archive({}),
+    { onSuccess: () => setConfirmOpen(false) },
   );
-  const restore = useMutation(
-    trpc.organizations.unarchive.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries();
-        toast.success("Organization restored.");
-      },
-      onError: () => toast.error("Could not restore the organization."),
-    }),
+  const restore = useOrganizationOperationMutation(
+    "organization.unarchive",
+    () => studioORPC.organizations.unarchive({}),
   );
 
   return (

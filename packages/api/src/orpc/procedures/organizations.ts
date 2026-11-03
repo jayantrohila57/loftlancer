@@ -22,6 +22,7 @@ import {
 } from "@module/organizations/server/controller/server.organization-member-admin.controller";
 import { organizationMemberRemoveController } from "@module/organizations/server/controller/server.organization-member-remove.controller";
 import { organizationMembersController } from "@module/organizations/server/controller/server.organization-members.controller";
+import { organizationMyInvitationsController } from "@module/organizations/server/controller/server.organization-my-invitations.controller";
 import {
   organizationRoleAssignController,
   organizationRoleCreateController,
@@ -68,6 +69,7 @@ import {
   organizationInvitationIdInputSchema,
   organizationInvitationListInputSchema,
   organizationInvitationPreviewInputSchema,
+  organizationMyInvitationsInputSchema,
 } from "@module/organizations/utils/validation/utils.organization-invitations.validation";
 import { organizationListInputSchema } from "@module/organizations/utils/validation/utils.organization-list.validation";
 import {
@@ -110,6 +112,18 @@ export const organizationsProcedures = {
     .input(organizationInvitationListInputSchema)
     .handler(({ input, context }) =>
       organizationInvitationListController({ input, ctx: context }),
+    ),
+  myInvitations: protectedProcedure
+    .input(organizationMyInvitationsInputSchema)
+    .handler(({ input, context }) =>
+      organizationMyInvitationsController({
+        input,
+        ctx: {
+          ...context,
+          email: context.session.user.email,
+          emailVerified: context.session.user.emailVerified,
+        },
+      }),
     ),
   invitationCreate: protectedProcedure
     .input(organizationInvitationCreateInputSchema)

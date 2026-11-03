@@ -1,5 +1,5 @@
-import { OrganizationMembersPage } from "./organizations.members.content";
-import { OrganizationSectionPage } from "./organizations.section";
+import { OrganizationMembersPage } from "../components/client.organization-members.content";
+import { OrganizationSectionPage } from "../components/client.organization-section.page";
 
 export function OrganizationMembersPageView({ slug }: { slug: string }) {
   return (

@@ -20,6 +20,11 @@ export const organizationInvitationListInputSchema = z
   })
   .strict();
 
+export const organizationMyInvitationsInputSchema = z
+  .object({})
+  .strict()
+  .default({});
+
 export const organizationInvitationCreateInputSchema = z
   .object({
     organizationId: z.string().min(1),
@@ -66,6 +71,20 @@ export const organizationInvitationListOutputSchema = z.object({
     canceled: z.number().int().nonnegative(),
   }),
   total: z.number().int().nonnegative(),
+});
+
+export const organizationMyInvitationsOutputSchema = z.object({
+  items: z.array(
+    z.object({
+      id: z.string(),
+      organizationName: z.string(),
+      organizationSlug: z.string(),
+      role: z.string(),
+      inviterName: z.string().nullable(),
+      createdAt: z.date(),
+      expiresAt: z.date(),
+    }),
+  ),
 });
 
 export const organizationInvitationCreateOutputSchema = z.object({
@@ -130,6 +149,9 @@ export type OrganizationInvitationAcceptInput = z.infer<
 >;
 export type OrganizationInvitationListOutput = z.infer<
   typeof organizationInvitationListOutputSchema
+>;
+export type OrganizationMyInvitationsOutput = z.infer<
+  typeof organizationMyInvitationsOutputSchema
 >;
 export type OrganizationInvitationCreateOutput = z.infer<
   typeof organizationInvitationCreateOutputSchema

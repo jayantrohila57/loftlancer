@@ -28,7 +28,7 @@ Compatibility tRPC and MCP adapters should call the same module controllers and 
 
 ## Current migration state
 
-This is a partial migration. Organization list, get-by-slug, get-profile, member list/remove, invitation list/create/revoke/resend/preview, team/project invitation acceptance, organization settings/profile/branding, custom-role operations, security domains, lifecycle, and member administration now have module validations, services, and controllers. Shared invitation email parsing and invitation utilities are in this module, and invitation persistence/delivery is implemented by `server.invitation-create.service.ts`. Teams' invitation flow and the organization MCP invitation operation reuse that service. The organization directory, create flow, organization shell, tabs, and overview now live in `client/studio/`; their Studio route files are thin module exports and migrated reads use native oRPC. Creation remains on Better Auth's organization-create API until a module create operation is introduced. Phase-2 screens and compatibility adapters remain in the legacy paths until their linked slices migrate them.
+This is a partial migration. Organization list, get-by-slug, get-profile, member list/remove, invitation list/create/revoke/resend/preview, the signed-in user's inbound invitations, team/project invitation acceptance, organization settings/profile/branding, custom-role operations, security domains, lifecycle, and member administration now have module validations, services, and controllers. Shared invitation email parsing and invitation utilities are in this module, and invitation persistence/delivery is implemented by `server.invitation-create.service.ts`. Teams' invitation flow and the organization MCP invitation operation reuse that service. The organization directory, create flow, organization shell, tabs, overview, settings, members, roles, invitations, and public invitation landing now live in `client/studio/`; their Studio route files are thin module exports and migrated reads and writes use native oRPC. Creation remains on Better Auth's organization-create API until a module create operation is introduced. Compatibility adapters and integration coverage remain for the final linked slice.
 
 ### Migration boundaries
 
@@ -82,8 +82,8 @@ module/organizations/
 │       └── server.invitation-create.service.ts
 ├── client/                 # organization client migration slices
 │   └── studio/
-│       ├── components/     # directory, create, card, and overview UI
-│       ├── hooks/          # oRPC-backed organization list and identity reads
+│       ├── components/     # directory, create, card, overview, settings, and membership UI
+│       ├── hooks/          # oRPC-backed organization operations and identity reads
 │       ├── layout/         # organization shell and tabs
 │       ├── rsc/            # Studio route boundaries and metadata
 │       ├── skeletons/      # organization list and overview route states
@@ -105,7 +105,7 @@ pnpm check-types
 
 The `organizations` namespace is registered in `packages/api/src/orpc/studio-router.ts`. Its typed procedures call module controllers only:
 
-- Reads: `list`, `getBySlug`, `getProfile`, `members`, `invitationList`, `invitationPreview`, `settings`, `customRoles`, `securityDomains`, `memberAccessSummary`.
+- Reads: `list`, `getBySlug`, `getProfile`, `members`, `myInvitations`, `invitationList`, `invitationPreview`, `settings`, `customRoles`, `securityDomains`, `memberAccessSummary`.
 - Invitations: `invitationCreate`, `invitationRevoke`, `invitationResend`, `acceptTeamInvitation`, `acceptProjectInvitation`.
 - Settings and administration: `updateSettings`, `updateProfile`, `updateBrandingLogo`, `createCustomRole`, `updateCustomRole`, `deleteCustomRole`, `assignCustomRole`, `createSecurityDomain`, `verifySecurityDomain`, `revokeSecurityDomain`, `archive`, `unarchive`, `transferOwnership`, `updateMemberProfile`, `setMemberSuspended`, `removeMember`.
 
@@ -123,7 +123,7 @@ Implement in this order; do not skip ahead of an open dependency:
 | [#973](https://github.com/jayantrohila57/loftlancer/issues/973) | C — settings, branding, roles, domains, lifecycle, member administration | Implemented on this branch |
 | [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | D — native oRPC organizations | Implemented on this branch |
 | [#975](https://github.com/jayantrohila57/loftlancer/issues/975) | E — client migration, phase 1 | Implemented on this branch |
-| [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | F — client migration, phase 2 | Open |
+| [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | F — client migration, phase 2 | Implemented on this branch |
 | [#977](https://github.com/jayantrohila57/loftlancer/issues/977) | G — compatibility adapters, integration, baseline, final verification | Open |
 
 ## TODO (blocked)
