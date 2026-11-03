@@ -94,5 +94,10 @@ Track open chunks in GitHub; update this table when filing sub-tasks.
 | Sub-issue | Scope | Status |
 |-----------|--------|--------|
 | #916 / #918 | Parent migration | merged to `dev` |
+| [#920](https://github.com/jayantrohila57/loftlancer/issues/920) | Architecture 100% parent | open |
+| [#921](https://github.com/jayantrohila57/loftlancer/issues/921) | A — controller outbound parse | open |
+| [#922](https://github.com/jayantrohila57/loftlancer/issues/922) | B — oRPC Zod inputs | open |
+| [#923](https://github.com/jayantrohila57/loftlancer/issues/923) | C — legacy unwrap | open |
+| [#924](https://github.com/jayantrohila57/loftlancer/issues/924) | D — empty baseline + docs | open |
 
 GitHub exposed no open Loftlancer project when issue #916 was created, so no project item could be attached.

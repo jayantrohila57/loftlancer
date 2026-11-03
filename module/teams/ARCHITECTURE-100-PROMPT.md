@@ -12,7 +12,7 @@ Bring **`module/teams`** on branch **`dev`** to **100% compliance** with loftlan
 
 **Do not** copy legacy `apps/studio/src/module/*` or `packages/api/src/modules/*` as templates. Follow **`module/teams/README.md`**, **`module/teams/server/controller/server.team-create.controller.ts`** (gold pattern), **`docs/gaps/contracts.md`**, **`.cursor/rules/agent-workflow.mdc`**.
 
-Open or use a **parent GitHub issue** (e.g. “Teams architecture debt burn-down”). Split work into **sub-issues**; **one commit per sub-issue** (`Fixes #sub`); PR targets **`dev`** only.
+**Parent:** [#920](https://github.com/jayantrohila57/loftlancer/issues/920). Sub-issues: **[#921](https://github.com/jayantrohila57/loftlancer/issues/921)** (A), **[#922](https://github.com/jayantrohila57/loftlancer/issues/922)** (B), **[#923](https://github.com/jayantrohila57/loftlancer/issues/923)** (C), **[#924](https://github.com/jayantrohila57/loftlancer/issues/924)** (D). One commit per sub-issue (`Fixes #sub` · `Refs #920`); PR targets **`dev`** only. Branch: `feat/920-teams-architecture-100`.
 
 ---
 
@@ -42,7 +42,7 @@ Update **`module/teams/README.md`**: clear **TODO (blocked)** architecture row; 
 
 ## Sub-issue plan (implement in order)
 
-### Sub-issue A — Controller outbound ServiceResponse (17 controllers)
+### Sub-issue A — Controller outbound ServiceResponse (17 controllers) · [#921](https://github.com/jayantrohila57/loftlancer/issues/921)
 
 These **fail** strict audit today (must match **create** controller):
 
@@ -72,11 +72,11 @@ These **fail** strict audit today (must match **create** controller):
 
 Use the correct **output Zod** per operation (DTO, list, void, etc.) from `utils.team.dto`, `utils.team-extended.validation`, or per-operation validation files.
 
-**Commit:** `Fixes #A` · run `pnpm audit:module-architecture` (strict count should drop by 17).
+**Commit:** `Fixes #921` · `Refs #920` · run `pnpm audit:module-architecture` (strict count should drop by 17).
 
 ---
 
-### Sub-issue B — oRPC: remove `z.unknown()` / `teamControllerInputSchema`
+### Sub-issue B — oRPC: remove `z.unknown()` / `teamControllerInputSchema` · [#922](https://github.com/jayantrohila57/loftlancer/issues/922)
 
 **File:** `packages/api/src/orpc/procedures/teams.ts`
 
@@ -86,29 +86,29 @@ Use the correct **output Zod** per operation (DTO, list, void, etc.) from `utils
 
 **Optional cleanup:** delete or narrow `teamControllerInputSchema` if nothing legitimate needs `z.unknown()`.
 
-**Commit:** `Fixes #B` · strict audit must clear `orpc-input-schema:...teams.ts`.
+**Commit:** `Fixes #922` · `Refs #920` · strict audit must clear `orpc-input-schema:...teams.ts`.
 
 ---
 
-### Sub-issue C — Legacy unwrap in `packages/api/src/modules/teams`
+### Sub-issue C — Legacy unwrap in `packages/api/src/modules/teams` · [#923](https://github.com/jayantrohila57/loftlancer/issues/923)
 
 **File:** `packages/api/src/modules/teams/api/api.get-teams.ts`
 
 - **Remove** `unwrapTeam*` usage here (audit only allows unwrap in tRPC router, MCP, `module/teams/server/handlers/server.legacy-response.handler.ts`).
 - Route this caller through **module controller + ServiceResponse**, or through an **allowlisted** adapter (e.g. thin tRPC/MCP wrapper), without spreading unwrap into `packages/api/src/modules/teams`.
 
-**Commit:** `Fixes #C` · strict audit must clear `legacy-unwrap:...api.get-teams.ts`.
+**Commit:** `Fixes #923` · `Refs #920` · strict audit must clear `legacy-unwrap:...api.get-teams.ts`.
 
 ---
 
-### Sub-issue D — Baseline + docs (final)
+### Sub-issue D — Baseline + docs (final) · [#924](https://github.com/jayantrohila57/loftlancer/issues/924)
 
 - Run **`node scripts/audit-module-architecture.mjs --write-baseline`** → **`scripts/audit-module-architecture-baseline.json`** with **`"ids": []`**.
 - **`pnpm verify:dev-merge`**
 - Update **`module/teams/README.md`** (architecture TODO cleared).
 - **CHANGELOG** `[Unreleased]`.
 
-**Commit:** `Fixes #D` · PR to **`dev`** with full sub-issue list in description.
+**Commit:** `Fixes #924` · close parent with PR (`Closes #920`) · PR to **`dev`** listing #921–#924.
 
 ---
 
@@ -134,7 +134,7 @@ Do **not** expand scope beyond teams + minimal transport/legacy touch for C.
 
 ## Branch
 
-From **`dev`**: `feat/<parent>-teams-architecture-100`
+From **`dev`**: `feat/920-teams-architecture-100`
 
 When finished, report: strict audit output, baseline file snippet (`ids` length), and `pnpm verify:dev-merge` result.
 
