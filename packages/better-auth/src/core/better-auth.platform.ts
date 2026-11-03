@@ -75,11 +75,11 @@ export function createPlatformAuth() {
   });
 
   // Single-project deploy: auth app lives under a Next basePath (e.g. `/better-auth`), so
-  // Better Auth must run at origin + `/better-auth/api/better-auth` (not derive `/better-auth` from the URL path).
+  // Better Auth must run at origin + `<basePath>/api/auth` (matches `app/api/auth/[...all]`).
   const parsedBase = new URL(baseURL);
   const appPath = parsedBase.pathname.replace(/\/$/, "");
   const authOrigin = appPath ? parsedBase.origin : baseURL;
-  const authBasePath = appPath ? `${appPath}/api/better-auth` : undefined;
+  const authBasePath = appPath ? `${appPath}/api/auth` : undefined;
 
   return betterAuth({
     baseURL: authOrigin,

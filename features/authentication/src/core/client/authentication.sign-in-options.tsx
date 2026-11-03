@@ -87,12 +87,12 @@ export function SignInOptions({
     if (!address) return;
     onMagicLinkSubmit?.();
     setMagic({ status: "sending" });
-    const finish = new URL(`${auth}/api/better-auth/cross-app/finish`);
+    const finish = new URL(`${auth}/api/auth/cross-app/finish`);
     finish.searchParams.set("return_to", returnTo ?? studioHomeUrl());
     const errorUrl = new URL(errorPath, window.location.origin);
     errorUrl.searchParams.set("auth_error", "magic_link");
     try {
-      const res = await fetch(`${auth}/api/better-auth/sign-in/magic-link`, {
+      const res = await fetch(`${auth}/api/auth/sign-in/magic-link`, {
         method: "POST",
         credentials: "include",
         headers: { "content-type": "application/json" },
