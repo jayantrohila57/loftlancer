@@ -26,4 +26,12 @@ describe("validateReturnTo", () => {
     });
     assert.equal(result, "https://loftlancer.com/studio/acme");
   });
+
+  it("rejects vbscript: URLs", () => {
+    const result = validateReturnTo("vbscript:MsgBox(1)", {
+      allowedOrigins: ["https://loftlancer.com"],
+      fallback: "https://loftlancer.com/studio/acme",
+    });
+    assert.equal(result, "https://loftlancer.com/studio/acme");
+  });
 });

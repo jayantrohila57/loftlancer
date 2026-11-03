@@ -85,13 +85,6 @@ export * from "./shell.platform-urls";
 export * from "./shell.studio-routes";
 `,
   );
-  writeFileSync(
-    join(base, "core/client/index.ts"),
-    readFileSync(join(base, "core/client/index.ts"), "utf8").replace(
-      "./shell.",
-      "./shell.",
-    ),
-  );
 }
 
 /** patterns: client + shared → core/client, utils, tests, config */

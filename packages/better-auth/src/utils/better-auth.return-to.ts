@@ -4,6 +4,26 @@ import {
   trimTrailingSlash,
 } from "../config/better-auth.platform-urls";
 
+const DISALLOWED_URL_SCHEMES = [
+  "javascript:",
+  "data:",
+  "vbscript:",
+  "file:",
+] as const;
+
+function hasDisallowedUrlScheme(raw: string): boolean {
+  const lower = raw.trim().toLowerCase();
+  if (DISALLOWED_URL_SCHEMES.some((scheme) => lower.startsWith(scheme))) {
+    return true;
+  }
+  try {
+    const protocol = new URL(raw.trim()).protocol.toLowerCase();
+    return (DISALLOWED_URL_SCHEMES as readonly string[]).includes(protocol);
+  } catch {
+    return false;
+  }
+}
+
 function isAllowedReturnOrigin(
   origin: string,
   allowedOrigins: readonly string[],
@@ -16,7 +36,7 @@ function isAllowedReturnOrigin(
 
 /**
  * Validate absolute HTTPS `return_to` against the production allowlist (Decision 12).
- * Rejects missing scheme, javascript:, and non-allowlisted hosts.
+ * Rejects missing scheme, dangerous URL schemes (javascript:, data:, vbscript:, file:), and non-allowlisted hosts.
  */
 export function validateReturnTo(
   raw: string | null | undefined,
@@ -35,16 +55,15 @@ export function validateReturnTo(
   }
 
   const trimmed = raw.trim();
+  if (hasDisallowedUrlScheme(trimmed)) {
+    return fallback;
+  }
+
   const isHttps = trimmed.startsWith("https://");
   const isLocalHttp =
     trimmed.startsWith("http://localhost") ||
     trimmed.startsWith("http://127.0.0.1");
   if (!isHttps && !isLocalHttp) {
-    return fallback;
-  }
-
-  const lower = trimmed.toLowerCase();
-  if (lower.startsWith("javascript:") || lower.startsWith("data:")) {
     return fallback;
   }
 
