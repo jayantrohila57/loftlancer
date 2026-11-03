@@ -81,7 +81,7 @@ Browser QA: create → overview, all tabs, project link/unlink, invitations, key
 
 | Item | Notes |
 |------|--------|
-| Architecture baseline | Controllers missing outbound `serviceResponseSchema.parse`; oRPC `z.unknown()` input — run `pnpm audit:module-architecture --strict`, then shrink baseline |
+| Architecture baseline | Controllers missing outbound `serviceResponseSchema.parse`; oRPC `z.unknown()` input — agent handoff: [ARCHITECTURE-100-PROMPT.md](./ARCHITECTURE-100-PROMPT.md) |
 
 Pilot checklist items in git history **do not override** CI or the audit.
 
