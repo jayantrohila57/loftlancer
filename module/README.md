@@ -16,7 +16,7 @@ Product feature code lives here: `module/<domain>/{utils,server,client}/`. Cross
 | `environments` | `apps/studio/src/module/environments` | |
 | `files` | — | API in `packages/api/src/modules/files` |
 | `notifications` | `apps/studio/src/module/notifications` | |
-| `organizations` | `apps/studio/src/module/organizations` | |
+| `organizations` | `apps/studio/src/module/organizations` | [organizations/README.md](./organizations/README.md) |
 | `overview` | `apps/studio/src/module/overview` | Org home |
 | `projects` | `apps/studio/src/module/projects` | |
 | `support` | `apps/studio/src/module/support` | |

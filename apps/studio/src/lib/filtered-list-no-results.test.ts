@@ -28,12 +28,15 @@ test("organization directory keeps cards and uses shared search and sort control
   const list = readFileSync(
     join(
       root,
-      "module/organizations/organizations.organizations.list.content.tsx",
+      "../../../module/organizations/client/studio/components/client.organization-list.content.tsx",
     ),
     "utf8",
   );
   const card = readFileSync(
-    join(root, "module/organizations/organizations.organization.card.tsx"),
+    join(
+      root,
+      "../../../module/organizations/client/studio/components/client.organization-card.tsx",
+    ),
     "utf8",
   );
   assert.match(list, /OrganizationCard/);

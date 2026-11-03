@@ -1,8 +1,4 @@
 import type { ActionName } from "@loftlancer/actions";
-import {
-  DEFAULT_TEAM_PROJECT_GRANTS,
-  mergeProjectMemberGrants,
-} from "@loftlancer/actions";
 import type { WriteAuthAuditEventInput } from "@loftlancer/auth/audit-event";
 import { writeAuthAuditEvent } from "@loftlancer/auth/audit-event";
 import {
@@ -29,9 +25,9 @@ import {
   projectManager,
   projectMemberGrant,
 } from "@loftlancer/db/schema/project-access";
-import { project } from "@loftlancer/db/schema/projects";
 import { team, teamMember } from "@loftlancer/db/schema/team";
 import { isSoftDeletesEnabled } from "@loftlancer/env/soft-deletes";
+import { organizationInvitationAcceptController } from "@module/organizations/server/controller/server.organization-invitation-accept.controller";
 import { createOrganizationInvitation } from "@module/organizations/server/service/server.invitation-create.service";
 import { teamAvailableMembersController } from "@module/teams/server/controller/server.team-available-members.controller";
 import { teamCreateController } from "@module/teams/server/controller/server.team-create.controller";
@@ -47,7 +43,6 @@ import {
   unwrapTeamList,
   unwrapTeamObject,
 } from "@module/teams/server/handlers/server.legacy-response.handler";
-import { applyTeamProjectDefaults } from "@module/teams/server/service/server.team-project-defaults.service";
 import { and, eq, gt, inArray, isNull, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { writeAuditEvent } from "../actions/audit-event-writer";
@@ -777,241 +772,22 @@ export async function mcpInvitationAccept(
   invitationId: string,
 ) {
   const [actor] = await db
-    .select({ email: user.email })
+    .select({ emailVerified: user.emailVerified })
     .from(user)
     .where(eq(user.id, userId))
     .limit(1);
-  if (!actor?.email) throw new Error("invitation_email_mismatch");
-
-  const [candidate] = await db
-    .select({
-      email: invitation.email,
-      organizationId: invitation.organizationId,
-    })
-    .from(invitation)
-    .where(
-      activeInvitationWhere(
-        and(
-          eq(invitation.id, invitationId),
-          eq(invitation.status, "pending"),
-          gt(invitation.expiresAt, new Date()),
-        ),
-      ),
-    )
-    .limit(1);
-  if (!candidate) throw new Error("invitation_not_found");
+  const response = await organizationInvitationAcceptController({
+    input: { invitationId },
+    ctx: { userId, ip: null, userAgent: "loftlancer-mcp" },
+    emailVerified: actor?.emailVerified ?? false,
+  });
   if (
-    actor.email.trim().toLowerCase() !== candidate.email.trim().toLowerCase()
-  ) {
-    throw new Error("invitation_email_mismatch");
-  }
-  await requireOrgAction("invitation.accept", {
-    userId,
-    targetUserId: userId,
-  });
-
-  const accepted = await db.transaction(async (tx) => {
-    const [activeOrg] = await tx
-      .select({ id: organization.id })
-      .from(organization)
-      .where(
-        and(
-          eq(organization.id, candidate.organizationId),
-          isNull(organization.deletedAt),
-        ),
-      )
-      .for("update");
-    if (!activeOrg) throw new Error("organization_not_found");
-
-    const [invite] = await tx
-      .select({
-        id: invitation.id,
-        organizationId: invitation.organizationId,
-        email: invitation.email,
-        role: invitation.role,
-        inviterId: invitation.inviterId,
-        teamId: invitation.teamId,
-        projectId: invitation.projectId,
-      })
-      .from(invitation)
-      .where(
-        activeInvitationWhere(
-          and(
-            eq(invitation.id, invitationId),
-            eq(invitation.status, "pending"),
-            gt(invitation.expiresAt, new Date()),
-          ),
-        ),
-      )
-      .for("update");
-    if (!invite) throw new Error("invitation_not_found");
-    if (
-      invite.email.trim().toLowerCase() !== actor.email?.trim().toLowerCase()
-    ) {
-      throw new Error("invitation_email_mismatch");
-    }
-
-    const [existingMember] = await tx
-      .select({ id: member.id, suspendedAt: member.suspendedAt })
-      .from(member)
-      .where(
-        and(
-          eq(member.organizationId, invite.organizationId),
-          eq(member.userId, userId),
-          isNull(member.deletedAt),
-        ),
-      )
-      .limit(1);
-    if (existingMember?.suspendedAt)
-      throw new Error("organization_membership_suspended");
-    if (existingMember && !invite.projectId && !invite.teamId)
-      throw new Error("organization_membership_already_exists");
-
-    const memberId = existingMember?.id ?? crypto.randomUUID();
-    if (!existingMember) {
-      await tx.insert(member).values({
-        id: memberId,
-        organizationId: invite.organizationId,
-        userId,
-        role: invite.role,
-        invitedBy: invite.inviterId,
-        joinedAt: new Date(),
-      });
-    }
-
-    if (invite.teamId) {
-      const [teamRow] = await tx
-        .select({ id: team.id })
-        .from(team)
-        .where(
-          and(
-            eq(team.id, invite.teamId),
-            eq(team.organizationId, invite.organizationId),
-            isNull(team.deletedAt),
-          ),
-        )
-        .limit(1)
-        .for("update");
-      if (!teamRow) throw new Error("invitation_team_not_found");
-      const [existingTeamMember] = await tx
-        .select({ id: teamMember.id })
-        .from(teamMember)
-        .where(
-          and(
-            eq(teamMember.teamId, invite.teamId),
-            eq(teamMember.userId, userId),
-          ),
-        )
-        .limit(1);
-      if (!existingTeamMember) {
-        await tx.insert(teamMember).values({
-          id: crypto.randomUUID(),
-          teamId: invite.teamId,
-          userId,
-          role: "member",
-          addedBy: invite.inviterId,
-          updatedAt: new Date(),
-          updatedBy: invite.inviterId,
-        });
-        await tx
-          .update(team)
-          .set({ memberCount: sql`${team.memberCount} + 1` })
-          .where(eq(team.id, invite.teamId));
-      }
-      await applyTeamProjectDefaults(tx, {
-        organizationId: invite.organizationId,
-        teamId: invite.teamId,
-        userId,
-        actorUserId: userId,
-        role: invite.role,
-      });
-    }
-
-    if (invite.projectId) {
-      const [projectRow] = await tx
-        .select({ id: project.id })
-        .from(project)
-        .where(
-          and(
-            eq(project.id, invite.projectId),
-            eq(project.organizationId, invite.organizationId),
-            isNull(project.deletedAt),
-          ),
-        )
-        .limit(1)
-        .for("update");
-      if (!projectRow) throw new Error("invitation_project_not_found");
-      const [existingGrant] = await tx
-        .select({
-          id: projectMemberGrant.id,
-          grants: projectMemberGrant.grants,
-        })
-        .from(projectMemberGrant)
-        .where(
-          and(
-            eq(projectMemberGrant.organizationId, invite.organizationId),
-            eq(projectMemberGrant.projectId, invite.projectId),
-            eq(projectMemberGrant.userId, userId),
-            isNull(projectMemberGrant.deletedAt),
-          ),
-        )
-        .limit(1)
-        .for("update");
-      const grants = mergeProjectMemberGrants(
-        existingGrant?.grants ?? [],
-        DEFAULT_TEAM_PROJECT_GRANTS,
-      );
-      if (existingGrant) {
-        await tx
-          .update(projectMemberGrant)
-          .set({ grants, updatedBy: userId, updatedAt: new Date() })
-          .where(eq(projectMemberGrant.id, existingGrant.id));
-      } else {
-        await tx.insert(projectMemberGrant).values({
-          id: crypto.randomUUID(),
-          organizationId: invite.organizationId,
-          projectId: invite.projectId,
-          userId,
-          grants,
-          updatedBy: userId,
-        });
-      }
-    }
-
-    const [updatedInvite] = await tx
-      .update(invitation)
-      .set({
-        status: "accepted",
-        acceptedAt: new Date(),
-        acceptedBy: userId,
-        updatedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(invitation.id, invite.id),
-          eq(invitation.organizationId, invite.organizationId),
-          eq(invitation.status, "pending"),
-        ),
-      )
-      .returning({ id: invitation.id });
-    if (!updatedInvite) throw new Error("invitation_not_pending");
-    return { memberId, organizationId: invite.organizationId };
-  });
-
-  await recordMutationAudit({
-    action: "invitation.accept",
-    result: "success",
-    actorUserId: userId,
-    organizationId: accepted.organizationId,
-    entityId: invitationId,
-    targetUserId: userId,
-    payload: { invitationId },
-  });
-  return {
-    ...accepted,
-    invitationId,
-    status: "accepted",
-  };
+    response.status === "success" &&
+    response.data &&
+    !Array.isArray(response.data)
+  )
+    return response.data;
+  throw new Error(response.message || "invitation_accept_failed");
 }
 
 export async function mcpInvitationReject(

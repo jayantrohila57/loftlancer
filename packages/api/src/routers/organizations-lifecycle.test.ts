@@ -8,6 +8,13 @@ const router = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), "organizations.ts"),
   "utf8",
 );
+const lifecycleController = readFileSync(
+  new URL(
+    "../../../../module/organizations/server/controller/server.organization-lifecycle.controller.ts",
+    import.meta.url,
+  ),
+  "utf8",
+);
 const requireAction = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), "../actions/require-action.ts"),
   "utf8",
@@ -18,15 +25,17 @@ const auth = readFileSync(
 );
 
 describe("organization lifecycle access", () => {
-  it("guards archive and restore with distinct owner actions", () => {
+  it("routes archive and restore through the lifecycle controllers", () => {
     assert.match(
       router,
-      /archive: orgProcedure[\s\S]*?actionGuard\("organization\.archive"\)/,
+      /archive: orgProcedure\.mutation[\s\S]*?organizationArchiveController/,
     );
     assert.match(
       router,
-      /unarchive: orgProcedure[\s\S]*?actionGuard\("organization\.unarchive"\)/,
+      /unarchive: orgProcedure\.mutation[\s\S]*?organizationUnarchiveController/,
     );
+    assert.match(lifecycleController, /action: "organization\.archive"/);
+    assert.match(lifecycleController, /action: "organization\.unarchive"/);
   });
 
   it("blocks archived organization writes in shared permission evaluation", () => {
