@@ -5,8 +5,8 @@ import {
 import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { toServiceFieldErrors } from "@module/shared/utils/validation/utils.zod-field-errors.validation";
 import {
-  organizationInvitationIdInputSchema,
   organizationInvitationMutationOutputSchema,
+  organizationInvitationScopedIdInputSchema,
 } from "../../utils/validation/utils.organization-invitations.validation";
 import { organizationInvitationRevokeService } from "../service/server.organization-invitation-revoke.service";
 
@@ -17,7 +17,7 @@ export async function organizationInvitationRevokeController({
   input?: unknown;
   ctx: RunActionContext;
 }) {
-  const parsed = organizationInvitationIdInputSchema.safeParse(input);
+  const parsed = organizationInvitationScopedIdInputSchema.safeParse(input);
   const scoped = parsed.success
     ? {
         ...ctx,

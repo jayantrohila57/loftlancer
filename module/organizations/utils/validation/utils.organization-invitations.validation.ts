@@ -20,6 +20,36 @@ export const organizationInvitationListInputSchema = z
   })
   .strict();
 
+export const organizationProjectInvitationListInputSchema = z
+  .object({
+    projectId: z.string().min(1),
+    search: z.string().trim().max(120).optional(),
+    status: z.enum(invitationStatuses).default("pending"),
+    limit: z.number().int().min(1).max(200).default(50),
+    offset: z.number().int().min(0).default(0),
+  })
+  .strict();
+
+export const organizationProjectInvitationListOutputSchema = z.object({
+  items: z.array(
+    z.object({
+      id: z.string(),
+      email: z.string(),
+      role: z.string(),
+      status: z.string(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+      lastSentAt: z.date().nullable(),
+      acceptedAt: z.date().nullable(),
+      rejectedAt: z.date().nullable(),
+      revokedAt: z.date().nullable(),
+      expiresAt: z.date(),
+      inviterName: z.string().nullable(),
+    }),
+  ),
+  total: z.number().int().nonnegative(),
+});
+
 export const organizationMyInvitationsInputSchema = z
   .object({})
   .strict()
@@ -37,6 +67,17 @@ export const organizationInvitationCreateInputSchema = z
 
 export const organizationInvitationIdInputSchema = z
   .object({ invitationId: z.string().min(1) })
+  .strict();
+
+export const organizationProjectInvitationIdInputSchema = z
+  .object({ invitationId: z.string().min(1), projectId: z.string().min(1) })
+  .strict();
+
+export const organizationInvitationScopedIdInputSchema = z
+  .object({
+    invitationId: z.string().min(1),
+    projectId: z.string().min(1).optional(),
+  })
   .strict();
 
 export const organizationInvitationPreviewInputSchema = z
@@ -135,11 +176,23 @@ export const organizationInvitationAcceptOutputSchema = z.object({
 export type OrganizationInvitationListInput = z.infer<
   typeof organizationInvitationListInputSchema
 >;
+export type OrganizationProjectInvitationListInput = z.infer<
+  typeof organizationProjectInvitationListInputSchema
+>;
+export type OrganizationProjectInvitationListOutput = z.infer<
+  typeof organizationProjectInvitationListOutputSchema
+>;
 export type OrganizationInvitationCreateInput = z.infer<
   typeof organizationInvitationCreateInputSchema
 >;
 export type OrganizationInvitationIdInput = z.infer<
   typeof organizationInvitationIdInputSchema
+>;
+export type OrganizationProjectInvitationIdInput = z.infer<
+  typeof organizationProjectInvitationIdInputSchema
+>;
+export type OrganizationInvitationScopedIdInput = z.infer<
+  typeof organizationInvitationScopedIdInputSchema
 >;
 export type OrganizationInvitationPreviewInput = z.infer<
   typeof organizationInvitationPreviewInputSchema

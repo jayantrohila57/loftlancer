@@ -5,8 +5,8 @@ import {
 import { serviceResponseSchema } from "@module/shared/utils/validation/utils.service-response.validation";
 import { toServiceFieldErrors } from "@module/shared/utils/validation/utils.zod-field-errors.validation";
 import {
-  organizationInvitationIdInputSchema,
   organizationInvitationMutationOutputSchema,
+  organizationInvitationScopedIdInputSchema,
 } from "../../utils/validation/utils.organization-invitations.validation";
 import { organizationInvitationResendService } from "../service/server.organization-invitation-resend.service";
 
@@ -17,7 +17,7 @@ export async function organizationInvitationResendController({
   input?: unknown;
   ctx: RunActionContext;
 }) {
-  const parsed = organizationInvitationIdInputSchema.safeParse(input);
+  const parsed = organizationInvitationScopedIdInputSchema.safeParse(input);
   const scoped = parsed.success
     ? {
         ...ctx,

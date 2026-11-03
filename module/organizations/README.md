@@ -28,7 +28,7 @@ Compatibility tRPC and MCP adapters should call the same module controllers and 
 
 ## Current migration state
 
-This is a partial migration. Organization list, get-by-slug, get-profile, member list/remove, invitation list/create/revoke/resend/preview, the signed-in user's inbound invitations, team/project invitation acceptance, organization settings/profile/branding, custom-role operations, security domains, lifecycle, and member administration now have module validations, services, and controllers. Shared invitation email parsing and invitation utilities are in this module, and invitation persistence/delivery is implemented by `server.invitation-create.service.ts`. Teams' invitation flow and the organization MCP invitation operation reuse that service. The organization directory, create flow, organization shell, tabs, overview, settings, members, roles, invitations, and public invitation landing now live in `client/studio/`; their Studio route files are thin module exports and migrated reads and writes use native oRPC. Creation remains on Better Auth's organization-create API until a module create operation is introduced. Compatibility adapters and integration coverage remain for the final linked slice.
+The organizations migration is complete for the linked scope. Organization reads, membership, invitations (including project-scoped list/revoke/resend), settings/profile/branding, custom-role operations, security domains, lifecycle, and member administration use module validations, services, and controllers. Shared invitation email parsing and invitation utilities are in this module, and invitation persistence/delivery is implemented by `server.invitation-create.service.ts`. Teams' invitation flow and organization MCP invitation acceptance reuse module operations. The organization directory, create flow, shell, tabs, overview, settings, members, roles, invitations, and public invitation landing live in `client/studio/`; Studio route files are thin module exports and migrated reads and writes use native oRPC. Organization creation remains on Better Auth's organization-create API until a module create operation is introduced. tRPC and MCP compatibility adapters call module controllers for operations implemented here.
 
 ### Migration boundaries
 
@@ -111,6 +111,8 @@ The `organizations` namespace is registered in `packages/api/src/orpc/studio-rou
 
 After slices A–G are complete, run `pnpm verify:dev-merge` on the full branch before opening the parent PR to `dev`.
 
+Opt-in integration coverage for invitation delivery, member removal, and custom-role assignment availability is available with `pnpm test:organizations:integration`. Set `TEST_ORGANIZATIONS_DATABASE_URL` to a disposable local database named `loftlancer_organizations_929`; the test skips when the variable is unset and rejects non-local hosts.
+
 ## Sub-issues (parent #929)
 
 Implement in this order; do not skip ahead of an open dependency:
@@ -124,7 +126,7 @@ Implement in this order; do not skip ahead of an open dependency:
 | [#974](https://github.com/jayantrohila57/loftlancer/issues/974) | D — native oRPC organizations | Implemented on this branch |
 | [#975](https://github.com/jayantrohila57/loftlancer/issues/975) | E — client migration, phase 1 | Implemented on this branch |
 | [#976](https://github.com/jayantrohila57/loftlancer/issues/976) | F — client migration, phase 2 | Implemented on this branch |
-| [#977](https://github.com/jayantrohila57/loftlancer/issues/977) | G — compatibility adapters, integration, baseline, final verification | Open |
+| [#977](https://github.com/jayantrohila57/loftlancer/issues/977) | G — compatibility adapters, integration, baseline, final verification | Implemented on this branch |
 
 ## TODO (blocked)
 

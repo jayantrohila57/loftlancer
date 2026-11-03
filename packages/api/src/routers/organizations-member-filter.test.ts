@@ -1,20 +1,25 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
 import { describe, it } from "node:test";
-import { fileURLToPath } from "node:url";
 
-const routerSource = readFileSync(
-  join(dirname(fileURLToPath(import.meta.url)), "organizations.ts"),
+const listServiceSource = readFileSync(
+  new URL(
+    "../../../../module/organizations/server/service/server.organization-list.service.ts",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const getBySlugServiceSource = readFileSync(
+  new URL(
+    "../../../../module/organizations/server/service/server.organization-get-by-slug.service.ts",
+    import.meta.url,
+  ),
   "utf8",
 );
 
 describe("organizations router member filters", () => {
-  it("filters list and getBySlug with activeMemberWhere", () => {
-    const matches = routerSource.match(/activeMemberWhere/g);
-    assert.ok(
-      matches && matches.length >= 2,
-      "expected activeMemberWhere on list and getBySlug member joins",
-    );
+  it("filters organization reads with activeMemberWhere", () => {
+    assert.match(listServiceSource, /activeMemberWhere/);
+    assert.match(getBySlugServiceSource, /activeMemberWhere/);
   });
 });

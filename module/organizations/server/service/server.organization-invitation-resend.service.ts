@@ -2,17 +2,18 @@ import { sendOrganizationInvitationEmail } from "@loftlancer/auth/organization-i
 import { db } from "@loftlancer/db";
 import { user } from "@loftlancer/db/schema/auth";
 import { invitation, organization } from "@loftlancer/db/schema/organization";
+import { project } from "@loftlancer/db/schema/projects";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, eq, isNull } from "drizzle-orm";
 import type {
-  OrganizationInvitationIdInput,
   OrganizationInvitationMutationOutput,
+  OrganizationInvitationScopedIdInput,
 } from "../../utils/validation/utils.organization-invitations.validation";
 
 export async function organizationInvitationResendService(
   ctx: RunActionContext,
-  input: OrganizationInvitationIdInput,
+  input: OrganizationInvitationScopedIdInput,
 ): Promise<ServiceOutcome<OrganizationInvitationMutationOutput>> {
   if (!ctx.orgId)
     return { kind: "failed", message: "Select an organization first." };
@@ -23,16 +24,20 @@ export async function organizationInvitationResendService(
       email: invitation.email,
       role: invitation.role,
       organizationName: organization.name,
+      projectName: project.name,
     })
     .from(invitation)
     .innerJoin(organization, eq(organization.id, invitation.organizationId))
+    .leftJoin(project, eq(project.id, invitation.projectId))
     .where(
       and(
         eq(invitation.id, input.invitationId),
         eq(invitation.organizationId, organizationId),
+        input.projectId ? eq(invitation.projectId, input.projectId) : undefined,
         eq(invitation.status, "pending"),
         isNull(invitation.deletedAt),
         isNull(organization.deletedAt),
+        isNull(project.deletedAt),
       ),
     )
     .limit(1);
@@ -50,7 +55,9 @@ export async function organizationInvitationResendService(
     role: row.role,
     organizationId,
     inviterUserId: ctx.userId,
-    organizationName: row.organizationName,
+    organizationName: row.projectName
+      ? `project ${row.projectName} in ${row.organizationName}`
+      : row.organizationName,
     inviterName: inviter?.name || inviter?.email || "Organization member",
   });
   await db

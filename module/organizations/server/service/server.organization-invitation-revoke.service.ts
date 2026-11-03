@@ -4,13 +4,13 @@ import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, eq, isNull } from "drizzle-orm";
 import type {
-  OrganizationInvitationIdInput,
   OrganizationInvitationMutationOutput,
+  OrganizationInvitationScopedIdInput,
 } from "../../utils/validation/utils.organization-invitations.validation";
 
 export async function organizationInvitationRevokeService(
   ctx: RunActionContext,
-  input: OrganizationInvitationIdInput,
+  input: OrganizationInvitationScopedIdInput,
 ): Promise<ServiceOutcome<OrganizationInvitationMutationOutput>> {
   if (!ctx.orgId)
     return { kind: "failed", message: "Select an organization first." };
@@ -26,6 +26,7 @@ export async function organizationInvitationRevokeService(
       and(
         eq(invitation.id, input.invitationId),
         eq(invitation.organizationId, ctx.orgId),
+        input.projectId ? eq(invitation.projectId, input.projectId) : undefined,
         eq(invitation.status, "pending"),
         isNull(invitation.deletedAt),
       ),

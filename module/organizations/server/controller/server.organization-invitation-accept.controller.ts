@@ -19,7 +19,7 @@ async function acceptInvitation({
   input?: unknown;
   ctx: RunActionContext;
   emailVerified: boolean;
-  invitationType: "team" | "project";
+  invitationType?: "team" | "project";
 }) {
   const parsed = organizationInvitationAcceptInputSchema.safeParse(input);
   const scoped = {
@@ -82,4 +82,12 @@ export function organizationProjectInvitationAcceptController(input: {
   emailVerified: boolean;
 }) {
   return acceptInvitation({ ...input, invitationType: "project" });
+}
+
+export function organizationInvitationAcceptController(input: {
+  input?: unknown;
+  ctx: RunActionContext;
+  emailVerified: boolean;
+}) {
+  return acceptInvitation(input);
 }
