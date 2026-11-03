@@ -8,21 +8,21 @@ See: [modules.md](../modules.md), [server-api.md](../server-api.md).
 
 ## Decision table
 
-| Need | File location | Name pattern |
-|------|---------------|--------------|
-| DB + business rules | `module/<feature>/server/service/` | `server.<operation>.service.ts` |
-| Map to ServiceResponse + `runAction` | `module/<feature>/server/controller/` | `server.<operation>.controller.ts` |
-| RSC initial page data | `module/<feature>/server/page/` | `server.<screen>.page.ts` |
-| Next `route.ts` entry (streams, webhooks) | `module/<feature>/server/handlers/` | `server.<name>.handler.ts` |
-| Server Action export | `module/<feature>/server/actions/` | `server.<name>.action.ts` |
+| Need                                      | File location                         | Name pattern                       |
+| ----------------------------------------- | ------------------------------------- | ---------------------------------- |
+| DB + business rules                       | `module/<feature>/server/service/`    | `server.<operation>.service.ts`    |
+| Map to ServiceResponse + `runAction`      | `module/<feature>/server/controller/` | `server.<operation>.controller.ts` |
+| RSC initial page data                     | `module/<feature>/server/page/`       | `server.<screen>.page.ts`          |
+| Next `route.ts` entry (streams, webhooks) | `module/<feature>/server/handlers/`   | `server.<name>.handler.ts`         |
+| Server Action export                      | `module/<feature>/server/actions/`    | `server.<name>.action.ts`          |
 
 ---
 
 ## Controller vs service
 
-| Layer | Must | Must not |
-|-------|------|----------|
-| **Service** | ORM, domain rules, return `ServiceOutcome` | HTTP, toast, React, audit writes |
+| Layer          | Must                                                                         | Must not                           |
+| -------------- | ---------------------------------------------------------------------------- | ---------------------------------- |
+| **Service**    | ORM, domain rules, return `ServiceOutcome`                                   | HTTP, toast, React, audit writes   |
 | **Controller** | Parse input (Zod), `runAction`, map outcome → ServiceResponse + schema parse | Business rules, direct UI concerns |
 
 **One operation** = one service function + one controller function (same basename).
@@ -42,23 +42,22 @@ See: [modules.md](../modules.md), [server-api.md](../server-api.md).
 
 HTTP routes (non-oRPC) use **`server/handlers/`** that:
 
-1. Validate request / auth context  
-2. Call the **same controller** as oRPC would use  
-
-**Forbidden:** duplicate download/query logic only in handler without a shared controller.
+1. Validate request / auth context
+2. Call the **same controller** as oRPC would use
+   **Forbidden:** duplicate download/query logic only in handler without a shared controller.
 
 ---
 
 ## Server Actions
 
-| File | Content |
-|------|---------|
-| `module/.../server/actions/server.foo.action.ts` | `"use server"` function → controller |
-| `apps/.../actions.ts` | **Re-export only** — one line per action |
+| File                                             | Content                                  |
+| ------------------------------------------------ | ---------------------------------------- |
+| `module/.../server/actions/server.foo.action.ts` | `"use server"` function → controller     |
+| `apps/.../actions.ts`                            | **Re-export only** — one line per action |
 
 **Default transport:** oRPC. Server Actions **only** when:
 
-- Progressive enhancement for forms without client JS, or  
+- Progressive enhancement for forms without client JS, or
 - Listed platform exceptions (file upload shape, etc.)
 
 ---
@@ -71,5 +70,5 @@ Use **`module/shared/server`** only when **two or more** domains need the same s
 
 ## Related
 
-- [orpc-transport.md](./orpc-transport.md) — procedures call controllers  
-- [contracts.md](./contracts.md) — ServiceOutcome → ServiceResponse  
+- [orpc-transport.md](./orpc-transport.md) — procedures call controllers
+- [contracts.md](./contracts.md) — ServiceOutcome → ServiceResponse

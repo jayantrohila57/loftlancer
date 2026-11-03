@@ -20,13 +20,13 @@ const BASELINE_PATH = join(
 );
 
 const LEGACY_UNWRAP_ALLOW = [
-  "packages/api/src/routers/",
-  "packages/api/src/mcp/",
+  "packages/orpc/src/routers/",
+  "packages/orpc/src/mcp/",
   "module/teams/server/handlers/server.legacy-response.handler.ts",
 ];
 
 const APP_PAGE_FORBIDDEN_IMPORTS = [
-  "@loftlancer/db",
+  "@loftlancer/drizzle",
   "requireAction",
   'from "drizzle-orm"',
   "from 'drizzle-orm'",
@@ -91,7 +91,7 @@ function checkControllers() {
 }
 
 function checkOrpcProcedures() {
-  const dir = join(ROOT, "packages/api/src/orpc/procedures");
+  const dir = join(ROOT, "packages/orpc/src/orpc/procedures");
   if (!statSync(dir, { throwIfNoEntry: false })?.isDirectory()) return;
   for (const file of readdirSync(dir)) {
     if (!file.endsWith(".ts")) continue;
@@ -115,20 +115,20 @@ function checkOrpcProcedures() {
           "teamControllerInputSchema is z.unknown(); use per-operation Zod schemas in procedures.",
       });
     }
-    if (!/from\s+["']@module\//.test(text)) {
+    if (!/from\s+["']@modules?\//.test(text)) {
       violations.push({
         id: id("orpc-module-import", path, "no @module import"),
         rule: "orpc-module-import",
         file: relative(ROOT, path),
         detail:
-          "oRPC procedures must import controllers/schemas from @module/*.",
+          "oRPC procedures must import controllers/schemas from @modules/* (or dual @module/*).",
       });
     }
   }
 }
 
 function checkLegacyUnwrap() {
-  const roots = ["packages/api/src", "apps", "module"];
+  const roots = ["packages/orpc/src", "apps", "module"];
   for (const rootRel of roots) {
     const dir = join(ROOT, rootRel);
     if (!statSync(dir, { throwIfNoEntry: false })?.isDirectory()) continue;
@@ -168,11 +168,11 @@ function checkAppPages() {
           });
         }
       }
-      const hasModuleImport = /from\s+["']@module\//.test(text);
+      const hasModuleImport = /from\s+["']@modules?\//.test(text);
       const isReExportHeavy =
         lines <= 25 &&
-        (/export\s+\{[^}]+\}\s+from\s+["']@module\//.test(text) ||
-          /export\s+\*\s+from\s+["']@module\//.test(text));
+        (/export\s+\{[^}]+\}\s+from\s+["']@modules?\//.test(text) ||
+          /export\s+\*\s+from\s+["']@modules?\//.test(text));
       if (
         app === "studio" &&
         text.includes("(shell)") === false &&
@@ -185,7 +185,7 @@ function checkAppPages() {
           rule: "app-page-thin",
           file: relative(ROOT, path),
           detail:
-            "Studio teams routes should re-export from @module/* (~15 lines, docs/gaps/forbidden-defaults.md).",
+            "Studio teams routes should re-export from @modules/* or dual @module/* (~15 lines, docs/gaps/forbidden-defaults.md).",
         });
       }
       if (

@@ -1,20 +1,20 @@
 "use client";
 
 import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from "@loftlancer/ui/empty";
-import {
   type ActivityFilterOption,
   type ActivityResult,
   ActivityTimeline,
   auditActionFilterOptions,
   auditProjectFilterOptions,
   auditRowToActivityItem,
-} from "@loftlancer/ui/patterns/activity-timeline";
-import { routes } from "@loftlancer/ui/studio-routes";
+} from "@features/patterns/core/client/patterns.activity-timeline";
+import { routes } from "@features/shell/utils/shell.studio-routes.utils";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@loftlancer/ui/empty";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { studioDashboardPath } from "@/lib/studio-url";

@@ -1,8 +1,8 @@
 "use client";
 
-import { logger } from "@loftlancer/logger";
-import { AppRouteErrorPage } from "@loftlancer/ui/patterns/app-route-states";
-import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
+import { Auth5Panel } from "@features/authentication/core/client";
+import { AppRouteErrorPage } from "@features/patterns/core/client/patterns.app-route-states";
+import { logger } from "@loftlancer/sentry";
 import { useEffect } from "react";
 
 export default function RouteError({

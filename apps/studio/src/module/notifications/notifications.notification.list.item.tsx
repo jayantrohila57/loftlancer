@@ -45,7 +45,7 @@ const notificationRowContentClass =
 /** Ghost Button overrides so multi-line rows are not clipped (#253, #38). */
 export const notificationRowButtonClass = cn(
   notificationRowContentClass,
-  "static h-auto min-h-0 shrink items-stretch justify-start whitespace-normal border-0 border-transparent bg-transparent px-0 py-0 font-normal shadow-none before:pointer-events-auto hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-100 data-pressed:bg-transparent sm:h-auto",
+  "static h-auto min-h-0 shrink items-stretch justify-start border-0 border-transparent bg-transparent px-0 py-0 font-normal whitespace-normal shadow-none before:pointer-events-auto hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-100 data-pressed:bg-transparent sm:h-auto",
 );
 
 /**
@@ -82,7 +82,7 @@ export function NotificationListItem({
       data-slot="notification-row"
       data-unread={unread || undefined}
       className={cn(
-        "group/notif relative flex min-w-0 items-start gap-3 rounded-md px-2 transition-colors hover:bg-accent/60 has-focus-visible:bg-accent/60",
+        "group/notif hover:bg-accent/60 has-focus-visible:bg-accent/60 relative flex min-w-0 items-start gap-3 rounded-md px-2 transition-colors",
         compact ? "py-2" : "py-2.5",
         unread && "bg-muted/30",
       )}
@@ -96,7 +96,7 @@ export function NotificationListItem({
             </AvatarFallback>
           </Avatar>
         ) : (
-          <span className="flex size-8 items-center justify-center rounded-full border border-border/60 bg-card">
+          <span className="border-border/60 bg-card flex size-8 items-center justify-center rounded-full border">
             <AppIcon name={resolveIcon(item.icon)} className="size-4" />
           </span>
         )}
@@ -116,10 +116,10 @@ export function NotificationListItem({
           >
             {item.title}
           </span>
-          <span className="flex min-w-0 items-center gap-1 text-muted-foreground text-xs leading-4">
+          <span className="text-muted-foreground flex min-w-0 items-center gap-1 text-xs leading-4">
             {actor ? (
               <>
-                <span className="max-w-[40%] shrink-0 truncate text-muted-foreground">
+                <span className="text-muted-foreground max-w-[40%] shrink-0 truncate">
                   {actor.name}
                 </span>
                 <span aria-hidden>·</span>
@@ -146,10 +146,10 @@ export function NotificationListItem({
           >
             {item.title}
           </span>
-          <span className="flex min-w-0 items-center gap-1 text-muted-foreground text-xs leading-4">
+          <span className="text-muted-foreground flex min-w-0 items-center gap-1 text-xs leading-4">
             {actor ? (
               <>
-                <span className="max-w-[40%] shrink-0 truncate text-muted-foreground">
+                <span className="text-muted-foreground max-w-[40%] shrink-0 truncate">
                   {actor.name}
                 </span>
                 <span aria-hidden>·</span>
@@ -188,7 +188,7 @@ export function NotificationListItem({
             onClick={onMarkRead}
             disabled={disabled}
             aria-label={`Mark "${item.title}" as read`}
-            className="pointer-events-none absolute inset-y-0 end-0 z-10 h-auto gap-1 border-transparent px-1.5 font-normal text-muted-foreground text-xs opacity-0 shadow-none transition-opacity hover:bg-background hover:text-foreground focus-visible:pointer-events-auto focus-visible:opacity-100 group-hover/notif:pointer-events-auto group-hover/notif:opacity-100 sm:h-auto"
+            className="text-muted-foreground hover:bg-background hover:text-foreground pointer-events-none absolute inset-y-0 end-0 z-10 h-auto gap-1 border-transparent px-1.5 text-xs font-normal opacity-0 shadow-none transition-opacity group-hover/notif:pointer-events-auto group-hover/notif:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100 sm:h-auto"
           >
             <AppIcon name="markAllRead" className="size-3.5" />
             Read

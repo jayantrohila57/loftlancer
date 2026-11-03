@@ -1,8 +1,8 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { routes } from "@features/shell/utils/shell.studio-routes.utils";
 import { Button } from "@loftlancer/ui/button";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { routes } from "@loftlancer/ui/studio-routes";
 import { Switch } from "@loftlancer/ui/switch";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { studioDashboardPath } from "@/lib/studio-url";

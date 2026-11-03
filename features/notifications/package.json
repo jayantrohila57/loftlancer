@@ -1,0 +1,33 @@
+{
+  "name": "@loftlancer/features-notifications",
+  "description": "In-app and email notifications.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core/server": "./src/core/server/index.ts",
+    "./core/server/*": "./src/core/server/*",
+    "./utils/*": "./src/utils/*",
+    "./types/*": "./src/types/*",
+    "./constants/*": "./src/constants/*",
+    "./config/*": "./src/config/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@loftlancer/drizzle": "workspace:*",
+    "@loftlancer/resend": "workspace:*",
+    "@loftlancer/t3-env": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "react": "^19.3.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

@@ -1,8 +1,8 @@
 "use client";
 
-import { accountSettingsNav } from "@loftlancer/actions/nav";
-import { BreadcrumbTrail } from "@loftlancer/ui/patterns/breadcrumb-trail";
-import { routes } from "@loftlancer/ui/studio-routes";
+import { accountSettingsNav } from "@features/authorization/config/authorization.nav";
+import { BreadcrumbTrail } from "@features/patterns/core/client/patterns.breadcrumb-trail";
+import { routes } from "@features/shell/utils/shell.studio-routes.utils";
 import { usePathname } from "next/navigation";
 import { studioDashboardPath } from "@/lib/studio-url";
 

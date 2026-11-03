@@ -1,12 +1,12 @@
 "use client";
 
-import { resolveAuthAppOrigin } from "@loftlancer/ui/auth-links";
-import { PublicAppShell } from "@loftlancer/ui/patterns/app-shell";
+import { resolveAuthAppOrigin } from "@features/authentication/utils/auth-links";
+import { performPlatformSignOut } from "@features/authentication/utils/platform-sign-out";
 import {
   type PublicNavGroup,
   PublicSidebar,
-} from "@loftlancer/ui/patterns/sidebar-kit";
-import { performPlatformSignOut } from "@loftlancer/ui/platform-sign-out";
+} from "@features/patterns/core/client/patterns.sidebar-kit";
+import { PublicAppShell } from "@features/shell/core/client";
 import {
   ActivityIcon,
   BookOpenIcon,

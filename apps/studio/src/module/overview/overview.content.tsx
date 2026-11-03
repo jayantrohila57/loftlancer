@@ -1,12 +1,12 @@
 "use client";
 
-import type { StudioRouter } from "@loftlancer/api/routers/studio";
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
+import type { StudioRouter } from "@loftlancer/orpc/routers/studio";
 import { Button } from "@loftlancer/ui/button";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { useQuery } from "@tanstack/react-query";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { Route } from "next";
@@ -172,18 +172,18 @@ export function StudioOverviewContent() {
               <Link
                 key={project.id}
                 href={routes.project(activeOrg.slug, project.slug)}
-                className="flex min-w-0 items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:text-primary"
+                className="hover:text-primary flex min-w-0 items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
               >
                 <span className="flex min-w-0 items-center gap-3">
                   <AppIcon
                     name="project"
-                    className="size-4 shrink-0 text-muted-foreground"
+                    className="text-muted-foreground size-4 shrink-0"
                   />
-                  <span className="truncate font-medium text-sm">
+                  <span className="truncate text-sm font-medium">
                     {project.name}
                   </span>
                 </span>
-                <span className="shrink-0 text-muted-foreground text-xs">
+                <span className="text-muted-foreground shrink-0 text-xs">
                   Updated{" "}
                   <LocalDateTime value={project.updatedAt} showTimeOnHover />
                 </span>
@@ -248,10 +248,10 @@ export function StudioOverviewContent() {
                   <div className="flex min-w-0 items-center gap-3">
                     <AppIcon
                       name="invite"
-                      className="size-4 shrink-0 text-muted-foreground"
+                      className="text-muted-foreground size-4 shrink-0"
                     />
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-sm">
+                      <p className="truncate text-sm font-medium">
                         {invitation.organizationName}
                       </p>
                       <p className="text-muted-foreground text-xs">
@@ -318,7 +318,7 @@ export function StudioOverviewContent() {
                       {item.action} {item.entityType.toLowerCase()}
                       {item.entitySlug ? ` · ${item.entitySlug}` : ""}
                     </span>
-                    <span className="shrink-0 text-muted-foreground text-xs">
+                    <span className="text-muted-foreground shrink-0 text-xs">
                       {formatDateTime(item.createdAt)}
                     </span>
                   </div>

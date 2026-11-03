@@ -1,7 +1,7 @@
 "use client";
 
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { cn } from "@/lib/utils";
 
 export type ProvenanceUser = {
@@ -57,7 +57,7 @@ export function ProvenanceAttribution({
   return (
     <div
       className={cn(
-        "flex min-w-0 items-center gap-1.5 text-muted-foreground",
+        "text-muted-foreground flex min-w-0 items-center gap-1.5",
         compact ? "text-xs" : "text-sm",
         className,
       )}
@@ -96,7 +96,7 @@ export function ProvenanceDetail({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/30 p-3",
+        "border-border/60 bg-muted/30 flex flex-col gap-2 rounded-lg border p-3",
         className,
       )}
     >

@@ -12,25 +12,29 @@ test("native team invitations and project links preserve scope, delivery and ter
   process.env.DATABASE_URL_POOLED = databaseUrl;
   let rejectDelivery = false;
   const deliveries: string[] = [];
-  mock.module("@loftlancer/auth/organization-invitation-email", {
-    namedExports: {
-      sendOrganizationInvitationEmail: async (input: { email: string }) => {
-        if (rejectDelivery) throw new Error("mail provider credential secret");
-        deliveries.push(input.email);
+  mock.module(
+    "@features/authentication/core/server/authentication.organization-invitation-email",
+    {
+      namedExports: {
+        sendOrganizationInvitationEmail: async (input: { email: string }) => {
+          if (rejectDelivery)
+            throw new Error("mail provider credential secret");
+          deliveries.push(input.email);
+        },
       },
     },
-  });
-  const { db } = await import("@loftlancer/db");
-  const { user } = await import("@loftlancer/db/schema/auth");
+  );
+  const { db } = await import("@loftlancer/drizzle");
+  const { user } = await import("@loftlancer/drizzle/schema/auth");
   const { organization, member, invitation } = await import(
-    "@loftlancer/db/schema/organization"
+    "@loftlancer/drizzle/schema/organization"
   );
-  const { project } = await import("@loftlancer/db/schema/projects");
+  const { project } = await import("@loftlancer/drizzle/schema/projects");
   const { projectTeam, projectMemberGrant } = await import(
-    "@loftlancer/db/schema/project-access"
+    "@loftlancer/drizzle/schema/project-access"
   );
-  const { teamMember } = await import("@loftlancer/db/schema/team");
-  const { auditEvent } = await import("@loftlancer/db/schema/audit-event");
+  const { teamMember } = await import("@loftlancer/drizzle/schema/team");
+  const { auditEvent } = await import("@loftlancer/drizzle/schema/audit-event");
   const { and, eq } = await import("drizzle-orm");
   const { teamCreateController } = await import(
     "../controller/server.team-create.controller"

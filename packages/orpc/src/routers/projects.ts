@@ -1,0 +1,734 @@
+import {
+  activeEnvironmentWhere,
+  db,
+  softDeleteProjectById,
+} from "@loftlancer/drizzle";
+import { environment, project } from "@loftlancer/drizzle/schema/projects";
+import { isSoftDeletesEnabled } from "@loftlancer/t3-env/soft-deletes";
+import { formatEnvironmentRows } from "@modules/environments/server/service/server.variable-format.service";
+import { isVariablesV2Enabled } from "@modules/environments/server/service/server.variables-v2.service";
+import { TRPCError } from "@trpc/server";
+import { and, eq, isNotNull } from "drizzle-orm";
+import { z } from "zod/v3";
+import { actionGuard } from "../actions/action-guard";
+import { projectIdFromInput } from "../actions/guard-resolve";
+import { requireAction } from "../actions/require-action";
+import { createAuditLog } from "../audit";
+import { orgProcedure, router } from "../index";
+import { mcpProjectRestore } from "../mcp/restore-ops";
+import { throwFriendlyError } from "../utils/orpc.errors";
+
+const baseEnvironmentSelect = {
+  id: environment.id,
+  name: environment.name,
+  slug: environment.slug,
+  branch: environment.branch,
+  deployedUrl: environment.deployedUrl,
+  status: environment.status,
+  isProduction: environment.isProduction,
+  description: environment.description,
+  projectId: environment.projectId,
+  createdAt: environment.createdAt,
+  updatedAt: environment.updatedAt,
+};
+
+async function listProjectEnvironments(projectId: string) {
+  const where = activeEnvironmentWhere(eq(environment.projectId, projectId));
+
+  if (isVariablesV2Enabled()) {
+    return db
+      .select({
+        ...baseEnvironmentSelect,
+        createdById: environment.createdBy,
+        updatedById: environment.updatedBy,
+      })
+      .from(environment)
+      .where(where)
+      .orderBy(environment.name);
+  }
+
+  return db
+    .select(baseEnvironmentSelect)
+    .from(environment)
+    .where(where)
+    .orderBy(environment.name);
+}
+
+import {
+  assertProjectAccess,
+  attachProjectToOrganization,
+} from "@modules/organizations/server/service/server.org-access.service";
+import {
+  findReadableProjectIdBySlug,
+  projectReadWhere,
+} from "@modules/projects/server/service/server.project-list.service";
+import { assertUniqueProjectName } from "@modules/projects/server/service/server.project-name.service";
+import {
+  buildProjectSlugFromName,
+  ensureUniqueProjectSlug,
+} from "@modules/projects/server/service/server.project-slug.service";
+import {
+  changeProjectStatusInput,
+  createProjectInput,
+  environmentOutput,
+  getProjectBySlugInput,
+  getProjectInput,
+  isProjectDateRangeValid,
+  makeResponseSchema,
+  projectOutput,
+  respond,
+  toggleProjectPublicInput,
+  updateProjectInput,
+} from "@modules/projects/utils/validation/utils.project-environment.validation";
+
+export const projectsRouter = router({
+  // List all projects for the authenticated user
+  list: orgProcedure
+    .use(actionGuard("organization.list"))
+    .output(makeResponseSchema(z.array(projectOutput)))
+    .query(async ({ ctx }) => {
+      const readScope = await projectReadWhere(
+        ctx.session.user.id,
+        ctx.activeOrganizationId,
+      );
+      const projectsList = await db
+        .select()
+        .from(project)
+        .where(readScope)
+        .orderBy(project.updatedAt);
+
+      return respond({ message: "Projects fetched", data: projectsList });
+    }),
+
+  deleted: orgProcedure
+    .use(actionGuard("organization.list"))
+    .query(async ({ ctx }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId || !isSoftDeletesEnabled()) return { items: [] };
+
+      const deletedProjects = await db
+        .select({
+          id: project.id,
+          name: project.name,
+          slug: project.slug,
+          deletedAt: project.deletedAt,
+        })
+        .from(project)
+        .where(
+          and(
+            eq(project.organizationId, organizationId),
+            isNotNull(project.deletedAt),
+          ),
+        )
+        .orderBy(project.deletedAt);
+
+      const restorableProjects = await Promise.all(
+        deletedProjects.map(async (row) => {
+          try {
+            await requireAction("project.restore", {
+              userId: ctx.session.user.id,
+              organizationId,
+              projectId: row.id,
+              audit: false,
+            });
+            return row;
+          } catch (error) {
+            if (error instanceof TRPCError && error.code === "FORBIDDEN") {
+              return null;
+            }
+            throw error;
+          }
+        }),
+      );
+      return { items: restorableProjects.filter((row) => row !== null) };
+    }),
+
+  restore: orgProcedure
+    .input(getProjectInput)
+    .use(actionGuard("project.restore", projectIdFromInput))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId;
+      if (!organizationId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Select an organization before restoring a project.",
+        });
+      }
+      try {
+        const data = await mcpProjectRestore(
+          ctx.session.user.id,
+          organizationId,
+          input.id,
+        );
+        return respond({ message: "Project restored", data });
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        if (error instanceof Error && error.message === "project_not_found") {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Project not found",
+          });
+        }
+        throw error;
+      }
+    }),
+
+  // Get a single project with its environments by ID
+  get: orgProcedure
+    .input(getProjectInput)
+    .use(actionGuard("project.read", projectIdFromInput))
+    .output(
+      makeResponseSchema(
+        z.object({
+          project: projectOutput.nullable(),
+          environments: z.array(environmentOutput),
+        }),
+      ),
+    )
+    .query(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId ?? null;
+      await assertProjectAccess(ctx.session.user.id, input.id, organizationId);
+      const readScope = await projectReadWhere(
+        ctx.session.user.id,
+        organizationId,
+      );
+      const projectData = await db
+        .select({
+          id: project.id,
+          name: project.name,
+          slug: project.slug,
+          description: project.description,
+          purpose: project.purpose,
+          documentationUrl: project.documentationUrl,
+          startDate: project.startDate,
+          targetDate: project.targetDate,
+          isArchived: project.isArchived,
+          isPublic: project.isPublic,
+          repositoryUrl: project.repositoryUrl,
+          websiteUrl: project.websiteUrl,
+          status: project.status,
+          userId: project.userId,
+          updatedBy: project.updatedBy,
+          createdAt: project.createdAt,
+          updatedAt: project.updatedAt,
+        })
+        .from(project)
+        .where(and(eq(project.id, input.id), readScope))
+        .limit(1);
+
+      const environmentsList = await listProjectEnvironments(input.id);
+
+      const projectRecord = projectData[0];
+      const formattedEnvironments = projectRecord
+        ? await formatEnvironmentRows(environmentsList)
+        : [];
+
+      return respond({
+        message: "Project fetched",
+        data: {
+          project: projectRecord || null,
+          environments: formattedEnvironments,
+        },
+      });
+    }),
+
+  // Get a single project with its environments by slug
+  getBySlug: orgProcedure
+    .input(getProjectBySlugInput)
+    .use(
+      actionGuard("project.read", async (input, ctx) => {
+        const slug =
+          input && typeof input === "object" && "slug" in input
+            ? String((input as { slug: string }).slug)
+            : null;
+        if (!slug) return {};
+        const projectId = await findReadableProjectIdBySlug(
+          ctx.session.user.id,
+          ctx.activeOrganizationId ?? null,
+          slug,
+        );
+        return { projectId };
+      }),
+    )
+    .output(
+      makeResponseSchema(
+        z.object({
+          project: projectOutput.nullable(),
+          environments: z.array(environmentOutput),
+        }),
+      ),
+    )
+    .query(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId ?? null;
+      const readScope = await projectReadWhere(
+        ctx.session.user.id,
+        organizationId,
+      );
+      const projectData = await db
+        .select({
+          id: project.id,
+          name: project.name,
+          slug: project.slug,
+          description: project.description,
+          purpose: project.purpose,
+          documentationUrl: project.documentationUrl,
+          startDate: project.startDate,
+          targetDate: project.targetDate,
+          isArchived: project.isArchived,
+          isPublic: project.isPublic,
+          repositoryUrl: project.repositoryUrl,
+          websiteUrl: project.websiteUrl,
+          status: project.status,
+          userId: project.userId,
+          updatedBy: project.updatedBy,
+          createdAt: project.createdAt,
+          updatedAt: project.updatedAt,
+        })
+        .from(project)
+        .where(and(eq(project.slug, input.slug), readScope))
+        .limit(1);
+
+      if (projectData.length === 0) {
+        return respond({
+          message: "Project not found",
+          data: {
+            project: null,
+            environments: [],
+          },
+        });
+      }
+
+      const environmentsList = await listProjectEnvironments(
+        projectData[0]?.id || "",
+      );
+
+      const formattedEnvironments =
+        await formatEnvironmentRows(environmentsList);
+
+      return respond({
+        message: "Project fetched",
+        data: {
+          project: projectData[0] || null,
+          environments: formattedEnvironments,
+        },
+      });
+    }),
+
+  // Create a new project
+  create: orgProcedure
+    .input(createProjectInput)
+    .use(actionGuard("project.create"))
+    .output(makeResponseSchema(projectOutput))
+    .mutation(async ({ ctx, input }) => {
+      if (!isProjectDateRangeValid(input.startDate, input.targetDate)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Target date must be on or after the start date",
+        });
+      }
+      try {
+        await assertUniqueProjectName(ctx.session.user.id, input.name);
+        const baseSlug = buildProjectSlugFromName(input.name);
+        const slug = await ensureUniqueProjectSlug(
+          baseSlug,
+          ctx.activeOrganizationId ?? null,
+        );
+
+        const newProject = await db
+          .insert(project)
+          .values({
+            id: crypto.randomUUID(),
+            name: input.name.trim(),
+            description: input.description?.trim() || null,
+            purpose: input.purpose?.trim() || null,
+            documentationUrl: input.documentationUrl?.trim() || null,
+            startDate: input.startDate || null,
+            targetDate: input.targetDate || null,
+            repositoryUrl: input.repositoryUrl || null,
+            websiteUrl: input.websiteUrl || null,
+            isPublic: input.isPublic ?? false,
+            slug,
+            userId: ctx.session.user.id,
+            organizationId: ctx.activeOrganizationId ?? null,
+            updatedBy: ctx.session.user.id,
+          })
+          .returning();
+
+        if (!newProject[0]) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to create project",
+          });
+        }
+
+        if (ctx.activeOrganizationId && !newProject[0].organizationId) {
+          await attachProjectToOrganization(
+            newProject[0].id,
+            ctx.activeOrganizationId,
+          );
+        }
+
+        await createAuditLog({
+          userId: ctx.session.user.id,
+          projectId: newProject[0].id,
+          action: "CREATE",
+          entityType: "PROJECT",
+          entitySlug: newProject[0].slug,
+          newValue: JSON.stringify({
+            name: newProject[0].name,
+            slug: newProject[0].slug,
+          }),
+        });
+
+        return respond({ message: "Project created", data: newProject[0] });
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        throwFriendlyError(error, {
+          fallback: "Unable to create project. Please try again.",
+          code: "BAD_REQUEST",
+        });
+      }
+    }),
+
+  // Update a project
+  update: orgProcedure
+    .input(updateProjectInput)
+    .use(actionGuard("project.update", projectIdFromInput))
+    .output(makeResponseSchema(projectOutput))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId ?? null;
+      await assertProjectAccess(ctx.session.user.id, input.id, organizationId);
+      const existingProject = await db
+        .select()
+        .from(project)
+        .where(
+          and(
+            eq(project.id, input.id),
+            await projectReadWhere(ctx.session.user.id, organizationId),
+          ),
+        )
+        .limit(1);
+
+      if (existingProject.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const currentProject = existingProject[0];
+      if (!currentProject) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+      const effectiveStartDate =
+        input.startDate === undefined
+          ? currentProject.startDate
+          : input.startDate || null;
+      const effectiveTargetDate =
+        input.targetDate === undefined
+          ? currentProject.targetDate
+          : input.targetDate || null;
+      if (!isProjectDateRangeValid(effectiveStartDate, effectiveTargetDate)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Target date must be on or after the start date",
+        });
+      }
+
+      const updateData: Record<string, unknown> = {};
+      if (input.name !== undefined) {
+        const trimmedName = input.name.trim();
+        await assertUniqueProjectName(
+          ctx.session.user.id,
+          trimmedName,
+          input.id,
+        );
+        updateData.name = trimmedName;
+      }
+      if (input.description !== undefined)
+        updateData.description = input.description;
+      if (input.purpose !== undefined)
+        updateData.purpose = input.purpose?.trim() || null;
+      if (input.documentationUrl !== undefined)
+        updateData.documentationUrl = input.documentationUrl?.trim() || null;
+      if (input.startDate !== undefined)
+        updateData.startDate = input.startDate || null;
+      if (input.targetDate !== undefined)
+        updateData.targetDate = input.targetDate || null;
+      updateData.updatedBy = ctx.session.user.id;
+      if (input.repositoryUrl !== undefined)
+        updateData.repositoryUrl = input.repositoryUrl || null;
+      if (input.websiteUrl !== undefined)
+        updateData.websiteUrl = input.websiteUrl || null;
+      if (input.isPublic !== undefined) updateData.isPublic = input.isPublic;
+
+      try {
+        const updatedProject = await db
+          .update(project)
+          .set(updateData)
+          .where(eq(project.id, input.id))
+          .returning();
+
+        if (!updatedProject[0]) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to update project",
+          });
+        }
+
+        await createAuditLog({
+          userId: ctx.session.user.id,
+          projectId: updatedProject[0].id,
+          action: "UPDATE",
+          entityType: "PROJECT",
+          entitySlug: updatedProject[0].slug,
+          newValue: JSON.stringify({
+            name: updatedProject[0].name,
+            slug: updatedProject[0].slug,
+          }),
+        });
+
+        return respond({ message: "Project updated", data: updatedProject[0] });
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        throwFriendlyError(error, {
+          fallback: "Unable to update project. Please try again.",
+          code: "BAD_REQUEST",
+        });
+      }
+    }),
+
+  // Delete a project (and all its environments and variables)
+  delete: orgProcedure
+    .input(getProjectInput)
+    .use(actionGuard("project.delete", projectIdFromInput))
+    .output(makeResponseSchema(z.object({ success: z.boolean() })))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId ?? null;
+      await assertProjectAccess(ctx.session.user.id, input.id, organizationId);
+      const existingProject = await db
+        .select()
+        .from(project)
+        .where(
+          and(
+            eq(project.id, input.id),
+            await projectReadWhere(ctx.session.user.id, organizationId),
+          ),
+        )
+        .limit(1);
+
+      if (existingProject.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const slug = existingProject[0]?.slug;
+
+      await softDeleteProjectById(input.id, ctx.session.user.id);
+
+      await createAuditLog({
+        userId: ctx.session.user.id,
+        projectId: input.id,
+        action: "DELETE",
+        entityType: "PROJECT",
+        entitySlug: slug ?? null,
+        oldValue: JSON.stringify({ name: existingProject[0]?.name }),
+      });
+
+      return respond({ message: "Project deleted", data: { success: true } });
+    }),
+
+  // Archive a project
+  archive: orgProcedure
+    .input(getProjectInput)
+    .use(actionGuard("project.archive", projectIdFromInput))
+    .output(makeResponseSchema(projectOutput))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId ?? null;
+      await assertProjectAccess(ctx.session.user.id, input.id, organizationId);
+      const existingProject = await db
+        .select()
+        .from(project)
+        .where(
+          and(
+            eq(project.id, input.id),
+            await projectReadWhere(ctx.session.user.id, organizationId),
+          ),
+        )
+        .limit(1);
+
+      if (existingProject.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const archivedProject = await db
+        .update(project)
+        .set({ isArchived: true, updatedBy: ctx.session.user.id })
+        .where(eq(project.id, input.id))
+        .returning();
+
+      if (!archivedProject[0]) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to archive project",
+        });
+      }
+
+      return respond({ message: "Project archived", data: archivedProject[0] });
+    }),
+
+  // Unarchive a project
+  unarchive: orgProcedure
+    .input(getProjectInput)
+    .use(actionGuard("project.unarchive", projectIdFromInput))
+    .output(makeResponseSchema(projectOutput))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId ?? null;
+      await assertProjectAccess(ctx.session.user.id, input.id, organizationId);
+      const existingProject = await db
+        .select()
+        .from(project)
+        .where(
+          and(
+            eq(project.id, input.id),
+            await projectReadWhere(ctx.session.user.id, organizationId),
+          ),
+        )
+        .limit(1);
+
+      if (existingProject.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const unarchivedProject = await db
+        .update(project)
+        .set({ isArchived: false, updatedBy: ctx.session.user.id })
+        .where(eq(project.id, input.id))
+        .returning();
+
+      if (!unarchivedProject[0]) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to unarchive project",
+        });
+      }
+
+      return respond({
+        message: "Project unarchived",
+        data: unarchivedProject[0],
+      });
+    }),
+
+  // Change project status
+  changeStatus: orgProcedure
+    .input(changeProjectStatusInput)
+    .use(actionGuard("project.status.change", projectIdFromInput))
+    .output(makeResponseSchema(projectOutput))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId ?? null;
+      await assertProjectAccess(ctx.session.user.id, input.id, organizationId);
+      const existingProject = await db
+        .select()
+        .from(project)
+        .where(
+          and(
+            eq(project.id, input.id),
+            await projectReadWhere(ctx.session.user.id, organizationId),
+          ),
+        )
+        .limit(1);
+
+      if (existingProject.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const updatedProject = await db
+        .update(project)
+        .set({ status: input.status, updatedBy: ctx.session.user.id })
+        .where(eq(project.id, input.id))
+        .returning();
+
+      if (!updatedProject[0]) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to change project status",
+        });
+      }
+
+      return respond({
+        message: "Project status updated",
+        data: updatedProject[0],
+      });
+    }),
+
+  // Toggle project public/private visibility
+  togglePublic: orgProcedure
+    .input(toggleProjectPublicInput)
+    .use(actionGuard("project.public.toggle", projectIdFromInput))
+    .output(makeResponseSchema(projectOutput))
+    .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.activeOrganizationId ?? null;
+      await assertProjectAccess(ctx.session.user.id, input.id, organizationId);
+      const existingProject = await db
+        .select()
+        .from(project)
+        .where(
+          and(
+            eq(project.id, input.id),
+            await projectReadWhere(ctx.session.user.id, organizationId),
+          ),
+        )
+        .limit(1);
+
+      if (existingProject.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const currentProject = existingProject[0];
+      if (!currentProject) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const updatedProject = await db
+        .update(project)
+        .set({ isPublic: !currentProject.isPublic })
+        .where(eq(project.id, input.id))
+        .returning();
+
+      if (!updatedProject[0]) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to toggle project visibility",
+        });
+      }
+
+      return respond({
+        message: `Project is now ${updatedProject[0].isPublic ? "public" : "private"}`,
+        data: updatedProject[0],
+      });
+    }),
+});

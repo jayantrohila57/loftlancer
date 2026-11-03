@@ -1,5 +1,5 @@
-import { DEFAULT_STUDIO_URL } from "@loftlancer/env/platform";
-import type { AppRouteStateLinks } from "@loftlancer/ui/patterns/app-route-states";
+import type { AppRouteStateLinks } from "@features/patterns/core/client/patterns.app-route-states";
+import { DEFAULT_STUDIO_URL } from "@loftlancer/t3-env/platform";
 import { routes } from "@/utils/navigation";
 
 const origin = (

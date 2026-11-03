@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { appRouter } from "../packages/api/src/routers/index";
-import { db } from "../packages/db/src/index";
-import { user } from "../packages/db/src/schema/auth";
+import { db } from "../packages/drizzle/src/index";
+import { user } from "../packages/drizzle/src/schema/better-auth";
+import { appRouter } from "../packages/orpc/src/routers/index";
 
 async function main() {
   console.log("🚀 Starting Template Verification...");

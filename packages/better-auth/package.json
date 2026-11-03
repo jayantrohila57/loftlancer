@@ -1,0 +1,79 @@
+{
+  "name": "@loftlancer/better-auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./session-types": {
+      "default": "./src/types/better-auth.session-types.ts"
+    },
+    "./return-to": {
+      "default": "./src/utils/better-auth.return-to.ts"
+    },
+    "./platform-auth": {
+      "default": "./src/core/better-auth.platform.ts"
+    },
+    "./sibling-auth": {
+      "default": "./src/core/better-auth.sibling.ts"
+    },
+    "./platform-middleware": {
+      "default": "./src/core/better-auth.platform-middleware.ts"
+    },
+    "./guards": {
+      "default": "./src/core/guards/index.ts"
+    },
+    "./passwordless": {
+      "default": "./src/core/better-auth.passwordless.ts"
+    },
+    "./platform-urls": {
+      "default": "./src/config/better-auth.platform-urls.ts"
+    },
+    "./e2e-route-access": {
+      "default": "./src/core/better-auth.e2e-route-access.ts"
+    },
+    "./auth-api-cors": {
+      "default": "./src/core/better-auth.auth-api-cors.ts"
+    },
+    "./session-list": {
+      "default": "./src/core/better-auth.session-list.ts"
+    },
+    "./session-cookies": {
+      "default": "./src/core/better-auth.session-cookies.ts"
+    },
+    "./product-hooks-host": {
+      "default": "./src/core/better-auth.product-hooks-host.ts"
+    },
+    "./client": {
+      "default": "./src/client/index.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "NODE_ENV=test node --import tsx --test tests/better-auth.return-to.test.ts tests/better-auth.session-access.test.ts tests/better-auth.session-cookies.test.ts tests/better-auth.platform-middleware.test.ts tests/better-auth.e2e-route-access.test.ts tests/better-auth.rate-limit-storage.test.ts tests/better-auth-client.resolve-api-base-url.test.ts"
+  },
+  "dependencies": {
+    "@better-auth/cimd": "^1.7.7",
+    "@better-auth/mcp": "^1.7.7",
+    "@better-auth/oauth-provider": "^1.7.7",
+    "@loftlancer/drizzle": "workspace:*",
+    "@loftlancer/resend": "workspace:*",
+    "@loftlancer/t3-env": "workspace:*",
+    "@loftlancer/sentry": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "next": "catalog:",
+    "react": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^19.3.0"
+  }
+}

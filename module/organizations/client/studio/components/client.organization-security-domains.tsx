@@ -1,9 +1,9 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { useState } from "react";
 import { useActiveOrganization } from "@/components/org/active-organization-context";
 import { FormField } from "@/components/patterns/form-field";
@@ -140,12 +140,12 @@ export function OrganizationSecurityDomains() {
         ) : null}
         <div className="mt-4 divide-y rounded-md border">
           {query.isPending ? (
-            <p className="p-3 text-muted-foreground text-sm">
+            <p className="text-muted-foreground p-3 text-sm">
               Loading domains…
             </p>
           ) : null}
           {query.isError ? (
-            <p className="p-3 text-destructive text-sm">
+            <p className="text-destructive p-3 text-sm">
               Domains could not be loaded. Reload this page and try again.
             </p>
           ) : null}
@@ -155,7 +155,7 @@ export function OrganizationSecurityDomains() {
               className="flex flex-wrap items-center justify-between gap-3 p-3"
             >
               <div className="min-w-0">
-                <p className="truncate font-medium text-sm">{item.hostname}</p>
+                <p className="truncate text-sm font-medium">{item.hostname}</p>
                 <p className="text-muted-foreground text-xs">
                   {item.state === "verified"
                     ? "Ownership verified"
@@ -191,12 +191,12 @@ export function OrganizationSecurityDomains() {
           {!query.isPending &&
           !query.isError &&
           query.data?.items.length === 0 ? (
-            <p className="p-3 text-muted-foreground text-sm">
+            <p className="text-muted-foreground p-3 text-sm">
               No email domains added.
             </p>
           ) : null}
         </div>
-        <p className="mt-4 text-muted-foreground text-sm">
+        <p className="text-muted-foreground mt-4 text-sm">
           MFA enforcement, SSO, and custom organization domains are unavailable
           until the authentication provider and host routing are configured.
           They are not reported as active.

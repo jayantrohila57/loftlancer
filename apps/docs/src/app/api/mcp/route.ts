@@ -1,8 +1,5 @@
-import { createLoftlancerMcpHttpHandler } from "@loftlancer/mcp/handler";
-import {
-  mcpCorsPreflightResponse,
-  withMcpCors,
-} from "@loftlancer/mcp/http-cors";
+import { mcpCorsPreflightResponse, withMcpCors } from "@loftlancer/mcp";
+import { createLoftlancerMcpHttpHandler } from "@loftlancer/orpc/mcp";
 
 const mcpHandler = createLoftlancerMcpHttpHandler();
 

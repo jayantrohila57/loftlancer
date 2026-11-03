@@ -1,4 +1,4 @@
-import { localDaysAgo } from "@loftlancer/ui/local-day";
+import { localDaysAgo } from "@features/patterns/utils/patterns.local-day.utils";
 import { formatDate } from "@/lib/format";
 
 /**

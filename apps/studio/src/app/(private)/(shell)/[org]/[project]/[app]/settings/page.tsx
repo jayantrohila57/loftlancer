@@ -1,4 +1,4 @@
-import { getAppManifest } from "@loftlancer/actions";
+import { getAppManifest } from "@features/authorization/utils";
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";

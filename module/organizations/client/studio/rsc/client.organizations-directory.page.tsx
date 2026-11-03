@@ -1,4 +1,4 @@
-import { isOrganizationsEnabled } from "@loftlancer/env/organizations";
+import { isOrganizationsEnabled } from "@loftlancer/t3-env/organizations";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";

@@ -1,9 +1,9 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import "@loftlancer/env/server";
-import "@loftlancer/env/auth-app";
-import "@loftlancer/env/account";
-import { withServiceBasePath } from "@loftlancer/env/next-service-base-path";
+import "@loftlancer/t3-env/server";
+import "@loftlancer/t3-env/auth-app";
+import "@loftlancer/t3-env/account";
+import { withServiceBasePath } from "@loftlancer/t3-env/next-service-base-path";
 import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 
@@ -34,8 +34,8 @@ const nextConfig: NextConfig = withServiceBasePath("auth", {
   reactCompiler: true,
   transpilePackages: [
     "@loftlancer/ui",
-    "@loftlancer/api",
-    "@loftlancer/auth-client",
+    "@loftlancer/orpc",
+    "@loftlancer/better-auth/client",
   ],
   async redirects() {
     return [

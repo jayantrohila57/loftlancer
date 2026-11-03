@@ -1,4 +1,4 @@
-import type { ActionName } from "@loftlancer/actions";
+import type { ActionName } from "@features/authorization/utils";
 
 /** Canonical gates for Organizations hub sections (UI owned by other agents). */
 export const orgHubSectionActions = {

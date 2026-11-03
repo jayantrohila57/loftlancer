@@ -60,7 +60,7 @@ module/teams/
 - Parse input; for reads, call service directly or **`runAction`** with `audit: false` per registry.
 - Map to **`createSuccess` / `createFailed` / `createError`**; **`serviceResponseSchema.parse`**.
 
-### 4. oRPC (`packages/api/src/orpc/procedures/teams.ts`)
+### 4. oRPC (`packages/orpc/src/orpc/procedures/teams.ts`)
 
 - `teamGet` procedure → **`teamGetController({ input, ctx: context })`**.
 
@@ -120,5 +120,5 @@ Or explicit loader + content — logic stays in module ([server-api.md](./server
 
 ## Related
 
-- [gaps/contracts.md](./gaps/contracts.md)  
-- [gaps/actions-audit.md](./gaps/actions-audit.md)  
+- [gaps/contracts.md](./gaps/contracts.md)
+- [gaps/actions-audit.md](./gaps/actions-audit.md)

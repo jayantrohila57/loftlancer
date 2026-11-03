@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@loftlancer/ui/button";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import type { DataTableEmptyConfig } from "@features/data-table/types/data-table.empty.types";
 import {
   LOCAL_DATE_TIME_FORMAT,
   LocalDateTime,
-} from "@loftlancer/ui/patterns/local-date-time";
+} from "@features/patterns/core/client/patterns.local-date-time";
+import { Button } from "@loftlancer/ui/button";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 import type { ReactNode } from "react";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
@@ -61,7 +61,7 @@ export function AuditLogTableView({
   filterActive = false,
   empty,
 }: AuditLogTableViewProps) {
-  const columns: import("@loftlancer/ui/data-table/data-table").DataTableColumnDef<AuditLog>[] =
+  const columns: import("@features/data-table/core/client/data-table.table").DataTableColumnDef<AuditLog>[] =
     [
       columnHelper.accessor("createdAt", {
         header: ({ column }) => (

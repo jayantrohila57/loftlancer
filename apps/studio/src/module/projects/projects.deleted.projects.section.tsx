@@ -1,10 +1,10 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Button } from "@loftlancer/ui/button";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ErrorState } from "@/components/patterns/error-state";
 import { appIcons } from "@/lib/icons";
@@ -62,7 +62,7 @@ export function DeletedProjectsSection() {
               className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
             >
               <div className="min-w-0">
-                <p className="truncate font-medium text-sm">{project.name}</p>
+                <p className="truncate text-sm font-medium">{project.name}</p>
                 <p className="text-muted-foreground text-xs">
                   Deleted{" "}
                   <LocalDateTime value={project.deletedAt} showTimeOnHover />

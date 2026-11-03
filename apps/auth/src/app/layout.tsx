@@ -1,4 +1,4 @@
-import { rootFontClassName } from "@loftlancer/ui/fonts";
+import { rootFontClassName } from "@features/patterns/utils/patterns.fonts.utils";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={rootFontClassName}>
-      <body className="relative min-h-svh bg-background antialiased">
+      <body className="bg-background relative min-h-svh antialiased">
         <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />

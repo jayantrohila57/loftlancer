@@ -1,16 +1,16 @@
 "use client";
 
-import { PROJECT_MEMBER_GRANT_KEYS } from "@loftlancer/actions";
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { PROJECT_MEMBER_GRANT_KEYS } from "@features/authorization/utils";
+import { DataTableActionsColumnHeader } from "@features/data-table/core/client/data-table.actions-column";
+import type { DataTableColumnDef } from "@features/data-table/core/client/data-table.table";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { AccordionSectionSkeleton } from "@features/patterns/core/client/patterns.accordion-section-skeleton";
+import { LoadingButton } from "@features/patterns/core/client/patterns.loading-button";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 import { Checkbox } from "@loftlancer/ui/checkbox";
-import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import { DataTableActionsColumnHeader } from "@loftlancer/ui/data-table/data-table-actions-column";
 import { Label } from "@loftlancer/ui/label";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { AccordionSectionSkeleton } from "@loftlancer/ui/patterns/accordion-section-skeleton";
-import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
@@ -21,6 +21,7 @@ import { SettingsRow } from "@/components/patterns/settings-layout";
 import { useConfirm } from "@/hooks/use-confirm";
 import { formatActionLabel } from "@/lib/format-action-label";
 import { toast } from "@/lib/toast";
+import { serviceListItems, serviceNestedItems } from "@/lib/trpc-envelope";
 import { Can } from "@/shared/permissions/shared.permissions.can";
 import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
 import { trpc } from "@/utils/trpc";
@@ -61,8 +62,8 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
   });
 
   const orgMembers = useMemo(
-    () => membersQuery.data?.items ?? [],
-    [membersQuery.data?.items],
+    () => serviceNestedItems(membersQuery.data),
+    [membersQuery.data],
   );
 
   const invalidate = () => {
@@ -132,7 +133,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
   );
 
   const summary = summaryQuery.data;
-  const teams = teamsQuery.data?.items ?? [];
+  const teams = serviceListItems(teamsQuery.data);
   const linkedTeamIds = new Set(summary?.teams.map((row) => row.teamId) ?? []);
   const availableTeams = teams.filter((team) => !linkedTeamIds.has(team.id));
   const managers = summary?.managers ?? [];
@@ -163,7 +164,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
       header: "Effective project access",
       cell: ({ row }) => (
         <span
-          className="block max-w-72 whitespace-normal text-xs"
+          className="block max-w-72 text-xs whitespace-normal"
           title={row.original.effectiveActions
             .map(formatActionLabel)
             .join(", ")}
@@ -504,7 +505,7 @@ export function ProjectAccessSection({ project }: ProjectAccessSectionProps) {
           </SettingsRow>
           {grantUserId ? (
             <div className="flex flex-col gap-3 px-4 pb-4">
-              <p className="font-medium text-sm">Access levels</p>
+              <p className="text-sm font-medium">Access levels</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 {PROJECT_MEMBER_GRANT_KEYS.map((grant) => {
                   const checked = grantSelection.includes(grant);

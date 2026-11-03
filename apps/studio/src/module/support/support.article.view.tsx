@@ -8,7 +8,7 @@ export function SupportArticleView({ article }: { article: SupportArticle }) {
       description={article.category}
       back={false}
     >
-      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+      <div className="text-sm leading-relaxed whitespace-pre-wrap">
         {article.body}
       </div>
     </DashboardSection>

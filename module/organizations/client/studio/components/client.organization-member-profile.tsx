@@ -1,13 +1,16 @@
 "use client";
 
-import { formatActionLabel, normalizeOrgRole } from "@loftlancer/actions";
-import { Button } from "@loftlancer/ui/button";
-import { Input } from "@loftlancer/ui/input";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import {
+  formatActionLabel,
+  normalizeOrgRole,
+} from "@features/authorization/utils";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import {
   LOCAL_DATE_TIME_FORMAT,
   LocalDateTime,
-} from "@loftlancer/ui/patterns/local-date-time";
+} from "@features/patterns/core/client/patterns.local-date-time";
+import { Button } from "@loftlancer/ui/button";
+import { Input } from "@loftlancer/ui/input";
 import Link from "next/link";
 import { useState } from "react";
 import { ErrorState } from "@/components/patterns/error-state";
@@ -228,10 +231,10 @@ export function OrganizationMemberProfiles({
                         </Can>
                       </div>
                       <details className="text-sm">
-                        <summary className="cursor-pointer text-muted-foreground">
+                        <summary className="text-muted-foreground cursor-pointer">
                           Access details
                         </summary>
-                        <div className="mt-2 space-y-1 rounded-md bg-muted/40 p-3">
+                        <div className="bg-muted/40 mt-2 space-y-1 rounded-md p-3">
                           <p>
                             Base role:{" "}
                             <span className="font-medium">
@@ -292,14 +295,14 @@ export function OrganizationMemberProfiles({
                 : ""}
             </p>
             {access.data.member.suspended ? (
-              <p className="mt-2 text-destructive text-sm">
+              <p className="text-destructive mt-2 text-sm">
                 Access is suspended. Team, project, and app access is inactive.
                 {access.data.member.suspensionReason
                   ? ` ${access.data.member.suspensionReason}`
                   : ""}
               </p>
             ) : null}
-            <p className="mt-2 text-muted-foreground text-sm">
+            <p className="text-muted-foreground mt-2 text-sm">
               {access.data.member.organizationActions.length
                 ? access.data.member.organizationActions.join(" · ")
                 : "No additional organization permissions."}
@@ -359,16 +362,16 @@ export function OrganizationMemberProfiles({
                         {project.sources.join(", ") || "Organization role"}
                       </p>
                       <details className="mt-1 text-xs">
-                        <summary className="cursor-pointer text-muted-foreground">
+                        <summary className="text-muted-foreground cursor-pointer">
                           Effective permissions
                         </summary>
-                        <p className="mt-1 text-muted-foreground">
+                        <p className="text-muted-foreground mt-1">
                           {project.permissions.join(" · ")}
                         </p>
                       </details>
                     </div>
                     <Link
-                      className="shrink-0 text-primary text-sm underline-offset-4 hover:underline"
+                      className="text-primary shrink-0 text-sm underline-offset-4 hover:underline"
                       href={routes.projectSection(
                         organizationSlug,
                         project.slug,

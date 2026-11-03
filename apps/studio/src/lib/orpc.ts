@@ -1,5 +1,5 @@
 "use client";
-import type { StudioORPCRouter } from "@loftlancer/api/orpc";
+import type { StudioORPCRouter } from "@loftlancer/orpc/orpc";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import type { RouterClient } from "@orpc/server";

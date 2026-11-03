@@ -40,7 +40,7 @@ export function createOrganizationsTableColumns(
             >
               {org.name}
             </Link>
-            <span className="block truncate font-mono text-muted-foreground text-xs">
+            <span className="text-muted-foreground block truncate font-mono text-xs">
               {org.slug}
             </span>
           </TableLeadingCell>

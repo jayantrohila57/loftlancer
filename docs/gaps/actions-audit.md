@@ -23,12 +23,12 @@ runAction<T>(input: {
 
 **Steps (fixed order):**
 
-1. `buildAccessContext(ctx)` — fields required per `action.scope` (org, project, team, user)  
-2. **`requireAction`** — on deny → audit **`denied`** → return **`createFailed(message)`** (no throw to client)  
-3. Optional **`emitActionEvent({ phase: "before", ... })`**  
-4. Run **handler** (service work)  
-5. Map **`ServiceOutcome`** → ServiceResponse  
-6. **`writeAuditEvent`** for **success | denied | failure** on every terminal mutation outcome  
+1. `buildAccessContext(ctx)` — fields required per `action.scope` (org, project, team, user)
+2. **`requireAction`** — on deny → audit **`denied`** → return **`createFailed(message)`** (no throw to client)
+3. Optional **`emitActionEvent({ phase: "before", ... })`**
+4. Run **handler** (service work)
+5. Map **`ServiceOutcome`** → ServiceResponse
+6. **`writeAuditEvent`** for **success | denied | failure** on every terminal mutation outcome
 7. Optional **`emitActionEvent({ phase: "after", serviceResponse })`**
 
 Controllers: **`return runAction(...)`** — do not call `requireAction` and service separately without audit on failure.
@@ -37,19 +37,19 @@ Controllers: **`return runAction(...)`** — do not call `requireAction` and ser
 
 ## Reads vs mutations audit
 
-| Kind | Audit |
-|------|-------|
-| **Read** actions (`isReadAction` / registry) | **No audit** unless `alwaysAudit` |
-| **Mutations** | **Always** audit success, denied, failure |
+| Kind                                         | Audit                                     |
+| -------------------------------------------- | ----------------------------------------- |
+| **Read** actions (`isReadAction` / registry) | **No audit** unless `alwaysAudit`         |
+| **Mutations**                                | **Always** audit success, denied, failure |
 
 ---
 
 ## Permission deny mapping
 
-| Wrong | Right |
-|-------|-------|
+| Wrong                                   | Right                                                          |
+| --------------------------------------- | -------------------------------------------------------------- |
 | Throw TRPC/oRPC error for expected deny | **`ServiceResponse` with `status: "failed"`** + audit `denied` |
-| Skip audit on validation failure | Audit **`failure`** + `failed` response |
+| Skip audit on validation failure        | Audit **`failure`** + `failed` response                        |
 
 ---
 
@@ -66,7 +66,7 @@ emitActionEvent(input: {
 }): void;
 ```
 
-- **Event name** derives from **`action` ID** — no duplicate custom event IDs unless listed in [actions-and-events.md](../actions-and-events.md).  
+- **Event name** derives from **`action` ID** — no duplicate custom event IDs unless listed in [actions-and-events.md](../actions-and-events.md).
 - **No business rules** in event helpers — observe only.
 
 ---
@@ -85,15 +85,15 @@ emitActionEvent(input: {
 
 ## ServiceResponse ↔ audit ↔ event
 
-| ServiceResponse | Audit (mutation) | Event `after` |
-|-----------------|------------------|---------------|
-| `success` | `success` | `result: success` |
-| `failed` | `denied` or `failure` | `result: failed` |
-| `error` | `failure` (+ detail) | `result: error` |
+| ServiceResponse | Audit (mutation)      | Event `after`     |
+| --------------- | --------------------- | ----------------- |
+| `success`       | `success`             | `result: success` |
+| `failed`        | `denied` or `failure` | `result: failed`  |
+| `error`         | `failure` (+ detail)  | `result: error`   |
 
 ---
 
 ## Related
 
-- [contracts.md](./contracts.md)  
-- [orpc-transport.md](./orpc-transport.md) — same wrapper in all transports  
+- [contracts.md](./contracts.md)
+- [orpc-transport.md](./orpc-transport.md) — same wrapper in all transports

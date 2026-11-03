@@ -1,14 +1,18 @@
-import { canAssignOrganizationInviteRole } from "@loftlancer/actions";
-import { sendOrganizationInvitationEmail } from "@loftlancer/auth/organization-invitation-email";
-import { activeInvitationWhere, activeMemberWhere, db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
+import { sendOrganizationInvitationEmail } from "@features/authentication/core/server/authentication.organization-invitation-email";
+import { canAssignOrganizationInviteRole } from "@features/authorization/utils";
+import {
+  activeInvitationWhere,
+  activeMemberWhere,
+  db,
+} from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
 import {
   invitation,
   member,
   organization,
-} from "@loftlancer/db/schema/organization";
-import { project } from "@loftlancer/db/schema/projects";
-import { team } from "@loftlancer/db/schema/team";
+} from "@loftlancer/drizzle/schema/organization";
+import { project } from "@loftlancer/drizzle/schema/projects";
+import { team } from "@loftlancer/drizzle/schema/team";
 import { and, eq, gt, isNull, sql } from "drizzle-orm";
 /** Shared persistence + delivery. Authorization and terminal audit belong to controllers. */
 export async function createOrganizationInvitation(

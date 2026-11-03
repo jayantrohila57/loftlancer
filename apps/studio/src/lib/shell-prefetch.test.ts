@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { isReservedOrgSlugForCreation } from "@loftlancer/env/reserved-slugs";
+import { isReservedOrgSlugForCreation } from "@loftlancer/t3-env/reserved-slugs";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { orgSlugFromRequestPath } from "./org-slug-from-request-path";
 

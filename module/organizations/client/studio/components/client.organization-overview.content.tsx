@@ -1,7 +1,7 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import { Button } from "@loftlancer/ui/button";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -73,8 +73,8 @@ export function OrganizationOverviewContent({
   return (
     <section className="min-w-0 space-y-4">
       <header>
-        <h2 className="font-semibold text-xl tracking-tight">Overview</h2>
-        <p className="mt-1 text-muted-foreground text-sm">
+        <h2 className="text-xl font-semibold tracking-tight">Overview</h2>
+        <p className="text-muted-foreground mt-1 text-sm">
           {personal
             ? "Personal organization overview and settings."
             : "Organization overview and settings."}
@@ -153,11 +153,11 @@ export function OrganizationOverviewContent({
                 <li key={project.id} className="py-3 first:pt-0 last:pb-0">
                   <Link
                     href={routes.project(slug, project.slug)}
-                    className="font-medium text-sm hover:underline"
+                    className="text-sm font-medium hover:underline"
                   >
                     {project.name}
                   </Link>
-                  <p className="mt-1 text-muted-foreground text-xs">
+                  <p className="text-muted-foreground mt-1 text-xs">
                     Updated {new Date(project.updatedAt).toLocaleDateString()}
                   </p>
                 </li>

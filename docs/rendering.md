@@ -21,12 +21,12 @@ Tier 1 StudioShellLayout          sidebar + inset + header ([layouts.md](./layou
 
 **Components render the final value. They do not own business logic, fetching, or state machines.**
 
-| Do in **functions** (server or hook modules) | Do in **components** |
-|---------------------------------------------|----------------------|
-| Fetch, parse, authorize (server) | Layout, copy, formatting already-resolved props |
-| oRPC queries/mutations (hooks) | Bind props to UI primitives |
-| Filters, tabs, sort state (hook functions) | Show `viewState` / `data` / `label` passed in |
-| Map errors → `ViewState` | Switch UI by **passed** status, minimal glue |
+| Do in **functions** (server or hook modules) | Do in **components**                            |
+| -------------------------------------------- | ----------------------------------------------- |
+| Fetch, parse, authorize (server)             | Layout, copy, formatting already-resolved props |
+| oRPC queries/mutations (hooks)               | Bind props to UI primitives                     |
+| Filters, tabs, sort state (hook functions)   | Show `viewState` / `data` / `label` passed in   |
+| Map errors → `ViewState`                     | Switch UI by **passed** status, minimal glue    |
 
 ---
 
@@ -69,13 +69,13 @@ applyFilter(items, filter) → filteredItems   // pure or hook-backed
 
 Do **not** decide “this page is client” vs “server” upfront.
 
-| Slice | Typical kind | Example |
-|-------|----------------|---------|
-| Page shell, headings, static copy, layout | Server Component | Team overview title, description |
-| Card chrome (border, header, static body text) | Server Component | Project card frame |
-| Button, form, menu, drag, optimistic UI | Client Component | “Delete team”, inline edit |
-| List that only displays server-fetched rows | Server Component | Read-only member list |
-| List with client-side filter on cached data | Client hook + small client table | Filter fn in hook; table renders `rows` prop |
+| Slice                                          | Typical kind                     | Example                                      |
+| ---------------------------------------------- | -------------------------------- | -------------------------------------------- |
+| Page shell, headings, static copy, layout      | Server Component                 | Team overview title, description             |
+| Card chrome (border, header, static body text) | Server Component                 | Project card frame                           |
+| Button, form, menu, drag, optimistic UI        | Client Component                 | “Delete team”, inline edit                   |
+| List that only displays server-fetched rows    | Server Component                 | Read-only member list                        |
+| List with client-side filter on cached data    | Client hook + small client table | Filter fn in hook; table renders `rows` prop |
 
 A **card** can be mostly server-rendered; only the **interactive corner** is a client island.
 
@@ -91,8 +91,7 @@ import { Card, CardHeader, CardContent } from "@loftlancer/ui/…";
 import { TeamActionsSkeleton } from "../skeletons/client.team-actions.skeleton";
 
 const TeamActions = dynamic(
-  () =>
-    import("../components/client.team-actions").then((m) => m.TeamActions),
+  () => import("../components/client.team-actions").then((m) => m.TeamActions),
   { loading: () => <TeamActionsSkeleton /> },
 );
 
@@ -174,6 +173,6 @@ Functions return **`viewState`** (`loading` | `success` | `empty` | `error` | `f
 
 ## Related
 
-- [modules.md](./modules.md) — module folders, naming  
-- [ui-ux-skills.md](./ui-ux-skills.md) — agent skills before building UI  
-- [server-api.md](./server-api.md) — server entrypoints, bare `app/`  
+- [modules.md](./modules.md) — module folders, naming
+- [ui-ux-skills.md](./ui-ux-skills.md) — agent skills before building UI
+- [server-api.md](./server-api.md) — server entrypoints, bare `app/`

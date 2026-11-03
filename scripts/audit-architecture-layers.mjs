@@ -21,14 +21,25 @@ const BASELINE_PATH = join(
   "scripts/audit-architecture-layers-baseline.json",
 );
 
-/** @see docs/features.md — packages/api transport only */
+/** @see docs/features.md — packages/orpc transport only */
 const PACKAGES_IMPORT_ALLOW_PREFIX = [
-  "packages/api/src/orpc/",
-  "packages/api/src/mcp/",
-  "packages/api/src/routers/",
+  "packages/orpc/src/orpc/",
+  "packages/orpc/src/mcp/",
+  "packages/orpc/src/routers/",
+  "packages/orpc/src/index.ts",
+  /** Transport glue importing @modules/* and @features/* */
+  "packages/orpc/src/actions/",
+  /** Page guard glue importing @modules/* and @features/* */
+  "packages/orpc/src/page-guards/",
+  "packages/orpc/src/utils/orpc.errors.ts",
+  /** Better Auth server + React client import authorization AC from features */
+  "packages/better-auth/src/",
+  "packages/mcp/src/",
+  "packages/drizzle/scripts/",
 ];
 
 const IMPORT_PATTERNS = [
+  { label: "@modules/", re: /from\s+["']@modules\// },
   { label: "@module/", re: /from\s+["']@module\// },
   { label: "@features/", re: /from\s+["']@features\// },
   {
@@ -82,6 +93,9 @@ function findForbiddenImports(text) {
 }
 
 function isAllowedPackageFile(rel) {
+  if (/^packages\/orpc\/src\/.*\.test\.(ts|tsx|mts)$/.test(rel)) {
+    return true;
+  }
   return PACKAGES_IMPORT_ALLOW_PREFIX.some((p) => rel.startsWith(p));
 }
 
@@ -92,7 +106,7 @@ function checkFeaturesLayer() {
     if (!/\.(ts|tsx|mts|js|mjs)$/.test(path)) continue;
     const text = readText(path);
     const hits = findForbiddenImports(text).filter(
-      (h) => h.includes("module") || h === "@module/",
+      (h) => h.includes("module") || h === "@module/" || h === "@modules/",
     );
     if (hits.length === 0) continue;
     violations.push({
@@ -100,7 +114,7 @@ function checkFeaturesLayer() {
       rule: "features-no-module",
       file: relative(ROOT, path),
       detail:
-        "features/* must not import module/* or @module/* (docs/features.md).",
+        "features/* must not import module/*, @modules/*, or @module/* (docs/features.md).",
     });
   }
 }

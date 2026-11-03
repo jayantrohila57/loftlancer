@@ -34,10 +34,10 @@ export function ErrorState({
   );
 
   return (
-    <Empty className="min-h-48 w-full border border-destructive/30 bg-destructive/5">
+    <Empty className="border-destructive/30 bg-destructive/5 min-h-48 w-full border">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <AlertTriangle className="size-6 text-destructive" aria-hidden />
+          <AlertTriangle className="text-destructive size-6" aria-hidden />
         </EmptyMedia>
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>{safeDescription}</EmptyDescription>

@@ -1,5 +1,5 @@
 "use client";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { useMutation } from "@tanstack/react-query";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { PermissionGate } from "@/domain/permissions/components/permission-gate";

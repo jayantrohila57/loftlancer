@@ -24,20 +24,20 @@ Related: [modules.md](./modules.md), [rendering.md](./rendering.md), [app-states
 
 ## Module owns its route tree
 
-| Rule | Detail |
-|------|--------|
-| **URL segment ↔ module** | Each product domain has a route prefix and **child pages under that prefix belong to that module** (e.g. `/studio/[org]/teams/…` → `module/teams`). |
-| **Cross-module links only** | Navigation between modules uses shared route helpers; no feature UI imported across modules except via `module/shared` or `@loftlancer/ui`. |
-| **App `app/`** | Filesystem routes only — each `layout.tsx` / `page.tsx` **imports** the matching **module layout** or **module page**; no layout logic in apps. |
+| Rule                        | Detail                                                                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **URL segment ↔ module**    | Each product domain has a route prefix and **child pages under that prefix belong to that module** (e.g. `/studio/[org]/teams/…` → `module/teams`). |
+| **Cross-module links only** | Navigation between modules uses shared route helpers; no feature UI imported across modules except via `module/shared` or `@loftlancer/ui`.         |
+| **App `app/`**              | Filesystem routes only — each `layout.tsx` / `page.tsx` **imports** the matching **module layout** or **module page**; no layout logic in apps.     |
 
 Example mapping (illustrative):
 
-| Route area | Module |
-|------------|--------|
-| `/[org]/teams/…` | `teams` |
-| `/[org]/projects/…`, `/[org]/[project]/…` | `projects` |
-| `/[org]/members`, `/[org]/settings`, … | `organizations` |
-| `/support/…` | `support` |
+| Route area                                | Module          |
+| ----------------------------------------- | --------------- |
+| `/[org]/teams/…`                          | `teams`         |
+| `/[org]/projects/…`, `/[org]/[project]/…` | `projects`      |
+| `/[org]/members`, `/[org]/settings`, …    | `organizations` |
+| `/support/…`                              | `support`       |
 
 Add rows in [module/README.md](../module/README.md) as routes migrate.
 
@@ -115,12 +115,12 @@ apps/studio/…/[org]/teams/[teamId]/layout.tsx
   → {children}
 ```
 
-| Module | Sub-header tabs? | Sidebar note |
-|--------|------------------|--------------|
-| `teams` | Yes (overview, members, …) | Highlight “Teams” group |
-| `overview` | Often no | Org home links |
+| Module     | Sub-header tabs?             | Sidebar note                 |
+| ---------- | ---------------------------- | ---------------------------- |
+| `teams`    | Yes (overview, members, …)   | Highlight “Teams” group      |
+| `overview` | Often no                     | Org home links               |
 | `projects` | Yes (env, apps, settings, …) | Project-scoped sidebar block |
-| `support` | Maybe partial | Support-only nav slice |
+| `support`  | Maybe partial                | Support-only nav slice       |
 
 **Rule:** If two pages share the same sub-header, they **must** share the same **Tier 2 layout** file.
 
@@ -139,12 +139,12 @@ StudioShellLayout (Tier 1)                    ← stable across navigation
               └── dynamic client islands + ViewState boundary
 ```
 
-| Concern | Doc |
-|---------|-----|
-| Logic in functions, components render props | [rendering.md](./rendering.md) |
+| Concern                                       | Doc                              |
+| --------------------------------------------- | -------------------------------- |
+| Logic in functions, components render props   | [rendering.md](./rendering.md)   |
 | `loading` / `error` / `not-found` / forbidden | [app-states.md](./app-states.md) |
-| Server fetch, oRPC | [server-api.md](./server-api.md) |
-| `utils` / `server` / `client` folders | [modules.md](./modules.md) |
+| Server fetch, oRPC                            | [server-api.md](./server-api.md) |
+| `utils` / `server` / `client` folders         | [modules.md](./modules.md)       |
 
 **Layout shift:** Tier 1 unchanged when moving within Tier 2; Tier 2 sub-header unchanged when switching child pages; **`loading.tsx`** on the **segment that fetches** uses skeletons that reserve **sub-header + content** height ([app-states.md](./app-states.md)).
 
@@ -154,11 +154,11 @@ StudioShellLayout (Tier 1)                    ← stable across navigation
 
 Full rules: **[naming.md](./naming.md)**.
 
-| Slug | Example | Tier |
-|------|---------|------|
-| `shell` | `client.shell.layout.tsx`, `client.shell.sidebar.tsx` | 1 |
-| `section` | `client.section.layout.tsx`, `client.section.tabs.tsx`, `client.section.skeleton.tsx` | 2 |
-| `<screen>` | `client.overview.page.tsx` in `rsc/` | Page RSC |
+| Slug       | Example                                                                               | Tier     |
+| ---------- | ------------------------------------------------------------------------------------- | -------- |
+| `shell`    | `client.shell.layout.tsx`, `client.shell.sidebar.tsx`                                 | 1        |
+| `section`  | `client.section.layout.tsx`, `client.section.tabs.tsx`, `client.section.skeleton.tsx` | 2        |
+| `<screen>` | `client.overview.page.tsx` in `rsc/`                                                  | Page RSC |
 
 Layouts are **Server Components** unless a small client island (e.g. tab highlight) is loaded with **`dynamic()` + skeleton** ([rendering.md](./rendering.md)).
 
@@ -187,6 +187,6 @@ Layouts are **Server Components** unless a small client island (e.g. tab highlig
 
 ## Related
 
-- [modules.md](./modules.md)  
-- [rendering.md](./rendering.md)  
-- [app-states.md](./app-states.md)  
+- [modules.md](./modules.md)
+- [rendering.md](./rendering.md)
+- [app-states.md](./app-states.md)

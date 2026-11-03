@@ -1,19 +1,14 @@
-import { env } from "@loftlancer/env/server";
-
-import { decryptWithKey, encryptWithKey } from "./core";
-
 /**
- * Encrypts a string using AES-256-GCM
- * @returns Encrypted string in format: iv:authTag:ciphertext
+ * Node `node:crypto` AES-256-GCM primitives and env-bound helpers.
+ * Domain rules (e.g. which product values to encrypt) live in module/.
  */
-export function encrypt(text: string): string {
-  return encryptWithKey(text, env.ENCRYPTION_KEY);
-}
 
-/**
- * Decrypts a string encrypted with `encrypt`. Empty values (`iv:tag:`) are
- * supported and return "".
- */
-export function decrypt(encryptedText: string): string {
-  return decryptWithKey(encryptedText, env.ENCRYPTION_KEY);
-}
+export { decrypt, encrypt } from "./config/node-crypto.env";
+export {
+  NODE_CRYPTO_ALGORITHM,
+  NODE_CRYPTO_AUTH_TAG_LENGTH,
+  NODE_CRYPTO_ENCODING,
+  NODE_CRYPTO_IV_LENGTH,
+  NODE_CRYPTO_KEY_BYTES,
+} from "./constants/node-crypto.constants";
+export { decryptWithKey, encryptWithKey } from "./core/node-crypto.core";

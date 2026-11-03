@@ -1,5 +1,5 @@
-import { db } from "@loftlancer/db";
-import { invitation } from "@loftlancer/db/schema/organization";
+import { db } from "@loftlancer/drizzle";
+import { invitation } from "@loftlancer/drizzle/schema/organization";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, eq, isNull } from "drizzle-orm";

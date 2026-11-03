@@ -1,6 +1,6 @@
-import { db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
-import { team } from "@loftlancer/db/schema/team";
+import { db } from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
+import { team } from "@loftlancer/drizzle/schema/team";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, eq, isNull } from "drizzle-orm";

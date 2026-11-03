@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { resolveTxt } from "node:dns/promises";
-import { db } from "@loftlancer/db";
-import { organizationDomain } from "@loftlancer/db/schema/organization";
+import { db } from "@loftlancer/drizzle";
+import { organizationDomain } from "@loftlancer/drizzle/schema/organization";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, desc, eq, sql } from "drizzle-orm";

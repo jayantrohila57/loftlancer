@@ -1,6 +1,6 @@
 "use client";
 
-import { useAnalyticsConsent } from "@loftlancer/ui/patterns/analytics-consent";
+import { useAnalyticsConsent } from "@features/analytics/core/client";
 import { useEffect, useRef } from "react";
 import {
   identifyUser,

@@ -1,4 +1,4 @@
-import { MarketingLanding } from "@loftlancer/ui/marketing";
+import { MarketingLanding } from "@features/marketing/core/client";
 import { HomeJsonLd } from "@/components/json-ld";
 import { ModeToggle } from "@/components/mode-toggle";
 import { pageMetadata, siteDescription } from "@/lib/seo";

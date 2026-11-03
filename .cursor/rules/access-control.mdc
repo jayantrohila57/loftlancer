@@ -1,6 +1,6 @@
 ---
 description: RBAC + ABAC — registry action IDs, requireAction, evaluatePermission, runAction context
-globs: module/**/server/**,packages/actions/**,packages/api/src/actions/**
+globs: module/**/server/**,packages/actions/**,packages/orpc/src/actions/**
 alwaysApply: false
 ---
 

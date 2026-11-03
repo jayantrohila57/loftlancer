@@ -1,8 +1,8 @@
-import { resolveOwnershipTransfer } from "@loftlancer/auth/member-removal-policy";
-import { activeMemberWhere, db } from "@loftlancer/db";
-import { member, organization } from "@loftlancer/db/schema/organization";
+import { activeMemberWhere, db } from "@loftlancer/drizzle";
+import { member, organization } from "@loftlancer/drizzle/schema/organization";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
+import { resolveOwnershipTransfer } from "@modules/organizations/utils/utils.member-removal-policy";
 import { and, eq, isNull, sql } from "drizzle-orm";
 
 type Success = { success: true };

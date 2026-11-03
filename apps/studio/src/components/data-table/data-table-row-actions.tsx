@@ -1,2 +1,2 @@
 "use client";
-export * from "@loftlancer/ui/data-table/data-table-row-actions";
+export * from "@features/data-table/core/client/data-table.row-actions";

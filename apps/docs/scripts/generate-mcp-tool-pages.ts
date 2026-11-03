@@ -5,8 +5,8 @@ import {
   actionRegistry,
   mcpToolNameFromAction,
   requiredOAuthScopesForAction,
-} from "@loftlancer/actions";
-import { listMcpExposedActions, mcpActionHandlers } from "@loftlancer/api/mcp";
+} from "@features/authorization/utils";
+import { listMcpExposedActions, mcpActionHandlers } from "@loftlancer/orpc/mcp";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
 const root = join(import.meta.dirname, "..");
@@ -64,7 +64,7 @@ title: Tool index
 description: Every MCP tool registered by @loftlancer/mcp from implemented handlers.
 ---
 
-Each page documents one tool exposed by \`registerMcpTools\` in \`@loftlancer/mcp\`. Tools without a handler in \`@loftlancer/api/mcp\` are not listed.
+Each page documents one tool exposed by \`registerMcpTools\` in \`@loftlancer/orpc/mcp\`. Tools without a handler there are not listed.
 
 <McpToolsTable />
 `;

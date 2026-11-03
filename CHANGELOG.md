@@ -16,10 +16,12 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
-### Added
+### Changed
 
-- **`features/`** layer scaffold (`@features/*`, `@loftlancer/features-shared`) with initial authorization, audit, notifications, forms, and data-table folders; dependency rule documented (modules import features, not reverse).
-- Platform docs for **Apps → Modules → Features → Packages** ([docs/features.md](./docs/features.md), updated [docs/modules.md](./docs/modules.md) / [docs/packages.md](./docs/packages.md), [AGENTS.md](./AGENTS.md)); CI gate **`pnpm audit:architecture-layers`**.
+- Enforce **Apps → Modules → Features → Packages** layering across the monorepo; document in [docs/features.md](./docs/features.md) / [AGENTS.md](./AGENTS.md) and gate with **`pnpm audit:architecture-layers`**.
+- Split **`features/`** into per-feature workspace packages; move shared UI (patterns, data-table, shell) out of slimmed **`@loftlancer/ui`**.
+- Rename and re-layout platform packages (**`api` → `orpc`**, **`logger` → `sentry`**, **`config` → `typescript-config`**, **`env` → `t3-env`**) with provider-style folders for **`better-auth`**, **`resend`**, and **`orpc`**.
+- Remove deprecated **`actions`**, **`better-auth-client`**, **`email`/`mail`**, and legacy oRPC module shims after migrating apps and modules to **`@features/*`**, **`@modules/*`**, and **`@loftlancer/orpc`**.
 
 ## [1.25.1] - 2026-11-03
 
@@ -30,8 +32,8 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 ### Added
 
 - CI gate **`pnpm audit:module-architecture`** with baseline debt file — fails on new controller/oRPC/app-route violations ([docs/tooling.md](./docs/tooling.md)); CI also runs **`pnpm check-routes`** on **`dev`** and **`main`**.
-- Strict **agent workflow** (sub-issues, one commit per sub-issue, **`pnpm verify:dev-merge`**, module README as runbook): [AGENTS.md](./AGENTS.md), `.cursor/rules/agent-workflow.mdc`, [module/README.template.md](./module/README.template.md), GitHub *Sub-task* issue template.
-- **OpenAI Codex:** nested **`AGENTS.md`** (`module/`, `teams/`, `packages/api/`), **`.codex/hooks.json`** Stop architecture audit, setup [.codex/README.md](./.codex/README.md).
+- Strict **agent workflow** (sub-issues, one commit per sub-issue, **`pnpm verify:dev-merge`**, module README as runbook): [AGENTS.md](./AGENTS.md), `.cursor/rules/agent-workflow.mdc`, [module/README.template.md](./module/README.template.md), GitHub _Sub-task_ issue template.
+- **OpenAI Codex:** nested **`AGENTS.md`** (`module/`, `teams/`, `packages/orpc/`), **`.codex/hooks.json`** Stop architecture audit, setup [.codex/README.md](./.codex/README.md).
 
 ### Changed
 
@@ -373,7 +375,6 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 ## [1.15.1] - 2026-10-21
 
 ### Changed
-
 
 ## [1.15.0] - 2026-10-21
 

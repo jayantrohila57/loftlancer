@@ -10,7 +10,7 @@ Copy everything below the line into a new agent session, or link sub-issues to s
 
 Bring **`module/teams`** on branch **`dev`** to **100% compliance** with loftlancer agent + architecture rules. Product behavior from #918 stays the same; only fix contracts, transport schemas, and audit gaps.
 
-**Do not** copy legacy `apps/studio/src/module/*` or `packages/api/src/modules/*` as templates. Follow **`module/teams/README.md`**, **`module/teams/server/controller/server.team-create.controller.ts`** (gold pattern), **`docs/gaps/contracts.md`**, **`.cursor/rules/agent-workflow.mdc`**.
+**Do not** copy legacy `apps/studio/src/module/*` or `packages/orpc/src/modules/*` as templates. Follow **`module/teams/README.md`**, **`module/teams/server/controller/server.team-create.controller.ts`** (gold pattern), **`docs/gaps/contracts.md`**, **`.cursor/rules/agent-workflow.mdc`**.
 
 **Parent:** [#920](https://github.com/jayantrohila57/loftlancer/issues/920). Sub-issues: **[#921](https://github.com/jayantrohila57/loftlancer/issues/921)** (A), **[#922](https://github.com/jayantrohila57/loftlancer/issues/922)** (B), **[#923](https://github.com/jayantrohila57/loftlancer/issues/923)** (C), **[#924](https://github.com/jayantrohila57/loftlancer/issues/924)** (D). One commit per sub-issue (`Fixes #sub` · `Refs #920`); PR targets **`dev`** only. Branch: `feat/920-teams-architecture-100`.
 
@@ -78,7 +78,7 @@ Use the correct **output Zod** per operation (DTO, list, void, etc.) from `utils
 
 ### Sub-issue B — oRPC: remove `z.unknown()` / `teamControllerInputSchema` · [#922](https://github.com/jayantrohila57/loftlancer/issues/922)
 
-**File:** `packages/api/src/orpc/procedures/teams.ts`
+**File:** `packages/orpc/src/orpc/procedures/teams.ts`
 
 - **Remove** use of `teamControllerInputSchema` (`z.unknown()` in `utils.team-id.validation.ts`) from procedures.
 - Each procedure **`.input()`** must use the **same Zod schema** the controller uses (import from `@module/teams/utils/validation/...`).
@@ -90,12 +90,12 @@ Use the correct **output Zod** per operation (DTO, list, void, etc.) from `utils
 
 ---
 
-### Sub-issue C — Legacy unwrap in `packages/api/src/modules/teams` · [#923](https://github.com/jayantrohila57/loftlancer/issues/923)
+### Sub-issue C — Legacy unwrap in `packages/orpc/src/modules/teams` · [#923](https://github.com/jayantrohila57/loftlancer/issues/923)
 
-**File:** `packages/api/src/modules/teams/api/api.get-teams.ts`
+**File:** `packages/orpc/src/modules/teams/api/api.get-teams.ts`
 
 - **Remove** `unwrapTeam*` usage here (audit only allows unwrap in tRPC router, MCP, `module/teams/server/handlers/server.legacy-response.handler.ts`).
-- Route this caller through **module controller + ServiceResponse**, or through an **allowlisted** adapter (e.g. thin tRPC/MCP wrapper), without spreading unwrap into `packages/api/src/modules/teams`.
+- Route this caller through **module controller + ServiceResponse**, or through an **allowlisted** adapter (e.g. thin tRPC/MCP wrapper), without spreading unwrap into `packages/orpc/src/modules/teams`.
 
 **Commit:** `Fixes #923` · `Refs #920` · strict audit must clear `legacy-unwrap:...api.get-teams.ts`.
 
@@ -150,8 +150,8 @@ pnpm audit:module-architecture --strict
 
 Typical failure categories (19 total until fixed):
 
-| Rule | Count | Area |
-|------|-------|------|
-| `controller-response-schema` | 17 | `module/teams/server/controller/*.ts` (except create, get, list) |
-| `orpc-input-schema` | 1 | `packages/api/src/orpc/procedures/teams.ts` |
-| `legacy-unwrap` | 1 | `packages/api/src/modules/teams/api/api.get-teams.ts` |
+| Rule                         | Count | Area                                                             |
+| ---------------------------- | ----- | ---------------------------------------------------------------- |
+| `controller-response-schema` | 17    | `module/teams/server/controller/*.ts` (except create, get, list) |
+| `orpc-input-schema`          | 1     | `packages/orpc/src/orpc/procedures/teams.ts`                     |
+| `legacy-unwrap`              | 1     | `packages/orpc/src/modules/teams/api/api.get-teams.ts`           |

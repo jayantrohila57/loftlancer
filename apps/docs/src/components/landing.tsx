@@ -4,8 +4,8 @@ import {
   Auth5Branding,
   Auth5Frame,
   Auth5Panel,
-} from "@loftlancer/ui/patterns/auth-5";
-import { SignInOptions } from "@loftlancer/ui/patterns/sign-in-options";
+  SignInOptions,
+} from "@features/authentication/core/client";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SiteFooter } from "@/components/site-footer";
 import { trackEvent } from "@/lib/analytics";

@@ -1,21 +1,21 @@
 "use client";
 
 import {
+  PageHeaderLayout,
+  PageHeaderTabsRow,
+} from "@features/patterns/core/client/patterns.page-header";
+import {
   pageHeaderDescriptionGridClass,
   pageHeaderMetaRowClass,
   pageHeaderRootClass,
   pageHeaderTabsRowClass,
   pageHeaderTopRowClass,
-} from "@loftlancer/ui/page-header-classes";
+} from "@features/patterns/utils/patterns.page-header-classes.utils";
 import {
   pageHeaderDescriptionGridActionClass,
   pageHeaderDescriptionGridDescClass,
   pageHeaderDescriptionGridTitleClass,
-} from "@loftlancer/ui/page-header-grid-classes";
-import {
-  PageHeaderLayout,
-  PageHeaderTabsRow,
-} from "@loftlancer/ui/patterns/page-header";
+} from "@features/patterns/utils/patterns.page-header-grid-classes.utils";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

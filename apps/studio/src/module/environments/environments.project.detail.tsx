@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { PageStack } from "@/components/layout/app-layout";
 import { EnvironmentPanel } from "@/module/environments/environments.environment.panel";
 import { EnvironmentsTabsView } from "@/module/environments/environments.environments.tabs.view";

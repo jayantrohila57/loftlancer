@@ -27,9 +27,9 @@ When planning an upgrade, separate guidance for the currently installed version 
 4. Create route handler for your framework
 5. Run migrations:
    - **Built-in adapter:** `npx auth@latest migrate`
-   - **Drizzle:** `npx auth@latest generate --output src/db/auth-schema.ts` then `npx drizzle-kit push` (dev) or `npx drizzle-kit generate && npx drizzle-kit migrate` (prod)
+   - **Drizzle:** `npx auth@latest generate --output src/db/better-auth-schema.ts` then `npx drizzle-kit push` (dev) or `npx drizzle-kit generate && npx drizzle-kit migrate` (prod)
    - **Prisma:** `npx auth@latest generate --output prisma/schema.prisma` then `npx prisma migrate dev`
-6. Verify: call `GET /api/auth/ok` — should return `{ status: "ok" }`
+6. Verify: call `GET /api/better-auth/ok` — should return `{ status: "ok" }`
 
 ---
 
@@ -59,7 +59,7 @@ CLI looks for `auth.ts` in: `./`, `./lib`, `./utils`, or under `./src`. Use `--c
 |--------|-------|
 | `appName` | Optional display name |
 | `baseURL` | Only if `BETTER_AUTH_URL` not set |
-| `basePath` | Default `/api/auth`. Set `/` for root. |
+| `basePath` | Default `/api/better-auth`. Set `/` for root. |
 | `secret` | Only if `BETTER_AUTH_SECRET` not set |
 | `database` | Required for most features. See adapters docs. |
 | `secondaryStorage` | Redis/KV for sessions & rate limits |

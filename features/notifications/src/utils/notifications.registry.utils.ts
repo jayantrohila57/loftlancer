@@ -1,0 +1,114 @@
+import { z } from "zod/v3";
+import { notificationTypes } from "../constants/notifications.types.constants";
+import type {
+  NotificationRenderContext,
+  NotificationRenderResult,
+  NotificationType,
+} from "../types/notifications.registry.types";
+
+export { notificationTypes };
+
+const invitationReceivedData = z.object({
+  organizationId: z.string(),
+  organizationName: z.string(),
+  invitationId: z.string(),
+  inviterName: z.string(),
+});
+
+const invitationAcceptedData = z.object({
+  organizationId: z.string(),
+  /** Missing on older rows; those still route to the inbox. */
+  organizationSlug: z.string().optional(),
+  organizationName: z.string(),
+  invitationId: z.string(),
+  memberName: z.string(),
+  memberUserId: z.string(),
+});
+
+const supportTicketReplyData = z.object({
+  ticketId: z.string(),
+  ticketNumber: z.number().int(),
+  subject: z.string(),
+});
+
+const taskData = z.object({
+  /** Missing on rows written before per-org URLs (#299). */
+  organizationSlug: z.string().optional(),
+  projectSlug: z.string(),
+  projectName: z.string(),
+  taskId: z.string(),
+  taskNumber: z.number().int(),
+  title: z.string(),
+});
+
+export const notificationDataSchemas: Record<NotificationType, z.ZodTypeAny> = {
+  "invitation.received": invitationReceivedData,
+  "invitation.accepted": invitationAcceptedData,
+  "support.ticket.reply": supportTicketReplyData,
+  "task.assigned": taskData,
+  "task.mentioned": taskData,
+};
+
+/** Studio-relative task link; old rows without an org fall back to the inbox. */
+function taskHref(
+  data: z.infer<typeof taskData>,
+  context: NotificationRenderContext,
+): string | null {
+  const organizationSlug = data.organizationSlug ?? context.organizationSlug;
+  if (!organizationSlug) return null;
+  return `/${encodeURIComponent(organizationSlug)}/${encodeURIComponent(data.projectSlug)}/tasks/${data.taskNumber}`;
+}
+
+export const notificationRenderers: Record<
+  NotificationType,
+  (data: unknown, ctx: NotificationRenderContext) => NotificationRenderResult
+> = {
+  "invitation.received": (raw) => {
+    const data = invitationReceivedData.parse(raw);
+    return {
+      title: "Organization invitation",
+      body: `${data.inviterName} invited you to join ${data.organizationName}.`,
+      icon: "invite",
+      href: `/invite/${encodeURIComponent(data.invitationId)}`,
+    };
+  },
+  "invitation.accepted": (raw, context) => {
+    const data = invitationAcceptedData.parse(raw);
+    const organizationSlug = data.organizationSlug ?? context.organizationSlug;
+    return {
+      title: "Invitation accepted",
+      body: `${data.memberName} joined ${data.organizationName}.`,
+      icon: "member",
+      href: organizationSlug
+        ? `/${encodeURIComponent(organizationSlug)}/members`
+        : null,
+    };
+  },
+  "support.ticket.reply": (raw) => {
+    const data = supportTicketReplyData.parse(raw);
+    return {
+      title: `Reply on ticket #${data.ticketNumber}`,
+      body: data.subject,
+      icon: "organization",
+      href: `/support/tickets/${encodeURIComponent(data.ticketId)}`,
+    };
+  },
+  "task.assigned": (raw, ctx) => {
+    const data = taskData.parse(raw);
+    return {
+      title: `Assigned: ${data.title}`,
+      body: `${ctx.actorName ?? "Someone"} assigned you task #${data.taskNumber} in ${data.projectName}.`,
+      icon: "member",
+      href: taskHref(data, ctx),
+    };
+  },
+  "task.mentioned": (raw, ctx) => {
+    const data = taskData.parse(raw);
+    return {
+      title: `Mentioned on #${data.taskNumber}`,
+      body: `${ctx.actorName ?? "Someone"} mentioned you on "${data.title}" in ${data.projectName}.`,
+      icon: "member",
+      href: taskHref(data, ctx),
+    };
+  },
+};

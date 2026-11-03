@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  Auth5Panel,
+  SignInOptions,
+} from "@features/authentication/core/client";
 import { Button } from "@loftlancer/ui/button";
 import {
   Card,
@@ -8,8 +12,6 @@ import {
   CardPanel,
   CardTitle,
 } from "@loftlancer/ui/card";
-import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
-import { SignInOptions } from "@loftlancer/ui/patterns/sign-in-options";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -104,7 +106,7 @@ export function ConsentScreen({
         </CardHeader>
         <CardPanel className="flex flex-col gap-3">
           {!isPending && !session?.user ? (
-            <div className="flex flex-col gap-3 rounded-md p-4 ring-1 ring-border/60">
+            <div className="ring-border/60 flex flex-col gap-3 rounded-md p-4 ring-1">
               <p className="text-muted-foreground text-sm">
                 Sign in to approve access for this application.
               </p>
@@ -131,7 +133,7 @@ export function ConsentScreen({
           )}
           <p
             role="alert"
-            className="min-h-4 text-destructive text-xs leading-4"
+            className="text-destructive min-h-4 text-xs leading-4"
           >
             {error ?? ""}
           </p>

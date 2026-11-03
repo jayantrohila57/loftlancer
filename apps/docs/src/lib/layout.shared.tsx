@@ -6,7 +6,7 @@ export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
       title: (
-        <span className="font-medium font-mono text-[10px] uppercase tracking-[0.14em]">
+        <span className="font-mono text-[10px] font-medium tracking-[0.14em] uppercase">
           Documentation
         </span>
       ),

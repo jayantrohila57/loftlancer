@@ -1,6 +1,6 @@
 "use client";
 
-import type { ActionName } from "@loftlancer/actions";
+import type { ActionName } from "@features/authorization/utils";
 import { Spinner } from "@loftlancer/ui/spinner";
 import { ErrorState } from "@/shared/components/shared.error-state";
 import { useCan } from "../hooks/use-permissions";

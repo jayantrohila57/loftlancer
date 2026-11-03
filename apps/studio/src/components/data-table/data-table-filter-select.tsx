@@ -80,7 +80,7 @@ export function DataTableFilterSelect({
         size="sm"
         aria-label={ariaLabel}
         className={cn(
-          "h-8 w-auto min-w-[8.5rem] max-w-full justify-start gap-1.5 shadow-none",
+          "h-8 w-auto max-w-full min-w-[8.5rem] justify-start gap-1.5 shadow-none",
           className,
         )}
       >

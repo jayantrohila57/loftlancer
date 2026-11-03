@@ -1,7 +1,7 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
-import { layoutGapClass } from "@loftlancer/ui/layout-spacing";
+import { layoutGapClass } from "@features/shell/utils/shell.layout-spacing.utils";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { DataTableClearFiltersButton } from "@/components/data-table/data-table-clear-filters-button";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
 import { DataTableFilterSelect } from "@/components/data-table/data-table-filter-select";

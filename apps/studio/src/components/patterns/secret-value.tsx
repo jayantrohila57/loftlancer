@@ -19,9 +19,9 @@ export function SecretValue({
   return (
     <span
       className={cn(
-        "block min-h-[1.25rem] max-w-full font-mono text-muted-foreground text-sm",
+        "text-muted-foreground block min-h-[1.25rem] max-w-full font-mono text-sm",
         revealed && !expanded && "truncate",
-        revealed && expanded && "wrap-anywhere whitespace-pre-wrap break-words",
+        revealed && expanded && "break-words wrap-anywhere whitespace-pre-wrap",
         className,
       )}
       aria-hidden={!revealed}

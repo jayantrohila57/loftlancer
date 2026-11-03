@@ -18,7 +18,7 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [
-    { name: "setup", testMatch: /auth\.setup\.ts/ },
+    { name: "setup", testMatch: /better-auth\.setup\.ts/ },
     {
       name: "chromium",
       use: {
@@ -26,7 +26,7 @@ export default defineConfig({
         storageState: "e2e/.auth/user.json",
       },
       dependencies: ["setup"],
-      testIgnore: /auth\.setup\.ts/,
+      testIgnore: /better-auth\.setup\.ts/,
     },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL

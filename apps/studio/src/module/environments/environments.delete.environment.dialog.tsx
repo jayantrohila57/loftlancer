@@ -1,7 +1,7 @@
 "use client";
 
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Button } from "@loftlancer/ui/button";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import {
   Tooltip,
   TooltipContent,

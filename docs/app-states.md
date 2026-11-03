@@ -8,9 +8,9 @@ How **Next.js `app/`** handles route-level states without layout shift, and how 
 
 ## Two layers of “state”
 
-| Layer | Mechanism | When |
-|-------|-----------|------|
-| **Route / segment** | `loading.tsx`, `error.tsx`, `not-found.tsx`, `/forbidden`, redirects | Navigation, thrown errors, guards, missing resources |
+| Layer                | Mechanism                                                               | When                                                 |
+| -------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------- |
+| **Route / segment**  | `loading.tsx`, `error.tsx`, `not-found.tsx`, `/forbidden`, redirects    | Navigation, thrown errors, guards, missing resources |
 | **In-page / island** | **ServiceResponse** + boundary ([data-workflow.md](./data-workflow.md)) | oRPC/action result: `success` \| `failed` \| `error` |
 
 **Shell layout** (Tier 1: sidebar, inset, header) persists across modules; **section layout** (Tier 2: sub-header/tabs) persists across child pages — see [layouts.md](./layouts.md). Only the **page content** slot swaps for loading/content/error.
@@ -28,16 +28,16 @@ How **Next.js `app/`** handles route-level states without layout shift, and how 
 
 ## State → handler map
 
-| User-visible state | Route-level (App Router) | In-page (ServiceResponse) | Layout behavior |
-|--------------------|---------------------------|---------------------------|-----------------|
-| **Loading (navigation)** | `loading.tsx` | Hook `isPending` (no response yet) | Skeleton **matches** final page geometry; optional delay ([DelayedPageLoading](#delayed-loading)) |
-| **Success with data** | — | `status: success` + data | Main content |
-| **Success, empty** | — | `status: success` + `null` / `[]` | Empty state ([data-workflow.md](./data-workflow.md)) |
-| **Validation / business** | — | `status: failed` | Warning toast + inline message (not red system box) |
-| **System fault** | `error.tsx` if uncaught throw | `status: error` | Red toast + error box; retry when appropriate |
-| **Route forbidden** | `/forbidden` | — | Full-page deny |
-| **Not found** | `notFound()` → `not-found.tsx` | — | Scoped 404 (#317) |
-| **Slow load** | `DelayedPageLoading` timeout | map to `error` or route retry | “Taking too long” |
+| User-visible state        | Route-level (App Router)       | In-page (ServiceResponse)          | Layout behavior                                                                                   |
+| ------------------------- | ------------------------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Loading (navigation)**  | `loading.tsx`                  | Hook `isPending` (no response yet) | Skeleton **matches** final page geometry; optional delay ([DelayedPageLoading](#delayed-loading)) |
+| **Success with data**     | —                              | `status: success` + data           | Main content                                                                                      |
+| **Success, empty**        | —                              | `status: success` + `null` / `[]`  | Empty state ([data-workflow.md](./data-workflow.md))                                              |
+| **Validation / business** | —                              | `status: failed`                   | Warning toast + inline message (not red system box)                                               |
+| **System fault**          | `error.tsx` if uncaught throw  | `status: error`                    | Red toast + error box; retry when appropriate                                                     |
+| **Route forbidden**       | `/forbidden`                   | —                                  | Full-page deny                                                                                    |
+| **Not found**             | `notFound()` → `not-found.tsx` | —                                  | Scoped 404 (#317)                                                                                 |
+| **Slow load**             | `DelayedPageLoading` timeout   | map to `error` or route retry      | “Taking too long”                                                                                 |
 
 **Rule:** **`failed`** ≠ **`error`**. Empty list = **`success`**, not **`failed`**. Details: [data-workflow.md](./data-workflow.md).
 
@@ -113,11 +113,11 @@ export default function Loading() {
 
 ## Layout vs `template.tsx`
 
-| File | Re-renders on navigation? | Use for |
-|------|---------------------------|---------|
-| **`layout.tsx`** | No (persists) | Shell, sidebar, providers, org context |
-| **`template.tsx`** | Yes (remount) | Rare: intentional enter/exit animation on segment change |
-| **`loading.tsx`** | Shows during suspend | Segment skeleton only |
+| File               | Re-renders on navigation? | Use for                                                  |
+| ------------------ | ------------------------- | -------------------------------------------------------- |
+| **`layout.tsx`**   | No (persists)             | Shell, sidebar, providers, org context                   |
+| **`template.tsx`** | Yes (remount)             | Rare: intentional enter/exit animation on segment change |
+| **`loading.tsx`**  | Shows during suspend      | Segment skeleton only                                    |
 
 **Default:** no `template.tsx` unless you need animation — avoids extra remount flicker.
 
@@ -139,13 +139,13 @@ export default function Loading() {
 
 ## Module responsibilities
 
-| Artifact | Location |
-|----------|----------|
-| Route skeleton | `module/<feature>/client/…/skeletons/client.<segment>.skeleton.tsx` |
-| Page loader + guard errors | `module/<feature>/server/page/…` |
-| `ViewState` mapping | `module/<feature>/utils/state/` |
-| Boundary / Empty / Error UI | `module/<feature>/client/…/components/client.*.boundary.tsx` |
-| App `loading.tsx` / `error.tsx` | Re-export module or ui pattern (no logic) |
+| Artifact                        | Location                                                            |
+| ------------------------------- | ------------------------------------------------------------------- |
+| Route skeleton                  | `module/<feature>/client/…/skeletons/client.<segment>.skeleton.tsx` |
+| Page loader + guard errors      | `module/<feature>/server/page/…`                                    |
+| `ViewState` mapping             | `module/<feature>/utils/state/`                                     |
+| Boundary / Empty / Error UI     | `module/<feature>/client/…/components/client.*.boundary.tsx`        |
+| App `loading.tsx` / `error.tsx` | Re-export module or ui pattern (no logic)                           |
 
 ---
 
@@ -157,7 +157,7 @@ Same model under `apps/auth/src/app`: account settings segments get **`loading.t
 
 ## Related
 
-- [rendering.md](./rendering.md) — dynamic islands, logic in functions  
-- [server-api.md](./server-api.md) — guards and server loaders  
-- [modules.md](./modules.md) — `ViewState` statuses  
-- [product.md](./product.md) — page guards and actions  
+- [rendering.md](./rendering.md) — dynamic islands, logic in functions
+- [server-api.md](./server-api.md) — guards and server loaders
+- [modules.md](./modules.md) — `ViewState` statuses
+- [product.md](./product.md) — page guards and actions

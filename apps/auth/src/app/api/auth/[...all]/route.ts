@@ -1,7 +1,7 @@
 import {
   authApiCorsPreflightResponse,
   withAuthApiCors,
-} from "@loftlancer/auth/auth-api-cors";
+} from "@loftlancer/better-auth/auth-api-cors";
 import { toNextJsHandler } from "better-auth/next-js";
 import type { NextRequest } from "next/server";
 import { platformAuth } from "@/lib/platform-auth";

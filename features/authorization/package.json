@@ -1,0 +1,38 @@
+{
+  "name": "@loftlancer/feature-authorization",
+  "description": "RBAC, action registry, permission evaluation, audit writes, and policy checks.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./utils/*": "./src/utils/*",
+    "./types/*": "./src/types/*",
+    "./constants/*": "./src/constants/*",
+    "./config/*": "./src/config/*",
+    "./core/server": "./src/core/server/index.ts",
+    "./core/server/*": "./src/core/server/*",
+    "./core/client": "./src/core/client/index.ts",
+    "./core/client/*": "./src/core/client/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@loftlancer/features-authentication": "workspace:*",
+    "@loftlancer/features-notifications": "workspace:*",
+    "@loftlancer/drizzle": "workspace:*",
+    "@loftlancer/orpc": "workspace:*",
+    "@loftlancer/sentry": "workspace:*",
+    "@trpc/server": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

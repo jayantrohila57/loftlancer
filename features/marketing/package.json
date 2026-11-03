@@ -1,0 +1,29 @@
+{
+  "name": "@loftlancer/features-marketing",
+  "description": "Shared marketing landing and site chrome for apps/www and apps/docs.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core/client": "./src/core/client/index.ts",
+    "./core/client/*": "./src/core/client/*",
+    "./constants/*": "./src/constants/*",
+    "./config/*": "./src/config/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@loftlancer/ui": "workspace:*",
+    "lucide-react": "^1.56.0",
+    "next": "catalog:",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@loftlancer/typescript-config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "catalog:"
+  }
+}

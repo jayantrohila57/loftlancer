@@ -1,9 +1,9 @@
 "use client";
 
+import { SubmitButton } from "@features/patterns/core/client/patterns.submit-button";
 import { Button } from "@loftlancer/ui/button";
 import { Input } from "@loftlancer/ui/input";
 import { Label } from "@loftlancer/ui/label";
-import { SubmitButton } from "@loftlancer/ui/patterns/submit-button";
 import {
   Select,
   SelectContent,

@@ -1,4 +1,4 @@
-import { buildHealthReport, HEALTH_HEADERS } from "@loftlancer/db/health";
+import { buildHealthReport, HEALTH_HEADERS } from "@loftlancer/drizzle/health";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

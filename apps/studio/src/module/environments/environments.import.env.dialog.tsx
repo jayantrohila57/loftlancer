@@ -102,13 +102,13 @@ export function ImportEnvDialog({
             className="h-32 font-mono text-xs"
             spellCheck={false}
           />
-          <div className="h-44 overflow-y-auto rounded-lg border border-border/60 [scrollbar-gutter:stable]">
+          <div className="border-border/60 h-44 [scrollbar-gutter:stable] overflow-y-auto rounded-lg border">
             {entries.length === 0 ? (
-              <p className="flex h-full items-center justify-center px-3 text-center text-muted-foreground text-xs">
+              <p className="text-muted-foreground flex h-full items-center justify-center px-3 text-center text-xs">
                 Parsed keys will appear here.
               </p>
             ) : (
-              <ul className="divide-y divide-border/60">
+              <ul className="divide-border/60 divide-y">
                 {entries.map((e) => {
                   const exists = existingKeys.has(e.key);
                   const state = !exists ? "New" : overwrite ? "Update" : "Skip";
@@ -132,7 +132,7 @@ export function ImportEnvDialog({
               </ul>
             )}
           </div>
-          <div className="flex min-h-5 items-center justify-between gap-3 text-muted-foreground text-xs">
+          <div className="text-muted-foreground flex min-h-5 items-center justify-between gap-3 text-xs">
             <span className="tabular-nums">
               {counts.create} new · {counts.update} update · {counts.skip} skip
             </span>
@@ -142,7 +142,7 @@ export function ImportEnvDialog({
                 : ""}
             </span>
           </div>
-          <Label className="flex items-center gap-2 font-normal text-sm">
+          <Label className="flex items-center gap-2 text-sm font-normal">
             <Checkbox
               checked={overwrite}
               onCheckedChange={(v) => setOverwrite(Boolean(v))}

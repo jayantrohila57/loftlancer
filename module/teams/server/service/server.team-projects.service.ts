@@ -1,8 +1,8 @@
-import { requireAction } from "@loftlancer/api/actions/require-action";
-import { db } from "@loftlancer/db";
-import { projectTeam } from "@loftlancer/db/schema/project-access";
-import { project } from "@loftlancer/db/schema/projects";
-import { team } from "@loftlancer/db/schema/team";
+import { requireAction } from "@features/authorization/core/server/authorization.require-action";
+import { db } from "@loftlancer/drizzle";
+import { projectTeam } from "@loftlancer/drizzle/schema/project-access";
+import { project } from "@loftlancer/drizzle/schema/projects";
+import { team } from "@loftlancer/drizzle/schema/team";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import { and, eq, isNull } from "drizzle-orm";
 import { teamOutcome } from "./server.team-outcome.service";

@@ -1,9 +1,9 @@
-import { activeMemberWhere, db } from "@loftlancer/db";
+import { activeMemberWhere, db } from "@loftlancer/drizzle";
 import {
   member,
   organization,
   organizationProfile,
-} from "@loftlancer/db/schema/organization";
+} from "@loftlancer/drizzle/schema/organization";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, eq, isNull } from "drizzle-orm";

@@ -1,8 +1,8 @@
 "use client";
 
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@loftlancer/ui/avatar";
 import { Button } from "@loftlancer/ui/button";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { Textarea } from "@loftlancer/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -62,7 +62,7 @@ export function TaskCommentItem({
             {c.editedAt ? " · edited" : ""}
           </span>
           {!editing && (canEdit || canDelete) ? (
-            <span className="ms-auto flex gap-1 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+            <span className="ms-auto flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
               {canEdit ? (
                 <Button
                   size="xs"
@@ -130,7 +130,7 @@ export function TaskCommentItem({
             </div>
           </form>
         ) : (
-          <p className="whitespace-pre-wrap break-words text-sm">{c.body}</p>
+          <p className="text-sm break-words whitespace-pre-wrap">{c.body}</p>
         )}
       </div>
       <ConfirmDialog

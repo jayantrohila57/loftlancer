@@ -1,5 +1,5 @@
 {
-  "extends": "@loftlancer/config/tsconfig.base.json",
+  "extends": "@loftlancer/typescript-config/tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
     "rootDir": "src"

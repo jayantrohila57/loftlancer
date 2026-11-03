@@ -1,5 +1,5 @@
-import { initSentryEdge } from "@loftlancer/logger/sentry-instrument";
-import { initAndWireSentryServer } from "@loftlancer/logger/sentry-instrument-server";
+import { initSentryEdge } from "@loftlancer/sentry/instrument";
+import { initAndWireSentryServer } from "@loftlancer/sentry/instrument-server";
 import * as Sentry from "@sentry/nextjs";
 
 // Static export: register runs in dev only; production docs logs are browser-only (#355).

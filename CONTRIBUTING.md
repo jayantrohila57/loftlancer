@@ -22,7 +22,7 @@ Enable GitHub **branch protection** on `main` (block direct pushes; require PR f
 
 For AI agents and large human tasks:
 
-1. **Parent issue** = outcome; **sub-task issues** (GitHub template *Sub-task*) = one verifiable slice each.
+1. **Parent issue** = outcome; **sub-task issues** (GitHub template _Sub-task_) = one verifiable slice each.
 2. **One commit per sub-issue** (`Fixes #sub`); PR targets **`dev`** when the parent’s work on that branch is complete.
 3. Before merge: **`pnpm verify:dev-merge`** and **`pnpm audit:module-architecture`** (no new violations).
 4. Domain-specific boundaries and blocked TODOs: **`module/<domain>/README.md`** — see [module/README.template.md](module/README.template.md).

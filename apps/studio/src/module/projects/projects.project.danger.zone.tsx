@@ -1,9 +1,9 @@
 "use client";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Button } from "@loftlancer/ui/button";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 import { useState } from "react";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { SettingsRow } from "@/components/patterns/settings-layout";

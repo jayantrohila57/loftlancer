@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  Auth5Panel,
+  SignInOptions,
+} from "@features/authentication/core/client";
 import { Button } from "@loftlancer/ui/button";
 import {
   Card,
@@ -9,8 +13,6 @@ import {
   CardTitle,
 } from "@loftlancer/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@loftlancer/ui/field";
-import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
-import { SignInOptions } from "@loftlancer/ui/patterns/sign-in-options";
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -98,7 +100,7 @@ export function DeviceCodeForm({ initialCode }: { initialCode: string }) {
             </Field>
             <p
               role="alert"
-              className="-mt-2 min-h-4 text-destructive text-xs leading-4"
+              className="text-destructive -mt-2 min-h-4 text-xs leading-4"
             >
               {error ?? ""}
             </p>

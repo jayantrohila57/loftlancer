@@ -1,8 +1,8 @@
 "use client";
 
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
+import { ConfirmDialog } from "@features/patterns/core/client/patterns.confirm-dialog";
 import { Button } from "@loftlancer/ui/button";
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
-import { ConfirmDialog } from "@loftlancer/ui/patterns/confirm-dialog";
 import { useState } from "react";
 import { studioORPC } from "@/lib/orpc";
 import { useCan } from "@/shared/permissions/shared.permissions.use.permissions";
@@ -36,7 +36,7 @@ export function OrganizationLifecycleSection() {
         description="Archive to pause changes while keeping the organization and its data available to restore."
       >
         {profile.isPending ? (
-          <div className="h-10 animate-pulse rounded-md bg-muted" />
+          <div className="bg-muted h-10 animate-pulse rounded-md" />
         ) : profile.isError ? (
           <p className="text-destructive text-sm">
             Could not load organization status.

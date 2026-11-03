@@ -1,16 +1,16 @@
 "use client";
 
-import { Badge } from "@loftlancer/ui/badge";
-import type { DataTableColumnDef } from "@loftlancer/ui/data-table/data-table";
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
 import {
   DATA_TABLE_ACTIONS_COLUMN_ID,
   DataTableActionsColumnHeader,
-} from "@loftlancer/ui/data-table/data-table-actions-column";
-import { DataTableColumnHeader } from "@loftlancer/ui/data-table/data-table-column-header";
-import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
-import { DataTableRowActions } from "@loftlancer/ui/data-table/data-table-row-actions";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
+} from "@features/data-table/core/client/data-table.actions-column";
+import { DataTableColumnHeader } from "@features/data-table/core/client/data-table.column-header";
+import { DataTableRowActions } from "@features/data-table/core/client/data-table.row-actions";
+import type { DataTableColumnDef } from "@features/data-table/core/client/data-table.table";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import type { DataTableEmptyConfig } from "@features/data-table/types/data-table.empty.types";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
+import { Badge } from "@loftlancer/ui/badge";
 import { legacyCreateColumnHelper } from "@tanstack/react-table/legacy";
 
 const RoleBadge = ({ role }: { role: string }) => (
@@ -81,12 +81,12 @@ export function OrganizationInvitationsTable({
           >
             {row.original.email}
           </span>
-          <span className="block truncate text-muted-foreground text-xs sm:hidden">
+          <span className="text-muted-foreground block truncate text-xs sm:hidden">
             {scopeLabel}
             {row.original.teamName ? `: ${row.original.teamName}` : ""}
           </span>
           {scopeLabel === "Team" && row.original.linkedProjects?.length ? (
-            <span className="block truncate text-muted-foreground text-xs lg:hidden">
+            <span className="text-muted-foreground block truncate text-xs lg:hidden">
               Projects: {row.original.linkedProjects.join(", ")}
             </span>
           ) : null}

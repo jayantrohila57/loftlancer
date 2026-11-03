@@ -1,7 +1,7 @@
 import "server-only";
 
-import { studioRouter } from "@loftlancer/api/routers/studio";
-import type { AuthSession } from "@loftlancer/auth/session-types";
+import type { AuthSession } from "@loftlancer/better-auth/session-types";
+import { studioRouter } from "@loftlancer/orpc/routers/studio";
 import { TRPCError } from "@trpc/server";
 
 export async function getSupportTicket(session: AuthSession, ticketId: string) {

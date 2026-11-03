@@ -8,15 +8,33 @@ body:
         **Agents:** Do not implement the whole parent in one PR. Create **sub-task** issues (template: Sub-task) with one verifiable slice each. See [AGENTS.md](../../AGENTS.md) and `.cursor/rules/agent-workflow.mdc`.
   - type: textarea
     id: goal
-    attributes: {label: Goal, description: What should be true when this is done, and why}
-    validations: {required: true}
+    attributes:
+      {
+        label: Goal,
+        description: What should be true when this is done,
+        and why,
+      }
+    validations: { required: true }
   - type: textarea
     id: context
-    attributes: {label: Context, description: "Related issues, PRs, commits, deploys, screenshots"}
+    attributes:
+      {
+        label: Context,
+        description: "Related issues, PRs, commits, deploys, screenshots",
+      }
   - type: textarea
     id: design
-    attributes: {label: Design reference (UI only), description: "reui.io link + existing component to reuse. Follow reui-first-design-workflow, reui-dense-layout-rules, zero-layout-shift-states."}
+    attributes:
+      {
+        label: Design reference (UI only),
+        description: "reui.io link + existing component to reuse. Follow reui-first-design-workflow, reui-dense-layout-rules, zero-layout-shift-states.",
+      }
   - type: textarea
     id: done
-    attributes: {label: Done when, description: Checklist of verifiable acceptance criteria, value: "- [ ] "}
-    validations: {required: true}
+    attributes:
+      {
+        label: Done when,
+        description: Checklist of verifiable acceptance criteria,
+        value: "- [ ] ",
+      }
+    validations: { required: true }

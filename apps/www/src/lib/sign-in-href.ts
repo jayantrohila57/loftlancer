@@ -1,4 +1,7 @@
-import { resolveAuthAppOrigin, studioHomeUrl } from "@loftlancer/ui/auth-links";
+import {
+  resolveAuthAppOrigin,
+  studioHomeUrl,
+} from "@features/authentication/utils/auth-links";
 
 export function getSignInHref(
   authOrigin = resolveAuthAppOrigin(),

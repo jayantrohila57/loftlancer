@@ -1,6 +1,6 @@
 ---
 description: Layer prefix + role postfix file naming under module/ (searchable kebab-case)
-globs: module/**,apps/**/app/**,packages/api/src/orpc/**
+globs: module/**,apps/**/app/**,packages/orpc/src/orpc/**
 alwaysApply: false
 ---
 

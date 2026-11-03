@@ -1,7 +1,7 @@
 "use client";
 
-import { useUnsavedChangesGuard } from "@loftlancer/ui/hooks/use-unsaved-changes-guard";
-import { DiscardChangesDialog } from "@loftlancer/ui/patterns/discard-changes-dialog";
+import { DiscardChangesDialog } from "@features/patterns/core/client/patterns.discard-changes-dialog";
+import { useUnsavedChangesGuard } from "@features/patterns/core/client/patterns.use-unsaved-changes-guard.hook";
 import { Sheet } from "@loftlancer/ui/sheet";
 import type { ComponentProps, ReactNode, RefObject } from "react";
 import { useCallback, useEffect } from "react";

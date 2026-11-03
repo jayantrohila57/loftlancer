@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import type { ProjectOutput } from "@loftlancer/api/types";
+import type { ProjectOutput } from "@modules/projects/utils/types/utils.project.dto";
 
 import {
   isSidebarProjectNavItem,

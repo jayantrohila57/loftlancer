@@ -1,0 +1,62 @@
+{
+  "name": "@loftlancer/drizzle",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./schema": {
+      "default": "./src/schema/index.ts"
+    },
+    "./schema/*": {
+      "default": "./src/schema/*.ts"
+    },
+    "./health": {
+      "default": "./src/utils/drizzle.health.ts"
+    },
+    "./postgres-errors": {
+      "default": "./src/utils/drizzle.postgres-errors.ts"
+    },
+    "./org-delete-policy": {
+      "default": "./src/utils/drizzle.org-delete-policy.ts"
+    },
+    "./e2e-demo-variables": {
+      "default": "./src/utils/drizzle.e2e-demo-variables.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "drizzle-kit studio",
+    "db:migrate": "drizzle-kit migrate",
+    "db:reset-seed": "tsx scripts/reset-seed.ts",
+    "db:check-schema": "tsx scripts/check-schema.ts",
+    "db:seed-stress": "tsx scripts/seed-stress.ts",
+    "db:seed-stress:clean": "tsx scripts/seed-stress-cleanup.ts",
+    "test": "SKIP_ENV_VALIDATION=1 DATABASE_URL=postgresql://localhost:5432/test node --import tsx --test tests/drizzle.connection-url.test.ts tests/drizzle.account-soft-delete.test.ts tests/drizzle.soft-delete.test.ts tests/drizzle.e2e-demo-variables.test.ts tests/drizzle.e2e-demo-seed-guard.test.ts scripts/schema-fingerprint.test.ts"
+  },
+  "dependencies": {
+    "@loftlancer/crypto": "workspace:*",
+    "@loftlancer/t3-env": "workspace:*",
+    "@loftlancer/sentry": "workspace:*",
+    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
+    "pg": "^8.23.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@better-auth/drizzle-adapter": "1.7.7",
+    "@better-auth/mcp": "1.7.7",
+    "@loftlancer/typescript-config": "workspace:*",
+    "@neondatabase/serverless": "^0.10.4",
+    "@types/pg": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-kit": "^0.31.11",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:"
+  }
+}

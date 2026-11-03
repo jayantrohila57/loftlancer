@@ -1,19 +1,53 @@
 {
-  "extends": "@loftlancer/config/tsconfig.base.json",
+  "extends": "@loftlancer/typescript-config/tsconfig.base.json",
   "compilerOptions": {
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "noEmit": true,
     "paths": {
+      "@modules/*": ["./*"],
       "@module/*": ["./*"],
-      "@features/*": ["../features/*"]
+      "@features/api/*": ["../features/api/src/*"],
+      "@features/authentication/*": ["../features/authentication/src/*"],
+      "@features/authorization/*": ["../features/authorization/src/*"],
+      "@features/notifications/*": ["../features/notifications/src/*"],
+      "@features/analytics/*": ["../features/analytics/src/*"],
+      "@features/observability/*": ["../features/observability/src/*"],
+      "@features/shell/*": ["../features/shell/src/*"],
+      "@features/marketing/*": ["../features/marketing/src/*"],
+      "@features/patterns/*": ["../features/patterns/src/*"],
+      "@features/data-table/*": ["../features/data-table/src/*"],
+      "@features/*": ["../features/*"],
+      "@packages/drizzle": ["../packages/drizzle/src/index.ts"],
+      "@packages/drizzle/*": ["../packages/drizzle/src/*"],
+      "@packages/orpc": ["../packages/orpc/src/index.ts"],
+      "@packages/orpc/*": ["../packages/orpc/src/*"],
+      "@packages/better-auth": ["../packages/better-auth/src/index.ts"],
+      "@packages/better-auth/*": ["../packages/better-auth/src/*"],
+      "@packages/typescript-config": ["../packages/typescript-config"],
+      "@packages/typescript-config/*": ["../packages/typescript-config/*"],
+      "@packages/crypto": ["../packages/crypto/src/index.ts"],
+      "@packages/crypto/*": ["../packages/crypto/src/*"],
+      "@packages/resend": ["../packages/resend/src/index.ts"],
+      "@packages/resend/*": ["../packages/resend/src/*"],
+      "@packages/t3-env": ["../packages/t3-env/src"],
+      "@packages/t3-env/*": ["../packages/t3-env/src/*"],
+      "@packages/sentry": ["../packages/sentry/src/index.ts"],
+      "@packages/sentry/*": ["../packages/sentry/src/*"],
+      "@packages/mcp": ["../packages/mcp/src/index.ts"],
+      "@packages/ui": ["../packages/ui/src"],
+      "@packages/ui/*": ["../packages/ui/src/*"]
     }
   },
   "include": [
     "shared/**/*.ts",
     "teams/utils/**/*.ts",
     "teams/server/controller/**/*.ts",
-    "teams/server/service/**/*.ts"
+    "teams/server/service/**/*.ts",
+    "support/server/**/*.ts",
+    "support/utils/**/*.ts",
+    "files/server/**/*.ts",
+    "ai/server/**/*.ts"
   ],
   "exclude": ["./node_modules"]
 }

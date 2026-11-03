@@ -3,17 +3,23 @@ import { mock, test } from "node:test";
 
 let calls = 0;
 const audit: Record<string, unknown>[] = [];
-mock.module("@loftlancer/api/actions/require-action", {
-  namedExports: { requireAction: async () => {}, isReadAction: () => false },
-});
-mock.module("@loftlancer/api/actions/audit-event-writer", {
-  namedExports: {
-    writeAuditEvent: async (input: Record<string, unknown>) => {
-      audit.push(input);
+mock.module(
+  "@features/authorization/core/server/authorization.require-action",
+  {
+    namedExports: { requireAction: async () => {}, isReadAction: () => false },
+  },
+);
+mock.module(
+  "@features/authorization/core/server/authorization.audit-event-writer",
+  {
+    namedExports: {
+      writeAuditEvent: async (input: Record<string, unknown>) => {
+        audit.push(input);
+      },
     },
   },
-});
-mock.module("@loftlancer/logger", {
+);
+mock.module("@loftlancer/sentry", {
   namedExports: { logger: { exception: () => {} } },
 });
 mock.module("../service/server.team-create.service.ts", {

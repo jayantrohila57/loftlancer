@@ -3,23 +3,29 @@ import { mock, test } from "node:test";
 
 const audit: Record<string, unknown>[] = [];
 let deny: string | null = null;
-mock.module("@loftlancer/api/actions/require-action", {
-  namedExports: {
-    isReadAction: (action: string) => /\.(list|get|read)$/.test(action),
-    requireAction: async (_action: string, ctx: { audit: boolean }) => {
-      assert.equal(ctx.audit, false);
-      if (deny) throw Object.assign(new Error("Not allowed"), { code: deny });
+mock.module(
+  "@features/authorization/core/server/authorization.require-action",
+  {
+    namedExports: {
+      isReadAction: (action: string) => /\.(list|get|read)$/.test(action),
+      requireAction: async (_action: string, ctx: { audit: boolean }) => {
+        assert.equal(ctx.audit, false);
+        if (deny) throw Object.assign(new Error("Not allowed"), { code: deny });
+      },
     },
   },
-});
-mock.module("@loftlancer/api/actions/audit-event-writer", {
-  namedExports: {
-    writeAuditEvent: async (input: Record<string, unknown>) => {
-      audit.push(input);
+);
+mock.module(
+  "@features/authorization/core/server/authorization.audit-event-writer",
+  {
+    namedExports: {
+      writeAuditEvent: async (input: Record<string, unknown>) => {
+        audit.push(input);
+      },
     },
   },
-});
-mock.module("@loftlancer/logger", {
+);
+mock.module("@loftlancer/sentry", {
   namedExports: { logger: { exception: () => {} } },
 });
 const { runAction } = await import("./run-action");

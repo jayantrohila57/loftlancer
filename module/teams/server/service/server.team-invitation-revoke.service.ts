@@ -1,5 +1,5 @@
-import { db } from "@loftlancer/db";
-import { invitation } from "@loftlancer/db/schema/organization";
+import { db } from "@loftlancer/drizzle";
+import { invitation } from "@loftlancer/drizzle/schema/organization";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import { and, eq, isNull } from "drizzle-orm";
 import type { TeamInvitationTargetInput } from "../../utils/validation/utils.team-extended.validation";

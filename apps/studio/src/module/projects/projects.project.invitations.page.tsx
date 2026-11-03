@@ -1,7 +1,7 @@
 "use client";
 
+import { EmptyState } from "@features/patterns/core/client/patterns.empty-state";
 import { Button } from "@loftlancer/ui/button";
-import { EmptyState } from "@loftlancer/ui/patterns/empty-state";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -90,8 +90,8 @@ export function ProjectInvitationsPage({ slug }: { slug: string }) {
     <section className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-semibold text-xl tracking-tight">Invitations</h2>
-          <p className="mt-1 text-muted-foreground text-sm">
+          <h2 className="text-xl font-semibold tracking-tight">Invitations</h2>
+          <p className="text-muted-foreground mt-1 text-sm">
             People invited here join the organization and receive read-only
             access to this project.
           </p>

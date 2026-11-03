@@ -19,7 +19,7 @@ Ordered steps for adding or extending a **product feature** under `module/<featu
 ## 1. Product and access
 
 - [ ] Work tied to an open GitHub **sub-issue** ([AGENTS.md](../AGENTS.md)).
-- [ ] Add or update action row in `packages/actions/src/registry-data.ts` (`name`, `scope`, roles, audit entity, optional `notifyOn`).
+- [ ] Add or update action row in `features/authorization/src/constants/authorization.registry-data.ts` (`name`, `scope`, roles, audit entity, optional `notifyOn`).
 - [ ] Read [access-control.md](./access-control.md) for scope and ABAC attributes.
 
 ---
@@ -50,7 +50,7 @@ Ordered steps for adding or extending a **product feature** under `module/<featu
 
 ## 5. Transport
 
-- [ ] oRPC procedure in `packages/api/src/orpc/procedures/<feature>.ts` → controller only ([gaps/orpc-transport.md](./gaps/orpc-transport.md)).
+- [ ] oRPC procedure in `packages/orpc/src/orpc/procedures/<feature>.ts` → controller only ([gaps/orpc-transport.md](./gaps/orpc-transport.md)).
 - [ ] **No new tRPC** ([gaps/forbidden-defaults.md](./gaps/forbidden-defaults.md)).
 - [ ] MCP tool maps to same controller + ServiceResponse if exposed.
 
@@ -94,5 +94,5 @@ Ordered steps for adding or extending a **product feature** under `module/<featu
 
 ## Related
 
-- [product.md](./product.md) — permission recipe  
-- [data-workflow.md](./data-workflow.md) — ServiceResponse UI  
+- [product.md](./product.md) — permission recipe
+- [data-workflow.md](./data-workflow.md) — ServiceResponse UI

@@ -1,5 +1,5 @@
+import { layoutDashboardPageStackClass } from "@features/shell/utils/shell.layout-spacing.utils";
 import { Button } from "@loftlancer/ui/button";
-import { layoutDashboardPageStackClass } from "@loftlancer/ui/layout-spacing";
 import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";

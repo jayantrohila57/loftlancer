@@ -717,7 +717,7 @@ export async function deleteUser(userId: string) {
 ```typescript
 'use server'
 
-import { verifySession } from '@/lib/auth'
+import { verifySession } from '@/lib/better-auth'
 import { unauthorized } from '@/lib/errors'
 
 export async function deleteUser(userId: string) {
@@ -743,7 +743,7 @@ export async function deleteUser(userId: string) {
 ```typescript
 'use server'
 
-import { verifySession } from '@/lib/auth'
+import { verifySession } from '@/lib/better-auth'
 import { z } from 'zod'
 
 const updateProfileSchema = z.object({

@@ -6,14 +6,14 @@ Do **not** maintain parallel spec tables in markdown. The **code is the spec**. 
 
 ## Source of truth
 
-| Topic | Where to look |
-|-------|----------------|
-| **Action names & roles** | `packages/actions/src/registry-data.ts` → builds `@loftlancer/actions` registry |
-| **Server authorization** | `requireAction` + `evaluatePermission` — [access-control.md](./access-control.md) (RBAC + ABAC) |
-| **UI gates** | `useCan("action.name")`, `<Can action="…">` in Studio / Auth |
-| **Audit timeline** | `audit_event` when `ACTIONS_AUDIT_ENABLED=true`; prefer over legacy `audit_log` |
-| **Soft deletes** | `deleted_at` / `deleted_by` when `SOFT_DELETES_ENABLED=true`; helpers in `@loftlancer/db` |
-| **Feature flags** | `packages/env/src/feature-flags.ts` (paired server + `NEXT_PUBLIC_*` where required) |
+| Topic                    | Where to look                                                                                        |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| **Action names & roles** | `packages/actions/src/registry-data.ts` → builds `@loftlancer/actions` registry                      |
+| **Server authorization** | `requireAction` + `evaluatePermission` — [access-control.md](./access-control.md) (RBAC + ABAC)      |
+| **UI gates**             | `useCan("action.name")`, `<Can action="…">` in Studio / Auth                                         |
+| **Audit timeline**       | `audit_event` when `ACTIONS_AUDIT_ENABLED=true`; prefer over legacy `audit_log`                      |
+| **Soft deletes**         | `deleted_at` / `deleted_by` when `SOFT_DELETES_ENABLED=true`; helpers in `@loftlancer/drizzle`       |
+| **Feature flags**        | `packages/t3-env/src/utils/t3-env.feature-flags.ts` (paired server + `NEXT_PUBLIC_*` where required) |
 
 Org roles in product copy: **Owner / Manager / Member** (legacy DB `admin` → Manager). **Platform admin** (`platform.*`) is reserved, not enabled in production UI.
 
@@ -42,11 +42,11 @@ Studio routes: read `apps/studio/src/app` and module folders — no route matrix
 
 ## Soft deletes (short)
 
-When `SOFT_DELETES_ENABLED=true`, user-facing deletes set `deleted_at` / `deleted_by`. Queries and export paths must respect soft-delete filters (see `@loftlancer/db` and router tests). Enable only after schema includes soft-delete columns — [database.md](./database.md).
+When `SOFT_DELETES_ENABLED=true`, user-facing deletes set `deleted_at` / `deleted_by`. Queries and export paths must respect soft-delete filters (see `@loftlancer/drizzle` and router tests). Enable only after schema includes soft-delete columns — [database.md](./database.md).
 
 ## Related
 
-- [actions-and-events.md](./actions-and-events.md) — action IDs, runAction, audit, events  
-- [index.md](./index.md) — doc map  
-- [integrations.md](./integrations.md) — third-party services  
-- [README.md](../README.md) — run locally, env vars  
+- [actions-and-events.md](./actions-and-events.md) — action IDs, runAction, audit, events
+- [index.md](./index.md) — doc map
+- [integrations.md](./integrations.md) — third-party services
+- [README.md](../README.md) — run locally, env vars

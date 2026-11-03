@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchableCombobox } from "@loftlancer/ui/patterns/searchable-combobox";
+import { SearchableCombobox } from "@features/patterns/core/client/patterns.searchable-combobox";
 
 /** Dense searchable picker (h-8) used by task filters and the detail sheet. */
 export function FieldSelect({

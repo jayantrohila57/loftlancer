@@ -1,6 +1,7 @@
-import { auth } from "@loftlancer/auth";
-import { resolveE2eRouteAccess } from "@loftlancer/auth/e2e-route-access";
-import { e2ePasswordlessSignIn } from "@loftlancer/auth/passwordless";
+import "@features/authentication/core/server/authentication.register-better-auth-product-hooks";
+import { auth } from "@loftlancer/better-auth";
+import { resolveE2eRouteAccess } from "@loftlancer/better-auth/e2e-route-access";
+import { e2ePasswordlessSignIn } from "@loftlancer/better-auth/passwordless";
 import { NextResponse } from "next/server";
 import { type E2ePersona, e2ePersonaCredentials } from "@/lib/e2e-users";
 
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
 
   if (persona === "primary") {
     const { ensureE2eDemoProject, ensureE2ePrimaryOrganization } = await import(
-      "@loftlancer/db"
+      "@loftlancer/drizzle"
     );
     await ensureE2eDemoProject();
     await ensureE2ePrimaryOrganization();

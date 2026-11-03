@@ -9,7 +9,7 @@ One-line purpose. Link parent GitHub issue: `#NNN`.
 ## Agent workflow (this feature)
 
 1. Implement **one sub-issue** at a time; branch `feat/<parent>-<slug>` from **`dev`**.
-2. **Do not** import `@module/*` from this feature — lift shared types to `features/<name>/shared` or `packages/`.
+2. **Do not** import `@modules/*` or `@module/*` from this feature — lift shared types to `features/<name>/src/shared` or `packages/`.
 3. Modules consume this feature via **`@features/<name>/...`**.
 4. Record blocked work under **TODO (blocked)** below.
 
@@ -18,7 +18,7 @@ One-line purpose. Link parent GitHub issue: `#NNN`.
 ## Directory map
 
 ```
-features/<name>/
+features/<name>/src/
   shared/   # types, validation, hooks shared across server/client
   server/   # controllers/services when feature exposes server behavior
   client/   # UI boundaries, hooks, skeletons
@@ -29,7 +29,7 @@ features/<name>/
 ## Verification
 
 ```bash
-pnpm --filter @loftlancer/features-shared check-types
+pnpm check-types
 pnpm audit:module-architecture
 ```
 
@@ -38,8 +38,8 @@ pnpm audit:module-architecture
 ## TODO (blocked)
 
 | Item | Blocked on | Issue | Notes |
-|------|------------|-------|-------|
-| | | | |
+| ---- | ---------- | ----- | ----- |
+|      |            |       |       |
 
 ---
 

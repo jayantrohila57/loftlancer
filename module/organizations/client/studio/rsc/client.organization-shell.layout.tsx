@@ -1,4 +1,4 @@
-import { isReservedOrgSlug } from "@loftlancer/ui/studio-routes";
+import { isReservedOrgSlug } from "@features/shell/utils/shell.studio-routes.utils";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { loadOrganizationShell } from "../../../server/page/server.organizations-pages.page";

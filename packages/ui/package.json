@@ -5,15 +5,6 @@
   "type": "module",
   "exports": {
     "./globals.css": "./src/styles/globals.css",
-    "./marketing": {
-      "default": "./src/marketing/index.ts"
-    },
-    "./auth-links": {
-      "default": "./src/lib/auth-links.ts"
-    },
-    "./platform-sign-out": {
-      "default": "./src/lib/platform-sign-out.ts"
-    },
     "./theme-provider": {
       "default": "./src/components/theme-provider.tsx"
     },
@@ -23,14 +14,6 @@
     "./card": {
       "default": "./src/components/ui/card.tsx"
     },
-    "./layout-spacing": "./src/lib/layout-spacing.ts",
-    "./settings-tabs": "./src/lib/settings-tabs.ts",
-    "./platform-urls": {
-      "default": "./src/lib/platform-urls.ts"
-    },
-    "./page-header-grid-classes": "./src/lib/page-header-grid-classes.ts",
-    "./page-header-classes": "./src/lib/page-header-classes.ts",
-    "./patterns/impersonation-banner": "./src/patterns/impersonation-banner.tsx",
     "./badge": "./src/components/ui/badge.tsx",
     "./spinner": "./src/components/ui/spinner.tsx",
     "./sidebar": "./src/components/ui/sidebar.tsx",
@@ -42,24 +25,7 @@
     "./menu": "./src/components/ui/menu.tsx",
     "./accordion": "./src/components/ui/accordion.tsx",
     "./dialog": "./src/components/ui/dialog.tsx",
-    "./patterns/app-shell": "./src/patterns/app-shell.tsx",
-    "./patterns/sidebar-kit": "./src/patterns/sidebar-kit.tsx",
-    "./patterns/searchable-combobox": "./src/patterns/searchable-combobox.tsx",
     "./combobox": "./src/components/ui/combobox.tsx",
-    "./patterns/count-badge": "./src/patterns/count-badge.tsx",
-    "./patterns/accordion-section": "./src/patterns/accordion-section.tsx",
-    "./patterns/accordion-section-skeleton": "./src/patterns/accordion-section-skeleton.tsx",
-    "./patterns/settings-frame": "./src/patterns/settings-frame.tsx",
-    "./patterns/activity-timeline": "./src/patterns/activity-timeline.tsx",
-    "./patterns/auth-5": "./src/patterns/auth-5.tsx",
-    "./patterns/confirm-dialog": "./src/patterns/confirm-dialog.tsx",
-    "./patterns/empty-state": "./src/patterns/empty-state.tsx",
-    "./patterns/page-state": "./src/patterns/page-state.tsx",
-    "./patterns/delayed-page-loading": "./src/patterns/delayed-page-loading.tsx",
-    "./patterns/app-route-states": "./src/patterns/app-route-states.tsx",
-    "./app-shell": {
-      "default": "./src/app-shell/index.ts"
-    },
     "./empty": "./src/components/ui/empty.tsx",
     "./frame": "./src/components/ui/frame.tsx",
     "./skeleton": {
@@ -74,10 +40,6 @@
     "./table": "./src/components/ui/table.tsx",
     "./input-group": "./src/components/ui/input-group.tsx",
     "./textarea": "./src/components/ui/textarea.tsx",
-    "./data-table/*": "./src/data-table/*.tsx",
-    "./patterns/page-header": "./src/patterns/page-header.tsx",
-    "./patterns/page-header-description": "./src/patterns/page-header-description.tsx",
-    "./studio-routes": "./src/lib/studio-routes.ts",
     "./alert-dialog": "./src/components/ui/alert-dialog.tsx",
     "./avatar": "./src/components/ui/avatar.tsx",
     "./breadcrumb": "./src/components/ui/breadcrumb.tsx",
@@ -90,40 +52,11 @@
     "./switch": "./src/components/ui/switch.tsx",
     "./tabs": "./src/components/ui/tabs.tsx",
     "./toast": "./src/components/ui/toast.tsx",
-    "./toggle-group": "./src/components/ui/toggle-group.tsx",
-    "./segmented-control": "./src/lib/segmented-control.ts",
-    "./fonts": "./src/lib/fonts.ts",
-    "./patterns/discard-changes-dialog": "./src/patterns/discard-changes-dialog.tsx",
-    "./patterns/horizontal-scroll-rail": "./src/patterns/horizontal-scroll-rail.tsx",
-    "./patterns/loading-button": "./src/patterns/loading-button.tsx",
-    "./patterns/submit-button": "./src/patterns/submit-button.tsx",
-    "./patterns/settings-panel-skeleton": "./src/patterns/settings-panel-skeleton.tsx",
-    "./patterns/skip-link": "./src/patterns/skip-link.tsx",
-    "./patterns/offline-banner": "./src/patterns/offline-banner.tsx",
-    "./patterns/analytics-consent": "./src/patterns/analytics-consent.tsx",
-    "./patterns/unsaved-changes-page-guard": "./src/patterns/unsaved-changes-page-guard.tsx",
-    "./patterns/mode-toggle": "./src/patterns/mode-toggle.tsx",
-    "./hooks/*": "./src/hooks/*.ts",
-    "./format-date": "./src/lib/format-date.ts",
-    "./local-day": "./src/lib/local-day.ts",
-    "./patterns/local-date-time": "./src/patterns/local-date-time.tsx",
-    "./patterns/breadcrumb-trail": "./src/patterns/breadcrumb-trail.tsx",
-    "./patterns/activity-overview": "./src/patterns/activity-overview.tsx",
-    "./patterns/version-badge": "./src/patterns/version-badge.tsx",
-    "./platform-status": "./src/lib/platform-status.ts",
-    "./patterns/sign-in-options": "./src/patterns/sign-in-options.tsx",
-    "./patterns/ai-stream-state": "./src/patterns/ai-stream-state.tsx",
-    "./patterns/sentry-test-panel": "./src/patterns/sentry-test-panel.tsx",
-    "./patterns/guarded-dialog": "./src/patterns/guarded-dialog.tsx",
-    "./patterns/form-sheet-guard-context": "./src/patterns/form-sheet-guard-context.tsx",
-    "./patterns/required-fields-hint": "./src/patterns/required-fields-hint.tsx",
-    "./data-table/data-table-column-header": "./src/data-table/data-table-column-header.tsx",
-    "./data-table/data-table-row-actions": "./src/data-table/data-table-row-actions.tsx",
-    "./patterns/settings-row": "./src/patterns/settings-row.tsx"
+    "./toggle-group": "./src/components/ui/toggle-group.tsx"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "node --import tsx --test src/lib/auth-links.test.ts src/lib/platform-urls.test.ts src/lib/page-header-grid-classes.test.ts src/lib/local-day.test.ts src/lib/format-date.test.ts src/lib/page-header-classes.test.ts src/patterns/activity-timeline.test.ts src/lib/page-header-description-measure.test.ts src/lib/studio-routes.test.ts src/lib/settings-tabs.test.ts"
+    "test": "node --test --test-name-pattern=^$"
   },
   "peerDependencies": {
     "next": "catalog:",
@@ -131,8 +64,6 @@
     "react-dom": "^19.3.0"
   },
   "dependencies": {
-    "@loftlancer/actions": "workspace:*",
-    "@loftlancer/env": "workspace:*",
     "@base-ui/react": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -141,11 +72,10 @@
     "shadcn": "^4.21.4",
     "tailwind-merge": "^3.7.0",
     "tailwindcss": "^4.3.3",
-    "tw-animate-css": "^1.4.0",
-    "@tanstack/react-table": "^9.3.1"
+    "tw-animate-css": "^1.4.0"
   },
   "devDependencies": {
-    "@loftlancer/config": "workspace:*",
+    "@loftlancer/typescript-config": "workspace:*",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "tsx": "^4.23.15",

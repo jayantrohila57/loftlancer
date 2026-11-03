@@ -1,17 +1,17 @@
 import {
   DEFAULT_TEAM_PROJECT_GRANTS,
   mergeProjectMemberGrants,
-} from "@loftlancer/actions";
-import { activeInvitationWhere, db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
+} from "@features/authorization/utils";
+import { activeInvitationWhere, db } from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
 import {
   invitation,
   member,
   organization,
-} from "@loftlancer/db/schema/organization";
-import { projectMemberGrant } from "@loftlancer/db/schema/project-access";
-import { project } from "@loftlancer/db/schema/projects";
-import { team, teamMember } from "@loftlancer/db/schema/team";
+} from "@loftlancer/drizzle/schema/organization";
+import { projectMemberGrant } from "@loftlancer/drizzle/schema/project-access";
+import { project } from "@loftlancer/drizzle/schema/projects";
+import { team, teamMember } from "@loftlancer/drizzle/schema/team";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { applyTeamProjectDefaults } from "@module/teams/server/service/server.team-project-defaults.service";

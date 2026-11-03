@@ -13,18 +13,21 @@ test("organization migration controllers preserve invitations, member removal, a
   process.env.DATABASE_URL_POOLED = databaseUrl;
 
   const deliveries: string[] = [];
-  mock.module("@loftlancer/auth/organization-invitation-email", {
-    namedExports: {
-      sendOrganizationInvitationEmail: async (input: { email: string }) => {
-        deliveries.push(input.email);
+  mock.module(
+    "@features/authentication/core/server/authentication.organization-invitation-email",
+    {
+      namedExports: {
+        sendOrganizationInvitationEmail: async (input: { email: string }) => {
+          deliveries.push(input.email);
+        },
       },
     },
-  });
+  );
 
-  const { db } = await import("@loftlancer/db");
-  const { user } = await import("@loftlancer/db/schema/auth");
+  const { db } = await import("@loftlancer/drizzle");
+  const { user } = await import("@loftlancer/drizzle/schema/auth");
   const { invitation, member, organization } = await import(
-    "@loftlancer/db/schema/organization"
+    "@loftlancer/drizzle/schema/organization"
   );
   const { and, eq, isNull } = await import("drizzle-orm");
   const { organizationInvitationCreateController } = await import(

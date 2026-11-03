@@ -1,4 +1,4 @@
-import { AccordionSection } from "@loftlancer/ui/patterns/accordion-section";
+import { AccordionSection } from "@features/patterns/core/client/patterns.accordion-section";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 
 const SKELETON_ROWS = ["invitation", "membership", "project", "support"];

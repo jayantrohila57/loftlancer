@@ -1,5 +1,5 @@
-import type { StudioRouter } from "@loftlancer/api/routers/studio";
-import { transformer } from "@loftlancer/api/transformer";
+import type { StudioRouter } from "@loftlancer/orpc/routers/studio";
+import { transformer } from "@loftlancer/orpc/utils/orpc.transformer";
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import {

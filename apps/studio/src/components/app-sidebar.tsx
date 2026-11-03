@@ -1,19 +1,21 @@
 "use client";
 
-import { type PlatformNavKey, platformNav } from "@loftlancer/actions/nav";
-import { MAX_SIDEBAR_FAVORITES } from "@loftlancer/api/sidebar-favorites";
 import {
-  Collapsible,
-  CollapsiblePanel,
-  CollapsibleTrigger,
-} from "@loftlancer/ui/collapsible";
+  type PlatformNavKey,
+  platformNav,
+} from "@features/authorization/config/authorization.nav";
 import {
   NavCountBadge,
   SidebarBrand,
   SidebarFavorites,
   SidebarSearch,
-} from "@loftlancer/ui/patterns/sidebar-kit";
-import { docsUrl } from "@loftlancer/ui/platform-urls";
+} from "@features/patterns/core/client/patterns.sidebar-kit";
+import { docsUrl } from "@features/shell/utils/shell.platform-urls.utils";
+import {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "@loftlancer/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +31,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@loftlancer/ui/sidebar";
+import { MAX_SIDEBAR_FAVORITES } from "@modules/studio-shell/utils/utils.sidebar-favorites";
 import type { LucideIcon } from "lucide-react";
 import {
   ActivityIcon,
@@ -119,12 +122,12 @@ function SidebarNavGroup({
       <SidebarGroup>
         <CollapsibleTrigger
           render={
-            <SidebarGroupLabel className="cursor-pointer gap-1 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
+            <SidebarGroupLabel className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer gap-1" />
           }
         >
           <span className="min-w-0 flex-1 truncate">{title}</span>
           <ChevronRight
-            className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`}
+            className={`text-muted-foreground size-4 shrink-0 transition-transform ${open ? "rotate-90" : ""}`}
             aria-hidden
           />
         </CollapsibleTrigger>
@@ -257,11 +260,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuItem>
               );
             })}
-            <li className="px-2 pt-2 pb-1 text-muted-foreground text-xs">
+            <li className="text-muted-foreground px-2 pt-2 pb-1 text-xs">
               Favorite organizations
             </li>
             {favoriteOrganizations.length === 0 ? (
-              <li className="px-2 pb-1 text-muted-foreground text-xs">
+              <li className="text-muted-foreground px-2 pb-1 text-xs">
                 Star up to 3 organizations for quick access.
               </li>
             ) : null}
@@ -377,7 +380,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </>
         ) : null}
       </SidebarContent>
-      <SidebarFooter className="mt-auto shrink-0 border-sidebar-border border-t bg-sidebar">
+      <SidebarFooter className="border-sidebar-border bg-sidebar mt-auto shrink-0 border-t">
         {footerGroups.map(({ title, items }) => (
           <SidebarNavGroup key={title} title={title} defaultOpen={false}>
             <SidebarMenu className="gap-1">
@@ -401,7 +404,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
           </SidebarNavGroup>
         ))}
-        <div className="flex items-center gap-2 px-2 pt-1 text-[10px] text-muted-foreground group-data-[collapsible=icon]:hidden">
+        <div className="text-muted-foreground flex items-center gap-2 px-2 pt-1 text-[10px] group-data-[collapsible=icon]:hidden">
           <span>© {new Date().getFullYear()} Loftlancer</span>
         </div>
       </SidebarFooter>

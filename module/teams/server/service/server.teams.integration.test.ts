@@ -10,13 +10,13 @@ test("teams list/get/create and membership invariants against isolated Postgres"
   assert.match(url.pathname, /^\/loftlancer_teams_916$/);
   process.env.DATABASE_URL = databaseUrl;
   process.env.DATABASE_URL_POOLED = databaseUrl;
-  const { db } = await import("@loftlancer/db");
-  const { user } = await import("@loftlancer/db/schema/auth");
+  const { db } = await import("@loftlancer/drizzle");
+  const { user } = await import("@loftlancer/drizzle/schema/auth");
   const { organization, member } = await import(
-    "@loftlancer/db/schema/organization"
+    "@loftlancer/drizzle/schema/organization"
   );
-  const { teamMember } = await import("@loftlancer/db/schema/team");
-  const { auditEvent } = await import("@loftlancer/db/schema/audit-event");
+  const { teamMember } = await import("@loftlancer/drizzle/schema/team");
+  const { auditEvent } = await import("@loftlancer/drizzle/schema/audit-event");
   const { eq } = await import("drizzle-orm");
   const { teamCreateController } = await import(
     "../controller/server.team-create.controller"

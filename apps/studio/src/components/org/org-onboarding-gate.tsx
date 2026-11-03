@@ -98,7 +98,7 @@ export function OrgOnboardingGate({
         aria-busy="true"
         aria-live="polite"
       >
-        <Spinner className="size-6 text-muted-foreground" />
+        <Spinner className="text-muted-foreground size-6" />
       </div>
     );
   }

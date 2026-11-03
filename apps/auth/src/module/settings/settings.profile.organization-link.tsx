@@ -1,6 +1,6 @@
 "use client";
+import { routes } from "@features/shell/utils/shell.studio-routes.utils";
 import { Button } from "@loftlancer/ui/button";
-import { routes } from "@loftlancer/ui/studio-routes";
 import { useQuery } from "@tanstack/react-query";
 import { AppIcon } from "@/components/patterns/app-icon";
 import { isOrganizationsEnabledOnClient } from "@/lib/organizations";

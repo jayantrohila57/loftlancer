@@ -1,7 +1,10 @@
-import { db } from "@loftlancer/db";
-import { user } from "@loftlancer/db/schema/auth";
-import { invitation, organization } from "@loftlancer/db/schema/organization";
-import { project } from "@loftlancer/db/schema/projects";
+import { db } from "@loftlancer/drizzle";
+import { user } from "@loftlancer/drizzle/schema/auth";
+import {
+  invitation,
+  organization,
+} from "@loftlancer/drizzle/schema/organization";
+import { project } from "@loftlancer/drizzle/schema/projects";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import type { ServiceOutcome } from "@module/shared/utils/types/utils.service-outcome.types";
 import { and, desc, eq, gt, ilike, isNull, lte, or, sql } from "drizzle-orm";

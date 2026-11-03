@@ -1,6 +1,6 @@
 ---
 description: Registry action IDs; runAction wrapper; audit all outcomes; before/after events
-globs: packages/actions/**,packages/api/src/actions/**,module/**/server/**,module/shared/server/**
+globs: packages/actions/**,packages/orpc/src/actions/**,module/**/server/**,module/shared/server/**
 alwaysApply: false
 ---
 

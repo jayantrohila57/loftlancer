@@ -1,5 +1,6 @@
 "use client";
 
+import { Auth5Panel } from "@features/authentication/core/client";
 import { Button } from "@loftlancer/ui/button";
 import {
   Card,
@@ -8,7 +9,6 @@ import {
   CardPanel,
   CardTitle,
 } from "@loftlancer/ui/card";
-import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
 import { CircleCheckIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -133,8 +133,8 @@ export function DeviceApprovalScreen({ userCode }: DeviceApprovalScreenProps) {
             readOnly
           />
           {doneMessage ? (
-            <div className="flex items-center gap-2 rounded-md p-4 text-sm ring-1 ring-border/60">
-              <CircleCheckIcon aria-hidden className="size-4 text-primary" />
+            <div className="ring-border/60 flex items-center gap-2 rounded-md p-4 text-sm ring-1">
+              <CircleCheckIcon aria-hidden className="text-primary size-4" />
               {doneMessage}
             </div>
           ) : (
@@ -161,7 +161,7 @@ export function DeviceApprovalScreen({ userCode }: DeviceApprovalScreenProps) {
           )}
           <p
             role="alert"
-            className="min-h-4 text-destructive text-xs leading-4"
+            className="text-destructive min-h-4 text-xs leading-4"
           >
             {loadError ?? ""}
           </p>

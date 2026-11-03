@@ -1,12 +1,12 @@
 "use client";
 
-import { Badge } from "@loftlancer/ui/badge";
-import { Button } from "@loftlancer/ui/button";
-import { LoadingButton } from "@loftlancer/ui/patterns/loading-button";
+import { LoadingButton } from "@features/patterns/core/client/patterns.loading-button";
 import {
   LOCAL_DATE_TIME_FORMAT,
   LocalDateTime,
-} from "@loftlancer/ui/patterns/local-date-time";
+} from "@features/patterns/core/client/patterns.local-date-time";
+import { Badge } from "@loftlancer/ui/badge";
+import { Button } from "@loftlancer/ui/button";
 import { Textarea } from "@loftlancer/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
@@ -73,13 +73,13 @@ export function SupportTicketContent({
           </Button>
         ) : null}
       </div>
-      <p className="whitespace-pre-wrap text-sm">{ticket.description}</p>
+      <p className="text-sm whitespace-pre-wrap">{ticket.description}</p>
       <section className="space-y-3">
-        <h2 className="font-medium text-sm">Conversation</h2>
+        <h2 className="text-sm font-medium">Conversation</h2>
         <ul className="space-y-3">
           {detail.data?.messages.map((message) => (
             <li key={message.id} className="rounded-md border p-3 text-sm">
-              <div className="mb-1 flex flex-wrap items-center gap-2 text-muted-foreground text-xs">
+              <div className="text-muted-foreground mb-1 flex flex-wrap items-center gap-2 text-xs">
                 <span>{message.authorName ?? message.authorEmail}</span>
                 <LocalDateTime
                   value={message.createdAt}

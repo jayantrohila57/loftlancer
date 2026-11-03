@@ -1,7 +1,7 @@
 "use client";
 
-import { DataTable } from "@loftlancer/ui/data-table/data-table";
-import type { DataTableEmptyConfig } from "@loftlancer/ui/data-table/data-table-empty-types";
+import { DataTable } from "@features/data-table/core/client/data-table.table";
+import type { DataTableEmptyConfig } from "@features/data-table/types/data-table.empty.types";
 import type { OrgListItem } from "@/components/org/active-organization-context";
 import { createOrganizationsTableColumns } from "@/module/organizations/organizations.organizations.table.columns";
 

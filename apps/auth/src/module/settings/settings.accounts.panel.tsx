@@ -1,9 +1,9 @@
 "use client";
-import { isGoogleSignInEnabled } from "@loftlancer/ui/auth-links";
+import { GoogleMark } from "@features/authentication/core/client";
+import { isGoogleSignInEnabled } from "@features/authentication/utils/auth-links";
+import { LocalDateTime } from "@features/patterns/core/client/patterns.local-date-time";
 import { Badge } from "@loftlancer/ui/badge";
 import { Button } from "@loftlancer/ui/button";
-import { GoogleMark } from "@loftlancer/ui/patterns/auth-5";
-import { LocalDateTime } from "@loftlancer/ui/patterns/local-date-time";
 import { Skeleton } from "@loftlancer/ui/skeleton";
 import { Spinner } from "@loftlancer/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
@@ -109,12 +109,12 @@ export function AccountsSettingsPanel({
             />
           </div>
         ) : (
-          <ul className="divide-y divide-border/60">
+          <ul className="divide-border/60 divide-y">
             {providerRows.map((row) => {
               const busy = providerPending === row.key;
               return (
                 <li key={row.key} className="flex h-16 items-center gap-3 px-4">
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+                  <span className="bg-muted flex size-8 shrink-0 items-center justify-center rounded-lg">
                     {row.icon === "github" ? (
                       <AppIcon name="github" className="size-4" />
                     ) : row.icon === "google" ? (
@@ -122,13 +122,13 @@ export function AccountsSettingsPanel({
                     ) : (
                       <KeyRoundIcon
                         aria-hidden
-                        className="size-4 text-muted-foreground"
+                        className="text-muted-foreground size-4"
                       />
                     )}
                   </span>
                   <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <div className="flex items-center gap-1.5">
-                      <p className="font-medium text-sm">{row.label}</p>
+                      <p className="text-sm font-medium">{row.label}</p>
                       {connectedQuery.isLoading ? (
                         <Skeleton className="h-4.5 w-20 rounded-sm" />
                       ) : row.account ? (
@@ -137,7 +137,7 @@ export function AccountsSettingsPanel({
                         <Badge variant="outline">Not connected</Badge>
                       )}
                     </div>
-                    <p className="truncate text-muted-foreground text-xs">
+                    <p className="text-muted-foreground truncate text-xs">
                       {connectedQuery.isLoading ? (
                         "\u00a0"
                       ) : row.account ? (
@@ -201,7 +201,7 @@ export function AccountsSettingsPanel({
           </ul>
         )}
         {!connectedQuery.isLoading && !canUnlinkAny ? (
-          <p className="border-border/60 border-t px-4 py-2 text-muted-foreground text-xs">
+          <p className="border-border/60 text-muted-foreground border-t px-4 py-2 text-xs">
             You need at least one sign-in method, so your only connected account
             can't be disconnected.
           </p>

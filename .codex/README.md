@@ -18,23 +18,23 @@ OpenAI **Codex** (CLI, IDE, and GitHub) loads **`AGENTS.md`** from the repo root
 
 ## Instruction chain (this repo)
 
-| When working in… | Codex loads (in order) |
-|------------------|-------------------------|
-| Repo root | `AGENTS.md` |
-| `module/` | + `module/AGENTS.md` |
-| `module/teams/` | + `module/teams/AGENTS.md` |
-| `packages/api/` | + `packages/api/AGENTS.md` |
+| When working in… | Codex loads (in order)      |
+| ---------------- | --------------------------- |
+| Repo root        | `AGENTS.md`                 |
+| `module/`        | + `module/AGENTS.md`        |
+| `module/teams/`  | + `module/teams/AGENTS.md`  |
+| `packages/orpc/` | + `packages/orpc/AGENTS.md` |
 
 **Module runbooks:** `module/<domain>/README.md` (not duplicate docs under `docs/`).
 
 ## Verification (same as CI)
 
-| When | Command |
-|------|---------|
-| After a sub-issue | `pnpm audit:module-architecture` |
-| Before PR to `dev` | `pnpm verify:dev-merge` |
+| When               | Command                          |
+| ------------------ | -------------------------------- |
+| After a sub-issue  | `pnpm audit:module-architecture` |
+| Before PR to `dev` | `pnpm verify:dev-merge`          |
 
-The **Stop** hook runs **`pnpm audit:module-architecture`** when the turn changed `module/`, `packages/api/src/orpc/`, or app `page.tsx` files.
+The **Stop** hook runs **`pnpm audit:module-architecture`** when the turn changed `module/`, `packages/orpc/src/orpc/`, or app `page.tsx` files.
 
 ## GitHub Codex code review
 

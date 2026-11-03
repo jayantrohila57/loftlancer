@@ -11,7 +11,7 @@ Agents and cloud workers **must** follow this workflow. Completing a task by vio
 
 **Forbidden shortcuts** (non-exhaustive):
 
-- Copying **`apps/studio/src/module/*`**, **`packages/api/src/modules/*`**, or legacy app **`lib/*`** as templates for **new** product code
+- Copying **`apps/studio/src/module/*`**, **`packages/orpc/src/modules/*`**, or legacy app **`lib/*`** as templates for **new** product code
 - New **tRPC** procedures, **`z.unknown()`** oRPC inputs, controllers without **`serviceResponseSchema(...).parse`**, domain logic in **`apps/*/src/app/**/page.tsx`**
 - “Temporary” adapters that skip **`runAction`**, audit, or ServiceResponse to ship faster
 - Marking an issue complete while leaving **new** architecture audit violations
@@ -49,7 +49,7 @@ Before editing files:
 We are moving from legacy app/API folders to **`module/<domain>/`**. For **new or migrated** code:
 
 - **Do not** extend legacy patterns “because it still exists”
-- **Do not** add product logic under **`packages/api/src/modules/<domain>`** or fat Studio app modules
+- **Do not** add product logic under **`packages/orpc/src/modules/<domain>`** or fat Studio app modules
 - Compatibility shims (tRPC/MCP unwrap) are **transport-only** — new behavior lives in **`module/`** + thin oRPC
 
 ## 6. Reference code: module first

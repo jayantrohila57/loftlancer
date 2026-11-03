@@ -1,4 +1,4 @@
-import { getSessionActiveOrganizationId } from "@loftlancer/auth/session-types";
+import { getSessionActiveOrganizationId } from "@loftlancer/better-auth/session-types";
 import { HydrationBoundary } from "@tanstack/react-query";
 import { headers } from "next/headers";
 import { PrivateDashboardShell } from "@/components/layout/private-dashboard-shell";

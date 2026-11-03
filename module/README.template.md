@@ -10,7 +10,7 @@ One-line purpose. Link parent GitHub issue: `#NNN`.
 
 1. Implement **one sub-issue** at a time; branch `feat/<parent>-<slug>` from **`dev`**.
 2. **Plan** in chat before coding if the sub-issue spans utils + server + transport + client.
-3. **Reference** only `module/<domain>/`, `module/shared/`, and thin oRPC — not `apps/studio/src/module/*` or `packages/api/src/modules/*` as templates.
+3. **Reference** only `module/<domain>/`, `module/shared/`, and thin oRPC — not `apps/studio/src/module/*` or `packages/orpc/src/modules/*` as templates.
 4. Record blocked work under **TODO (blocked)** below; do not ship cross-module hacks.
 
 ---
@@ -19,7 +19,7 @@ One-line purpose. Link parent GitHub issue: `#NNN`.
 
 `app route re-export → module RSC → server/page → controller → runAction → service`
 
-`client hook → @/lib/orpc → packages/api/src/orpc/procedures/<domain>.ts → same controller`
+`client hook → @/lib/orpc → packages/orpc/src/orpc/procedures/<domain>.ts → same controller`
 
 ---
 
@@ -52,16 +52,16 @@ Before merging the **parent** issue branch to **`dev`**: **`pnpm verify:dev-merg
 ## Sub-issues (parent `#NNN`)
 
 | Sub-issue | Scope | Status |
-|-----------|--------|--------|
-| # | | |
+| --------- | ----- | ------ |
+| #         |       |        |
 
 ---
 
 ## TODO (blocked)
 
 | Item | Blocked on | Issue | Notes |
-|------|------------|-------|-------|
-| | | | |
+| ---- | ---------- | ----- | ----- |
+|      |            |       |       |
 
 ---
 

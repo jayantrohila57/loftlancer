@@ -2,14 +2,14 @@
 description: Mechanical module/oRPC architecture gate — run audit before done
 globs:
   - module/**/*
-  - packages/api/src/orpc/**/*
+  - packages/orpc/src/orpc/**/*
   - apps/*/src/app/**/page.tsx
 alwaysApply: false
 ---
 
 # Module architecture audit (mandatory before done)
 
-Documentation and README checkboxes are **not** sufficient. Before you finish work on **`module/`**, **`packages/api/src/orpc/procedures/`**, or thin app **`page.tsx`** routes:
+Documentation and README checkboxes are **not** sufficient. Before you finish work on **`module/`**, **`packages/orpc/src/orpc/procedures/`**, or thin app **`page.tsx`** routes:
 
 ```bash
 pnpm audit:module-architecture
@@ -19,6 +19,6 @@ pnpm audit:module-architecture
 - After fixing known debt, shrink baseline: **`node scripts/audit-module-architecture.mjs --write-baseline`** and commit the JSON in the same PR.
 - Local burn-down: **`node scripts/audit-module-architecture.mjs --strict`**.
 
-Rules enforced: outbound **`serviceResponseSchema(...).parse`** on controllers; no **`z.unknown()`** oRPC inputs; **`@module/*`** imports in procedures; **`unwrapTeam*`** only in legacy transport allowlist; thin Studio pages.
+Rules enforced: outbound **`serviceResponseSchema(...).parse`** on controllers; no **`z.unknown()`** oRPC inputs; **`@modules/*`** or dual **`@module/*`** imports in procedures; **`unwrapTeam*`** only in legacy transport allowlist; thin Studio pages.
 
 See [docs/tooling.md](../docs/tooling.md), [docs/gaps/agent-meta.md](../docs/gaps/agent-meta.md), [docs/new-feature-checklist.md](../docs/new-feature-checklist.md).

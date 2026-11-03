@@ -1,7 +1,7 @@
 import "server-only";
 
-import { enrichSessionUserRole } from "@loftlancer/api/enrich-session-user";
-import { tagRequestIdentity } from "@loftlancer/api/request-identity";
+import { enrichSessionUserRole } from "@loftlancer/orpc/enrich-session-user";
+import { tagRequestIdentity } from "@loftlancer/orpc/request-identity";
 import { headers } from "next/headers";
 import { cache } from "react";
 import { siblingAuth } from "@/lib/sibling-auth";

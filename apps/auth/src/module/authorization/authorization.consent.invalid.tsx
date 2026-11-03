@@ -1,3 +1,4 @@
+import { Auth5Panel } from "@features/authentication/core/client";
 import { Button } from "@loftlancer/ui/button";
 import {
   Card,
@@ -6,7 +7,6 @@ import {
   CardPanel,
   CardTitle,
 } from "@loftlancer/ui/card";
-import { Auth5Panel } from "@loftlancer/ui/patterns/auth-5";
 import Link from "next/link";
 
 export function InvalidConsentRequest() {

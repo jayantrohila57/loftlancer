@@ -1,5 +1,5 @@
-import { db } from "@loftlancer/db";
-import { team } from "@loftlancer/db/schema/team";
+import { db } from "@loftlancer/drizzle";
+import { team } from "@loftlancer/drizzle/schema/team";
 import type { RunActionContext } from "@module/shared/server/run-action";
 import { and, eq, isNull } from "drizzle-orm";
 import type { z } from "zod";

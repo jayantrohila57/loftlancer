@@ -1,4 +1,4 @@
 export {
   isE2eTestSecretConfigured,
   isValidE2eSecret,
-} from "@loftlancer/auth/e2e-route-access";
+} from "@loftlancer/better-auth/e2e-route-access";

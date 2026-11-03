@@ -8,11 +8,11 @@ See: [gaps/imports-paths.md](./gaps/imports-paths.md), [modules.md](./modules.md
 
 ## Path alias `@features/*`
 
-Map **`@features/*`** → **`../../features/*`** from apps and **`packages/api`** (same depth as `@module/*`).
+Map **`@features/*`** → **`../../features/*`** from apps and **`packages/orpc`** (same depth as `@module/*`).
 
-Registered in **`packages/config/tsconfig.base.json`**, **`apps/studio/tsconfig.json`**, **`packages/api/tsconfig.json`**, and **`module/tsconfig.json`** (modules consume features).
+Registered in **`packages/typescript-config/tsconfig.base.json`**, **`apps/studio/tsconfig.json`**, **`packages/orpc/tsconfig.json`**, and **`module/tsconfig.json`** (modules consume features).
 
-Workspace package **`@loftlancer/features-shared`** (`features/package.json`) runs **`pnpm check-types`** over feature sources.
+Workspace packages **`@loftlancer/features-<name>`** (`features/<name>/package.json`) each run **`check-types`** / **`test`**; shared TS paths in **`features/tsconfig.feature-paths.json`**. Root **`pnpm check-types`** (Turbo) covers all features.
 
 **Dependency rule:** modules → features → packages; features must not import `@module/*`.
 
@@ -48,7 +48,7 @@ Include module sources in `include` when TypeScript must resolve cross-root impo
 
 Same **`@module/*`** mapping as Studio.
 
-### Packages API (`packages/api/tsconfig.json`)
+### Packages API (`packages/orpc/tsconfig.json`)
 
 Add **`@module/*`** so procedure files import controllers:
 
@@ -63,7 +63,7 @@ Add **`@module/*`** so procedure files import controllers:
 Create **`apps/studio/src/lib/orpc.ts`** (and auth equivalent):
 
 - Re-export typed client used by all **`module/.../client/hooks`**.
-- Feature code imports **`@/lib/orpc`** only — not `@loftlancer/api` internals.
+- Feature code imports **`@/lib/orpc`** only — not `@loftlancer/orpc` internals.
 
 Document the exact export names in this file when wired (`studioORPC`, `accountORPC`).
 
@@ -74,7 +74,7 @@ Document the exact export names in this file when wired (`studioORPC`, `accountO
 **`module/package.json`** + **`module/tsconfig.json`** can run **`pnpm check-types`** over shared contracts without an app:
 
 - Depends on `zod`, `@loftlancer/actions` (types for `ActionName`).
-- Extends `@loftlancer/config/tsconfig.base.json`.
+- Extends `@loftlancer/typescript-config/tsconfig.base.json`.
 - `"paths": { "@module/*": ["./*"] }`
 
 Root **`pnpm check-types`** should include **`module`** when the package exists (turbo task).
@@ -91,12 +91,12 @@ When `module/package.json` exists, register **`check-types`** in turbo pipeline 
 
 **`pnpm audit:module-architecture`** runs **`scripts/audit-module-architecture.mjs`**. It enforces prescriptive gaps mechanically (not honor-system for agents):
 
-| Rule | What it checks |
-|------|----------------|
-| `controller-response-schema` | Every `module/*/server/controller/*.controller.ts` returns **`serviceResponseSchema(...).parse(...)`** |
-| `orpc-input-schema` | No **`z.unknown()`** or **`teamControllerInputSchema`** in `packages/api/src/orpc/procedures/` |
-| `orpc-module-import` | Procedures import controllers/schemas from **`@module/*`** |
-| `legacy-unwrap` | **`unwrapTeam*`** only in allowlisted tRPC/MCP/legacy handler paths |
+| Rule                                   | What it checks                                                                                            |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `controller-response-schema`           | Every `module/*/server/controller/*.controller.ts` returns **`serviceResponseSchema(...).parse(...)`**    |
+| `orpc-input-schema`                    | No **`z.unknown()`** or **`teamControllerInputSchema`** in `packages/orpc/src/orpc/procedures/`           |
+| `orpc-module-import`                   | Procedures import controllers/schemas from **`@module/*`**                                                |
+| `legacy-unwrap`                        | **`unwrapTeam*`** only in allowlisted tRPC/MCP/legacy handler paths                                       |
 | `app-page-forbidden` / `app-page-thin` | Studio (and other) **`page.tsx`**: no DB/`requireAction`; teams routes stay thin **`@module`** re-exports |
 
 **Baseline:** Known debt is listed in **`scripts/audit-module-architecture-baseline.json`**. CI **fails on NEW violation ids** only. After fixing code, shrink the baseline:
@@ -113,10 +113,10 @@ CI runs this on every push to **`dev`** and **`main`** and on pull requests ([fo
 
 **`pnpm audit:architecture-layers`** runs **`scripts/audit-architecture-layers.mjs`**. It enforces import direction from [features.md](./features.md):
 
-| Rule | What it checks |
-|------|----------------|
-| `features-no-module` | No `features/*` imports from `module/*` or `@module/*` |
-| `packages-layer-import` | No `packages/*` imports from `module/*` or `features/*` except **`packages/api/src/orpc/`**, **`mcp/`**, **`routers/`** |
+| Rule                    | What it checks                                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `features-no-module`    | No `features/*` imports from `module/*` or `@module/*`                                                                   |
+| `packages-layer-import` | No `packages/*` imports from `module/*` or `features/*` except **`packages/orpc/src/orpc/`**, **`mcp/`**, **`routers/`** |
 
 Baseline: **`scripts/audit-architecture-layers-baseline.json`**. Same **`--write-baseline`** / **`--strict`** flags as the module audit.
 
@@ -128,5 +128,5 @@ Baseline: **`scripts/audit-architecture-layers-baseline.json`**. Same **`--write
 
 ## Related
 
-- [architecture-gaps.md](./architecture-gaps.md)  
-- [modules.md](./modules.md)  
+- [architecture-gaps.md](./architecture-gaps.md)
+- [modules.md](./modules.md)

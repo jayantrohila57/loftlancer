@@ -1,4 +1,4 @@
-import { DEFAULT_STUDIO_URL } from "@loftlancer/env/platform";
+import { DEFAULT_STUDIO_URL } from "@loftlancer/t3-env/platform";
 
 export function getStudioAppOrigin(): string {
   return (process.env.NEXT_PUBLIC_STUDIO_URL ?? DEFAULT_STUDIO_URL).replace(
