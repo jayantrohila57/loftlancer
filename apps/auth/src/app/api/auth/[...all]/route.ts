@@ -17,11 +17,14 @@ function withAppBasePath(request: Request): Request {
   if (authBasePath === "/api/auth" || url.pathname.startsWith(authBasePath)) {
     return request;
   }
-  if (!url.pathname.startsWith("/api/auth")) {
-    return request;
+  for (const prefix of ["/api/auth", "/api/better-auth"] as const) {
+    if (!url.pathname.startsWith(prefix)) {
+      continue;
+    }
+    url.pathname = `${authBasePath}${url.pathname.slice(prefix.length)}`;
+    return new Request(url, request);
   }
-  url.pathname = `${authBasePath}${url.pathname.slice("/api/auth".length)}`;
-  return new Request(url, request);
+  return request;
 }
 
 const { GET: authGet, POST: authPost } = toNextJsHandler((request: Request) =>

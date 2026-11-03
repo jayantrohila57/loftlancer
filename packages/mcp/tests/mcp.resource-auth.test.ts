@@ -13,7 +13,7 @@ describe("MCP resource auth", () => {
     assert.equal(config.audience, "https://mcp.example.com/api/mcp");
     assert.equal(
       config.jwksUrl,
-      "https://better-auth.example.com/api/better-auth/jwks",
+      "https://better-auth.example.com/api/auth/jwks",
     );
   });
 

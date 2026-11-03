@@ -88,6 +88,18 @@
       "buildCommand": "cd ../.. && VERCEL_SERVICES=1 NEXT_BASE_PATH=/studio pnpm turbo run build --filter=studio"
     }
   },
+  "redirects": [
+    {
+      "source": "/auth",
+      "destination": "/better-auth",
+      "permanent": true
+    },
+    {
+      "source": "/auth/:path*",
+      "destination": "/better-auth/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/better-auth",
