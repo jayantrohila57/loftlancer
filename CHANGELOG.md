@@ -19,6 +19,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 ### Changed
 
 - Teams overview: server-first profile and access-guide sections with `dynamic()` accordion/date leaves; client boundary limited to query/status switching (#1063).
+- Teams list: server header section, `dynamic()` create-team island and DataTable content; list boundary limited to `useTeamsList` and ServiceResponse (#933).
 
 ## [1.25.1] - 2026-11-03
 

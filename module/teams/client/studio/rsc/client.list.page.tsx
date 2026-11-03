@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { loadTeamsList } from "../../../server/page/server.team-list.page";
 import { routes } from "../config/client.routes";
 import { TeamsListSkeleton } from "../skeletons/client.team-list.skeleton";
+import { TeamsListHeaderSection } from "./client.list.header.section";
 
 const Boundary = dynamic(
   () =>
@@ -27,12 +28,15 @@ export async function TeamsListPage({
   if (scope.response.status === "failed") redirect("/forbidden");
   return (
     <ModuleScopeProvider orgId={scope.ctx.orgId}>
-      <Boundary
-        organizationName={scope.org.name}
-        orgId={scope.ctx.orgId}
-        slug={org}
-        response={scope.response}
-      />
+      <section className="flex min-w-0 flex-col gap-4">
+        <TeamsListHeaderSection orgId={scope.ctx.orgId} slug={org} />
+        <Boundary
+          organizationName={scope.org.name}
+          orgId={scope.ctx.orgId}
+          slug={org}
+          response={scope.response}
+        />
+      </section>
     </ModuleScopeProvider>
   );
 }

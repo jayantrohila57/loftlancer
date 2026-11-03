@@ -99,7 +99,8 @@ Track open chunks in GitHub; update this table when filing sub-tasks.
 | [#922](https://github.com/jayantrohila57/loftlancer/issues/922) | B — oRPC Zod inputs | implemented in PR branch |
 | [#923](https://github.com/jayantrohila57/loftlancer/issues/923) | C — legacy unwrap | implemented in PR branch |
 | [#924](https://github.com/jayantrohila57/loftlancer/issues/924) | D — empty baseline + docs | implemented in PR branch |
-| [#1063](https://github.com/jayantrohila57/loftlancer/issues/1063) | E — overview server-first leaves | in progress |
+| [#1063](https://github.com/jayantrohila57/loftlancer/issues/1063) | E — overview server-first leaves | done (overview) |
+| [#1065](https://github.com/jayantrohila57/loftlancer/issues/1065) | F — list server-first screen | done (list) |
 
 GitHub exposed no open Loftlancer project when issue #916 was created, so no project item could be attached.
 
@@ -112,6 +113,7 @@ Pilot for [docs/rendering.md](../../docs/rendering.md) and [docs/gaps/client-lay
 **Verified (this branch):**
 
 - **Team overview** (`rsc/client.overview.page.tsx`): RSC loader passes serializable props; `dynamic()` boundary owns `useTeamGet` + status switching; profile + access-guide sections are **Server Components** with `dynamic()` leaves for `AccordionSection` / `LocalDateTime`; static copy is not behind `"use client"`.
+- **Teams list** (`rsc/client.list.page.tsx`): RSC owns header copy (`client.list.header.section.tsx`); `dynamic()` create-team island + list boundary; boundary keeps `useTeamsList` + ServiceResponse; `DataTable` loads via `dynamic()` in `client.list.content.tsx`.
 
 ```bash
 pnpm audit:module-architecture
@@ -123,7 +125,7 @@ pnpm test:teams
 
 | Screen | Files | Notes |
 |--------|--------|--------|
-| Teams list | `client.list.boundary.tsx`, `client.list.content.tsx` | Extract server header copy; `dynamic()` create-team dialog leaf; shrink `DataTable` island |
+| ~~Teams list~~ | — | done on this branch |
 | Settings | `client.settings.content.tsx` | Mostly static rows — server sections + mutation leaves |
 | Members | `client.members.content.tsx` | Table + role controls — split read-only columns to RSC where possible |
 | Projects | `client.projects.content.tsx` | Link/unlink actions as client leaves |

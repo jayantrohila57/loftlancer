@@ -1,19 +1,13 @@
 "use client";
-import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
+
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import type { TeamDto } from "../../../utils/types/utils.team.dto";
 import { teamCreateInputSchema } from "../../../utils/validation/utils.create-team.validation";
 import { routes } from "../config/client.routes";
-import { useCan } from "../hooks/client.use-teams-permission.hook";
 import { useTeamCreate } from "./client.use-teams-create.hook";
-import { useTeamsList } from "./client.use-teams-list.hook";
-export function useTeamsListScreen(
-  orgId: string,
-  slug: string,
-  response: ServiceResponse<TeamDto>,
-) {
-  const query = useTeamsList(orgId, response);
+import { useCan } from "./client.use-teams-permission.hook";
+
+export function useTeamsListCreate(_orgId: string, slug: string) {
   const create = useTeamCreate();
   const canCreate = useCan("team.create");
   const router = useRouter();
@@ -70,7 +64,6 @@ export function useTeamsListScreen(
     }
   };
   return {
-    query,
     create,
     canCreate,
     open,
