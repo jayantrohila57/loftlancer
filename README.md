@@ -4,7 +4,7 @@
 
 **Loftlancer** is an environment and secrets manager for teams. Store and organize environment variables across **organizations**, **projects** and **environments** (dev, staging, production), with values encrypted at rest, role-based access, an audit timeline, notifications and soft deletes.
 
-**Live:** [loftlancer.com](https://loftlancer.com) · [Sign in](https://loftlancer.com/auth/sign-in) · [Studio](https://loftlancer.com/studio)
+**Live:** [loftlancer.com](https://loftlancer.com) · [Sign in](https://loftlancer.com/better-auth) · [Studio](https://loftlancer.com/studio)
 
 ## Architecture
 
@@ -16,7 +16,7 @@ Loftlancer runs as **one Vercel project** (Vercel Services) on **loftlancer.com*
 | `/auth`   | `apps/auth`   | Sign-in (GitHub, Google when configured, email magic links; no passwords), sessions and account settings (`/auth/settings/*`) |
 | `/studio` | `apps/studio` | Product dashboard: organizations, projects, environments, variables                                                           |
 
-Routing lives in the root [`vercel.json`](./vercel.json) (`services` + `rewrites`). Session cookies are same-origin on loftlancer.com. Better Auth is served at `/auth/api/auth`; the GitHub OAuth callback is `https://loftlancer.com/auth/api/auth/callback/github`.
+Routing lives in the root [`vercel.json`](./vercel.json) (`services` + `rewrites`). Session cookies are same-origin on loftlancer.com. Better Auth is served at `/better-auth/api/auth`; legacy `/auth/*` redirects to `/better-auth/*`. GitHub OAuth callback: `https://loftlancer.com/better-auth/api/auth/callback/github`.
 
 ```mermaid
 flowchart LR
@@ -93,22 +93,22 @@ pnpm install
 
 Create **`apps/studio/.env`** (Drizzle Kit reads this path for database commands). Validated via `@loftlancer/t3-env`:
 
-| Variable                                    | Required | Description                                                                                        |
-| ------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`                              | yes      | PostgreSQL connection URL                                                                          |
-| `BETTER_AUTH_SECRET`                        | yes      | Session secret (≥ 32 characters)                                                                   |
-| `BETTER_AUTH_URL`                           | yes      | Public auth app URL (`https://loftlancer.com/auth` in production, `http://localhost:3000` locally) |
-| `CORS_ORIGIN`                               | yes      | Browser origin (usually same as `BETTER_AUTH_URL` in dev)                                          |
-| `ENCRYPTION_KEY`                            | yes      | 64 hex chars (32 bytes) for AES-256-GCM                                                            |
-| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | yes      | GitHub OAuth                                                                                       |
-| `ORGANIZATIONS_ENABLED`                     | no       | `true` to scope projects to active org                                                             |
-| `NOTIFICATIONS_ENABLED`                     | no       | In-app notifications                                                                               |
-| `VARIABLES_V2_ENABLED`                      | no       | Typed variables (`secret` / `config`)                                                              |
-| `ACTIONS_AUDIT_ENABLED`                     | no       | `audit_event` + timeline routes                                                                    |
-| `SOFT_DELETES_ENABLED`                      | no       | Soft delete semantics                                                                              |
-| `NEXT_PUBLIC_*`                             | no       | Client mirrors for flags above (rebuild after change)                                              |
-| `NODE_ENV`                                  | no       | `development` \| `production` \| `test`                                                            |
-| `SKIP_ENV_VALIDATION`                       | no       | `1` skips Zod (not recommended)                                                                    |
+| Variable                                    | Required | Description                                                                                               |
+| ------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                              | yes      | PostgreSQL connection URL                                                                                 |
+| `BETTER_AUTH_SECRET`                        | yes      | Session secret (≥ 32 characters)                                                                          |
+| `BETTER_AUTH_URL`                           | yes      | Public auth app URL (`https://loftlancer.com/better-auth` in production, `http://localhost:3000` locally) |
+| `CORS_ORIGIN`                               | yes      | Browser origin (usually same as `BETTER_AUTH_URL` in dev)                                                 |
+| `ENCRYPTION_KEY`                            | yes      | 64 hex chars (32 bytes) for AES-256-GCM                                                                   |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | yes      | GitHub OAuth                                                                                              |
+| `ORGANIZATIONS_ENABLED`                     | no       | `true` to scope projects to active org                                                                    |
+| `NOTIFICATIONS_ENABLED`                     | no       | In-app notifications                                                                                      |
+| `VARIABLES_V2_ENABLED`                      | no       | Typed variables (`secret` / `config`)                                                                     |
+| `ACTIONS_AUDIT_ENABLED`                     | no       | `audit_event` + timeline routes                                                                           |
+| `SOFT_DELETES_ENABLED`                      | no       | Soft delete semantics                                                                                     |
+| `NEXT_PUBLIC_*`                             | no       | Client mirrors for flags above (rebuild after change)                                                     |
+| `NODE_ENV`                                  | no       | `development` \| `production` \| `test`                                                                   |
+| `SKIP_ENV_VALIDATION`                       | no       | `1` skips Zod (not recommended)                                                                           |
 
 Example secret generation:
 
@@ -117,7 +117,7 @@ openssl rand -hex 32    # ENCRYPTION_KEY
 openssl rand -base64 32 # BETTER_AUTH_SECRET
 ```
 
-GitHub OAuth callback: `{BETTER_AUTH_URL}/api/auth/callback/github` (production: `https://loftlancer.com/auth/api/auth/callback/github`).
+GitHub OAuth callback: `{BETTER_AUTH_URL}/api/auth/callback/github` (production: `https://loftlancer.com/better-auth/api/auth/callback/github`).
 
 ## Database
 

@@ -98,6 +98,11 @@
       "source": "/auth/:path*",
       "destination": "/better-auth/:path*",
       "permanent": true
+    },
+    {
+      "source": "/better-auth/api/better-auth/:path*",
+      "destination": "/better-auth/api/auth/:path*",
+      "permanent": false
     }
   ],
   "rewrites": [
