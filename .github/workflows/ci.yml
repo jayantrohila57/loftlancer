@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
   workflow_call:
 
@@ -24,6 +24,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint:ci
+      - run: pnpm check-routes
+      - run: pnpm audit:module-architecture
       - run: pnpm check-types
       - run: pnpm test
         env:
