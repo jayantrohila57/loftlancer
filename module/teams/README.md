@@ -35,7 +35,7 @@ The pilot uses shadcn, COSS, COSS particles, and UI/UX Pro Max guidance. Existin
 
 ## Migration verification (#918)
 
-- Workspace typechecks: all 18 tasks passed; API 164 tests, Studio 113 tests, and shared/controller 4 tests passed.
+- Workspace typechecks: all 18 tasks passed; API 164 tests, Studio 113 tests, and shared/controller 5 tests passed.
 - Isolated Postgres integration verified invitation validation, duplicates, member exclusion, scope, list/context, resend/revoke, delivery cancellation, default project grants, link restoration, and single terminal audits.
 - Authenticated local browser verified every team tab, native project link/unlink, invitation revoke, email-delivery failure with retained draft, duplicate/invalid previews, guarded close, and 375px footer visibility. No page errors or horizontal overflow. Existing global shell Base UI warnings remain outside team islands.
 

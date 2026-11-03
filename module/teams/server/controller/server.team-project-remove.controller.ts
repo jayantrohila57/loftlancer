@@ -18,8 +18,13 @@ export function teamProjectRemoveController({
     ? {
         ...ctx,
         teamId: parsed.data.teamId,
+        entityId: parsed.data.teamId,
         projectId: parsed.data.projectId,
-        payload: { operation: "project-remove", scope: "team" },
+        payload: {
+          operation: "project-remove",
+          scope: "team",
+          teamId: parsed.data.teamId,
+        },
       }
     : ctx;
   return runAction({

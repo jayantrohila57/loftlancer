@@ -18,8 +18,13 @@ export function teamProjectAssignController({
     ? {
         ...ctx,
         teamId: parsed.data.teamId,
+        entityId: parsed.data.teamId,
         projectId: parsed.data.projectId,
-        payload: { operation: "project-assign", scope: "team" },
+        payload: {
+          operation: "project-assign",
+          scope: "team",
+          teamId: parsed.data.teamId,
+        },
       }
     : ctx;
   return runAction({

@@ -17,7 +17,11 @@ export function teamInvitationRevokeController({
         ...ctx,
         teamId: parsed.data.teamId,
         entityId: parsed.data.invitationId,
-        payload: { operation: "invitation-revoke", scope: "team" },
+        payload: {
+          operation: "invitation-revoke",
+          scope: "team",
+          teamId: parsed.data.teamId,
+        },
       }
     : ctx;
   return runAction({

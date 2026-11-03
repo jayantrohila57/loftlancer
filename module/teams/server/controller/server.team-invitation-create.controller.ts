@@ -21,6 +21,7 @@ export function teamInvitationCreateController({
         payload: {
           operation: "invitation-create",
           scope: "team",
+          teamId: parsed.data.teamId,
           role: parsed.data.role,
         },
       }

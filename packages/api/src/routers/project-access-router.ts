@@ -5,9 +5,9 @@ import {
 import { activeMemberWhere, db } from "@loftlancer/db";
 import { member } from "@loftlancer/db/schema/organization";
 import { projectMemberGrant } from "@loftlancer/db/schema/project-access";
+import type { ServiceResponse } from "@module/shared/utils/types/utils.service-response.types";
 import { teamProjectAssignController } from "@module/teams/server/controller/server.team-project-assign.controller";
 import { teamProjectRemoveController } from "@module/teams/server/controller/server.team-project-remove.controller";
-import { unwrapTeamObject } from "@module/teams/server/handlers/server.legacy-response.handler";
 import { TRPCError } from "@trpc/server";
 import { and, eq, isNull } from "drizzle-orm";
 import { z } from "zod/v3";
@@ -19,6 +19,28 @@ import {
   softDeleteProjectManager,
   upsertProjectManagerRow,
 } from "../project-access/service";
+
+/** Preserve tRPC error semantics while the controller owns authorization and auditing. */
+function unwrapProjectTeamResult<T>(response: ServiceResponse<T>): T {
+  if (
+    response.status === "success" &&
+    response.data &&
+    !Array.isArray(response.data)
+  )
+    return response.data;
+  const code = response.error?.code;
+  throw new TRPCError({
+    code:
+      response.status === "error"
+        ? "INTERNAL_SERVER_ERROR"
+        : code === "FORBIDDEN" ||
+            code === "UNAUTHORIZED" ||
+            code === "NOT_FOUND"
+          ? code
+          : "BAD_REQUEST",
+    message: response.message,
+  });
+}
 
 const projectIdInput = z.object({ projectId: z.string() });
 
@@ -218,7 +240,7 @@ export const projectAccessRouter = router({
   assignTeam: orgProcedure
     .input(z.object({ projectId: z.string(), teamId: z.string() }))
     .mutation(async ({ ctx, input }) =>
-      unwrapTeamObject(
+      unwrapProjectTeamResult(
         await teamProjectAssignController({
           input,
           ctx: {
@@ -233,7 +255,7 @@ export const projectAccessRouter = router({
   removeTeam: orgProcedure
     .input(z.object({ projectId: z.string(), teamId: z.string() }))
     .mutation(async ({ ctx, input }) =>
-      unwrapTeamObject(
+      unwrapProjectTeamResult(
         await teamProjectRemoveController({
           input,
           ctx: {

@@ -261,6 +261,11 @@ test("native team invitations and project links preserve scope, delivery and ter
     const invites = events.filter((e) => e.action === "member.invite");
     assert.equal(invites.length, 9); // create attempts and resend attempts, including denied and failed
     assert.ok(invites.some((e) => e.result === "denied"));
+    const createdEvent = invites.find(
+      (e) => e.entityId === invitationId && e.result === "success",
+    );
+    assert.ok(createdEvent);
+    assert.equal(createdEvent.payload?.teamId, teamId);
     assert.ok(invites.some((e) => e.result === "failure"));
     assert.ok(events.every((e) => e.ipAddress === ctx.ip));
     assert.equal(

@@ -76,6 +76,7 @@ export async function runAction<T>(
       result = "denied";
       response = createFailed(
         error instanceof Error ? error.message : "Not allowed",
+        { code: String(code) },
       );
     } else {
       logger.exception("Action failed", error, { action: input.action });
@@ -88,14 +89,13 @@ export async function runAction<T>(
     const data = response.data;
     const entityId =
       input.ctx.entityId ??
-      input.ctx.teamId ??
       (data &&
       !Array.isArray(data) &&
       typeof data === "object" &&
       "id" in data &&
       typeof data.id === "string"
         ? data.id
-        : null);
+        : (input.ctx.teamId ?? null));
     try {
       await writeAuditEvent({
         action: input.action,

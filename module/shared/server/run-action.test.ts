@@ -59,6 +59,7 @@ test("mutations audit the terminal outcome once and preserve safe response contr
     },
   });
   assert.equal(denied.status, "failed");
+  assert.equal(denied.error?.code, "FORBIDDEN");
   assert.equal(called, false);
   assert.equal(audit.length, 1);
   assert.equal(audit[0]?.result, "denied");
@@ -115,4 +116,17 @@ test("secondary authorization denial never executes a handler and audits only th
   assert.equal(called, false);
   assert.equal(audit.length, 1);
   assert.equal(audit[0]?.result, "denied");
+});
+
+test("create audits the returned entity while retaining parent team scope", async () => {
+  audit.length = 0;
+  const response = await runAction({
+    action: "member.invite",
+    ctx: { ...ctx, teamId: "parent-team", payload: { teamId: "parent-team" } },
+    handler: async () => ({ kind: "success", data: { id: "invitation-id" } }),
+  });
+  assert.equal(response.status, "success");
+  assert.equal(audit.length, 1);
+  assert.equal(audit[0]?.entityId, "invitation-id");
+  assert.deepEqual(audit[0]?.payload, { teamId: "parent-team" });
 });
