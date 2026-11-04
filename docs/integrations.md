@@ -64,7 +64,7 @@ Each app can emit a tagged test error (`test:true`, no PII). **Auth and studio**
 
 ```bash
 curl -i -X POST -H "x-sentry-test-token: $SENTRY_TEST_TOKEN" \
-  https://loftlancer.com/auth/api/sentry-test
+  https://loftlancer.com/better-auth/api/sentry-test
 ```
 
 Browser: `/auth/sentry-test`, `/studio/sentry-test` (token + button). **Docs:** static `/sentry-test` (noindex, public DSN — watch quota).

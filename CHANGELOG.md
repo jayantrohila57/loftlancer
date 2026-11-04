@@ -16,6 +16,16 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.26.3] - 2026-11-03
+
+### Changed
+
+- Move public marketing, legal, status, changelog, and sign-in routes to `apps/www`; keep documentation and docs service endpoints in `apps/docs` (#1081).
+
+### Fixed
+
+- Mount legacy `/better-auth/api/better-auth/*` on the auth app (Next route + Vercel redirect to `/api/auth`) so GitHub OAuth callbacks registered before the path migration keep working until the GitHub app settings are updated.
+
 ## [1.26.2] - 2026-11-03
 
 ### Fixed
@@ -1071,7 +1081,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.2...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.3...HEAD
+[1.26.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.2...v1.26.3
 [1.26.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.1...v1.26.2
 [1.26.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.0...v1.26.1
 [1.26.0]: https://github.com/jayantrohila57/loftlancer/compare/v1.25.1...v1.26.0
