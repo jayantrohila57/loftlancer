@@ -9,8 +9,8 @@ export function HomeShowcaseSection() {
   return (
     <PageContainer>
       <FeatureShowcase
-        title="Projects stay connected to their organization."
-        description="Group projects, project apps, environments, and access inside the organization that owns them. Teams can see where each resource lives and who can manage it."
+        title="Give every project a clear place."
+        description="Projects belong to an organization. Add the Environments or Tasks app to a project, then manage its work and access in that project context."
         visual={
           <ProductPreview
             label="Loftlancer Studio / Projects"
@@ -29,8 +29,8 @@ export function HomeShowcaseSection() {
       />
       <FeatureShowcase
         reverse
-        title="Permissions and environment values, with useful context."
-        description="Organization roles, team membership, and project grants shape who can work on each project. Environment values are encrypted at rest and masked in the interface."
+        title="Keep configuration within project access."
+        description="Organization roles, team membership, and project grants determine who can work in a project. Environment values are encrypted at rest and masked in the interface."
         visual={
           <ProductPreview
             label="Loftlancer Studio / Access"

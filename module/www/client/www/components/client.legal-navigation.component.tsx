@@ -40,6 +40,18 @@ export function LegalPolicyNav({ currentHref }: { currentHref: string }) {
   );
 }
 
+export function LegalReviewNotice() {
+  return (
+    <div className="bg-muted/30 mb-8 border-l-2 border-amber-600/70 px-4 py-3 text-sm leading-6">
+      <p className="font-medium">Review in progress</p>
+      <p className="text-muted-foreground mt-1 max-w-3xl">
+        This page is being reviewed by the project owner. Contact the owner
+        before relying on policy details.
+      </p>
+    </div>
+  );
+}
+
 export function LegalPage({
   title,
   description,
@@ -59,13 +71,7 @@ export function LegalPage({
       }
       aside={<LegalPolicyNav currentHref={href} />}
     >
-      <div className="bg-muted/30 mb-8 border-l-2 border-amber-600/70 px-4 py-3 text-sm leading-6">
-        <p className="font-medium">Review in progress</p>
-        <p className="text-muted-foreground mt-1 max-w-3xl">
-          This page is being reviewed by the project owner. Contact the owner
-          before relying on policy details.
-        </p>
-      </div>
+      <LegalReviewNotice />
       {children}
     </MarketingPage>
   );

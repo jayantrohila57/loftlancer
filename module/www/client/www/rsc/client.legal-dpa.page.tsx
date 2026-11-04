@@ -5,7 +5,7 @@ export const metadata = {
   ...pageMetadata({
     title: "Data processing agreement (DPA)",
     description:
-      "Data processing terms (GDPR) for the hosted Loftlancer service, to be published after legal review.",
+      "Data processing agreement details for the hosted Loftlancer service are pending review.",
     path: "/legal/dpa",
   }),
   // Placeholder copy: kept out of the index and sitemap until reviewed.

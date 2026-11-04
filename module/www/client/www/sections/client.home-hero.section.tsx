@@ -45,7 +45,7 @@ export function HomeHeroSection({
                 render={<a href={signInHref} />}
                 data-testid="marketing-cta-get-started"
               >
-                Open your workspace
+                Get started
               </Button>
               <Button
                 size="lg"
@@ -56,7 +56,7 @@ export function HomeHeroSection({
               </Button>
             </div>
             <p className="text-muted-foreground mt-3 text-sm">
-              Free during early access. No paid plans are available.
+              Free during early access. No payment details required.
             </p>
           </div>
         </div>

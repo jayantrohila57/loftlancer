@@ -3,16 +3,19 @@ import { FAQSection } from "@features/marketing/core/client";
 const faq = [
   {
     q: "Is there a paid plan?",
-    a: "No. Billing is not available, so there is nothing to buy and no card is requested. If plans change, this page and the docs will be updated before any charge applies.",
+    a: "No. Loftlancer is free during early access, and billing is not available.",
   },
-  { q: "Are there usage limits?", a: "No plan limits are enforced today." },
   {
-    q: "Can I self-host?",
-    a: "Yes. The source is public on GitHub, and the documentation covers deploying it with Vercel and Neon Postgres.",
+    q: "What is included?",
+    a: "Organizations, projects, teams, access controls, encrypted environments, project activity, notifications, and the Environments and Tasks project apps are available during early access.",
+  },
+  {
+    q: "Where can I review the source?",
+    a: "The Loftlancer source is public on GitHub. The project documentation explains the product and its architecture.",
   },
   {
     q: "How do I sign in?",
-    a: "Use GitHub, Google, or a one-time email link. Your account is created when you sign in for the first time.",
+    a: "Use GitHub, Google, or a one-time email link. Loftlancer creates an account when you sign in for the first time.",
   },
 ];
 

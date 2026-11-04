@@ -19,6 +19,7 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 ### Changed
 
 - Move public site route content, page sections, metadata, and shared header/footer composition into `module/www` and `module/shared` (#1091).
+- Rewrite www page copy across product, pricing, company, status, sign-in, and policy routes; align provider and feature claims with the integration inventory (#1093).
 
 ## [1.26.4] - 2026-11-04
 

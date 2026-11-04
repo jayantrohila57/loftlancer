@@ -1,4 +1,7 @@
-import { LegalPolicyNav } from "@modules/www/client/www/components/client.legal-navigation.component";
+import {
+  LegalPolicyNav,
+  LegalReviewNotice,
+} from "@modules/www/client/www/components/client.legal-navigation.component";
 import { MarketingPage } from "@modules/www/client/www/components/client.marketing-page.component";
 import { pageMetadata } from "@modules/www/utils/utils.seo-metadata.utils";
 import { PrivacyDataSection } from "../sections/client.privacy-data.section";
@@ -6,7 +9,8 @@ import { PrivacyProvidersSection } from "../sections/client.privacy-providers.se
 
 export const metadata = pageMetadata({
   title: "Privacy",
-  description: "How Loftlancer handles account and configuration data.",
+  description:
+    "What account, organization, project, and configuration data Loftlancer handles and which services support the hosted product.",
   path: "/privacy",
 });
 
@@ -14,9 +18,10 @@ export default function PrivacyPage() {
   return (
     <MarketingPage
       title="Privacy policy"
-      description="Last updated October 2026. This describes product behavior reflected in the codebase."
+      description="Last updated November 2026. Product and provider details describe the current hosted setup."
       aside={<LegalPolicyNav currentHref="/privacy" />}
     >
+      <LegalReviewNotice />
       <PrivacyDataSection />
       <PrivacyProvidersSection />
     </MarketingPage>

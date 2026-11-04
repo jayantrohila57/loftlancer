@@ -8,15 +8,15 @@ import { FeaturesProjectAppsSection } from "../sections/client.features-project-
 export const metadata = pageMetadata({
   title: "Features",
   description:
-    "Encryption, organizations, projects, project apps and activity in Loftlancer.",
+    "Explore Loftlancer organizations, project apps, role-based access, encrypted environments, and activity history.",
   path: "/features",
 });
 
 export default function FeaturesPage() {
   return (
     <MarketingPage
-      title="People, projects, access."
-      description="Organize teams and project apps, set access by role, and manage encrypted configuration from a shared workspace."
+      title="A workspace built around projects."
+      description="Organize people and projects, set access by role, and manage encrypted environment variables alongside project tasks."
       aside={<FeaturesIndexSection />}
     >
       <FeaturesCapabilitiesSection />

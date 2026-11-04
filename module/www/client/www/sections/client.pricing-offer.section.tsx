@@ -4,19 +4,19 @@ import { Button } from "@loftlancer/ui/button";
 const included = [
   {
     area: "Workspace",
-    description: "Organizations, projects, teams, and email invitations.",
+    description: "Organizations, projects, teams, and member invitations.",
   },
   {
     area: "Access",
-    description: "Owner, manager, and member roles with per-project grants.",
+    description: "Organization roles, team membership, and project grants.",
   },
   {
     area: "Configuration",
-    description: "Encrypted-at-rest variables with separate environments.",
+    description: "Project environments and encrypted-at-rest variables.",
   },
   {
     area: "Activity",
-    description: "Activity history and dashboard notifications.",
+    description: "Project activity history and dashboard notifications.",
   },
 ];
 
@@ -32,8 +32,8 @@ export function PricingOfferSection() {
             Early access
           </h2>
           <p className="text-muted-foreground mt-3 max-w-2xl leading-7">
-            Full access to Loftlancer&apos;s current product while it remains in
-            early access. No payment details required.
+            Use the current Loftlancer product while it remains in early access.
+            No payment details are required, and billing is not available.
           </p>
         </div>
         <div className="border-border/70 flex flex-wrap items-end gap-x-4 gap-y-3 border-t pt-5 md:min-w-64 md:border-t-0 md:border-l md:pt-0 md:pl-8">

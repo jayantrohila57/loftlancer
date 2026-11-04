@@ -43,10 +43,10 @@ export default async function HomePage({
           >
             <p className="font-medium">Your account was deleted.</p>
             <p className="text-muted-foreground mt-1 max-w-4xl leading-6">
-              Your profile was anonymized and your sessions were revoked.
-              Organization, project, and audit records remain, with no automatic
-              removal date currently set. You cannot restore this profile
-              yourself; sign in with a different account to continue.
+              Your profile details were replaced with a deleted-user record and
+              your sessions were revoked. Organization and project records may
+              remain for other members. This account cannot be restored; sign in
+              with a different account to continue.
             </p>
           </div>
         </PageContainer>
@@ -62,10 +62,10 @@ export default async function HomePage({
           <HomeFaqSection />
         </PageContainer>
         <CallToAction
-          title="Bring your projects and team into one workspace."
-          description="Create an organization, invite your team, and keep project access and configuration together."
+          title="Set up your team workspace."
+          description="Create an organization, add a project, and invite the people who will work with you."
           href={signInHref}
-          actionLabel="Open your workspace"
+          actionLabel="Get started"
         />
       </main>
       <WwwFooter />

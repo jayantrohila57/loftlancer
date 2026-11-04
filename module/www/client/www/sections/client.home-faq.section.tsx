@@ -2,24 +2,24 @@ import { FAQSection } from "@features/marketing/core/client";
 
 const faq = [
   {
-    question: "Where do I start?",
+    question: "What can I organize in Loftlancer?",
     answer:
-      "Sign in, then create or join an organization. From there, you can create projects and invite members.",
+      "Create an organization, add projects, and invite teammates. Projects can use the Environments and Tasks apps.",
   },
   {
     question: "How does project access work?",
     answer:
-      "Organization roles set workspace access. Teams and project grants can extend access for the projects where people need to work.",
+      "Organization roles define membership access. Team membership and project grants can provide access to specific project work.",
   },
   {
     question: "How are environment variables protected?",
     answer:
-      "Values are encrypted at rest and masked in the interface. People with the right access can reveal them when needed.",
+      "Values are encrypted at rest and masked in the interface. A person must have permission to reveal or export them.",
   },
   {
-    question: "Can I connect other tools?",
+    question: "Does Loftlancer connect to third-party project tools?",
     answer:
-      "Additional compatible tool integrations are planned. They are not available as product integrations today.",
+      "Not currently. GitHub, Google, and email are sign-in methods. The project apps available today are Environments and Tasks.",
   },
 ] as const;
 

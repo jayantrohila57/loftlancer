@@ -5,8 +5,8 @@ export default function AcceptableUsePage() {
     <LegalPage href="/legal/acceptable-use" title="Acceptable use">
       <p>
         Do not use Loftlancer to violate others&apos; rights, bypass
-        authorization, or distribute malware. Full acceptable-use language will
-        be added after legal review.
+        authorization, or distribute malware. This short notice is not a
+        complete acceptable-use policy; full terms are pending legal review.
       </p>
     </LegalPage>
   );

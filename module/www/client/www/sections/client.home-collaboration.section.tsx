@@ -5,19 +5,19 @@ const setupSteps = [
   {
     number: "01",
     title: "Create an organization",
-    description: "Set up the team workspace and invite the people involved.",
+    description: "Create a shared workspace and invite the people involved.",
   },
   {
     number: "02",
     title: "Arrange projects and access",
     description:
-      "Group work into projects, then assign roles and project access.",
+      "Group work into projects, then set organization roles and project access.",
   },
   {
     number: "03",
     title: "Manage the project details",
     description:
-      "Use project apps, environments, activity, and notifications as needed.",
+      "Install Environments or Tasks in a project and manage the work there.",
   },
 ] as const;
 
@@ -32,11 +32,11 @@ export function HomeCollaborationSection() {
       >
         <div>
           <h2 className="max-w-lg text-3xl font-medium tracking-[-0.05em] text-balance md:text-5xl">
-            Invite the people who need project access.
+            Start with your organization and projects.
           </h2>
           <p className="text-muted-foreground mt-4 max-w-md leading-7">
-            Create an organization, invite teammates, and manage access at the
-            project level.
+            Set up the workspace, add teammates, and give each person access to
+            the projects they work on.
           </p>
         </div>
         <ol className="grid gap-x-6 sm:grid-cols-3">

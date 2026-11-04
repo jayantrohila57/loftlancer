@@ -13,11 +13,11 @@ export function HomePricingSection({
       <PageContainer className="grid gap-6 py-9 md:grid-cols-[1fr_auto] md:items-center md:py-11">
         <div>
           <h2 className="text-2xl font-medium tracking-[-0.04em] md:text-3xl">
-            The product is free to use today.
+            Use Loftlancer free during early access.
           </h2>
           <p className="text-muted-foreground mt-2 text-sm leading-6">
-            Billing and paid plans are not available. See what is included in
-            early access.
+            There are no paid plans or billing today. Review what is included
+            before you get started.
           </p>
         </div>
         <div className="border-border/70 flex flex-wrap items-center gap-4 border-t pt-4 md:min-w-64 md:border-t-0 md:border-l md:pt-0 md:pl-7">

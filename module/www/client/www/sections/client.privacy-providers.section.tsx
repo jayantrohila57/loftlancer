@@ -3,10 +3,12 @@ export function PrivacyProvidersSection() {
     <>
       <h2>Third parties</h2>
       <p>
-        External providers help us run the service, store data, send email,
-        protect accounts, and understand reliability. Optional analytics load
-        only after you accept them in the cookie banner; you can decline and
-        nothing is loaded. See the provider table below and the{" "}
+        External services support hosting, data storage, account sign-in,
+        transactional email, error reporting, and service measurement. Google
+        Analytics on the public site and PostHog in the dashboard are optional
+        and load only after you accept them in the consent banner. Vercel Web
+        Analytics and Speed Insights are also enabled for service measurement.
+        See the provider table below and the{" "}
         <a href="/legal/cookies">cookie policy</a> for optional analytics
         details.
       </p>
@@ -34,8 +36,8 @@ export function PrivacyProvidersSection() {
           </tr>
           <tr>
             <th scope="row">Sign-in</th>
-            <td>GitHub OAuth</td>
-            <td>Provides sign-in and account identity.</td>
+            <td>GitHub OAuth and Google OAuth</td>
+            <td>Provide optional OAuth sign-in and account identity.</td>
           </tr>
           <tr>
             <th scope="row">Email</th>
@@ -48,19 +50,17 @@ export function PrivacyProvidersSection() {
             <td>Helps identify and resolve application errors.</td>
           </tr>
           <tr>
-            <th scope="row">Rate limiting</th>
-            <td>Upstash Redis</td>
-            <td>Helps protect service endpoints from excessive requests.</td>
+            <th scope="row">Optional analytics</th>
+            <td>Google Analytics and PostHog</td>
+            <td>
+              Measures public-site visits and dashboard feature usage after
+              consent.
+            </td>
           </tr>
           <tr>
-            <th scope="row">File storage</th>
-            <td>Vercel Blob</td>
-            <td>Stores uploaded files when the feature is enabled.</td>
-          </tr>
-          <tr>
-            <th scope="row">Performance measurement</th>
+            <th scope="row">Service measurement</th>
             <td>Vercel Web Analytics and Speed Insights</td>
-            <td>Measures page visits and performance without cookies.</td>
+            <td>Measures page visits and site performance.</td>
           </tr>
         </tbody>
       </table>

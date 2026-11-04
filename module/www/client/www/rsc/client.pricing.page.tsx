@@ -6,15 +6,15 @@ import { PricingOfferSection } from "../sections/client.pricing-offer.section";
 export const metadata = pageMetadata({
   title: "Pricing",
   description:
-    "Loftlancer is free during early access. No paid plans exist yet.",
+    "Loftlancer is free during early access. No paid plans or billing are available today.",
   path: "/pricing",
 });
 
 export default function PricingPage() {
   return (
     <MarketingPage
-      title="Free during early access."
-      description="Every current feature is available at no cost. Billing and paid plans are not available today."
+      title="Free while Loftlancer is in early access."
+      description="The current product is available at no cost, and no payment details are required. Paid plans and billing are not available today."
     >
       <PricingOfferSection />
       <PricingFaqSection />

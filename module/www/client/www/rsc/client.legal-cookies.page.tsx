@@ -5,7 +5,7 @@ export const metadata = {
   ...pageMetadata({
     title: "Cookie policy",
     description:
-      "How Loftlancer uses cookies and remembers your analytics choice.",
+      "How Loftlancer uses session cookies, stores analytics choices, and measures service usage.",
     path: "/legal/cookies",
   }),
   // Placeholder copy: kept out of the index and sitemap until reviewed.

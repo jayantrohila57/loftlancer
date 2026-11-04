@@ -1,4 +1,30 @@
-import { marketingFeatures } from "@features/marketing/core/client";
+const publicFeatures = [
+  {
+    title: "Encrypted environment variables",
+    description:
+      "Store project configuration by environment. Values are encrypted at rest and masked in the interface.",
+  },
+  {
+    title: "Organizations and projects",
+    description:
+      "Organize teams and projects, install Environments or Tasks, and manage project access.",
+  },
+  {
+    title: "People and access",
+    description:
+      "Use organization roles, team membership, and project grants to scope access to work.",
+  },
+  {
+    title: "Activity history",
+    description:
+      "Review activity associated with organization and project work. Audit events are configurable for hosted installations.",
+  },
+  {
+    title: "Passwordless sign-in",
+    description:
+      "Sign in with GitHub, Google, or a one-time email link. No password to manage.",
+  },
+] as const;
 
 export function FeaturesCapabilitiesSection() {
   return (
@@ -13,7 +39,7 @@ export function FeaturesCapabilitiesSection() {
         </p>
       </div>
       <ul className="divide-border/70 border-foreground/15 divide-y border-y">
-        {marketingFeatures.map((feature) => (
+        {publicFeatures.map((feature) => (
           <li
             key={feature.title}
             className="grid gap-2 py-4 sm:grid-cols-[0.8fr_1.2fr] sm:gap-4 md:py-5"

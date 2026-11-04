@@ -5,7 +5,7 @@ export const metadata = {
   ...pageMetadata({
     title: "Contact",
     description:
-      "How to reach Loftlancer for product support, legal or privacy requests.",
+      "Where to send product support, feature, privacy, and legal requests.",
     path: "/legal/contact",
   }),
   // Placeholder copy: kept out of the index and sitemap until reviewed.

@@ -4,9 +4,9 @@ export default function DpaPage() {
   return (
     <LegalPage href="/legal/dpa" title="Data processing agreement (DPA)">
       <p>
-        Data processing terms for enterprise customers will be published here.
-        Self-hosted operators remain responsible for their own data processing
-        agreement obligations.
+        A data processing agreement for the hosted service is not available yet.
+        Self-hosted operators are responsible for the terms and practices that
+        apply to their own installations.
       </p>
     </LegalPage>
   );

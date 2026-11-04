@@ -5,7 +5,7 @@ export const metadata = {
   ...pageMetadata({
     title: "Security",
     description:
-      "Security practices for the hosted Loftlancer platform. Final policy text is pending review.",
+      "Security practices for the hosted Loftlancer service are pending owner review.",
     path: "/legal/security",
   }),
   // Placeholder copy: kept out of the index and sitemap until reviewed.

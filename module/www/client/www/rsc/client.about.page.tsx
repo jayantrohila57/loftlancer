@@ -7,7 +7,7 @@ import { AboutStorySection } from "../sections/client.about-story.section";
 export const metadata = pageMetadata({
   title: "About",
   description:
-    "A collaborative workspace for encrypted project configuration and team access.",
+    "Learn how Loftlancer organizes teams, projects, access, environments, and task work.",
   path: "/about",
 });
 
@@ -15,7 +15,7 @@ export default function AboutPage() {
   return (
     <MarketingPage
       title="About Loftlancer"
-      description="Loftlancer brings project structure, team access, and encrypted configuration into one shared place."
+      description="Loftlancer is a shared workspace for organizing teams and projects, managing access, protecting environment variables, and tracking project tasks."
     >
       <AboutStorySection />
       <AboutPrinciplesSection />

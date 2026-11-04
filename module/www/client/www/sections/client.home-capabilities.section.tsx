@@ -5,22 +5,22 @@ const capabilities = [
   {
     title: "Organizations and projects",
     description:
-      "Keep teams, projects, and the apps installed for each project in a clear hierarchy.",
+      "Group people and projects under an organization, then add the project apps your team uses.",
   },
   {
     title: "Access that follows the work",
     description:
-      "Use organization roles, teams, and per-project grants to give people the access their work needs.",
+      "Manage organization roles, team membership, and project-level access from the workspace.",
   },
   {
     title: "Encrypted environment values",
     description:
-      "Separate values by environment. Values are encrypted at rest and masked in the interface.",
+      "Keep configuration in project environments. Variable values are encrypted at rest and masked until revealed by an authorized person.",
   },
   {
     title: "A record of change",
     description:
-      "Review activity and notifications across the organizations and projects you manage.",
+      "Review project activity and use notifications for updates that need your attention.",
   },
 ] as const;
 
@@ -41,8 +41,8 @@ export function HomeCapabilitiesSection() {
           Keep project structure and access in view.
         </h2>
         <p className="text-muted-foreground mt-4 max-w-md leading-7">
-          Organize people and projects in one hierarchy, with access and
-          configuration alongside.
+          Keep the people, permissions, environments, and project tools related
+          to your work in the same organization.
         </p>
       </div>
       <ul className="divide-border/70 border-foreground/15 divide-y border-y">

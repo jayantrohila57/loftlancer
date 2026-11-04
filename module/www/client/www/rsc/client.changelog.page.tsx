@@ -10,7 +10,7 @@ import { Fragment, type ReactNode } from "react";
 export const metadata = pageMetadata({
   title: "Changelog",
   description:
-    "Every Loftlancer release, from the first env-manager commit to today, with what was added, changed and fixed.",
+    "Published Loftlancer release notes with product additions, changes, and fixes.",
   path: "/changelog",
 });
 
@@ -151,7 +151,7 @@ export default async function ChangelogPage() {
   return (
     <MarketingPage
       title="Release notes"
-      description="A dated record of product releases, with additions, changes, and fixes from the project history."
+      description="Browse dated release notes for product additions, changes, and fixes."
     >
       {releases.length === 0 ? (
         <p className="text-muted-foreground text-sm">

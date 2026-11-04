@@ -11,8 +11,8 @@ export function HomeConnectionsSection() {
       )}
     >
       <SectionHeading
-        title="Sign in with GitHub, Google, or email."
-        description="All three sign-in methods are available today. Compatible product integrations are planned."
+        title="Choose how to sign in."
+        description="Loftlancer supports GitHub, Google, and one-time email-link sign-in. These are account sign-in options; they do not connect third-party project tools."
       />
       <div className="border-foreground/15 border-y">
         <div className="border-border/70 flex items-center gap-3 border-b py-4">
@@ -20,7 +20,7 @@ export function HomeConnectionsSection() {
             aria-hidden
             className="bg-foreground size-1.5 shrink-0 rounded-full"
           />
-          <p className="text-sm font-medium">GitHub and Google sign-in</p>
+          <p className="text-sm font-medium">GitHub or Google</p>
           <span className="text-muted-foreground ml-auto text-sm">
             Available
           </span>
@@ -40,8 +40,10 @@ export function HomeConnectionsSection() {
             aria-hidden
             className="bg-muted-foreground/50 size-1.5 shrink-0 rounded-full"
           />
-          <p className="text-sm font-medium">Compatible product integrations</p>
-          <span className="text-muted-foreground ml-auto text-sm">Planned</span>
+          <p className="text-sm font-medium">Project apps</p>
+          <span className="text-muted-foreground ml-auto text-sm">
+            Environments · Tasks
+          </span>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 # Public website module
 
-Owns the public marketing, legal, status, changelog, sign-in, and route-state pages served by `apps/www`. Parent issue: #1090; current sub-issue: #1091.
+Owns the public marketing, legal, status, changelog, sign-in, and route-state pages served by `apps/www`. Parent issue: #1090; current sub-issues: #1091 and #1093.
 
 **Platform rules:** [modules](../../docs/modules.md) · [naming](../../docs/naming.md) · [rendering](../../docs/rendering.md)
 
@@ -24,6 +24,14 @@ utils/                   Metadata, route, and site configuration helpers
 
 Keep `apps/www/src/app/**` route files as exports from this module. The Next root layout, global CSS, static assets, and consent-gated Next analytics provider remain app integration points.
 
+## Public content review
+
+- The source of truth for active services and provider readiness is `docs/integrations.md`; do not present planned or incomplete integrations as available.
+- Product names and access claims should match the authorization app registry and current product documentation. Audit events are configuration-gated, so public copy describes activity history without implying a complete audit trail.
+- Keep early-access pricing explicit: no billing or paid plans are available. Do not promise quotas, availability, or deployment options unless the source documents them.
+- Keep policy copy scoped to observable hosted-product behavior. The policy routes marked as under review must retain their review notice and search exclusion.
+- Each public route owns distinct metadata and a clear page purpose. Shared product descriptions come from `utils.site-config.constants.ts` and `utils.seo-metadata.utils.ts`.
+
 ## Verification
 
 ```bash
@@ -37,6 +45,7 @@ pnpm audit:architecture-layers
 | Sub-issue | Scope                                                 | Status      |
 | --------- | ----------------------------------------------------- | ----------- |
 | #1091     | Move www page sections and shared chrome into modules | In progress |
+| #1093     | Audit and rewrite content across www pages            | In progress |
 
 ## TODO (blocked)
 

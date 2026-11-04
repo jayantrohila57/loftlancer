@@ -4,20 +4,21 @@ export default function CookiesPage() {
   return (
     <LegalPage href="/legal/cookies" title="Cookie policy">
       <p>
-        Loftlancer uses cookies and local storage to keep you signed in and
-        remember your analytics choice.
+        Loftlancer uses session cookies to keep you signed in. The site also
+        stores your analytics choice in this browser&apos;s local storage.
       </p>
       <p>
-        Signing in sets the session cookies needed to keep you signed in.
-        Optional analytics stay off until you accept them in the cookie banner.
-        Your choice is saved in this browser and you can change it at any time.
-        The table below lists the analytics providers and what they measure.
+        Optional Google Analytics on the public site and PostHog in the
+        dashboard stay off until you accept them in the consent banner. The
+        choice is stored in local storage on this browser. Vercel Web Analytics
+        and Speed Insights are enabled separately for service measurement. The
+        table below lists where each analytics service is used.
       </p>
       <table>
         <caption>Optional analytics providers</caption>
         <thead>
           <tr>
-            <th scope="col">Provider</th>
+            <th scope="col">Service</th>
             <th scope="col">Where it is used</th>
             <th scope="col">Purpose</th>
           </tr>
@@ -32,6 +33,16 @@ export default function CookiesPage() {
             <th scope="row">PostHog</th>
             <td>Dashboard</td>
             <td>Helps us understand feature usage after consent.</td>
+          </tr>
+          <tr>
+            <th scope="row">Vercel Web Analytics</th>
+            <td>Public website and application</td>
+            <td>Measures page views without cookies.</td>
+          </tr>
+          <tr>
+            <th scope="row">Vercel Speed Insights</th>
+            <td>Public website and application</td>
+            <td>Measures page performance.</td>
           </tr>
         </tbody>
       </table>

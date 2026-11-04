@@ -2,17 +2,17 @@ const principles = [
   {
     title: "Keep the structure visible",
     description:
-      "Organizations, teams, projects, and project apps form a hierarchy people can understand and manage.",
+      "Organizations contain projects, and each project can use its own project apps.",
   },
   {
     title: "Put access near the work",
     description:
-      "Roles and project grants make it possible to give people access at the level where they need to contribute.",
+      "Organization roles, team membership, and project grants help scope access to the work people do.",
   },
   {
     title: "Treat configuration as part of the project",
     description:
-      "Environment values live alongside project access and are encrypted at rest, with their values masked in the interface.",
+      "Environment variables belong to project environments. Values are encrypted at rest and masked in the interface.",
   },
 ];
 

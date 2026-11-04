@@ -8,7 +8,7 @@ export const siteUrl = (
 export const siteName = "Loftlancer";
 
 export const siteDescription =
-  "Organizations, projects, environments and encrypted variables for your team and your agents.";
+  "A shared workspace for teams to organize projects, manage access, and handle encrypted environment variables and project tasks.";
 
 export const ogImage = {
   url: "/favicon/og-image.png",
