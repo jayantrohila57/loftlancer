@@ -1,8 +1,13 @@
 # Public website (`apps/www`)
 
-`apps/www` owns the public marketing and legal pages on `loftlancer.com`. App
-routes stay thin; shared marketing UI comes from `@loftlancer/ui/marketing` and
-`@features/marketing`.
+`apps/www` is the Next.js runtime for public routes. Page content, route
+metadata, navigation, and site chrome are owned by `module/www`; route files
+only re-export module pages. Reusable headers and footers live in
+`module/shared/layout/` and are currently composed by `module/www`.
+
+The app retains framework entry points: the root HTML layout and global CSS,
+static assets, and consent-gated Next analytics integration. Tailwind scans
+module and feature sources through `src/app/globals.css`.
 
 ## Routes
 

@@ -16,6 +16,13 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.26.5] - 2026-11-04
+
+### Changed
+
+- Move public site route content, page sections, metadata, and shared header/footer composition into `module/www` and `module/shared` (#1091).
+- Rewrite www page copy across product, pricing, company, status, sign-in, and policy routes; align provider and feature claims with the integration inventory (#1093).
+
 ## [1.26.4] - 2026-11-04
 
 ### Changed
@@ -1087,7 +1094,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.4...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.5...HEAD
+[1.26.5]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.4...v1.26.5
 [1.26.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.3...v1.26.4
 [1.26.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.2...v1.26.3
 [1.26.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.1...v1.26.2

@@ -1,11 +1,4 @@
-import type { Metadata } from "next";
-import { Landing } from "@/components/landing";
-
-export const metadata: Metadata = {
-  title: "Sign in · Loftlancer",
-  robots: { index: false, follow: false },
-};
-
-export default function SignInPage() {
-  return <Landing />;
-}
+export {
+  default,
+  metadata,
+} from "@modules/www/client/www/rsc/client.sign-in.route.page";

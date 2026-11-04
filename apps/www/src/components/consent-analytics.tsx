@@ -4,16 +4,10 @@ import {
   AnalyticsConsentBanner,
   useAnalyticsConsent,
 } from "@features/analytics/core/client";
+import { gaMeasurementId } from "@modules/www/utils/utils.analytics-config.constants";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
-import { gaMeasurementId } from "@/lib/analytics";
-
-/**
- * Google Analytics 4 via the official `@next/third-parties/google` component,
- * gated twice (#351): nothing renders until NEXT_PUBLIC_GA_MEASUREMENT_ID is
- * set at build time, and the GA script loads only after the visitor accepts
- * the consent banner. Vercel Analytics and Speed Insights are separate.
- */
+/** App-level analytics integration; the public consent rules live in the analytics feature. */
 export function ConsentAnalytics() {
   const [consent] = useAnalyticsConsent();
   if (!gaMeasurementId) return null;
