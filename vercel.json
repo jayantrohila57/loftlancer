@@ -105,7 +105,7 @@
       "root": "apps/auth",
       "framework": "nextjs",
       "installCommand": "cd ../.. && pnpm install",
-      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 NEXT_BASE_PATH=/better-auth pnpm turbo run build --filter=auth"
+      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 NEXT_BASE_PATH=/auth pnpm turbo run build --filter=auth"
     },
     "studio": {
       "root": "apps/studio",
@@ -116,30 +116,30 @@
   },
   "redirects": [
     {
-      "source": "/auth",
-      "destination": "/better-auth",
-      "permanent": true
-    },
-    {
-      "source": "/auth/:path*",
-      "destination": "/better-auth/:path*",
+      "source": "/better-auth",
+      "destination": "/auth",
       "permanent": true
     },
     {
       "source": "/better-auth/api/better-auth/:path*",
-      "destination": "/better-auth/api/auth/:path*",
-      "permanent": false
+      "destination": "/auth/api/auth/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/better-auth/:path*",
+      "destination": "/auth/:path*",
+      "permanent": true
     }
   ],
   "rewrites": [
     {
-      "source": "/better-auth",
+      "source": "/auth",
       "destination": {
         "service": "auth"
       }
     },
     {
-      "source": "/better-auth/:path*",
+      "source": "/auth/:path*",
       "destination": {
         "service": "auth"
       }

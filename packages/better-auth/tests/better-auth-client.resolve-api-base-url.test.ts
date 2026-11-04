@@ -9,8 +9,8 @@ describe("resolveBetterAuthClientApiBaseURL", () => {
 
   it("appends /api/better-auth to an origin", () => {
     assert.equal(
-      resolveBetterAuthClientApiBaseURL("https://loftlancer.com/better-auth"),
-      "https://loftlancer.com/better-auth/api/better-auth",
+      resolveBetterAuthClientApiBaseURL("https://loftlancer.com/auth"),
+      "https://loftlancer.com/auth/api/better-auth",
     );
   });
 

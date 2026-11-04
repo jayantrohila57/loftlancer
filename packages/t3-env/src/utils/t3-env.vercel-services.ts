@@ -17,6 +17,15 @@ function trimTrailingSlash(url: string): string {
   return url.endsWith("/") ? url.slice(0, -1) : url;
 }
 
+/** Normalize the retired Auth app prefix in configured public URLs. */
+function normalizeAuthPublicUrl(url: string): string {
+  const parsed = new URL(url);
+  if (parsed.pathname.replace(/\/+$/, "") === "/better-auth") {
+    parsed.pathname = "/auth";
+  }
+  return trimTrailingSlash(parsed.toString());
+}
+
 /** Canonical public URL per app when deployed as separate Vercel projects (no path prefix). */
 const STANDALONE_SERVICE_URL: Partial<Record<VercelServiceName, string>> = {
   www: DEFAULT_DOCS_URL,
@@ -108,13 +117,13 @@ export function resolvePublicServiceUrl(service: VercelServiceName): string {
 export function resolveAuthPublicUrl(): string {
   const fromPublic = process.env.NEXT_PUBLIC_AUTH_URL?.trim();
   if (fromPublic) {
-    return trimTrailingSlash(fromPublic);
+    return normalizeAuthPublicUrl(fromPublic);
   }
   const betterAuth = process.env.BETTER_AUTH_URL?.trim();
   if (betterAuth) {
-    return trimTrailingSlash(betterAuth);
+    return normalizeAuthPublicUrl(betterAuth);
   }
-  return DEFAULT_AUTH_URL;
+  return normalizeAuthPublicUrl(DEFAULT_AUTH_URL);
 }
 
 /**
@@ -125,7 +134,7 @@ export function resolveAuthPublicUrl(): string {
 export function resolveAuthServiceUrl(): string {
   const betterAuth = process.env.BETTER_AUTH_URL?.trim();
   if (betterAuth) {
-    return trimTrailingSlash(betterAuth);
+    return normalizeAuthPublicUrl(betterAuth);
   }
   return resolveAuthPublicUrl();
 }

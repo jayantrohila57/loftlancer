@@ -66,7 +66,7 @@ export function createPlatformAuth() {
   const baseURL = trimTrailingSlash(
     env.BETTER_AUTH_URL ??
       (process.env.VERCEL_SERVICES === "1"
-        ? `${resolvePlatformPublicOrigin()}/better-auth`
+        ? `${resolvePlatformPublicOrigin()}/auth`
         : DEFAULT_AUTH_URL),
   );
   const trustedOrigins = getPlatformProductionOrigins({
@@ -74,10 +74,12 @@ export function createPlatformAuth() {
     legacyWebUrl: env.CORS_ORIGIN,
   });
 
-  // Single-project deploy: auth app lives under a Next basePath (e.g. `/better-auth`), so
+  // Single-project deploy: auth app lives under a Next basePath (e.g. `/auth`), so
   // Better Auth must run at origin + `<basePath>/api/auth` (matches `app/api/auth/[...all]`).
   const parsedBase = new URL(baseURL);
-  const appPath = parsedBase.pathname.replace(/\/$/, "");
+  const configuredAppPath = parsedBase.pathname.replace(/\/$/, "");
+  const appPath =
+    configuredAppPath === "/better-auth" ? "/auth" : configuredAppPath;
   const authOrigin = appPath ? parsedBase.origin : baseURL;
   const authBasePath = appPath ? `${appPath}/api/auth` : undefined;
 

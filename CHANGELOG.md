@@ -16,6 +16,12 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+## [1.26.4] - 2026-11-04
+
+### Changed
+
+- Make `/auth` the canonical Auth app prefix and redirect legacy `/better-auth/*` URLs (#1086).
+
 ## [1.26.3] - 2026-11-03
 
 ### Changed
@@ -1081,7 +1087,8 @@ The product is now Loftlancer.
 - Version management and commit workflow scripts
 - `SKIP_ENV_VALIDATION` option for builds
 
-[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.3...HEAD
+[Unreleased]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.4...HEAD
+[1.26.4]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.3...v1.26.4
 [1.26.3]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.2...v1.26.3
 [1.26.2]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.1...v1.26.2
 [1.26.1]: https://github.com/jayantrohila57/loftlancer/compare/v1.26.0...v1.26.1

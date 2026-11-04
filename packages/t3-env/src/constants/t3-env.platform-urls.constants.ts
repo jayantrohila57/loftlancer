@@ -1,4 +1,4 @@
-export const DEFAULT_AUTH_URL = "https://loftlancer.com/better-auth";
+export const DEFAULT_AUTH_URL = "https://loftlancer.com/auth";
 export const DEFAULT_STUDIO_URL = "https://loftlancer.com/studio";
 /** Account settings live on the auth app (`/settings/*`). */
 export const DEFAULT_ACCOUNT_URL = DEFAULT_AUTH_URL;
