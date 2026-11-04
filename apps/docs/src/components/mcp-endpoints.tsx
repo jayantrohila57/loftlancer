@@ -1,5 +1,5 @@
 const DEFAULT_MCP_ORIGIN = "https://loftlancer.com";
-const DEFAULT_AUTH_ORIGIN = "https://loftlancer.com/better-auth";
+const DEFAULT_AUTH_ORIGIN = "https://loftlancer.com/auth";
 
 function trimTrailingSlash(url: string): string {
   return url.endsWith("/") ? url.slice(0, -1) : url;

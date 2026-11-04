@@ -28,12 +28,12 @@ describe("invitation access", () => {
   it("preserves the exact invite URL through OAuth sign-in", () => {
     const url = new URL(
       getInvitationSignInUrl("invite_id-123", {
-        authUrl: "https://loftlancer.com/better-auth/",
+        authUrl: "https://loftlancer.com/auth/",
         studioUrl: "https://loftlancer.com/studio/",
       }),
     );
     assert.equal(url.origin, "https://loftlancer.com");
-    assert.equal(url.pathname, "/better-auth/api/sign-in/github");
+    assert.equal(url.pathname, "/auth/api/sign-in/github");
     assert.equal(
       url.searchParams.get("return_to"),
       "https://loftlancer.com/studio/invite/invite_id-123",

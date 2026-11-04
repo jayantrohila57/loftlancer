@@ -48,7 +48,7 @@ export function MagicLinkEmail({ url, expiresInMinutes }: MagicLinkEmailProps) {
 }
 
 MagicLinkEmail.PreviewProps = {
-  url: "https://loftlancer.com/better-auth/api/auth/magic-link/verify?token=example",
+  url: "https://loftlancer.com/auth/api/auth/magic-link/verify?token=example",
   expiresInMinutes: 10,
 } satisfies MagicLinkEmailProps;
 

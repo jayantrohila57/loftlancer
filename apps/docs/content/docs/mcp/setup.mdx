@@ -16,7 +16,7 @@ The MCP HTTP stack uses **`@loftlancer/mcp`** (SDK auth/CORS/rate-limit) plus **
 
 Configure your client with:
 
-- **Auth issuer** — `NEXT_PUBLIC_AUTH_URL` (default `https://loftlancer.com/better-auth`)
+- **Auth issuer** — `NEXT_PUBLIC_AUTH_URL` (default `https://loftlancer.com/auth`)
 - **MCP URL** — `NEXT_PUBLIC_MCP_URL` (deployment-specific)
 
 Tokens must include the base scope **`mcp:tools`** plus resource scopes listed on each tool page. The auth app advertises scopes from `MCP_OAUTH_SCOPES` in `@loftlancer/actions`.

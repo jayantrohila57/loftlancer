@@ -29,20 +29,20 @@ describe("buildSignInUrl", () => {
   it("starts GitHub sign-in on the auth app, no return_to", () => {
     assert.equal(
       buildSignInUrl({
-        authUrl: "https://example.com/better-auth",
+        authUrl: "https://example.com/auth",
         returnTo: "https://example.com/studio/acme",
       }),
-      "https://example.com/better-auth/api/sign-in/github",
+      "https://example.com/auth/api/sign-in/github",
     );
   });
 
   it("starts Google sign-in when asked", () => {
     assert.equal(
       buildSignInUrl({
-        authUrl: "https://example.com/better-auth",
+        authUrl: "https://example.com/auth",
         provider: "google",
       }),
-      "https://example.com/better-auth/api/sign-in/google",
+      "https://example.com/auth/api/sign-in/google",
     );
   });
 });

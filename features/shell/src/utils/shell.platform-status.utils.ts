@@ -1,5 +1,5 @@
 /**
- * Public platform status (#369): the JSON served by `/better-auth/api/status` and
+ * Public platform status (#369): the JSON served by `/auth/api/status` and
  * rendered by loftlancer.com/status. Built server-side from Better Stack.
  */
 

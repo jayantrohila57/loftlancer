@@ -28,7 +28,7 @@ export function isCrossOriginReturnTo(
 ): boolean {
   try {
     const target = new URL(returnTo);
-    // authOrigin may carry the auth app path (e.g. https://loftlancer.com/better-auth).
+    // authOrigin may carry the auth app path (e.g. https://loftlancer.com/auth).
     return target.origin !== new URL(trimTrailingSlash(authOrigin)).origin;
   } catch {
     return false;
