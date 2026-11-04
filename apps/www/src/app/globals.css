@@ -1,3 +1,6 @@
 @import "@loftlancer/ui/globals.css";
 
 @source "../../../../packages/ui/src";
+@source "../../../../module/www";
+@source "../../../../module/shared/layout";
+@source "../../../../features";

@@ -16,6 +16,10 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Move public site route content, page sections, metadata, and shared header/footer composition into `module/www` and `module/shared` (#1091).
+
 ## [1.26.4] - 2026-11-04
 
 ### Changed
