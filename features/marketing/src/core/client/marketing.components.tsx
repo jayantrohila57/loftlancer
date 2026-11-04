@@ -22,54 +22,6 @@ export function PageContainer({
   );
 }
 
-export function PageHero({
-  eyebrow = "Overview",
-  title,
-  description,
-  actions,
-  className,
-}: {
-  eyebrow?: string;
-  title: string;
-  description?: string;
-  actions?: ReactNode;
-  className?: string;
-}) {
-  return (
-    <header
-      className={cn("border-foreground/15 border-y py-5 md:py-8", className)}
-      data-page-hero
-    >
-      <div className="border-border/70 mb-6 flex items-center justify-between gap-4 border-b pb-3 md:mb-8">
-        <p className="text-muted-foreground text-[11px] font-medium tracking-[0.16em] uppercase">
-          Loftlancer <span className="text-border px-1.5">/</span> {eyebrow}
-        </p>
-        <span
-          aria-hidden
-          className="text-muted-foreground/70 font-mono text-[10px] tabular-nums"
-        >
-          PUBLIC SITE
-        </span>
-      </div>
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1.35fr)_minmax(15rem,0.65fr)] md:items-end md:gap-12">
-        <h1 className="max-w-5xl text-[clamp(3.5rem,6.2vw,6rem)] leading-[0.9] font-medium tracking-[-0.065em] text-balance">
-          {title}
-        </h1>
-        <div className="max-w-md pb-1 md:justify-self-end">
-          {description ? (
-            <p className="text-muted-foreground text-base leading-7 text-pretty md:text-[1.05rem]">
-              {description}
-            </p>
-          ) : null}
-          {actions ? (
-            <div className="mt-5 flex flex-wrap gap-2.5">{actions}</div>
-          ) : null}
-        </div>
-      </div>
-    </header>
-  );
-}
-
 export function Section({
   children,
   className,
@@ -124,24 +76,17 @@ export function FeatureShowcase({
   description,
   details,
   visual,
-  label,
   reverse = false,
 }: {
   title: string;
   description: string;
   details?: ReactNode;
   visual: ReactNode;
-  label?: string;
   reverse?: boolean;
 }) {
   return (
     <section className="border-border/70 grid items-center gap-8 border-t py-10 md:grid-cols-[0.78fr_1.22fr] md:gap-14 md:py-14">
       <div className={cn("min-w-0", reverse && "md:order-2")}>
-        {label ? (
-          <p className="text-muted-foreground mb-4 font-mono text-[11px] tabular-nums">
-            {label}
-          </p>
-        ) : null}
         <h2 className="max-w-xl text-3xl font-medium tracking-[-0.045em] text-balance md:text-4xl">
           {title}
         </h2>
@@ -171,7 +116,7 @@ export function ProductPreview({
       <div className="border-foreground/15 bg-muted/30 overflow-hidden border">
         {children}
       </div>
-      <figcaption className="border-border/70 text-muted-foreground flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b py-2.5 font-mono text-[10px] tracking-[0.08em] uppercase">
+      <figcaption className="border-border/70 text-muted-foreground flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b py-2.5 text-xs">
         <span>{label}</span>
         {note ? (
           <span className="tracking-normal normal-case">{note}</span>
@@ -196,9 +141,6 @@ export function CallToAction({
     <section className="border-foreground/15 bg-muted/20 border-y py-10 md:py-14">
       <PageContainer className="grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
         <div className="max-w-3xl">
-          <p className="text-muted-foreground mb-3 text-[11px] font-medium tracking-[0.16em] uppercase">
-            Next step
-          </p>
           <h2 className="text-3xl font-medium tracking-[-0.045em] text-balance md:text-4xl">
             {title}
           </h2>
@@ -229,9 +171,6 @@ export function FAQSection({
       aria-labelledby="marketing-faq-title"
     >
       <div>
-        <p className="text-muted-foreground mb-3 text-[11px] font-medium tracking-[0.16em] uppercase">
-          FAQ
-        </p>
         <h2
           id="marketing-faq-title"
           className="text-3xl font-medium tracking-[-0.045em] text-balance md:text-4xl"

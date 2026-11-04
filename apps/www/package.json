@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --port 3004",
     "check-types": "tsc --noEmit",
-    "test": "node --import tsx --test src/lib/sign-in-href.test.ts src/lib/changelog.test.ts"
+    "test": "node --import tsx --test ../../module/www/utils/utils.sign-in-href.utils.test.ts ../../module/www/server/page/server.changelog.page.test.ts"
   },
   "dependencies": {
     "@loftlancer/ui": "workspace:*",

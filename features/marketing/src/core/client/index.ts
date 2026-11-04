@@ -6,13 +6,10 @@ export {
   FAQSection,
   FeatureShowcase,
   PageContainer,
-  PageHero,
   ProductPreview,
   Section,
   SectionHeading,
 } from "./marketing.components";
-export type { MarketingLandingProps } from "./marketing.landing";
-export { MarketingLanding } from "./marketing.landing";
 export type {
   MarketingNavItem,
   MarketingPageShellProps,
