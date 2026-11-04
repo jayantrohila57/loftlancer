@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import { platformSessionMiddleware } from "../src/core/better-auth.platform-middleware";
 
 const options = {
-  appOrigin: "https://loftlancer.com/better-auth",
+  appOrigin: "https://loftlancer.com/auth",
   protectedPrefixes: ["/settings"],
 };
 

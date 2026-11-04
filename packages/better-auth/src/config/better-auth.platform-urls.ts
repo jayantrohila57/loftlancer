@@ -1,7 +1,7 @@
 import { resolvePublicServiceUrl } from "@loftlancer/t3-env/vercel-services";
 
 /** Default production URLs — one Vercel project per app (no path prefix). */
-export const DEFAULT_AUTH_URL = "https://loftlancer.com/better-auth";
+export const DEFAULT_AUTH_URL = "https://loftlancer.com/auth";
 export const DEFAULT_STUDIO_URL = "https://loftlancer.com/studio";
 export const DEFAULT_ACCOUNT_URL = DEFAULT_AUTH_URL;
 export const DEFAULT_WWW_URL = "https://loftlancer.com";

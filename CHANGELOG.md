@@ -16,6 +16,10 @@ requests. See [docs/releasing.md](./docs/releasing.md) for the release procedure
 
 ## [Unreleased]
 
+### Changed
+
+- Make `/auth` the canonical Auth app prefix and redirect legacy `/better-auth/*` URLs (#1086).
+
 ## [1.26.3] - 2026-11-03
 
 ### Changed

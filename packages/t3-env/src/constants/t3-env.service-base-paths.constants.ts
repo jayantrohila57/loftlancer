@@ -3,7 +3,7 @@ export const SERVICE_BASE_PATHS = {
   www: "",
   web: "/app",
   docs: "",
-  auth: "/better-auth",
+  auth: "/auth",
   account: "/account",
   console: "/console",
   support: "/support",
