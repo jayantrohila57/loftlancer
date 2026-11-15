@@ -8,12 +8,12 @@ Requirements spec: [docs/work/requirements/autumn-usage-metering.md](../../docs/
 
 Canonical map: [../ports.md](../ports.md). **Web apps use 3001–3004; infra uses 4001–4004.**
 
-| Service                | URL / port              | Notes                                                                                                 |
-| ---------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------- |
-| **API** (plugin + SDK) | `http://localhost:4002` | `AUTUMN_API_BASE_URL` in `apps/auth/.env`                                                             |
-| Dashboard (Vite)       | `http://localhost:4001` | API keys (`am_sk_…`), Stripe connect                                                                  |
+| Service                | URL / port              | Notes                                                                                                |
+| ---------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------- |
+| **API** (plugin + SDK) | `http://localhost:4002` | `AUTUMN_API_BASE_URL` in `apps/auth/.env`                                                            |
+| Dashboard (Vite)       | `http://localhost:4001` | API keys (`am_sk_…`), Stripe connect                                                                 |
 | Shared Postgres        | `localhost:4003`        | Auth: `loftlancer_auth`; Autumn: **`autumn`** — [../db/postgres/README.md](../db/postgres/README.md) |
-| Shared Redis           | `localhost:4004`        | [../redis/docker-compose.yml](../redis/docker-compose.yml)                                            |
+| Shared Redis           | `localhost:4004`        | [../redis/docker-compose.yml](../redis/docker-compose.yml)                                           |
 
 **Health:** `curl http://localhost:4002/` (not `/health`).
 
@@ -134,7 +134,7 @@ Configure Stripe **test** keys in **`infra/autumn/upstream/server/.env`**. Do **
 | Autumn `server/.env` | Stripe, Resend, Google | Payments / dashboard login                              |
 | `apps/auth/.env`     | `AUTUMN_API_BASE_URL`  | Self-hosted API origin (no trailing path)               |
 | `apps/auth/.env`     | `AUTUMN_SECRET_KEY`    | From local dashboard                                    |
-| `apps/auth/.env`     | `DATABASE_URL`         | **`loftlancer_auth` only**                             |
+| `apps/auth/.env`     | `DATABASE_URL`         | **`loftlancer_auth` only**                              |
 
 `autumn-js` defaults to **`https://api.useautumn.com`** when `baseURL` is omitted — always set `AUTUMN_API_BASE_URL` for self-host.
 
