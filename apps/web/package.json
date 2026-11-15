@@ -17,6 +17,7 @@
     "@packages/better-auth": "workspace:*",
     "@packages/react-query": "workspace:*",
     "@features/theme": "workspace:*",
+    "@next/third-parties": "16.4.6",
     "@packages/analytics": "workspace:*",
     "@packages/drizzle": "workspace:*",
     "@packages/posthog": "workspace:*",

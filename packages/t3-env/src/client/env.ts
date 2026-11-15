@@ -14,6 +14,8 @@ export const clientEnv = createEnv({
     NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1).optional(),
     /** PostHog ingest host; defaults to US cloud when unset. */
     NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
+    /** GA4 measurement ID; unset disables Google Analytics. */
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1).optional(),
   },
   runtimeEnv: {
     NEXT_PUBLIC_AUTH_APP_URL: process.env.NEXT_PUBLIC_AUTH_APP_URL,
@@ -21,6 +23,7 @@ export const clientEnv = createEnv({
     NEXT_PUBLIC_APP_VERSION: process.env.NEXT_PUBLIC_APP_VERSION,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
   },
   emptyStringAsUndefined: true,
   skipValidation,
