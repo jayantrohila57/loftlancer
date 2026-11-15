@@ -3,11 +3,13 @@ import "@packages/ui/globals.css"
 import { rootFontClassName } from "@features/font"
 import { I18nProvider } from "@features/i18n/provider"
 import { ThemeProvider, themeProviderProps } from "@features/theme"
+import { GoogleAnalytics } from "@next/third-parties/google"
 import { VercelWebTelemetry } from "@packages/analytics"
 import { DirectionProvider } from "@packages/ui"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { WebPostHog } from "@/shared/analytics/web.posthog.client"
+import { clientEnv } from "@/shared/config/web.client-env"
 import { serverEnv } from "@/shared/config/web.server-env"
 import {
   generateLangStaticParams,
@@ -54,6 +56,9 @@ export default async function LangLayout({
           </I18nProvider>
         </div>
         <VercelWebTelemetry />
+        {clientEnv.NEXT_PUBLIC_GA_MEASUREMENT_ID ? (
+          <GoogleAnalytics gaId={clientEnv.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        ) : null}
       </body>
     </html>
   )
