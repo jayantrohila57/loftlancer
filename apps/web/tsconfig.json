@@ -28,12 +28,17 @@
         "../../modules/connected-accounts/src/utils/index.ts"
       ],
       "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
       "@packages/posthog": ["../../packages/posthog/src/index.ts"],
       "@modules/health": ["../../modules/health/src/index.ts"],
       "@modules/health/*": ["../../modules/health/src/*"],
       "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
       "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"],
       "lucide-react": ["./node_modules/lucide-react"],
+      "react": ["./node_modules/@types/react"],
+      "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime"],
       "react-hook-form": ["../auth/node_modules/react-hook-form"],
       "@packages/react-query": ["../../packages/react-query/src/index.ts"],
       "@packages/orpc": ["../../packages/orpc/src/index.ts"],

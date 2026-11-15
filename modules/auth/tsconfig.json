@@ -30,6 +30,15 @@
       "@packages/ui/components/skeleton": [
         "../../packages/ui/src/integration/components/skeleton.tsx"
       ],
+      "@packages/ui/components/button": [
+        "../../packages/ui/src/integration/components/button.tsx"
+      ],
+      "@packages/ui/components/empty": [
+        "../../packages/ui/src/integration/components/empty.tsx"
+      ],
+      "@packages/ui/components/toast": [
+        "../../packages/ui/src/integration/components/toast.tsx"
+      ],
       "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
       "next-intl": ["../../apps/auth/node_modules/next-intl"],
       "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
