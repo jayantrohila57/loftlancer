@@ -22,7 +22,7 @@
     "check:commit": "pnpm check:ci && pnpm build",
     "version-check": "node -p \"require('./package.json').version\"",
     "release:prepare": "node scripts/release/prepare.mjs",
-    "release:check": "node scripts/release/check.mjs origin/main",
+    "release:check": "node scripts/release/check.mjs origin/loftlancer-production",
     "release:notes": "node scripts/release/notes.mjs",
     "release:publish": "bash scripts/release/publish.sh"
   },

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Usage: node scripts/release/prepare.mjs <major|minor|patch>
 // Bumps the root version and turns `## [Unreleased]` into a dated release
-// section. Commit the result on a release branch, merge it into dev, then open
-// the dev -> main release PR. No git operations happen here.
+// section. Commit the result on a release branch, merge it into loftlancer-development, then open
+// the loftlancer-development -> loftlancer-production release PR. No git operations happen here.
 import { readFileSync, writeFileSync } from "node:fs"
 import {
   bumpVersion,
