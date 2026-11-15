@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// CI guard for release PRs into main: the root version must go up and
+// CI guard for release PRs into loftlancer-production: the root version must go up and
 // CHANGELOG.md must have a dated section for it.
-// Usage: node scripts/release/check.mjs <base-ref>   (e.g. origin/main)
+// Usage: node scripts/release/check.mjs <base-ref>   (e.g. origin/loftlancer-production)
 import { execFileSync } from "node:child_process"
 import { readFileSync } from "node:fs"
 import {
@@ -12,7 +12,7 @@ import {
   validateUserFacingChangelog,
 } from "./changelog.mjs"
 
-const baseRef = process.argv[2] ?? "origin/main"
+const baseRef = process.argv[2] ?? "origin/loftlancer-production"
 let baseVersion
 try {
   baseVersion = JSON.parse(
