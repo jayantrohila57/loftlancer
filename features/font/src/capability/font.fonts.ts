@@ -1,12 +1,13 @@
-import { Geist_Mono, Outfit } from "next/font/google"
+import localFont from "next/font/local"
 
-/** next/font requires static literals here (see Next.js font loader rules). */
-export const fontSans = Outfit({
-  subsets: ["latin"],
+export const fontSans = localFont({
+  src: "../assets/outfit.ttf",
   variable: "--font-sans",
+  weight: "100 900",
 })
 
-export const fontMono = Geist_Mono({
-  subsets: ["latin"],
+export const fontMono = localFont({
+  src: "../assets/geist-mono.ttf",
   variable: "--font-mono",
+  weight: "400 700",
 })
