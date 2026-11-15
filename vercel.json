@@ -10,7 +10,7 @@
   "git": {
     "deploymentEnabled": {
       "*": false,
-      "main": true
+      "loftlancer-production": true
     }
   },
   "services": {
