@@ -1,0 +1,9 @@
+---
+description: Shared activity identity and structured logging
+globs: apps/**/*,modules/**/*,packages/**/*
+alwaysApply: false
+---
+
+# Activity and logging
+
+Follow [activity-and-logging.md](../../docs/modules/activity-and-logging.md). Register actions and carry their occurrence IDs through server actions and logs. Use the shared oRPC and auth integration boundaries; keep app routes thin. Record critical before/after values only when registered. Never log secrets; treat all payload logs as sensitive. Verify owner isolation, correlation and redaction using isolated fixtures.

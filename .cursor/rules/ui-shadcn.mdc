@@ -1,0 +1,9 @@
+---
+description: Coss UI registry and packages/ui components
+globs: packages/ui/**,apps/**/components.json
+alwaysApply: false
+---
+
+# Coss UI
+
+Registry: `@coss` in `packages/ui/components.json`. Theme doc: [docs/packages/ui/coss-ui.md](../../docs/packages/ui/coss-ui.md).

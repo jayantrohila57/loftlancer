@@ -1,0 +1,58 @@
+---
+description: Dashboard shell — fixed chrome, single page scroller (ShellLayout + ShellSectionLayout)
+globs:
+  - features/shell/**
+  - apps/**/src/app/**/layout.tsx
+  - apps/**/shared/shell/**
+  - modules/**/src/client/components/**
+alwaysApply: false
+---
+
+# Dashboard scroll and height
+
+Normative pairing with [shell-layout.mdc](./shell-layout.mdc). **Docs:** [docs/apps/routing-shell.md](../../docs/apps/routing-shell.md) when present.
+
+## Goal
+
+Sidebar + app header + section subheader stay fixed; **only the page body scrolls**. The window (`h-svh` frame) does **not** scroll.
+
+## Stack (sidebar apps)
+
+1. App route: **`ShellLayout`** from `@features/shell` (`Frame` → `Sidebar` + `SidebarInset` `h-svh overflow-hidden` → `ShellHeader` `h-12 shrink-0` → **`Shell.Main variant="dashboard"`**).
+2. Section route (subheader + tabs): **`AuthAccountSectionLayout`** (auth) or **`ShellSectionLayout`** (= `Shell.Panel` + `Shell.Scroll`) with `ShellSubHeader` + **`AccountSectionSubnav`**.
+3. Page / module body: **`Shell.Section variant="dashboard"`** or app **`AccountPageSection`** — **MUST NOT** add a second viewport scroll (`overflow-y-auto` on `body`/root) unless that pane is the only scroller inside `ShellSectionLayout`.
+
+## Flex rules
+
+| Class | Use on |
+| ----- | ------ |
+| `flex-1 min-h-0 flex-col overflow-hidden` | Column that fills `Main` (`ShellSectionLayout` outer, `Shell.Main` dashboard) |
+| `shrink-0` | Headers, subheaders, tab bars |
+| `flex-1 min-h-0 overflow-y-auto` | **Single** scroll pane under subheader (`Shell.Scroll` / `ShellSectionLayout`) |
+
+**MUST NOT** use `calc(100vh - …)` or fixed `h-screen` on section layouts when already inside `ShellLayout` — height comes from the flex chain.
+
+**MUST NOT** import `ShellSectionLayout` for auth entry routes (`(auth)/` center screens) that use `Shell.Frame` + `Main` without sidebar; use `Shell.Section` `center` or `flexed` per [shell-layout.mdc](./shell-layout.mdc).
+
+## Example (section `layout.tsx`)
+
+```tsx
+import { ShellSectionLayout, ShellSubHeader } from "@features/shell"
+import { AccountSectionSubnav } from "@modules/shell"
+
+export default function SectionLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ShellSectionLayout
+      header={
+        <ShellSubHeader title="…" description="…" icon={Icon}>
+          <AccountSectionSubnav section="…" />
+        </ShellSubHeader>
+      }
+    >
+      {children}
+    </ShellSectionLayout>
+  )
+}
+```
+
+New dashboard sections in studio/console **MUST** use the same pattern when they add a subheader band.

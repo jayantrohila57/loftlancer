@@ -1,0 +1,161 @@
+{
+  "extends": "@packages/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@features/font": ["../../features/font/src/index.ts"],
+      "@features/font/*": ["../../features/font/src/*"],
+      "@features/i18n": ["../../features/i18n/src/index.ts"],
+      "@features/i18n/plugin": [
+        "../../features/i18n/src/capability/i18n.plugin.ts"
+      ],
+      "@features/i18n/setup": [
+        "../../features/i18n/src/capability/i18n.setup.ts"
+      ],
+      "@features/i18n/locale-switcher": [
+        "../../features/i18n/src/capability/i18n.locale-switcher.tsx"
+      ],
+      "@features/i18n/provider": [
+        "../../features/i18n/src/capability/i18n.provider.tsx"
+      ],
+      "@features/theme": ["../../features/theme/src/index.ts"],
+      "@features/theme/*": ["../../features/theme/src/*"],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "@features/command": ["../../features/command/src/index.ts"],
+      "@features/navigation": ["../../features/navigation/src/index.ts"],
+      "@features/action": ["../../features/action/src/index.ts"],
+      "@modules/privacy": ["../../modules/privacy/src/index.ts"],
+      "@modules/privacy/client": ["../../modules/privacy/src/client/index.ts"],
+      "@modules/privacy/*": ["../../modules/privacy/src/*"],
+      "@modules/shell": ["../../modules/shell/src/index.ts"],
+      "@modules/shell/*": ["../../modules/shell/src/*"],
+      "@modules/auth": ["../../modules/auth/src/index.ts"],
+      "@modules/auth/*": ["../../modules/auth/src/*"],
+      "@modules/admin": ["../../modules/admin/src/index.ts"],
+      "@modules/admin/server": ["../../modules/admin/src/server/index.ts"],
+      "@modules/admin/utils": ["../../modules/admin/src/utils/index.ts"],
+      "@modules/connected-accounts/utils": [
+        "../../modules/connected-accounts/src/utils/index.ts"
+      ],
+      "@modules/connected-accounts/server": [
+        "../../modules/connected-accounts/src/server/index.ts"
+      ],
+      "@modules/activity/server": [
+        "../../modules/activity/src/server/index.ts"
+      ],
+      "@modules/health": ["../../modules/health/src/index.ts"],
+      "@modules/health/*": ["../../modules/health/src/*"],
+      "@modules/appearance-preferences": [
+        "../../modules/appearance-preferences/src/index.ts"
+      ],
+      "@modules/appearance-preferences/effects": [
+        "../../modules/appearance-preferences/src/client/components/appearance-preferences.effects.client.tsx"
+      ],
+      "@modules/appearance-preferences/client": [
+        "../../modules/appearance-preferences/src/client/index.ts"
+      ],
+      "@modules/appearance-preferences/utils": [
+        "../../modules/appearance-preferences/src/utils/index.ts"
+      ],
+      "@modules/appearance-preferences/server": [
+        "../../modules/appearance-preferences/src/server/index.ts"
+      ],
+      "@modules/security": ["../../modules/security/src/index.ts"],
+      "@modules/security/*": ["../../modules/security/src/*"],
+      "@modules/security/client": [
+        "../../modules/security/src/client/index.ts"
+      ],
+      "@modules/security/server": [
+        "../../modules/security/src/server/index.ts"
+      ],
+      "@modules/security/server/shared/security.procedure": [
+        "../../modules/security/src/server/shared/security.procedure.ts"
+      ],
+      "@modules/security/server/shared/security.db": [
+        "../../modules/security/src/server/shared/security.db.ts"
+      ],
+      "@modules/security/server/shared/security.compatibility": [
+        "../../modules/security/src/server/shared/security.compatibility.ts"
+      ],
+      "@modules/security/utils": ["../../modules/security/src/utils/index.ts"],
+      "@modules/location/server": [
+        "../../modules/location/src/server/index.ts"
+      ],
+      "@modules/regional-preferences/server": [
+        "../../modules/regional-preferences/src/server/index.ts"
+      ],
+      "@modules/sessions/server": [
+        "../../modules/sessions/src/server/index.ts"
+      ],
+      "@modules/sessions/utils": ["../../modules/sessions/src/utils/index.ts"],
+      "@modules/sso": ["../../modules/sso/src/index.ts"],
+      "@modules/sso/server": ["../../modules/sso/src/server/index.ts"],
+      "@modules/billing/server": ["../../modules/billing/src/server/index.ts"],
+      "@modules/org/server": ["../../modules/org/src/server/index.ts"],
+      "@modules/org/server/shared/org.membership-context": [
+        "../../modules/org/src/server/shared/org.membership-context.ts"
+      ],
+      "@modules/org/utils/org.session": [
+        "../../modules/org/src/utils/org.session.ts"
+      ],
+      "@modules/notifications/server": [
+        "../../modules/notifications/src/server/index.ts"
+      ],
+      "@modules/privacy/server": ["../../modules/privacy/src/server/index.ts"],
+      "@modules/storage/server": ["../../modules/storage/src/server/index.ts"],
+      "@modules/ai-usage": ["../../modules/ai-usage/src/index.ts"],
+      "@modules/ai-usage/*": ["../../modules/ai-usage/src/*"],
+      "@modules/ai-usage/server": [
+        "../../modules/ai-usage/src/server/index.ts"
+      ],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"],
+      "@packages/t3-env/server": ["../../packages/t3-env/src/server/env.ts"],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "lucide-react": ["./node_modules/lucide-react"],
+      "react-hook-form": ["../auth/node_modules/react-hook-form"],
+      "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],
+      "better-auth": ["../../packages/better-auth/node_modules/better-auth"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/logger": ["../../packages/logger/src/index.ts"],
+      "@packages/logger/server": [
+        "../../packages/logger/src/integration/logger.integration.ts"
+      ],
+      "react": ["./node_modules/@types/react"],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"],
+      "@packages/orpc/server": [
+        "../../packages/orpc/src/integration/orpc.server.ts"
+      ],
+      "@packages/drizzle/schema": [
+        "../../packages/drizzle/src/schema/index.ts"
+      ],
+      "zod": ["../../apps/auth/node_modules/zod"],
+      "@packages/posthog": ["../../packages/posthog/src/index.ts"],
+      "next/navigation": ["../auth/node_modules/next/navigation"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "global.d.ts",
+    "next.config.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mts",
+    "../../modules/health/src/**/*.ts",
+    "../../modules/shell/src/**/*.ts",
+    "../../modules/shell/src/**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

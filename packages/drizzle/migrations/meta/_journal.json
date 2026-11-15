@@ -1,0 +1,132 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794058260082,
+      "tag": "0000_activity-tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794248634543,
+      "tag": "0001_tough_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794253946441,
+      "tag": "0002_sharp_ares",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794254513661,
+      "tag": "0003_tan_firestar",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794291589042,
+      "tag": "0004_shared_activity_event",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794292691982,
+      "tag": "0005_activity_deletion_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794293582897,
+      "tag": "0006_activity_provider_compat",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794330319261,
+      "tag": "0007_harsh_fabian_cortez",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794330486477,
+      "tag": "0008_chubby_ben_urich",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794336000000,
+      "tag": "0009_device_authorization",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794336100000,
+      "tag": "0010_lowly_randall_flagg",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794636067420,
+      "tag": "0011_classy_angel",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1794638146353,
+      "tag": "0012_user_soft_delete",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794644272818,
+      "tag": "0013_org_entitlements_foundation",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794653640061,
+      "tag": "0014_omniscient_punisher",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1794660000000,
+      "tag": "0015_org_onboarding_sections",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794663600000,
+      "tag": "0016_phase9_notifications_privacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794667200000,
+      "tag": "0017_org_ai_usage_policy",
+      "breakpoints": true
+    }
+  ]
+}

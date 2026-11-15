@@ -1,0 +1,33 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "fronterior.biome-monorepo",
+  "[javascript]": {
+    "editor.defaultFormatter": "fronterior.biome-monorepo"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "fronterior.biome-monorepo"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "fronterior.biome-monorepo"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "fronterior.biome-monorepo"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "fronterior.biome-monorepo"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "fronterior.biome-monorepo"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "biome.enabled": true,
+  "files.exclude": {
+    "**/feature/**": true,
+    "apps/**/src/i18n/**": true
+  },
+  "typescript.tsdk": "node_modules/typescript-programmatic/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

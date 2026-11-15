@@ -1,0 +1,17 @@
+{
+  "extends": "@packages/typescript-config/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@packages/drizzle": ["../drizzle/src/index.ts"],
+      "@packages/drizzle/schema": ["../drizzle/src/schema/index.ts"],
+      "@packages/logger/server": ["../logger/src/server/index.ts"],
+      "@packages/t3-env/server": ["../t3-env/src/server/env.ts"],
+      "drizzle-orm": ["../drizzle/node_modules/drizzle-orm"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

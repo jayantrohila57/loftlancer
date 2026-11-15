@@ -1,0 +1,19 @@
+{
+  "name": "@packages/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "license": "PROPRIETARY",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./base.json": "./src/integration/base.json",
+    "./nextjs.json": "./src/integration/nextjs.json",
+    "./react-library.json": "./src/integration/react-library.json"
+  }
+}

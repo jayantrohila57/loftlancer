@@ -1,0 +1,46 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@features/form": ["../../features/form/src/index.ts"],
+      "@features/i18n": ["../../features/i18n/src/index.ts"],
+      "@features/i18n/constants": [
+        "../../features/i18n/src/constants/i18n.constants.ts"
+      ],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "@modules/auth": ["../../modules/auth/src/index.ts"],
+      "@modules/auth/*": ["../../modules/auth/src/*"],
+      "@modules/org": ["../../modules/org/src/index.ts"],
+      "@modules/org/*": ["../../modules/org/src/*"],
+      "@modules/shell": ["../../modules/shell/src/index.ts"],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/t3-env/server": ["../../packages/t3-env/src/server/env.ts"],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
+      "lucide-react": ["../../apps/auth/node_modules/lucide-react"],
+      "next-intl": ["../../apps/auth/node_modules/next-intl"],
+      "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
+      "react": ["../../apps/auth/node_modules/@types/react"],
+      "react/jsx-runtime": [
+        "../../apps/auth/node_modules/@types/react/jsx-runtime"
+      ],
+      "zod": ["../../apps/auth/node_modules/zod"]
+    }
+  },
+  "include": [
+    "src",
+    "../../packages/ui/src/types/maplibre-css.d.ts",
+    "../../packages/ui/src/types/css-modules.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}

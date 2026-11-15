@@ -1,0 +1,27 @@
+# LEGACY (optional): Autumn-dedicated Postgres on host port 4003 — avoids sharing infra/db/postgres.
+# Prefer Option D in README.md: shared Postgres + shared Redis + docker-compose.autumn.yml.
+services:
+  autumn-postgres:
+    image: postgres:16-alpine
+    container_name: loftlancer-autumn-postgres
+    restart: unless-stopped
+    ports:
+      - "${AUTUMN_POSTGRES_PORT:-4003}:5432"
+    environment:
+      POSTGRES_USER: ${AUTUMN_POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${AUTUMN_POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${AUTUMN_POSTGRES_DB:-autumn}
+    volumes:
+      - autumn_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${AUTUMN_POSTGRES_USER:-postgres} -d ${AUTUMN_POSTGRES_DB:-autumn}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  autumn_postgres_data:

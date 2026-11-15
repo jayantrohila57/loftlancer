@@ -1,0 +1,9 @@
+---
+description: Theme via @features/theme only
+globs: apps/**/*.{tsx,ts},features/theme/**
+alwaysApply: false
+---
+
+# Theme
+
+**`@features/theme`** (`@teispace/next-themes`). **MUST NOT** raw `next-themes` in apps.

@@ -1,0 +1,41 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@modules/org": ["../../modules/org/src/index.ts"],
+      "@modules/org/*": ["../../modules/org/src/*"],
+      "@features/action": ["../../features/action/src/index.ts"],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "@features/shell/*": ["../../features/shell/src/*"],
+      "@modules/shell": ["./src/index.ts"],
+      "@modules/shell/*": ["./src/*"],
+      "@modules/auth/*": ["../../modules/auth/src/*"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@modules/auth": ["../../modules/auth/src/index.ts"],
+      "@modules/connected-accounts/utils": [
+        "../../modules/connected-accounts/src/utils/index.ts"
+      ],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "lucide-react": ["../../apps/auth/node_modules/lucide-react"],
+      "next-intl": ["../../apps/auth/node_modules/next-intl"],
+      "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
+      "react-hook-form": ["../../apps/auth/node_modules/react-hook-form"]
+    }
+  },
+  "include": [
+    "src",
+    "../../packages/ui/src/types/maplibre-css.d.ts",
+    "../../packages/ui/src/types/css-modules.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}

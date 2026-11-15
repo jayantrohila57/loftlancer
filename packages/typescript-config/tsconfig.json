@@ -1,0 +1,10 @@
+{
+  "extends": "./src/integration/base.json",
+  "compilerOptions": {
+    "paths": {
+      "@packages/typescript-config/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

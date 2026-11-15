@@ -1,0 +1,44 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@features/action": ["../../features/action/src/index.ts"],
+      "@modules/admin": ["./src/index.ts"],
+      "@modules/admin/*": ["./src/*"],
+      "@modules/admin/server": ["./src/server/index.ts"],
+      "@modules/activity/server": ["../activity/src/server/index.ts"],
+      "@modules/org": ["../org/src/index.ts"],
+      "@modules/org/*": ["../org/src/*"],
+      "@modules/org/server": ["../org/src/server/index.ts"],
+      "@modules/security/server": ["../security/src/server/index.ts"],
+      "@modules/security/server/*": ["../security/src/server/*"],
+      "@modules/security/utils": ["../security/src/utils/index.ts"],
+      "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "@packages/drizzle/schema": [
+        "../../packages/drizzle/src/schema/index.ts"
+      ],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"],
+      "@packages/orpc/server": [
+        "../../packages/orpc/src/integration/orpc.server.ts"
+      ],
+      "@packages/t3-env/server": ["../../packages/t3-env/src/server/env.ts"],
+      "@packages/ui/components/shell": [
+        "../../packages/ui/src/integration/components/shell.tsx"
+      ],
+      "better-auth": ["../../packages/better-auth/node_modules/better-auth"],
+      "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"],
+      "zod": ["../../apps/auth/node_modules/zod"],
+      "react": ["../../apps/auth/node_modules/@types/react"],
+      "react/jsx-runtime": [
+        "../../apps/auth/node_modules/@types/react/jsx-runtime"
+      ]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

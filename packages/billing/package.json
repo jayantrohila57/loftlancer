@@ -1,0 +1,25 @@
+{
+  "name": "@packages/billing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "SKIP_ENV_VALIDATION=true tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@packages/drizzle": "workspace:*",
+    "@packages/logger": "workspace:*",
+    "@packages/t3-env": "workspace:*",
+    "autumn-js": "1.5.11",
+    "drizzle-orm": "^0.45.1",
+    "standardwebhooks": "1.1.1"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@types/node": "^26",
+    "typescript": "^7"
+  }
+}

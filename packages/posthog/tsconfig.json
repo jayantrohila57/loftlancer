@@ -1,0 +1,16 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@packages/posthog/*": ["./src/*"],
+      "@packages/t3-env/client": ["../t3-env/src/client/env.ts"],
+      "@packages/t3-env/server": ["../t3-env/src/server/env.ts"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

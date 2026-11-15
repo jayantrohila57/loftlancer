@@ -1,0 +1,9 @@
+---
+description: Named prop types for routes and components
+globs: apps/**/*.{ts,tsx},features/**/*.{ts,tsx},packages/**/*.{ts,tsx},modules/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Named props
+
+**MUST NOT** inline prop objects on signatures. Apps: `@/shared/types/<slug>.app.types.ts`. Detail: [packages/typescript-config/README.md](../../packages/typescript-config/README.md).

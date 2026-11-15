@@ -1,0 +1,1 @@
+export const PROFILE_DISPLAY_NAME_MAX_LENGTH = 100

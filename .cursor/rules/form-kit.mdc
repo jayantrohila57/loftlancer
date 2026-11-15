@@ -1,0 +1,9 @@
+---
+description: Use the shared form and field kits for application forms and fields
+globs: apps/**/*,modules/**/*,features/**/*
+alwaysApply: true
+---
+
+# Forms and fields
+
+Follow [docs/features/form.md](../../docs/features/form.md). Use `FormKit` for forms and `FieldKit` for standalone fields. If a field is missing, add it to the form feature and expose it through the appropriate kit before using it. Application code must not assemble fields directly from raw HTML or UI primitives; the form feature and UI package may use those primitives to implement the kits.

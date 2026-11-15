@@ -1,0 +1,24 @@
+{
+  "name": "@packages/t3-env",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "SKIP_ENV_VALIDATION=true tsc --noEmit"
+  },
+  "dependencies": {
+    "@t3-oss/env-core": "^0.13.8",
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "dotenv": "^17.2.3",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@types/node": "^26",
+    "typescript": "^7"
+  },
+  "exports": {
+    "./server": "./src/server/env.ts",
+    "./client": "./src/client/env.ts"
+  }
+}

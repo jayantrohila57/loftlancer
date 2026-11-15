@@ -1,0 +1,9 @@
+---
+description: @features/i18n import paths and barrel
+globs: apps/**/shared/i18n/**,apps/**/next.config.ts,features/i18n/**
+alwaysApply: false
+---
+
+# i18n imports
+
+[docs/features/i18n/exports.md](../../docs/features/i18n/exports.md)

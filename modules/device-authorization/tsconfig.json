@@ -1,0 +1,33 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
+      "@features/form": ["../../features/form/src/index.ts"],
+      "@features/action": ["../../features/action/src/index.ts"],
+      "@modules/shell": ["../shell/src/index.ts"],
+      "@modules/device-authorization": ["./src/index.ts"],
+      "@modules/device-authorization/utils": ["./src/utils/index.ts"],
+      "react": ["../../apps/auth/node_modules/@types/react"],
+      "react/jsx-runtime": [
+        "../../apps/auth/node_modules/@types/react/jsx-runtime"
+      ],
+      "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
+      "next-intl": ["../../apps/auth/node_modules/next-intl"],
+      "lucide-react": ["../../apps/auth/node_modules/lucide-react"],
+      "zod": ["../../apps/auth/node_modules/zod"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

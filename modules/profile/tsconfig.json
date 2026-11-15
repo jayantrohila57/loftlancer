@@ -1,0 +1,47 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@features/theme": ["../../features/theme/src/index.ts"],
+      "@modules/profile": ["./src/index.ts"],
+      "@modules/profile/*": ["./src/*"],
+      "@modules/profile/server": ["./src/server/index.ts"],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "@packages/drizzle/schema": [
+        "../../packages/drizzle/src/schema/index.ts"
+      ],
+      "@packages/logger/server": ["../../packages/logger/src/server/index.ts"],
+      "lucide-react": ["../../apps/auth/node_modules/lucide-react"],
+      "react": ["../../apps/auth/node_modules/@types/react"],
+      "react/jsx-runtime": [
+        "../../apps/auth/node_modules/@types/react/jsx-runtime"
+      ],
+      "react-hook-form": ["../../apps/auth/node_modules/react-hook-form"],
+      "next/dynamic": ["../../apps/auth/node_modules/next/dynamic.d.ts"],
+      "zod": ["../../apps/auth/node_modules/zod"],
+      "@modules/auth": ["../../modules/auth/src/index.ts"],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
+      "next-intl": ["../../apps/auth/node_modules/next-intl"],
+      "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
+      "@features/form": ["../../features/form/src/index.ts"],
+      "@packages/blob": ["../../packages/blob/src/index.ts"],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

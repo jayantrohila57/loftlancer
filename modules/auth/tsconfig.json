@@ -1,0 +1,48 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@modules/auth": ["../../modules/auth/src/index.ts"],
+      "@modules/auth/*": ["./src/*"],
+      "@modules/shell": ["../../modules/shell/src/index.ts"],
+      "@modules/shell/*": ["../../modules/shell/src/*"],
+      "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@packages/ui/components/shell": [
+        "../../packages/ui/src/integration/components/shell.tsx"
+      ],
+      "@packages/ui/components/field": [
+        "../../packages/ui/src/integration/components/field.tsx"
+      ],
+      "@packages/ui/components/input": [
+        "../../packages/ui/src/integration/components/input.tsx"
+      ],
+      "@packages/ui/components/skeleton": [
+        "../../packages/ui/src/integration/components/skeleton.tsx"
+      ],
+      "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
+      "next-intl": ["../../apps/auth/node_modules/next-intl"],
+      "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
+      "next/dynamic": ["../../apps/auth/node_modules/next/dynamic.d.ts"],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "react": ["../../apps/auth/node_modules/@types/react"],
+      "react/jsx-runtime": [
+        "../../apps/auth/node_modules/@types/react/jsx-runtime"
+      ],
+      "lucide-react": ["../../apps/auth/node_modules/lucide-react"],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

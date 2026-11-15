@@ -1,0 +1,9 @@
+---
+description: Biome Tailwind class order
+globs: **/*.{tsx,jsx,css}
+alwaysApply: false
+---
+
+# Biome Tailwind
+
+`useTailwindSortedClasses` safe fix; formatter: `fronterior.biome-monorepo` (`.vscode/settings.json`).

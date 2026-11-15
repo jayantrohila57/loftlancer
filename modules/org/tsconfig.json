@@ -1,0 +1,90 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@features/action": ["../../features/action/src/index.ts"],
+      "@features/form": ["../../features/form/src/index.ts"],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "@modules/shell": ["../../modules/shell/src/index.ts"],
+      "@packages/resend": ["../../packages/resend/src/index.ts"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@packages/ui/components/reui/*": [
+        "../../packages/ui/src/components/reui/*.tsx"
+      ],
+      "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
+      "lucide-react": ["../../apps/auth/node_modules/lucide-react"],
+      "next-intl": ["../../apps/auth/node_modules/next-intl"],
+      "react": ["../../apps/auth/node_modules/@types/react"],
+      "react/jsx-runtime": [
+        "../../apps/auth/node_modules/@types/react/jsx-runtime"
+      ],
+      "react-hook-form": ["../../apps/auth/node_modules/react-hook-form"],
+      "zod": ["../../apps/auth/node_modules/zod"],
+      "@modules/org": ["./src/index.ts"],
+      "@modules/org/*": ["./src/*"],
+      "@modules/org/server": ["./src/server/index.ts"],
+      "@modules/auth": ["../auth/src/index.ts"],
+      "@modules/auth/*": ["../auth/src/*"],
+      "@modules/security/client": ["../security/src/client/index.ts"],
+      "@modules/security/server": ["../security/src/server/index.ts"],
+      "@modules/security/server/*": ["../security/src/server/*"],
+      "@modules/security/utils": ["../security/src/utils/index.ts"],
+      "@modules/admin/server": ["../admin/src/server/index.ts"],
+      "@modules/admin/utils": ["../admin/src/utils/index.ts"],
+      "@modules/activity/server": ["../activity/src/server/index.ts"],
+      "@modules/ai-usage/server": ["../ai-usage/src/server/index.ts"],
+      "@modules/appearance-preferences/server": [
+        "../appearance-preferences/src/server/index.ts"
+      ],
+      "@modules/billing/server": ["../billing/src/server/index.ts"],
+      "@modules/connected-accounts/server": [
+        "../connected-accounts/src/server/index.ts"
+      ],
+      "@modules/location/server": ["../location/src/server/index.ts"],
+      "@modules/notifications/server": ["../notifications/src/server/index.ts"],
+      "@modules/privacy/server": ["../privacy/src/server/index.ts"],
+      "@modules/regional-preferences/server": [
+        "../regional-preferences/src/server/index.ts"
+      ],
+      "@modules/sessions/server": ["../sessions/src/server/index.ts"],
+      "@modules/sessions/utils": ["../sessions/src/utils/index.ts"],
+      "@modules/sso/server": ["../sso/src/server/index.ts"],
+      "@modules/storage/server": ["../storage/src/server/index.ts"],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/t3-env/server": ["../../packages/t3-env/src/server/env.ts"],
+      "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"],
+      "@packages/orpc/server": [
+        "../../packages/orpc/src/integration/orpc.server.ts"
+      ],
+      "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "@packages/drizzle/schema": [
+        "../../packages/drizzle/src/schema/index.ts"
+      ],
+      "@packages/logger/server": [
+        "../../packages/logger/src/integration/logger.integration.ts"
+      ],
+      "better-auth": ["../../packages/better-auth/node_modules/better-auth"],
+      "better-auth/api": [
+        "../../packages/better-auth/node_modules/better-auth/dist/api"
+      ],
+      "better-auth/plugins/organization": [
+        "../../packages/better-auth/node_modules/better-auth/dist/plugins/organization"
+      ],
+      "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"]
+    }
+  },
+  "include": ["src", "src/types/**/*.d.ts"],
+  "exclude": ["node_modules"]
+}

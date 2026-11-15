@@ -1,0 +1,25 @@
+{
+  "name": "@packages/react-query",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@tanstack/react-query-devtools": "^5.106.1",
+    "@types/react": "^19",
+    "react": "19.3.1",
+    "typescript": "^7"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

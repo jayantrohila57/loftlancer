@@ -1,0 +1,22 @@
+{
+  "name": "@packages/posthog",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "SKIP_ENV_VALIDATION=true tsc --noEmit"
+  },
+  "dependencies": {
+    "@packages/t3-env": "workspace:*",
+    "react": "19.3.1"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@types/node": "^26",
+    "@types/react": "^19",
+    "typescript": "^7"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "user_permission" ADD COLUMN "location_generation" integer DEFAULT 0 NOT NULL;

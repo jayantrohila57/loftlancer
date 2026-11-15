@@ -1,0 +1,17 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@packages/ui/components/*": ["./src/integration/components/*"],
+      "@packages/ui/components/reui/*": ["./src/components/reui/*"],
+      "@packages/ui/lib/*": ["./src/utils/*"]
+    }
+  },
+  "include": ["src", "src/types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@modules/appearance-preferences",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {},
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client/index.ts",
+    "./server": "./src/server/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./effects": "./src/client/components/appearance-preferences.effects.client.tsx"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "typescript": "^7"
+  }
+}

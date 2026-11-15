@@ -1,0 +1,21 @@
+---
+description: Stop on vague multi-step requests; write and approve docs/work/requirements/*.md before implementing
+alwaysApply: true
+---
+
+# Requirements first
+
+**Normative:** [docs/workflow/04-requirements-first.md](../../docs/workflow/04-requirements-first.md)
+
+When the user asks for something **broad or vague** (e.g. “add Better Auth”, “complete setup”, “wire auth end to end”, “make it production ready”):
+
+1. **Do not** add packages, plugins, Docker, migrations, or large UI until a requirements doc is **approved**.
+2. **Ask** end-to-end questions (DB, plugins, email, roles, layers, UX flow). Use structured questions when choices exist.
+3. **Write** `docs/work/requirements/<slug>.md` (template in [docs/work/requirements/README.md](../../docs/work/requirements/README.md)).
+4. **Validate** the doc for gaps; list open questions in the doc; ask the user until resolved.
+5. **Wait** for explicit sign-off (“approved”, “go implement”) recorded in the doc.
+6. **Then** implement only what the doc lists, in small slices; update the doc if scope changes.
+
+**Do not** fill vendor defaults (Better Auth org plugin, Resend, Docker Postgres, etc.) without approval in the requirements doc.
+
+Active draft example: [docs/work/requirements/better-auth.md](../../docs/work/requirements/better-auth.md).

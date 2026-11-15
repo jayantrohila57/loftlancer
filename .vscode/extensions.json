@@ -1,0 +1,4 @@
+{
+  "recommendations": ["fronterior.biome-monorepo"],
+  "unwantedRecommendations": ["biomejs.biome"]
+}

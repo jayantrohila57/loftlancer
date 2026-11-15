@@ -1,0 +1,35 @@
+---
+description: MUST follow when building module screen organisms, client leaves, hooks, and icons
+globs: modules/**/src/screens/**/*,modules/**/src/hooks/**/*,modules/**/src/domain/**/*
+alwaysApply: false
+---
+
+# Module organisms & client leaves
+
+**Normative (read before coding):** [docs/modules/organism-components.md](../../docs/modules/organism-components.md) · [ui-tree.md](../../docs/modules/ui-tree.md)
+
+Applies to **`@modules/<slug>/src/screens/**`**, plus **`hooks/`** and **`icons/`** that exist only to support those screens.
+
+## MUST
+
+1. **Server screen** composes shell + layout only; interactivity lives in client leaves (or dynamic-loaded leaves).
+2. **No prop drilling** — do not pass `locale`, paths, `onClick`, `value`, `pending`, `error`, or handlers parent → child. Use **`src/hooks/`** (locale, paths, API) and **context** (sibling form state). Leaves render as **`<Leaf />` with no props**.
+3. **Self-contained leaves** — each action = one unit (e.g. icon + `Button` + hook + toast). Do **not** split into dumb `Button({ onClick })` + orchestrating parent.
+4. **UI** — use `FormKit` for forms and `FieldKit` for standalone fields, per [form policy](../../docs/features/form.md). Use `@packages/ui` `Button` with **`loading={pending}`** for actions. Icons on primary actions (`src/icons/` or consistent SVG).
+5. **Async UX** — **`toastManager.promise`** for mutations; app layout includes **`ToastProvider`**. **`catch`** after promise when toast shows failure (avoid Next dev overlay). Actionable error copy in **`src/domain/`** when APIs omit `message`.
+6. **Dynamic boundaries** — load client leaves from the server screen with **`next/dynamic`**, **`ssr: false`**, and a **skeleton** sized from colocated **`*-layout.ts`** tokens (same gaps/heights as live UI).
+7. **Apps** — routes **`export default Screen`** only; no `params.lang` or callback props into module screens.
+8. **Paths** — locale URLs include app **`basePath`** from public env (e.g. auth `/auth/...`), not bare `/en-us/...`.
+9. **Module `tsconfig.json`** — add paths for **`next/dynamic`** and every **`@packages/ui/components/*`** (and **`@packages/t3-env/client`**) the screen tree imports.
+
+## MUST NOT
+
+- Presentational atoms that only exist to receive drilled props.
+- Inline error paragraphs for API failures when toast is the pattern for that flow.
+- Skeleton heights guessed without shared layout tokens.
+
+## Finish
+
+**`pnpm check`** before done.
+
+Reference implementation: `@modules/auth` → `src/screens/sign-in/`.

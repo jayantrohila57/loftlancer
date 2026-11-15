@@ -1,0 +1,28 @@
+{
+  "name": "@features/theme",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@packages/ui": "workspace:*",
+    "@teispace/next-themes": "^3.1.0",
+    "lucide-react": "^1.67.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "^4.6.7",
+    "next-intl": "^4.14.9"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@types/node": "^26",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^7"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@packages/crypto",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "SKIP_ENV_VALIDATION=true tsc --noEmit"
+  },
+  "dependencies": {
+    "@packages/t3-env": "workspace:*"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@types/node": "^26",
+    "typescript": "^7"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/config/crypto.config.ts"
+  }
+}

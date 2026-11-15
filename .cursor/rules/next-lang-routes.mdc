@@ -1,0 +1,9 @@
+---
+description: Locale route segment default
+globs: apps/**/src/app/**
+alwaysApply: false
+---
+
+# Locale routes
+
+Default segment **`[lang]`** unless app i18n config overrides. Wiring: [docs/features/i18n/layout.md](../../docs/features/i18n/layout.md).

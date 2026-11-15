@@ -1,0 +1,9 @@
+---
+description: i18n proxy matcher literal
+globs: apps/**/proxy.ts
+alwaysApply: false
+---
+
+# i18n proxy
+
+[docs/features/i18n/proxy-next.md](../../docs/features/i18n/proxy-next.md)

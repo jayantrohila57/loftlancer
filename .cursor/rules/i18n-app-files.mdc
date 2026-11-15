@@ -1,0 +1,9 @@
+---
+description: App i18n file layout
+globs: apps/**/src/shared/i18n/**
+alwaysApply: false
+---
+
+# i18n app files
+
+[docs/features/i18n/app-files.md](../../docs/features/i18n/app-files.md)

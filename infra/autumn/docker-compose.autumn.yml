@@ -1,0 +1,105 @@
+# Autumn app containers only — shared Postgres (infra/db/postgres) + Redis (infra/redis).
+# Does NOT start Postgres, Valkey, or Redis. Requires clone: infra/autumn/upstream (see README.md).
+#
+# From repo root:
+#   cd infra/autumn && docker compose -f docker-compose.autumn.yml up --build
+#
+# Linux: host.docker.internal via extra_hosts (host-gateway).
+
+# Project name avoids stale container-name conflicts after partial builds.
+name: loftlancer-autumn-dev
+
+x-host-deps: &host-deps
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+services:
+  elasticmq:
+    image: softwaremill/elasticmq-native:latest
+    container_name: fk-autumn-elasticmq
+    volumes:
+      - ./upstream/scripts/setup/elasticmq.conf:/opt/elasticmq.conf:ro
+    command: ["-Dconfig.file=/opt/elasticmq.conf"]
+    restart: unless-stopped
+
+  vite:
+    container_name: fk-autumn-vite
+    <<: *host-deps
+    build:
+      dockerfile: docker/dev.dockerfile
+      context: ./upstream
+      target: vite
+    ports:
+      - "${AUTUMN_VITE_PORT:-4001}:3000"
+    volumes:
+      - ./upstream/vite:/app/vite
+      - vite-temp:/app/vite/node_modules/.vite-temp
+      - ./overrides/vite:/loftlancer-overrides:ro
+      - shared-dist:/app/shared/dist
+    environment:
+      NODE_ENV: development
+      VITE_BACKEND_URL: ${AUTUMN_PUBLIC_API_URL:-http://localhost:4002}
+      VITE_FRONTEND_URL: ${AUTUMN_PUBLIC_DASHBOARD_URL:-http://localhost:4001}
+      LOFTLANCER_VITE_PUBLIC_PORT: ${AUTUMN_VITE_PORT:-4001}
+    # Nested file bind-mounts over /app/vite are unreliable after recreate; copy on start.
+    command: >
+      sh -c "cp -f /loftlancer-overrides/auth-client.ts /app/vite/src/lib/auth-client.ts &&
+             cp -f /loftlancer-overrides/SignIn.tsx /app/vite/src/views/auth/SignIn.tsx &&
+             cp -f /loftlancer-overrides/loftlancer.vite.config.ts /app/vite/loftlancer.vite.config.ts &&
+             exec bunx vite --host --config loftlancer.vite.config.ts"
+    restart: unless-stopped
+
+  server:
+    container_name: fk-autumn-server
+    <<: *host-deps
+    build:
+      dockerfile: docker/dev.dockerfile
+      context: ./upstream
+      target: server
+    ports:
+      - "${AUTUMN_API_PORT:-4002}:8080"
+    volumes:
+      - ./upstream/server:/app/server
+      - ./upstream/scripts:/app/scripts:ro
+      - ./overrides/server/auth.ts:/app/server/src/utils/auth.ts:ro
+      - ./overrides/server/loftlancer-identity.mjs:/app/server/src/utils/loftlancer-identity.mjs:ro
+      - shared-dist:/app/shared/dist
+    environment:
+      NODE_ENV: development
+      LOFTLANCER_OIDC_CLIENT_ID: ${LOFTLANCER_OIDC_CLIENT_ID:?configure Loftlancer OIDC client}
+      LOFTLANCER_OIDC_CLIENT_SECRET: ${LOFTLANCER_OIDC_CLIENT_SECRET:?configure Loftlancer OIDC client}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@host.docker.internal:4003/autumn}
+      REDIS_URL: ${REDIS_URL:-redis://host.docker.internal:4004}
+      QUEUE_URL: ${AUTUMN_QUEUE_URL:-redis://host.docker.internal:4004/1}
+      MISC_CACHE_DRAGONFLY_PUBLIC_URL: ${REDIS_URL:-redis://host.docker.internal:4004}
+      CACHE_V2_DRAGONFLY_URL: ${REDIS_URL:-redis://host.docker.internal:4004}
+      SQS_QUEUE_URL_V2: http://elasticmq:9324/000000000000/autumn.fifo
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    restart: unless-stopped
+
+  workers:
+    container_name: fk-autumn-workers
+    <<: *host-deps
+    build:
+      dockerfile: docker/dev.dockerfile
+      context: ./upstream
+      target: workers
+    volumes:
+      - ./upstream/server:/app/server
+      - ./upstream/scripts:/app/scripts:ro
+      - shared-dist:/app/shared/dist
+    environment:
+      NODE_ENV: development
+      REDIS_URL: ${REDIS_URL:-redis://host.docker.internal:4004}
+      QUEUE_URL: ${AUTUMN_QUEUE_URL:-redis://host.docker.internal:4004/1}
+      MISC_CACHE_DRAGONFLY_PUBLIC_URL: ${REDIS_URL:-redis://host.docker.internal:4004}
+      CACHE_V2_DRAGONFLY_URL: ${REDIS_URL:-redis://host.docker.internal:4004}
+      SQS_QUEUE_URL_V2: http://elasticmq:9324/000000000000/autumn.fifo
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    restart: unless-stopped
+
+volumes:
+  shared-dist:
+  vite-temp:

@@ -1,0 +1,13 @@
+---
+description: Module domain UI and API ownership
+globs: modules/**/*
+alwaysApply: false
+---
+
+# Module domain
+
+[docs/modules/domain-architecture.md](../../docs/modules/domain-architecture.md) · [ui-tree.md](../../docs/modules/ui-tree.md) · [organism-components.md](../../docs/modules/organism-components.md)
+
+Domain code stays in `@modules/<slug>`; server-first; client at leaves. **Building screen UI:** read [organism-components.md](../../docs/modules/organism-components.md) first (Cursor: `module-organism-components.mdc`).
+
+Each product capability owns a standalone `modules/<slug>` directory. **MUST NOT** create nested domain/submodule folders under a module; group files by technical responsibility inside that module. Import sibling modules through their public entry points.

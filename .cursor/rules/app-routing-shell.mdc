@@ -1,0 +1,11 @@
+---
+description: App routes are shells — domain code lives in modules
+globs: apps/**/src/app/**/*
+alwaysApply: false
+---
+
+# App routing shell
+
+[docs/apps/routing-shell.md](../../docs/apps/routing-shell.md) · [page-convention.md](../../docs/apps/page-convention.md)
+
+**MUST NOT** implement domain UI/API in `page.tsx`. Default-export from `@modules/<slug>`.

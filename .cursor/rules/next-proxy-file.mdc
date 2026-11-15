@@ -1,0 +1,9 @@
+---
+description: Use src/proxy.ts not middleware.ts
+globs: apps/**/proxy.ts,apps/**/middleware.ts
+alwaysApply: false
+---
+
+# Proxy file
+
+**`src/proxy.ts`** only — not `middleware.ts`. Next docs: `node_modules/next/dist/docs/`.

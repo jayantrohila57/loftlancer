@@ -1,0 +1,9 @@
+---
+description: No explicit any
+globs: apps/**/*.{ts,tsx},features/**/*.{ts,tsx},packages/**/*.{ts,tsx},modules/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# No `any`
+
+**MUST NOT** `: any` / `as any`. Policy: [packages/typescript-config/README.md](../../packages/typescript-config/README.md).

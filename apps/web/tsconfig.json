@@ -1,0 +1,72 @@
+{
+  "extends": "@packages/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@features/font": ["../../features/font/src/index.ts"],
+      "@features/font/*": ["../../features/font/src/*"],
+      "@features/i18n": ["../../features/i18n/src/index.ts"],
+      "@features/i18n/plugin": [
+        "../../features/i18n/src/capability/i18n.plugin.ts"
+      ],
+      "@features/i18n/setup": [
+        "../../features/i18n/src/capability/i18n.setup.ts"
+      ],
+      "@features/i18n/locale-switcher": [
+        "../../features/i18n/src/capability/i18n.locale-switcher.tsx"
+      ],
+      "@features/theme": ["../../features/theme/src/index.ts"],
+      "@features/theme/*": ["../../features/theme/src/*"],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "@modules/shell": ["../../modules/shell/src/index.ts"],
+      "@modules/shell/*": ["../../modules/shell/src/*"],
+      "@modules/auth": ["../../modules/auth/src/index.ts"],
+      "@modules/auth/*": ["../../modules/auth/src/*"],
+      "@modules/connected-accounts/utils": [
+        "../../modules/connected-accounts/src/utils/index.ts"
+      ],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/posthog": ["../../packages/posthog/src/index.ts"],
+      "@modules/health": ["../../modules/health/src/index.ts"],
+      "@modules/health/*": ["../../modules/health/src/*"],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"],
+      "lucide-react": ["./node_modules/lucide-react"],
+      "react-hook-form": ["../auth/node_modules/react-hook-form"],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"],
+      "next/navigation": ["../auth/node_modules/next/navigation"],
+      "@modules/ai-usage": ["../../modules/ai-usage/src/index.ts"],
+      "@modules/ai-usage/*": ["../../modules/ai-usage/src/*"],
+      "@modules/ai-usage/server": [
+        "../../modules/ai-usage/src/server/index.ts"
+      ],
+      "zod": ["../auth/node_modules/zod"],
+      "@modules/whats-new": ["../../modules/whats-new/src/index.ts"],
+      "@modules/whats-new/*": ["../../modules/whats-new/src/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "global.d.ts",
+    "next.config.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mts",
+    "../../modules/health/src/**/*.ts",
+    "../../modules/shell/src/**/*.ts",
+    "../../modules/shell/src/**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "../../modules/whats-new/src/**/*.ts",
+    "../../modules/whats-new/src/**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
+}

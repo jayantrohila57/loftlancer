@@ -1,0 +1,25 @@
+{
+  "name": "@packages/orpc",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@orpc/client": "^1.0.0",
+    "@orpc/openapi": "1.16.2",
+    "@orpc/server": "^1.0.0",
+    "@orpc/tanstack-query": "^1.0.0",
+    "@orpc/zod": "1.16.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "typescript": "^7"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/integration/orpc.server.ts"
+  }
+}

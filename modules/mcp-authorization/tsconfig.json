@@ -1,0 +1,33 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@modules/mcp-authorization/*": ["./src/*"],
+      "@packages/mcp": ["../../packages/mcp/src/index.ts"],
+      "@packages/mcp/server": ["../../packages/mcp/src/server.ts"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@packages/ui/components/button": [
+        "../../packages/ui/src/integration/components/button.tsx"
+      ],
+      "@packages/ui/components/skeleton": [
+        "../../packages/ui/src/integration/components/skeleton.tsx"
+      ],
+      "@packages/ui/components/toast": [
+        "../../packages/ui/src/integration/components/toast.tsx"
+      ],
+      "next-intl": ["../../apps/auth/node_modules/next-intl"],
+      "react": ["../../apps/auth/node_modules/@types/react"]
+    }
+  },
+  "include": ["src"]
+}

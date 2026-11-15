@@ -1,0 +1,268 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.6.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/.next",
+      "!**/dist",
+      "!**/.turbo",
+      "!**/coverage",
+      "!infra/autumn/upstream",
+      "!infra/autumn/overrides",
+      "!**/pnpm-lock.yaml",
+      "!apps/auth/public/maplibre-gl-worker.mjs",
+      "!apps/auth/public/maplibre-gl-shared.mjs"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80,
+    "lineEnding": "lf"
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "asNeeded",
+      "trailingCommas": "es5"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "tailwind": {
+    "attributes": ["class", "className"],
+    "mergeFunctions": ["cn", "clsx"],
+    "stylesheet": "./packages/ui/src/integration/styles/globals.css",
+    "variantFunctions": ["cva"]
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "correctness": {
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "error",
+        "useHookAtTopLevel": "error"
+      },
+      "style": {
+        "noNonNullAssertion": "error",
+        "useImportType": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "style": "separatedType"
+          }
+        },
+        "noJsxLiterals": "error",
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {}
+        }
+      },
+      "suspicious": {
+        "noExplicitAny": "error"
+      },
+      "nursery": {
+        "noFloatingPromises": "error",
+        "useTailwindSortedClasses": {
+          "level": "warn",
+          "fix": "safe",
+          "options": {}
+        }
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "packages/ui/src/integration/**",
+        "packages/ui/src/utils/composer*.ts"
+      ],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noSvgWithoutTitle": "off",
+            "useSemanticElements": "off",
+            "noStaticElementInteractions": "off"
+          },
+          "correctness": {
+            "noComponentHookFactories": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/auth/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "next/link": "Use @/shared/i18n/auth.i18n for Link, useRouter, usePathname and redirect.",
+                  "next/router": "Use @/shared/i18n/auth.i18n for Link, useRouter, usePathname and redirect.",
+                  "next/navigation": {
+                    "importNames": [
+                      "useRouter",
+                      "usePathname",
+                      "redirect",
+                      "*"
+                    ],
+                    "message": "Use @/shared/i18n/auth.i18n for Link, useRouter, usePathname and redirect."
+                  },
+                  "next-intl/navigation": "Use the existing app navigation wrappers; createNavigation is owned by @features/i18n."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/console/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "next/link": "Use @/shared/i18n/console.i18n for Link, useRouter, usePathname and redirect.",
+                  "next/router": "Use @/shared/i18n/console.i18n for Link, useRouter, usePathname and redirect.",
+                  "next/navigation": {
+                    "importNames": [
+                      "useRouter",
+                      "usePathname",
+                      "redirect",
+                      "*"
+                    ],
+                    "message": "Use @/shared/i18n/console.i18n for Link, useRouter, usePathname and redirect."
+                  },
+                  "next-intl/navigation": "Use the existing app navigation wrappers; createNavigation is owned by @features/i18n."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/studio/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "next/link": "Use @/shared/i18n/studio.i18n for Link, useRouter, usePathname and redirect.",
+                  "next/router": "Use @/shared/i18n/studio.i18n for Link, useRouter, usePathname and redirect.",
+                  "next/navigation": {
+                    "importNames": [
+                      "useRouter",
+                      "usePathname",
+                      "redirect",
+                      "*"
+                    ],
+                    "message": "Use @/shared/i18n/studio.i18n for Link, useRouter, usePathname and redirect."
+                  },
+                  "next-intl/navigation": "Use the existing app navigation wrappers; createNavigation is owned by @features/i18n."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "next/link": "Use @/shared/i18n/web.i18n for Link, useRouter, usePathname and redirect.",
+                  "next/router": "Use @/shared/i18n/web.i18n for Link, useRouter, usePathname and redirect.",
+                  "next/navigation": {
+                    "importNames": [
+                      "useRouter",
+                      "usePathname",
+                      "redirect",
+                      "*"
+                    ],
+                    "message": "Use @/shared/i18n/web.i18n for Link, useRouter, usePathname and redirect."
+                  },
+                  "next-intl/navigation": "Use the existing app navigation wrappers; createNavigation is owned by @features/i18n."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "modules/**",
+        "features/**",
+        "!features/i18n/src/capability/i18n.navigation.ts",
+        "!features/i18n/src/capability/i18n.redirect-external.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "next/link": "Use the owning app createNavigation wrappers; shared UI receives navigation through the shell navigation bindings.",
+                  "next/router": "Use the owning app createNavigation wrappers; shared UI receives navigation through the shell navigation bindings.",
+                  "next/navigation": {
+                    "importNames": [
+                      "useRouter",
+                      "usePathname",
+                      "redirect",
+                      "*"
+                    ],
+                    "message": "Use the owning app createNavigation wrappers; shared UI receives navigation through the shell navigation bindings."
+                  },
+                  "next-intl/navigation": "Use the existing app navigation wrappers; createNavigation is owned by @features/i18n."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/ui/src/components/examples/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noJsxLiterals": "off"
+          }
+        }
+      }
+    }
+  ]
+}

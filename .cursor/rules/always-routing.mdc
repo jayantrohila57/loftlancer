@@ -1,0 +1,8 @@
+---
+description: Route to AGENTS and layer docs; verify before done
+alwaysApply: true
+---
+
+# Routing
+
+[AGENTS.md](../../AGENTS.md) → [docs/README.md](../../docs/README.md) → **`docs/{layer}/`**. **Broad/vague asks:** [docs/workflow/04-requirements-first.md](../../docs/workflow/04-requirements-first.md) before code. **Module screen / client UI** (`modules/**/src/screens`, supporting `hooks/` & `icons/`): [docs/modules/organism-components.md](../../docs/modules/organism-components.md) · rule **`module-organism-components.mdc`**. **Auth layout chrome:** [auth-shell-compound.mdc](./auth-shell-compound.mdc). Smallest diff. **`pnpm check`** before done.

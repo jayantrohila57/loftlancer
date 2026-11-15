@@ -1,0 +1,27 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "features/*"
+  - "modules/*"
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  msw: false
+  protobufjs: true
+  "@parcel/watcher": true
+  "@swc/core": true
+
+minimumReleaseAgeExclude:
+  - "@better-auth/core@1.7.17 || 1.7.19"
+  - "@better-auth/drizzle-adapter@1.7.17 || 1.7.19"
+  - "@better-auth/kysely-adapter@1.7.17 || 1.7.19"
+  - "@better-auth/memory-adapter@1.7.17 || 1.7.19"
+  - "@better-auth/mongo-adapter@1.7.17 || 1.7.19"
+  - "@better-auth/prisma-adapter@1.7.17 || 1.7.19"
+  - "@better-auth/telemetry@1.7.17 || 1.7.19"
+  - better-auth@1.7.17 || 1.7.19
+  - "@better-auth/sso@1.7.19"
+  - "@better-auth/mcp@1.7.19"
+  - "@better-auth/oauth-provider@1.7.19"

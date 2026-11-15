@@ -1,0 +1,58 @@
+{
+  "$schema": "https://v2-11-11.turborepo.dev/schema.json",
+  "ui": "tui",
+  "globalEnv": [
+    "SKIP_ENV_VALIDATION",
+    "NODE_ENV",
+    "DATABASE_URL",
+    "AUTH_SECURITY_TEST_DATABASE_URL",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "BETTER_AUTH_DEVICE_CLIENT_IDS",
+    "APP_PUBLIC_URL",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET",
+    "ENCRYPTION_KEY",
+    "RESEND_API_KEY",
+    "NEXT_PUBLIC_AUTH_APP_URL",
+    "NEXT_PUBLIC_SENTRY_DSN",
+    "NEXT_PUBLIC_APP_VERSION",
+    "SENTRY_DSN",
+    "SENTRY_ORG",
+    "SENTRY_PROJECT",
+    "SENTRY_AUTH_TOKEN",
+    "SENTRY_TEST_TOKEN",
+    "OBSERVABILITY_TRACING_PROVIDER",
+    "OBSERVABILITY_TRACING_ENABLED",
+    "OTEL_EXPORTER_OTLP_ENDPOINT",
+    "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT",
+    "OTEL_EXPORTER_OTLP_HEADERS",
+    "OTEL_SERVICE_NAME",
+    "NEXT_PUBLIC_POSTHOG_KEY",
+    "NEXT_PUBLIC_POSTHOG_HOST",
+    "MCP_RESOURCE_URL",
+    "MCP_RATE_LIMIT_WINDOW_MS",
+    "MCP_RATE_LIMIT_MAX_REQUESTS",
+    "MCP_RATE_LIMIT_MAX_WRITE",
+    "MCP_RATE_LIMIT_MAX_REVEAL",
+    "VERCEL_SERVICES",
+    "NEXT_BASE_PATH",
+    "RELEASE_REPO_URL"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

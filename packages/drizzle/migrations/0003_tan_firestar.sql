@@ -1,0 +1,1 @@
+ALTER TABLE "appearance_preferences" ADD COLUMN "zoom_level" text;

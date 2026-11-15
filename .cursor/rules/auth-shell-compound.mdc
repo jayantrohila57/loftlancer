@@ -1,0 +1,41 @@
+---
+description: Auth app — MUST use Shell compound layout from @packages/ui/components/shell
+globs:
+  - apps/auth/**/*
+  - modules/auth/**/*
+  - modules/shell/**/*
+  - modules/{activity,profile,sessions,location,connected-accounts,security}/**/*
+alwaysApply: false
+---
+
+# Auth — Shell compound layout
+
+**Pair with:** [shell-layout.mdc](./shell-layout.mdc) · [shell-dashboard-scroll.mdc](./shell-dashboard-scroll.mdc)
+
+Import: `import Shell from "@packages/ui/components/shell"` (default export).
+
+## MUST
+
+| Area | Primitive |
+| ---- | --------- |
+| Root `[lang]/layout.tsx` providers | `Shell.Host` |
+| `(auth)/` route group | `Shell.Frame` → `Shell.Main variant="dashboard"` |
+| Account app chrome | `ShellLayout` (`@features/shell`) — uses `Shell.Inset` + `Shell.Bar` + `Shell.Main` |
+| Account section `layout.tsx` | `AuthAccountSectionLayout` (`@/shared/shell/auth-account-section-layout`) = `Shell.Panel` + `ShellSubHeader` + `Shell.Scroll` |
+| Account page body | `AccountPageSection` → `Shell.Section variant="dashboard"` |
+| Auth center screens (sign-in, welcome) | `Shell.Section variant="center"` + `Shell.Stack variant="form"` for column width |
+| Account module page bodies | `Shell.Section variant="dashboard"` (often `className="p-2"`) |
+| Account content groups | `ShellAccountFrame` → `Shell.Section` + `Frame` (`@modules/shell`) |
+
+## MUST NOT
+
+- Raw `<div className="flex min-h-0 flex-1 …">` (or `overflow-y-auto` scroll panes) for app/section chrome — use `Shell.Panel` / `Shell.Scroll` or `AuthAccountSectionLayout`.
+- Raw `<header className="h-12 shrink-0 border-b …">` for shell chrome — use `Shell.Bar` or `ShellSubHeader` / `Shell.Header`.
+- Second `Shell.Frame` inside an existing `Shell.Frame` (except `Shell.Host` at document root).
+- Rebuild sidebar inset stack by hand — use `ShellLayout` or `Shell.Inset variant="dashboard"` inside `SidebarInset`.
+
+## `@features/shell` vs `@packages/ui`
+
+- **Geometry only** → `Shell.*` in UI package.
+- **Product chrome** (breadcrumbs, nav context, wired subheader) → `@features/shell`.
+- **Account tabs / frames** → `@modules/shell`.

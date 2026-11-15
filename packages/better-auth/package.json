@@ -1,0 +1,32 @@
+{
+  "name": "@packages/better-auth",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "SKIP_ENV_VALIDATION=true tsc --noEmit"
+  },
+  "dependencies": {
+    "@better-auth/mcp": "1.7.19",
+    "@better-auth/oauth-provider": "1.7.19",
+    "@better-auth/sso": "1.7.19",
+    "@packages/drizzle": "workspace:*",
+    "@packages/mcp": "workspace:*",
+    "@packages/logger": "workspace:*",
+    "@packages/resend": "workspace:*",
+    "@packages/t3-env": "workspace:*",
+    "autumn-js": "1.5.11",
+    "better-auth": "^1.7.19",
+    "better-call": "1.4.5",
+    "jose": "^6.2.16"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@types/node": "^26",
+    "typescript": "^7"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/integration/better-auth.client.ts"
+  }
+}

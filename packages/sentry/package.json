@@ -1,0 +1,44 @@
+{
+  "name": "@packages/sentry",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "SKIP_ENV_VALIDATION=true tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./sink": "./src/utils/sentry.sink.ts",
+    "./test": "./src/utils/sentry.test-guard.ts",
+    "./test-route": "./src/integration/sentry.test-route.ts",
+    "./identity": "./src/integration/sentry.identity.client.tsx",
+    "./instrument": "./src/config/sentry.instrument.ts",
+    "./instrument-browser": "./src/config/sentry.instrument.browser.ts",
+    "./instrument-server": "./src/config/sentry.instrument-server.ts",
+    "./next-config": "./src/integration/sentry.next-config.ts"
+  },
+  "dependencies": {
+    "@packages/t3-env": "workspace:*",
+    "react": "19.3.1"
+  },
+  "peerDependencies": {
+    "@sentry/core": ">=10.0.0",
+    "@sentry/nextjs": ">=10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@sentry/core": {
+      "optional": true
+    },
+    "@sentry/nextjs": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@sentry/core": "^11.8.0",
+    "@sentry/nextjs": "^11.8.0",
+    "@types/node": "^26",
+    "@types/react": "^19",
+    "typescript": "^7"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "extends": "@packages/typescript-config/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@packages/better-auth": ["./src/index.ts"],
+      "@packages/better-auth/*": ["./src/*"],
+      "@packages/drizzle": ["../drizzle/src/index.ts"],
+      "@packages/mcp": ["../mcp/src/index.ts"],
+      "@packages/mcp/server": ["../mcp/src/server.ts"],
+      "@packages/drizzle/schema": ["../drizzle/src/schema/index.ts"],
+      "@packages/resend": ["../resend/src/index.ts"],
+      "@packages/t3-env/server": ["../t3-env/src/server/env.ts"],
+      "@packages/t3-env/client": ["../t3-env/src/client/env.ts"],
+      "better-auth": ["./node_modules/better-auth"],
+      "better-auth/plugins/organization": [
+        "./node_modules/better-auth/dist/plugins/organization"
+      ]
+    }
+  },
+  "include": ["src", "better-auth.config.ts"],
+  "exclude": ["node_modules"]
+}

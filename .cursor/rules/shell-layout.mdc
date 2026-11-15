@@ -1,0 +1,29 @@
+---
+description: Shell compound layout — Frame, Main, Section; Sidebar for nav
+globs:
+  - apps/**/src/app/**/*
+  - modules/**/*
+  - packages/ui/**/shell.tsx
+alwaysApply: false
+---
+
+# Shell layout
+
+**Dashboard scroll** (fixed sidebar/header/subheader, one page scroller): [shell-dashboard-scroll.mdc](./shell-dashboard-scroll.mdc).
+
+Import: `@packages/ui/components/shell` (default export). Nav: `@packages/ui/components/sidebar` (`SidebarProvider`, `Sidebar`, `SidebarInset`) — **not** `Shell.Aside`.
+
+| Layer | Use |
+| ----- | --- |
+| App / host `layout.tsx` | `Shell.Frame` → `SidebarProvider` → `Sidebar` + `SidebarInset` → **`Shell.Inset variant="dashboard"`** → `Shell.Bar` / app header → `Shell.Main variant="dashboard"` → `{children}` |
+| Section `layout.tsx` | `ShellSectionLayout` (= **`Shell.Panel`** + **`Shell.Scroll`**) wrapping **`Shell.SubHeader`** + optional **`Shell.Subnav`** |
+| Auth-style (no sidebar) | `Shell.Frame` → header → `Shell.Main variant="dashboard"` only |
+| Route `page.tsx` / module page | Wrap body in `Shell.Section` (`dashboard`, `flexed`, `center`, or `full`) — **MUST NOT** rebuild `Frame` on every page |
+
+**Compound regions** (`@packages/ui/components/shell`): `Host`, `Frame`, `Bar`, `Inset`, `Main`, `Panel`, `Scroll`, `Stack`, `SubHeader`, `Subnav`, `Section`, `Header`, `Footer`, `Aside`.
+
+**MUST NOT** hand-roll layout `<div>`s for frame, inset, panel, scroll, subheader, or app bar chrome — use `Shell.*` or `@/shared/shell/auth-account-section-layout` in the auth app ([auth-shell-compound.mdc](./auth-shell-compound.mdc)).
+
+**MUST** use `Shell.Header variant="app"` only inside `Shell.Frame` if you use `Shell.Header` at all; **MUST NOT** use deprecated `default` / `flexed` header variants.
+
+Keep chrome in one layout; pages stay `Shell.Section` only.

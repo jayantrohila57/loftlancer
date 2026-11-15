@@ -1,0 +1,1 @@
+export { AccountNotificationsView } from "./client"

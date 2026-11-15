@@ -1,0 +1,252 @@
+{
+  "extends": "@packages/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@features/action": ["../../features/action/src/index.ts"],
+      "@features/command": ["../../features/command/src/index.ts"],
+      "@features/font": ["../../features/font/src/index.ts"],
+      "@features/navigation": ["../../features/navigation/src/index.ts"],
+      "@features/font/*": ["../../features/font/src/*"],
+      "@features/i18n": ["../../features/i18n/src/index.ts"],
+      "@features/i18n/plugin": [
+        "../../features/i18n/src/capability/i18n.plugin.ts"
+      ],
+      "@features/i18n/setup": [
+        "../../features/i18n/src/capability/i18n.setup.ts"
+      ],
+      "@features/i18n/locale-switcher": [
+        "../../features/i18n/src/capability/i18n.locale-switcher.tsx"
+      ],
+      "@features/i18n/pathname": [
+        "../../features/i18n/src/utils/i18n.pathname.ts"
+      ],
+      "@features/i18n/constants": [
+        "../../features/i18n/src/constants/i18n.constants.ts"
+      ],
+      "@features/i18n/browser-defaults": [
+        "../../features/i18n/src/utils/i18n.browser-defaults.ts"
+      ],
+      "@features/theme": ["../../features/theme/src/index.ts"],
+      "@features/theme/*": ["../../features/theme/src/*"],
+      "@features/form": ["../../features/form/src/index.ts"],
+      "@packages/ui/components/shell": [
+        "../../packages/ui/src/integration/components/shell.tsx"
+      ],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
+      "zod": ["./node_modules/zod"],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "@features/shell/*": ["../../features/shell/src/*"],
+      "@modules/shell": ["../../modules/shell/src/index.ts"],
+      "@modules/shell/*": ["../../modules/shell/src/*"],
+      "@modules/health": ["../../modules/health/src/index.ts"],
+      "@modules/health/*": ["../../modules/health/src/*"],
+      "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],
+      "@packages/mcp": ["../../packages/mcp/src/index.ts"],
+      "@packages/mcp/server": ["../../packages/mcp/src/server.ts"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "better-auth": ["../../packages/better-auth/node_modules/better-auth"],
+      "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "@packages/logger": ["../../packages/logger/src/index.ts"],
+      "@packages/logger/server": [
+        "../../packages/logger/src/integration/logger.integration.ts"
+      ],
+      "@packages/drizzle/schema": [
+        "../../packages/drizzle/src/schema/index.ts"
+      ],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "react": ["./node_modules/@types/react"],
+      "react-hook-form": ["./node_modules/react-hook-form"],
+      "lucide-react": ["./node_modules/lucide-react"],
+      "next/navigation": ["./node_modules/next/navigation"],
+      "next/dynamic": ["./node_modules/next/dynamic"],
+      "@modules/profile": ["../../modules/profile/src/index.ts"],
+      "@modules/profile/server": ["../../modules/profile/src/server/index.ts"],
+      "@modules/security": ["../../modules/security/src/index.ts"],
+      "@modules/security/*": ["../../modules/security/src/*"],
+      "@modules/security/server": [
+        "../../modules/security/src/server/index.ts"
+      ],
+      "@modules/security/server/shared/security.procedure": [
+        "../../modules/security/src/server/shared/security.procedure.ts"
+      ],
+      "@modules/security/client": [
+        "../../modules/security/src/client/index.ts"
+      ],
+      "@modules/security/utils": ["../../modules/security/src/utils/index.ts"],
+      "@modules/auth": ["../../modules/auth/src/index.ts"],
+      "@modules/auth/*": ["../../modules/auth/src/*"],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"],
+      "@packages/orpc/server": [
+        "../../packages/orpc/src/integration/orpc.server.ts"
+      ],
+      "@packages/t3-env/server": ["../../packages/t3-env/src/server/env.ts"],
+      "@packages/blob": ["../../packages/blob/src/index.ts"],
+      "@modules/activity": ["../../modules/activity/src/index.ts"],
+      "@modules/activity/server": [
+        "../../modules/activity/src/server/index.ts"
+      ],
+      "@modules/location": ["../../modules/location/src/index.ts"],
+      "@modules/location/*": ["../../modules/location/src/*"],
+      "@modules/appearance-preferences/server": [
+        "../../modules/appearance-preferences/src/server/index.ts"
+      ],
+      "@modules/appearance-preferences/client": [
+        "../../modules/appearance-preferences/src/client/index.ts"
+      ],
+      "@modules/appearance-preferences": [
+        "../../modules/appearance-preferences/src/index.ts"
+      ],
+      "@modules/appearance-preferences/utils": [
+        "../../modules/appearance-preferences/src/utils/index.ts"
+      ],
+      "@modules/regional-preferences": [
+        "../../modules/regional-preferences/src/index.ts"
+      ],
+      "@modules/regional-preferences/server": [
+        "../../modules/regional-preferences/src/server/index.ts"
+      ],
+      "@modules/regional-preferences/client": [
+        "../../modules/regional-preferences/src/client/index.ts"
+      ],
+      "@modules/regional-preferences/utils": [
+        "../../modules/regional-preferences/src/utils/index.ts"
+      ],
+      "@modules/location/server": [
+        "../../modules/location/src/server/index.ts"
+      ],
+      "@modules/location/client": [
+        "../../modules/location/src/client/index.ts"
+      ],
+      "@modules/sessions": ["../../modules/sessions/src/index.ts"],
+      "@modules/sessions/server": [
+        "../../modules/sessions/src/server/index.ts"
+      ],
+      "@modules/sessions/client": [
+        "../../modules/sessions/src/client/index.ts"
+      ],
+      "@modules/sessions/utils": ["../../modules/sessions/src/utils/index.ts"],
+      "@modules/connected-accounts": [
+        "../../modules/connected-accounts/src/index.ts"
+      ],
+      "@modules/connected-accounts/utils": [
+        "../../modules/connected-accounts/src/utils/index.ts"
+      ],
+      "@modules/connected-accounts/server": [
+        "../../modules/connected-accounts/src/server/index.ts"
+      ],
+      "@modules/connected-accounts/client": [
+        "../../modules/connected-accounts/src/client/index.ts"
+      ],
+      "@modules/activity/client": [
+        "../../modules/activity/src/client/index.ts"
+      ],
+      "@modules/admin": ["../../modules/admin/src/index.ts"],
+      "@modules/admin/server": ["../../modules/admin/src/server/index.ts"],
+      "@modules/admin/utils": ["../../modules/admin/src/utils/index.ts"],
+      "@modules/sso": ["../../modules/sso/src/index.ts"],
+      "@modules/sso/server": ["../../modules/sso/src/server/index.ts"],
+      "@modules/mcp-authorization": [
+        "../../modules/mcp-authorization/src/index.ts"
+      ],
+      "@modules/mcp-authorization/*": ["../../modules/mcp-authorization/src/*"],
+      "@modules/device-authorization": [
+        "../../modules/device-authorization/src/index.ts"
+      ],
+      "@modules/device-authorization/utils": [
+        "../../modules/device-authorization/src/utils/index.ts"
+      ],
+      "@modules/org": ["../../modules/org/src/index.ts"],
+      "@modules/org/*": ["../../modules/org/src/*"],
+      "@modules/org/server": ["../../modules/org/src/server/index.ts"],
+      "@modules/storage": ["../../modules/storage/src/index.ts"],
+      "@modules/storage/*": ["../../modules/storage/src/*"],
+      "@modules/storage/server": ["../../modules/storage/src/server/index.ts"],
+      "@modules/ai-usage": ["../../modules/ai-usage/src/index.ts"],
+      "@modules/ai-usage/*": ["../../modules/ai-usage/src/*"],
+      "@modules/ai-usage/server": [
+        "../../modules/ai-usage/src/server/index.ts"
+      ],
+      "@modules/help": ["../../modules/help/src/index.ts"],
+      "@modules/help/*": ["../../modules/help/src/*"],
+      "@modules/billing": ["../../modules/billing/src/index.ts"],
+      "@modules/billing/*": ["../../modules/billing/src/*"],
+      "@modules/billing/server": ["../../modules/billing/src/server/index.ts"],
+      "@modules/notifications": ["../../modules/notifications/src/index.ts"],
+      "@modules/notifications/*": ["../../modules/notifications/src/*"],
+      "@modules/notifications/server": [
+        "../../modules/notifications/src/server/index.ts"
+      ],
+      "@modules/notifications/utils": [
+        "../../modules/notifications/src/utils/index.ts"
+      ],
+      "@modules/privacy": ["../../modules/privacy/src/index.ts"],
+      "@modules/privacy/*": ["../../modules/privacy/src/*"],
+      "@modules/privacy/server": ["../../modules/privacy/src/server/index.ts"],
+      "@modules/privacy/utils": ["../../modules/privacy/src/utils/index.ts"],
+      "@packages/billing": ["../../packages/billing/src/index.ts"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "global.d.ts",
+    "next.config.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mts",
+    "../../modules/profile/src/**/*.ts",
+    "../../modules/profile/src/**/*.tsx",
+    "../../modules/security/src/**/*.ts",
+    "../../modules/security/src/**/*.tsx",
+    "../../modules/auth/src/**/*.ts",
+    "../../modules/auth/src/**/*.tsx",
+    "../../modules/health/src/**/*.ts",
+    "../../modules/shell/src/**/*.ts",
+    "../../modules/shell/src/**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "../../modules/activity/src/**/*.ts",
+    "../../modules/activity/src/**/*.tsx",
+    "../../modules/location/src/**/*.ts",
+    "../../modules/location/src/**/*.tsx",
+    "../../modules/sessions/src/**/*.ts",
+    "../../modules/sessions/src/**/*.tsx",
+    "../../modules/connected-accounts/src/**/*.ts",
+    "../../modules/connected-accounts/src/**/*.tsx",
+    "../../modules/admin/src/**/*.ts",
+    "../../modules/admin/src/**/*.tsx",
+    "../../modules/sso/src/**/*.ts",
+    "../../modules/sso/src/**/*.tsx",
+    "../../modules/device-authorization/src/**/*.ts",
+    "../../modules/device-authorization/src/**/*.tsx",
+    "../../modules/storage/src/**/*.ts",
+    "../../modules/storage/src/**/*.tsx",
+    "../../modules/org/src/**/*.ts",
+    "../../modules/org/src/**/*.tsx",
+    "../../modules/billing/src/**/*.ts",
+    "../../modules/billing/src/**/*.tsx",
+    "../../modules/ai-usage/src/**/*.ts",
+    "../../modules/ai-usage/src/**/*.tsx",
+    "../../modules/appearance-preferences/src/**/*.ts",
+    "../../modules/appearance-preferences/src/**/*.tsx",
+    "../../modules/regional-preferences/src/**/*.ts",
+    "../../modules/regional-preferences/src/**/*.tsx",
+    "../../packages/ui/src/types/maplibre-css.d.ts",
+    "../../packages/ui/src/types/css-modules.d.ts"
+  ],
+  "exclude": ["node_modules", "../../modules/auth/src/screens"]
+}

@@ -1,0 +1,18 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@modules/health": ["./src/index.ts"],
+      "@modules/health/*": ["./src/*"],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"],
+      "zod": ["../../packages/orpc/node_modules/zod"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

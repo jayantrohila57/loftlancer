@@ -1,0 +1,28 @@
+{
+  "name": "@features/form",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@packages/ui": "workspace:*",
+    "lucide-react": "^1.67.0",
+    "next-intl": "^4.14.9",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-hook-form": "^7.66.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^7"
+  }
+}

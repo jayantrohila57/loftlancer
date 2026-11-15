@@ -1,0 +1,104 @@
+{
+  "extends": "@packages/typescript-config/react-library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "paths": {
+      "@features/action": ["../../features/action/src/index.ts"],
+      "@features/form": ["../../features/form/src/index.ts"],
+      "@features/shell": ["../../features/shell/src/index.ts"],
+      "@modules/ai-usage": ["./src/index.ts"],
+      "@modules/ai-usage/*": ["./src/*"],
+      "@modules/ai-usage/server": ["./src/server/index.ts"],
+      "@modules/security": ["../../modules/security/src/index.ts"],
+      "@modules/security/server": [
+        "../../modules/security/src/server/index.ts"
+      ],
+      "@modules/security/client": [
+        "../../modules/security/src/client/index.ts"
+      ],
+      "@modules/security/utils": ["../../modules/security/src/utils/index.ts"],
+      "@modules/security/server/*": ["../../modules/security/src/server/*"],
+      "@modules/activity/server": [
+        "../../modules/activity/src/server/index.ts"
+      ],
+      "@modules/admin/server": ["../../modules/admin/src/server/index.ts"],
+      "@modules/admin/utils": ["../../modules/admin/src/utils/index.ts"],
+      "@modules/appearance-preferences/server": [
+        "../../modules/appearance-preferences/src/server/index.ts"
+      ],
+      "@modules/billing/server": ["../../modules/billing/src/server/index.ts"],
+      "@modules/connected-accounts/server": [
+        "../../modules/connected-accounts/src/server/index.ts"
+      ],
+      "@modules/connected-accounts/utils": [
+        "../../modules/connected-accounts/src/utils/index.ts"
+      ],
+      "@modules/location/server": [
+        "../../modules/location/src/server/index.ts"
+      ],
+      "@modules/notifications/server": [
+        "../../modules/notifications/src/server/index.ts"
+      ],
+      "@modules/privacy/server": ["../../modules/privacy/src/server/index.ts"],
+      "@modules/regional-preferences/server": [
+        "../../modules/regional-preferences/src/server/index.ts"
+      ],
+      "@modules/sessions/server": [
+        "../../modules/sessions/src/server/index.ts"
+      ],
+      "@modules/sessions/utils": ["../../modules/sessions/src/utils/index.ts"],
+      "@modules/sso/server": ["../../modules/sso/src/server/index.ts"],
+      "@modules/auth": ["../../modules/auth/src/index.ts"],
+      "@modules/auth/*": ["../../modules/auth/src/*"],
+      "@modules/org": ["../../modules/org/src/index.ts"],
+      "@modules/org/*": ["../../modules/org/src/*"],
+      "@modules/org/server": ["../../modules/org/src/server/index.ts"],
+      "@modules/shell": ["../../modules/shell/src/index.ts"],
+      "@modules/storage": ["../../modules/storage/src/index.ts"],
+      "@modules/storage/*": ["../../modules/storage/src/*"],
+      "@modules/storage/server": ["../../modules/storage/src/server/index.ts"],
+      "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],
+      "@packages/better-auth/client": [
+        "../../packages/better-auth/src/integration/better-auth.client.ts"
+      ],
+      "@packages/billing": ["../../packages/billing/src/index.ts"],
+      "@packages/drizzle": ["../../packages/drizzle/src/index.ts"],
+      "@packages/drizzle/schema": [
+        "../../packages/drizzle/src/schema/index.ts"
+      ],
+      "@packages/logger/server": [
+        "../../packages/logger/src/integration/logger.integration.ts"
+      ],
+      "@packages/orpc": ["../../packages/orpc/src/index.ts"],
+      "@packages/orpc/server": [
+        "../../packages/orpc/src/integration/orpc.server.ts"
+      ],
+      "@packages/react-query": ["../../packages/react-query/src/index.ts"],
+      "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/t3-env/server": ["../../packages/t3-env/src/server/env.ts"],
+      "@packages/ui/components/*": [
+        "../../packages/ui/src/integration/components/*.tsx"
+      ],
+      "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
+      "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"],
+      "lucide-react": ["../../apps/auth/node_modules/lucide-react"],
+      "next-intl": ["../../apps/auth/node_modules/next-intl"],
+      "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
+      "react-hook-form": ["../../apps/auth/node_modules/react-hook-form"],
+      "react": ["../../apps/auth/node_modules/@types/react"],
+      "react/jsx-runtime": [
+        "../../apps/auth/node_modules/@types/react/jsx-runtime"
+      ],
+      "zod": ["../../apps/auth/node_modules/zod"]
+    }
+  },
+  "include": [
+    "src",
+    "../../packages/ui/src/types/maplibre-css.d.ts",
+    "../../packages/ui/src/types/css-modules.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,12 @@
+# Optional: OpenAI Codex project hints (repo-local)
+#
+# Codex primarily reads ~/.codex/config.toml globally.
+# To also pick up CODEX.md when AGENTS.md is absent, add to ~/.codex/config.toml:
+#
+#   project_doc_fallback_filenames = ["CODEX.md"]
+#
+# This repository's authoritative chain is AGENTS.md + nested layer AGENTS.md.
+# See CODEX.md for the MUST-read .cursor/rules/ list.
+
+[project]
+# project_doc_max_bytes = 65536

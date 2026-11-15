@@ -1,0 +1,17 @@
+[Unit]
+Description=Loftlancer auth development server (Autumn SSO)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@WORKSPACE@
+Environment=LOFTLANCER_PNPM=@PNPM@
+Environment=PATH=@NODE_BIN@:@HOME@/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/bin/bash @WORKSPACE@/infra/autumn/systemd/start-loftlancer-auth.sh
+Restart=always
+RestartSec=5
+KillMode=control-group
+
+[Install]
+WantedBy=default.target

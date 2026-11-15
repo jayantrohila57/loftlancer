@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./apps/auth"
+    },
+    {
+      "path": "./apps/web"
+    },
+    {
+      "path": "./apps/studio"
+    },
+    {
+      "path": "./apps/console"
+    },
+    {
+      "path": "./features/font"
+    },
+    {
+      "path": "./features/i18n"
+    },
+    {
+      "path": "./features/theme"
+    },
+    {
+      "path": "./packages/typescript-config"
+    },
+    {
+      "path": "./packages/ui"
+    },
+    {
+      "path": "./features/shell"
+    },
+    {
+      "path": "./modules/shell"
+    },
+    {
+      "path": "./modules/profile"
+    },
+    {
+      "path": "./modules/activity"
+    },
+    {
+      "path": "./modules/location"
+    },
+    {
+      "path": "./modules/sessions"
+    },
+    {
+      "path": "./modules/connected-accounts"
+    },
+    {
+      "path": "./modules/security"
+    },
+    {
+      "path": "./modules/admin"
+    },
+    {
+      "path": "./modules/sso"
+    },
+    {
+      "path": "./modules/device-authorization"
+    },
+    {
+      "path": "./modules/auth"
+    },
+    {
+      "path": "./modules/org"
+    },
+    {
+      "path": "./modules/billing"
+    },
+    {
+      "path": "./modules/storage"
+    },
+    {
+      "path": "./modules/ai-usage"
+    },
+    {
+      "path": "./packages/billing"
+    },
+    {
+      "path": "./modules/whats-new"
+    }
+  ]
+}

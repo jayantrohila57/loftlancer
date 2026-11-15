@@ -1,0 +1,3 @@
+export const PROFILE_AVATAR_MAX_BYTES = 5 * 1024 * 1024
+export const PROFILE_AVATAR_MULTIPART_OVERHEAD = 16_384
+export const PROFILE_AVATAR_BLOB_PATH_PREFIX = "loftlancer/avatars/"

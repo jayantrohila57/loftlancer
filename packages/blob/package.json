@@ -1,0 +1,19 @@
+{
+  "name": "@packages/blob",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.8.2"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "typescript": "^7"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

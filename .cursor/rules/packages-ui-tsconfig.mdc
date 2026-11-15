@@ -1,0 +1,9 @@
+---
+description: Do not tsconfig-path @packages/ui to src in apps/features
+globs: apps/**/tsconfig.json,features/**/tsconfig.json
+alwaysApply: false
+---
+
+# `@packages/ui` paths
+
+Resolve via package **`exports`** only. [packages/typescript-config/README.md](../../packages/typescript-config/README.md).

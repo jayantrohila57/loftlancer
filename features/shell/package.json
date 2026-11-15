@@ -1,0 +1,31 @@
+{
+  "name": "@features/shell",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./navigation": "./src/capability/shell.navigation-context.tsx"
+  },
+  "dependencies": {
+    "@features/action": "workspace:*",
+    "@features/command": "workspace:*",
+    "@features/navigation": "workspace:*",
+    "@features/i18n": "workspace:*",
+    "@features/theme": "workspace:*",
+    "@packages/ui": "workspace:*",
+    "lucide-react": "^1.67.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "next-intl": "^4.14.9"
+  },
+  "devDependencies": {
+    "@packages/typescript-config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^7"
+  }
+}

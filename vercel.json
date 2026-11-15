@@ -1,0 +1,131 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/auth/api/cron/storage-purge",
+      "schedule": "0 3 * * *"
+    }
+  ],
+  "trailingSlash": false,
+  "git": {
+    "deploymentEnabled": {
+      "*": false,
+      "main": true
+    }
+  },
+  "services": {
+    "web": {
+      "root": "apps/web",
+      "framework": "nextjs",
+      "installCommand": "cd ../.. && pnpm install",
+      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 pnpm turbo run build --filter=web",
+      "headers": [
+        {
+          "source": "/api/health/db",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-store, max-age=0"
+            },
+            {
+              "key": "X-Robots-Tag",
+              "value": "noindex, nofollow"
+            }
+          ]
+        }
+      ]
+    },
+    "auth": {
+      "root": "apps/auth",
+      "framework": "nextjs",
+      "installCommand": "cd ../.. && pnpm install",
+      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 pnpm turbo run build --filter=auth",
+      "headers": [
+        {
+          "source": "/auth/api/health/db",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-store, max-age=0"
+            },
+            {
+              "key": "X-Robots-Tag",
+              "value": "noindex, nofollow"
+            }
+          ]
+        },
+        {
+          "source": "/auth/api/cron/(.*)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "private, no-store"
+            }
+          ]
+        }
+      ]
+    },
+    "studio": {
+      "root": "apps/studio",
+      "framework": "nextjs",
+      "installCommand": "cd ../.. && pnpm install",
+      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 NEXT_BASE_PATH=/studio pnpm turbo run build --filter=studio"
+    },
+    "console": {
+      "root": "apps/console",
+      "framework": "nextjs",
+      "installCommand": "cd ../.. && pnpm install",
+      "buildCommand": "cd ../.. && VERCEL_SERVICES=1 NEXT_BASE_PATH=/console pnpm turbo run build --filter=console"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/auth",
+      "destination": {
+        "service": "auth"
+      }
+    },
+    {
+      "source": "/auth/:path*",
+      "destination": {
+        "service": "auth"
+      }
+    },
+    {
+      "source": "/studio",
+      "destination": {
+        "service": "studio"
+      }
+    },
+    {
+      "source": "/studio/:path*",
+      "destination": {
+        "service": "studio"
+      }
+    },
+    {
+      "source": "/console",
+      "destination": {
+        "service": "console"
+      }
+    },
+    {
+      "source": "/console/:path*",
+      "destination": {
+        "service": "console"
+      }
+    },
+    {
+      "source": "/",
+      "destination": {
+        "service": "web"
+      }
+    },
+    {
+      "source": "/:path*",
+      "destination": {
+        "service": "web"
+      }
+    }
+  ]
+}

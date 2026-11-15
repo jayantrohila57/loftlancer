@@ -1,0 +1,57 @@
+---
+description: Task subagent tabs, coordinator links, and no build/test unless asked
+alwaysApply: true
+---
+
+# Multitask subagent tabs
+
+When spawning **Task** subagents (especially `run_in_background: true` or Multitask Mode), give the user a **named link per worker** right after launch—do not batch under generic labels.
+
+## Required links
+
+- Local / background workers: `[Description](agent-uuid)` — use the Task tool’s `description` as the link text and the returned agent id as the target.
+- Never use `[agent]`, `[worker]`, or `[subagent]` as link labels.
+- Cloud workers (when `environment: "cloud"`): also use `[Review](bc-id#changes)` when there are code edits; `[Try Live](bc-id#desktop)` only after computer use.
+
+## Launch habits
+
+- Parallel work: one message with multiple Task calls; still list **every** spawned id in the user-facing reply (table or bullet list).
+- In Multitask Mode: always set `run_in_background: true` on Task (per tool schema).
+
+## Subagent model
+
+When **coordinators** spawn **Task** subagents, set the worker model to **`composer-2.5`** only.
+
+- Do **not** use **`composer-2.5-fast`** unless the user **explicitly** asks for fast (or names that model).
+- If the user names a different allowed model for a worker, use that model instead of this default.
+
+## Opening tabs (honest limits)
+
+- **Agents cannot open Cursor tabs programmatically** — no Task parameter, MCP, or shell command for “open in new tab.”
+- The UI opens a subagent when the user **clicks** `[Name](id)` (middle-click or “open in new tab” per editor behavior).
+- Tell the user to open each linked worker in its own tab when they want parallel visibility; the parent cannot do that for them.
+
+## No build or test unless asked
+
+When **coordinating** work (including auth roadmap) and spawning **Task** subagents, workers must **not** run build, verification, or test commands—including as a default “verify” or “before done” step—unless the user **explicitly** asks in that thread.
+
+**Banned by default (non-exhaustive):** `pnpm build`, `next build`, `pnpm check`, `pnpm check:ci`, `vitest`, `playwright`, and any full or heavy test suite (`pnpm test`, `pnpm test:*`, etc.).
+
+**Coordinators:** include this sentence verbatim in **every** Task worker prompt:
+
+> Do NOT run builds, pnpm check, or any test commands unless user explicitly asks.
+
+Workers must not interpret other workspace rules (e.g. “check before done”) as permission to run the above unless the user explicitly requests it.
+
+## Expensive work limits
+
+Workers must **avoid** expensive or unbounded work unless the user explicitly asks for it in that thread:
+
+- Full `pnpm check` / `pnpm build` and CI-style full suites (see **No build or test unless asked** above).
+- Long browser automation matrices (many routes, viewports, or repeat runs without a scoped checklist).
+- Spinning nested **Task** subagents or delegating whole-repo chores without a named scope.
+- Broad repo exploration with no file or feature target (prefer directed reads and `rg` with paths).
+- Large refactors, cross-cutting renames, or “while we’re here” cleanups outside the assigned slice.
+- Downloading or installing Playwright, Chromium, or other heavy browser binaries.
+
+**Prefer:** smallest correct diff, a short list of focused files, and the minimum verification needed to support the stated change (e.g. one targeted test or a manual check the user requested).

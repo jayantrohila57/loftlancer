@@ -1,0 +1,9 @@
+---
+description: App import aliases only
+globs: apps/**/src/**/*.{ts,tsx},apps/**/global.d.ts,apps/**/proxy.ts
+alwaysApply: false
+---
+
+# App imports
+
+**MUST** use `@/`, `@features/*`, `@packages/*`, `@modules/*` — **MUST NOT** `./` / `../` under `src/`. [docs/apps/conventions.md](../../docs/apps/conventions.md).
