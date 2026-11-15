@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Tag origin/main with its package.json version and create a GitHub Release from
+# Tag origin/loftlancer-production with its package.json version and create a GitHub Release from
 # that version's CHANGELOG.md section. This repo is private — nothing is published
 # to npm unless you run that yourself elsewhere.
 #
@@ -14,7 +14,7 @@ for arg in "$@"; do
     --confirm) confirm=1 ;;
     -h|--help)
       echo "Usage: RELEASE_PUBLISH=1 $0   OR   $0 --confirm"
-      echo "Tags v<version> on origin/main and creates a GitHub Release (not npm)."
+      echo "Tags v<version> on origin/loftlancer-production and creates a GitHub Release (not npm)."
       exit 0
       ;;
   esac
@@ -27,23 +27,23 @@ if [[ "${RELEASE_PUBLISH:-}" != "1" && "$confirm" -ne 1 ]]; then
 fi
 
 cd "$(git rev-parse --show-toplevel)"
-git fetch origin main --tags
+git fetch origin loftlancer-production --tags
 
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
-git show origin/main:package.json > "$tmp/package.json"
-git show origin/main:CHANGELOG.md > "$tmp/CHANGELOG.md"
+git show origin/loftlancer-production:package.json > "$tmp/package.json"
+git show origin/loftlancer-production:CHANGELOG.md > "$tmp/CHANGELOG.md"
 version=$(node -p "require('$tmp/package.json').version")
 tag="v${version}"
-main_commit=$(git rev-parse origin/main)
+production_commit=$(git rev-parse origin/loftlancer-production)
 
 if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
   tagged_commit=$(git rev-list -n 1 "${tag}")
-  if ! git merge-base --is-ancestor "${tagged_commit}" "${main_commit}"; then
-    echo "Tag ${tag} already exists at ${tagged_commit}, not origin/main ${main_commit}" >&2
+  if ! git merge-base --is-ancestor "${tagged_commit}" "${production_commit}"; then
+    echo "Tag ${tag} already exists at ${tagged_commit}, not origin/loftlancer-production ${production_commit}" >&2
     exit 1
   fi
-  echo "Tag ${tag} is already on origin/main history; continuing idempotently."
+  echo "Tag ${tag} is already on origin/loftlancer-production history; continuing idempotently."
 fi
 
 node --input-type=module -e "
@@ -66,7 +66,7 @@ if [[ -z "$repo" ]]; then
 fi
 
 if ! git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
-  git tag -a "${tag}" origin/main -m "loftlancer-template ${tag}"
+  git tag -a "${tag}" origin/loftlancer-production -m "loftlancer-template ${tag}"
   git push origin "refs/tags/${tag}"
 fi
 

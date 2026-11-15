@@ -174,7 +174,7 @@
 | T4  | **Confirmation** UX                             | Destructive dialog + **display name** confirm (FormKit pattern); i18n en-us / en-in / es-es                                                                                                       |
 | T5  | **Quota** after purge                           | **Free bytes immediately** — trashed items count until purge ([entitlements-design-answers.md](./requirements/entitlements-design-answers.md)); optional Autumn `-byte_size` track on purge event |
 | T6  | **Activity**                                    | Reuse **`storage.purge`** for user-initiated purge (metadata: `trigger: "user"` \| `"cron"`); actor = session user for manual, uploader/system for cron                                           |
-| T7  | **API**                                         | New oRPC e.g. `storage.trash.purge` (+ optional `emptyTrash`); reuse `purgeExpiredOrgStorageTrash` / shared row purge helper; **never** `loftlancer/avatars/`                                    |
+| T7  | **API**                                         | New oRPC e.g. `storage.trash.purge` (+ optional `emptyTrash`); reuse `purgeExpiredOrgStorageTrash` / shared row purge helper; **never** `loftlancer/avatars/`                                     |
 | T8  | **Race** with restore                           | Row lock / skip pattern per entitlements supplement (restore vs purge); reject purge if row already `purgedAt`                                                                                    |
 
 **Repo today (2026-11-14):** Cron **`GET /api/cron/storage-purge`** + `storage.service.purge.ts` (**done**); Trash UI **restore only** (`storage.trash.client.tsx`); **no** client purge RPC.

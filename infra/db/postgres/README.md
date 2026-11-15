@@ -21,12 +21,12 @@ docker compose down -v
 
 ## Defaults
 
-| Variable            | Default            |
-| ------------------- | ------------------ |
-| `POSTGRES_USER`     | `postgres`         |
-| `POSTGRES_PASSWORD` | `postgres`         |
+| Variable            | Default           |
+| ------------------- | ----------------- |
+| `POSTGRES_USER`     | `postgres`        |
+| `POSTGRES_PASSWORD` | `postgres`        |
 | `POSTGRES_DB`       | `loftlancer_auth` |
-| Host port           | `5432`             |
+| Host port           | `5432`            |
 
 Copy [`.env.example`](./.env.example) to `.env` here to override (optional).
 

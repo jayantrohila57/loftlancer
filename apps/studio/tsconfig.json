@@ -114,6 +114,27 @@
       "drizzle-orm": ["../../packages/drizzle/node_modules/drizzle-orm"],
       "@packages/t3-env/server": ["../../packages/t3-env/src/server/env.ts"],
       "@packages/t3-env/client": ["../../packages/t3-env/src/client/env.ts"],
+      "@packages/ui/components/button": [
+        "../../packages/ui/src/integration/components/button.tsx"
+      ],
+      "@packages/ui/components/empty": [
+        "../../packages/ui/src/integration/components/empty.tsx"
+      ],
+      "@packages/ui/components/field": [
+        "../../packages/ui/src/integration/components/field.tsx"
+      ],
+      "@packages/ui/components/input": [
+        "../../packages/ui/src/integration/components/input.tsx"
+      ],
+      "@packages/ui/components/shell": [
+        "../../packages/ui/src/integration/components/shell.tsx"
+      ],
+      "@packages/ui/components/skeleton": [
+        "../../packages/ui/src/integration/components/skeleton.tsx"
+      ],
+      "@packages/ui/components/toast": [
+        "../../packages/ui/src/integration/components/toast.tsx"
+      ],
       "lucide-react": ["./node_modules/lucide-react"],
       "react-hook-form": ["../auth/node_modules/react-hook-form"],
       "@packages/better-auth": ["../../packages/better-auth/src/index.ts"],

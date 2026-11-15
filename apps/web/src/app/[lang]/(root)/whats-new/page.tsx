@@ -6,6 +6,8 @@ import {
 } from "@/shared/i18n/web.i18n.server"
 import type { LangPageProps } from "@/shared/types/web.app.types"
 
+export const instant = false
+
 export async function generateMetadata({
   params,
 }: LangPageProps): Promise<Metadata> {

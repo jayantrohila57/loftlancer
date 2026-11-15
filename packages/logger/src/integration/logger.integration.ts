@@ -13,6 +13,7 @@ import {
   formatDevLogFields,
   isDevLogging,
 } from "../utils/logger.format"
+import { BetterStackTransport } from "./logger.better-stack"
 
 function queryFromRequestUrl(url: URL): Record<string, string> | undefined {
   if ([...url.searchParams.keys()].length === 0) return undefined
@@ -109,6 +110,10 @@ export function createLogger(
   const transport = options.stream
     ? new winston.transports.Stream({ stream: options.stream })
     : new winston.transports.Console()
+  const transports: winston.transport[] = [transport]
+  if (!options.stream && process.env.BETTER_STACK_SOURCE_TOKEN) {
+    transports.push(new BetterStackTransport())
+  }
   const pretty = isDevLogging() && !options.stream
   const backend = winston.createLogger({
     level: options.level ?? "info",
@@ -129,7 +134,7 @@ export function createLogger(
           winston.format.timestamp(),
           winston.format.json()
         ),
-    transports: [transport],
+    transports,
   })
   function scoped(context: LogContext): Logger {
     const log = (level: LogLevel, event: string, fields: LogFields = {}) => {
