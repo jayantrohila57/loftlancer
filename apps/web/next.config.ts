@@ -17,15 +17,19 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   transpilePackages: [
+    "@packages/better-auth",
     "@packages/drizzle",
     "@packages/logger",
     "@packages/posthog",
+    "@packages/react-query",
     "@packages/sentry",
     "@packages/t3-env",
     "@packages/ui",
     "@features/font",
     "@features/theme",
     "@features/i18n",
+    "@modules/shell",
+    "@modules/auth",
   ],
 }
 

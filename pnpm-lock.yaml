@@ -548,9 +548,15 @@ importers:
       '@modules/ai-usage':
         specifier: workspace:*
         version: link:../../modules/ai-usage
+      '@modules/shell':
+        specifier: workspace:*
+        version: link:../../modules/shell
       '@packages/analytics':
         specifier: workspace:*
         version: link:../../packages/analytics
+      '@packages/better-auth':
+        specifier: workspace:*
+        version: link:../../packages/better-auth
       '@packages/drizzle':
         specifier: workspace:*
         version: link:../../packages/drizzle
@@ -563,6 +569,9 @@ importers:
       '@packages/posthog':
         specifier: workspace:*
         version: link:../../packages/posthog
+      '@packages/react-query':
+        specifier: workspace:*
+        version: link:../../packages/react-query
       '@packages/sentry':
         specifier: workspace:*
         version: link:../../packages/sentry
@@ -1024,6 +1033,55 @@ importers:
       '@packages/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      typescript:
+        specifier: ^7
+        version: 7.0.2
+
+  modules/auth:
+    dependencies:
+      '@features/shell':
+        specifier: workspace:*
+        version: link:../../features/shell
+      '@packages/better-auth':
+        specifier: workspace:*
+        version: link:../../packages/better-auth
+      '@packages/react-query':
+        specifier: workspace:*
+        version: link:../../packages/react-query
+      '@packages/t3-env':
+        specifier: workspace:*
+        version: link:../../packages/t3-env
+      '@packages/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      lucide-react:
+        specifier: ^1.67.0
+        version: 1.67.0(@types/react@19.3.0)(react@19.3.1)
+      next-intl:
+        specifier: ^4.14.9
+        version: 4.14.9(@swc/helpers@0.5.23)(@types/react@19.3.0)(next@16.4.6(@babel/core@7.29.7(supports-color@7.2.0))(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@packages/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: ^26
+        version: 26.6.6
+      '@types/react':
+        specifier: ^19
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.3.0(@types/react@19.3.0)
+      next:
+        specifier: 16.4.6
+        version: 16.4.6(@babel/core@7.29.7(supports-color@7.2.0))(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       typescript:
         specifier: ^7
         version: 7.0.2

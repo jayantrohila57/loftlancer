@@ -31,18 +31,14 @@
         "../../packages/ui/src/integration/components/skeleton.tsx"
       ],
       "@packages/ui/lib/utils": ["../../packages/ui/src/utils/ui.utils.ts"],
-      "next-intl": ["../../apps/auth/node_modules/next-intl"],
-      "next/navigation": ["../../apps/auth/node_modules/next/navigation.d.ts"],
-      "next/dynamic": ["../../apps/auth/node_modules/next/dynamic.d.ts"],
       "@features/shell": ["../../features/shell/src/index.ts"],
-      "react": ["../../apps/auth/node_modules/@types/react"],
-      "react/jsx-runtime": [
-        "../../apps/auth/node_modules/@types/react/jsx-runtime"
-      ],
-      "lucide-react": ["../../apps/auth/node_modules/lucide-react"],
       "@packages/react-query": ["../../packages/react-query/src/index.ts"]
     }
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "../../packages/ui/src/types/maplibre-css.d.ts",
+    "../../packages/ui/src/types/css-modules.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
