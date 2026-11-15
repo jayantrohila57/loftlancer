@@ -65,7 +65,7 @@ Give every signed-in user a **first-class organization tenancy** on the auth dom
 | --------------------------- | ---------------------------------------- | ---------------- |
 | Org storage included (Free) | **2 GB** `quota_bytes` cache             | autumn + storage |
 | Org storage included (Paid) | **5 GB** (after upgrade — billing slice) | autumn + storage |
-| Blob prefix                 | `loftlancer/orgs/{orgId}/…`             | storage R7       |
+| Blob prefix                 | `loftlancer/orgs/{orgId}/…`              | storage R7       |
 | Customer scope              | `organization`                           | autumn           |
 
 ## Architecture (layer map)

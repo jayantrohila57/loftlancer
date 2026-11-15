@@ -28,9 +28,9 @@ Internationalization presentation checks: [i18n.md](./i18n.md).
 
 Release and changelog (see [../releasing.md](../releasing.md)):
 
-| Task                   | Command                                      |
-| ---------------------- | -------------------------------------------- |
-| Prepare a version bump | `pnpm release:prepare <major\|minor\|patch>` |
-| Validate vs `main`     | `pnpm release:check`                         |
-| Print release notes    | `pnpm release:notes`                         |
-| Tag and GitHub Release | `RELEASE_PUBLISH=1 pnpm release:publish`     |
+| Task                                | Command                                      |
+| ----------------------------------- | -------------------------------------------- |
+| Prepare a version bump              | `pnpm release:prepare <major\|minor\|patch>` |
+| Validate vs `loftlancer-production` | `pnpm release:check`                         |
+| Print release notes                 | `pnpm release:notes`                         |
+| Tag and GitHub Release              | `RELEASE_PUBLISH=1 pnpm release:publish`     |

@@ -3,7 +3,7 @@
 This monorepo ships as **one product with one version**: the `version` field in
 the root `package.json` (currently `0.0.1`). Workspace packages are private and
 never published, so they do not carry the product version. Every production
-release is a `dev` → `main` merge, and every one of them gets a version, a
+release is a `loftlancer-development` → `loftlancer-production` merge, and every one of them gets a version, a
 changelog entry, a git tag (`vX.Y.Z`), and a GitHub Release. The starting tag
 is `v0.0.1`.
 
@@ -75,18 +75,18 @@ If commit collection is added later, `chore`, `refactor`, `style`, `test`,
 
 The GitHub Actions **Release** workflow automates the repeatable parts. From
 the Actions tab, run **Release** on the default branch and choose `patch`,
-`minor`, or `major`. It prepares a dated changelog/version branch from `dev`
-and opens a release PR to `dev`. After that PR is reviewed and merged, the
+`minor`, or `major`. It prepares a dated changelog/version branch from `loftlancer-development`
+and opens a release PR to `loftlancer-development`. After that PR is reviewed and merged, the
 workflow validates the version and changelog, runs the shared Check workflow
-(`pnpm check:ci`) on the integrated `dev` commit, and opens a `dev` → `main`
-release PR. Review and merge that production PR to deploy. A push to `main`
+(`pnpm check:ci`) on the integrated `loftlancer-development` commit, and opens a `loftlancer-development` → `loftlancer-production`
+release PR. Review and merge that production PR to deploy. A push to `loftlancer-production`
 automatically publishes the matching tag and GitHub Release.
 
-This flow expects a `dev` branch on the remote (it is not created
-automatically). Create it from `main` before the first automated release.
+This flow expects a `loftlancer-development` branch on the remote (it is not created
+automatically). Create it from `loftlancer-production` before the first automated release.
 
 The automated and manual procedures use the same release scripts. To prepare a
-release locally instead, on a branch from `dev` (e.g. `chore/release-v0.0.2`),
+release locally instead, on a branch from `loftlancer-development` (e.g. `chore/release-v0.0.2`),
 run:
 
 ```bash
@@ -97,29 +97,29 @@ This bumps the root `package.json` version and turns `[Unreleased]` into
 `## [0.0.2] - YYYY-MM-DD` (IST) with compare links. Review the text.
 
 1. Commit with `chore(release): v0.0.2` and the `Fixes #N` lines for the
-   release, merge into `dev`, and push `dev`.
-2. Open the release PR `dev` → `main`. CI runs `pnpm release:check`, which
-   fails if the version is not above `main`'s or the changelog has no dated
+   release, merge into `loftlancer-development`, and push `loftlancer-development`.
+2. Open the release PR `loftlancer-development` → `loftlancer-production`. CI runs `pnpm release:check`, which
+   fails if the version is not above `loftlancer-production`'s or the changelog has no dated
    section for it.
-3. Merge the PR. That push to `main` is the one production deploy.
+3. Merge the PR. That push to `loftlancer-production` is the one production deploy.
 4. Tag and publish from an up-to-date checkout (normally automated after the
-   `main` merge):
+   `loftlancer-production` merge):
 
 ```bash
 RELEASE_PUBLISH=1 pnpm release:publish
 ```
 
-This tags `origin/main` as `vX.Y.Z` and creates the GitHub Release with the
+This tags `origin/loftlancer-production` as `vX.Y.Z` and creates the GitHub Release with the
 changelog section as its notes. Local runs require `RELEASE_PUBLISH=1` or
 `--confirm` so a tag is not created by accident. The workflow sets this
 automatically.
 
 Tags and GitHub Releases never deploy: `vercel.json` enables Git deployments
-for the `main` branch only, and Check CI does not deploy on tags.
+for the `loftlancer-production` branch only, and Check CI does not deploy on tags.
 
 The workflow uses GitHub's built-in `GITHUB_TOKEN`; it adds no repository
 package dependency or long-lived personal token. PRs it creates do not trigger
-another `pull_request` workflow, so it runs the shared Check workflow on `dev`
+another `pull_request` workflow, so it runs the shared Check workflow on `loftlancer-development`
 before opening the production PR. The production PR still requires a human
 merge decision. Repository Actions settings must allow workflows to create
 pull requests and grant the workflow the `contents: write` and
