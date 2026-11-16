@@ -1211,5 +1211,42 @@
         ]
       }
     }
+  },
+  "statusPage": {
+    "metaTitle": "Service status",
+    "metaDescription": "Current Loftlancer platform availability, uptime history, and incidents.",
+    "historyMetaTitle": "Status history",
+    "historyMetaDescription": "Past Loftlancer incidents and maintenance reports.",
+    "title": "Service status",
+    "historyTitle": "Status history",
+    "overviewTab": "Overview",
+    "historyTab": "History",
+    "updatedPrefix": "Updated",
+    "updatedAtEmpty": "Updated: —",
+    "daysLabel": "90 days",
+    "noIncidentsTitle": "No active incidents",
+    "noIncidentsBody": "We are not aware of any posted incidents impacting our services.",
+    "incidentsTitle": "Incidents",
+    "incidentStatusAt": "{status} · {time}",
+    "updatedUnavailable": "—",
+    "historyEmptyTitle": "No incident history",
+    "historyEmptyBody": "Resolved and maintenance reports will appear here when Better Stack receives a valid API token.",
+    "historyIncidentRange": "{status} · {start} – {end}",
+    "historyOngoing": "ongoing",
+    "bannerOperationalTitle": "All systems operational",
+    "bannerOperationalDescription": "Loftlancer services are running normally.",
+    "bannerDegradedTitle": "Degraded performance",
+    "bannerDegradedDescription": "Some services may be slower than usual. We are investigating.",
+    "bannerOutageTitle": "Service disruption",
+    "bannerOutageDescription": "One or more Loftlancer services are currently unavailable.",
+    "bannerUnknownTitle": "Status unavailable",
+    "bannerUnknownDescription": "We could not load live monitor data. Check back shortly.",
+    "groups": {
+      "website": "Website",
+      "auth": "Auth",
+      "studio": "Studio",
+      "console": "Console",
+      "api": "API"
+    }
   }
 }
