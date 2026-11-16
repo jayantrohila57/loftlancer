@@ -11,8 +11,9 @@ export default async function StudioOnboardingOrganizationPage({
 }: LangPageProps) {
   const { lang } = await params
   const { organizations } = await listStudioOrganizationsForSession(lang)
-  if (organizations.length > 0) {
-    redirectStudio(lang, `/${organizations[0].slug}`)
+  const existing = organizations[0]
+  if (existing) {
+    redirectStudio(lang, `/${existing.slug}`)
   }
   const t = await getServerTranslations(params, "ui")
   return (

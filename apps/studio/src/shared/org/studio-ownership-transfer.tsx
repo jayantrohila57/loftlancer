@@ -50,7 +50,7 @@ export function StudioOwnershipTransfer({
           result.error.message || t("organizationMembersLoadError")
         )
       }
-      const list = ((result.data?.members ?? []) as MemberRow[]) ?? []
+      const list = (result.data?.members ?? []) as MemberRow[]
       setMembers(list)
       setError(null)
     } catch (err) {

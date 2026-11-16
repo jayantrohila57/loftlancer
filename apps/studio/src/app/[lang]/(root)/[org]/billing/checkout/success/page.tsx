@@ -1,31 +1,34 @@
 import { BillingClientReturnEffects } from "@modules/billing"
+import { ShellAccountFrame, ShellAccountFrameSection } from "@modules/shell"
 import { Button } from "@packages/ui/components/button"
-import { requireStudioOrganization } from "@/shared/auth/studio.session"
+import Shell from "@packages/ui/components/shell"
 import { Link } from "@/shared/i18n/studio.i18n"
 import { getServerTranslations } from "@/shared/i18n/studio.i18n.server"
 import { studioOrgPath } from "@/shared/org/studio-org.paths"
-import { StudioPageSection } from "@/shared/shell/studio-page-section"
 import type { OrgPageProps } from "@/shared/types/studio.app.types"
 
 export default async function StudioOrgCheckoutSuccessPage({
   params,
 }: OrgPageProps) {
-  const { lang, org } = await params
-  await requireStudioOrganization(lang, org)
+  const { org } = await params
   const t = await getServerTranslations(params, "ui")
   return (
-    <StudioPageSection
-      title={t("checkoutSuccessTitle")}
-      description={t("checkoutSuccessDescription")}
-    >
-      <BillingClientReturnEffects />
-      <Button
-        render={
-          <Link href={studioOrgPath(org, "/billing")}>
-            {t("backToBilling")}
-          </Link>
-        }
-      />
-    </StudioPageSection>
+    <Shell.Section variant="dashboard">
+      <ShellAccountFrame>
+        <ShellAccountFrameSection
+          description={t("checkoutSuccessDescription")}
+          title={t("checkoutSuccessTitle")}
+        >
+          <BillingClientReturnEffects />
+          <Button
+            render={
+              <Link href={studioOrgPath(org, "/billing")}>
+                {t("backToBilling")}
+              </Link>
+            }
+          />
+        </ShellAccountFrameSection>
+      </ShellAccountFrame>
+    </Shell.Section>
   )
 }

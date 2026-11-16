@@ -45,7 +45,8 @@
     "@modules/auth": "workspace:*",
     "@modules/ai-usage": "workspace:*",
     "@modules/activity": "workspace:*",
-    "@modules/security": "workspace:*"
+    "@modules/security": "workspace:*",
+    "@features/form": "workspace:*"
   },
   "devDependencies": {
     "@packages/typescript-config": "workspace:*",

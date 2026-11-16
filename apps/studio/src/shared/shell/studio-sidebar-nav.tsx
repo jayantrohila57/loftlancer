@@ -16,8 +16,14 @@ export function StudioSidebarNav() {
   const tCommand = useTranslations("command")
   const pathname = usePathname()
   const slug = readOrgSlugFromPathname(pathname)
+  const translate = t as unknown as (key: string) => string
+  const translateCommand = tCommand as unknown as (key: string) => string
   const registry = createNavigationRegistry({
-    items: studioOrgNavigationItems({ slug, t, tCommand }),
+    items: studioOrgNavigationItems({
+      slug,
+      t: translate,
+      tCommand: translateCommand,
+    }),
   })
 
   return (

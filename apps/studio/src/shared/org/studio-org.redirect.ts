@@ -8,4 +8,5 @@ export function redirectStudio(lang: string, href: string): never {
     ? lang
     : appI18n.routing.defaultLocale
   redirect({ href, locale })
+  throw new Error("redirect")
 }

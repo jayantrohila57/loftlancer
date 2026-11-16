@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
     "@packages/t3-env",
     "@packages/ui",
     "@features/font",
+    "@features/form",
     "@features/theme",
     "@features/i18n",
     "@packages/orpc",
