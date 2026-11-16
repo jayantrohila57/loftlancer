@@ -8,7 +8,8 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./server": "./src/server/index.ts"
+    "./server": "./src/server/index.ts",
+    "./utils/billing.checkout-return-url": "./src/utils/billing.checkout-return-url.ts"
   },
   "dependencies": {
     "@modules/activity": "workspace:*",

@@ -76,6 +76,7 @@ export function FieldRadioGroup<
               value={field.value ?? ""}
               onValueChange={field.onChange}
               disabled={inactive}
+              className={card ? "w-full min-w-0" : undefined}
               aria-labelledby={id}
               aria-required={required}
               aria-invalid={
@@ -90,12 +91,12 @@ export function FieldRadioGroup<
               {options.map((option, index) => (
                 <FieldItem
                   key={option.value}
-                  className={card ? "w-full" : undefined}
+                  className={card ? "w-full min-w-0" : undefined}
                 >
                   <FieldLabel
                     className={
                       card
-                        ? "flex w-full items-start gap-2 rounded-lg border p-3 hover:bg-accent/50 has-data-checked:border-primary/48 has-data-checked:bg-accent/50"
+                        ? "flex w-full min-w-0 items-start gap-2 rounded-lg border p-3 hover:bg-accent/50 has-data-checked:border-primary/48 has-data-checked:bg-accent/50"
                         : "flex items-start gap-2"
                     }
                   >

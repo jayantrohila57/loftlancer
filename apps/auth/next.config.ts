@@ -6,8 +6,9 @@ import {
 } from "@packages/sentry/next-config"
 import { withSentryConfig } from "@sentry/nextjs/config"
 import type { NextConfig } from "next"
-
+import type { Redirect } from "next/dist/lib/load-custom-routes"
 import { authBasePath } from "./auth.config"
+import { buildAuthMigratedStudioRedirects } from "./src/shared/auth/auth-studio-redirects"
 
 const withNextIntl = createI18nNextPluginForApp("auth")
 const appVersion = readMonorepoAppVersion(process.cwd())
@@ -33,8 +34,9 @@ const nextConfig: NextConfig = {
     "@features/theme",
     "@features/i18n",
   ],
-  async redirects() {
+  async redirects(): Promise<Redirect[]> {
     return [
+      ...(buildAuthMigratedStudioRedirects() as Redirect[]),
       {
         source: "/:lang/account/security/user-activity",
         destination: "/:lang/account/activity/account",

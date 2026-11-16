@@ -43,6 +43,7 @@ export {
   throwOnServiceResponseFailure,
 } from "./utils/auth.service-response"
 export {
+  buildAfterSignOutLocation,
   buildAuthSignInLocation,
   isAuthPublicPathname,
 } from "./utils/auth.sign-in-location"

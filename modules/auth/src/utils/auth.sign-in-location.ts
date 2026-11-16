@@ -29,6 +29,22 @@ export function isAuthPublicPathname(pathname: string): boolean {
   return authPublicPathPattern.test(stripAuthAppBasePath(pathname))
 }
 
+/** Localized home for the app the user signed out from (web, studio, console, or auth entry). */
+export function buildAfterSignOutLocation(input: { locale: string }): string {
+  const base = clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")
+  if (typeof window !== "undefined") {
+    try {
+      const authOrigin = new URL(base).origin
+      if (window.location.origin !== authOrigin) {
+        return `/${input.locale}`
+      }
+    } catch {
+      // Fall through to the auth app entry.
+    }
+  }
+  return `${base}/${input.locale}`
+}
+
 export function buildAuthSignInLocation(input: {
   locale: string
   returnTo?: string
