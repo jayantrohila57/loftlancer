@@ -4,10 +4,10 @@ Loftlancer serves a first-party status experience at **`/status`** (web app). Mo
 
 ## Environment variables (Vercel **web** service)
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `BETTERSTACK_API_TOKEN` | Recommended | Better Stack **Incidents API** bearer token ([team tokens](https://betterstack.com/settings/api-tokens/0)). Powers incidents/history and authenticated resource refresh. |
-| `BETTERSTACK_STATUS_PAGE_ID` | Optional | Status page id (default `267755` for `loftlancer.betteruptime.com`). |
+| Variable                     | Required    | Description                                                                                                                                                              |
+| ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `BETTERSTACK_API_TOKEN`      | Recommended | Better Stack **Incidents API** bearer token ([team tokens](https://betterstack.com/settings/api-tokens/0)). Powers incidents/history and authenticated resource refresh. |
+| `BETTERSTACK_STATUS_PAGE_ID` | Optional    | Status page id (default `267755` for `loftlancer.betteruptime.com`).                                                                                                     |
 
 Declared in `@packages/t3-env/server` and `apps/web/.env.example`.
 
@@ -15,13 +15,13 @@ Declared in `@packages/t3-env/server` and `apps/web/.env.example`.
 
 Group assignment is configured in `apps/web/src/shared/status/web-betterstack-monitor-groups.config.ts`. Default groups:
 
-| Group | Typical monitor names |
-| --- | --- |
+| Group   | Typical monitor names                   |
+| ------- | --------------------------------------- |
 | Website | `loftlancer.com`, apex marketing routes |
-| Auth | `/auth`, sign-in surfaces |
-| Studio | `/studio` |
-| Console | `/console` |
-| API | `/api`, docs, GraphQL/oRPC routes |
+| Auth    | `/auth`, sign-in surfaces               |
+| Studio  | `/studio`                               |
+| Console | `/console`                              |
+| API     | `/api`, docs, GraphQL/oRPC routes       |
 
 Edit regex rules when Better Stack `public_name` values change.
 
@@ -29,13 +29,13 @@ Edit regex rules when Better Stack `public_name` values change.
 
 Create **HTTP** monitors pointed at production URLs on `loftlancer.com` (Vercel Services). Use **multi-region** checks where your plan allows; on Hobby, prefer the default regions Better Stack provides for HTTP monitors.
 
-| Monitor name (public) | URL | Check type | Expected | Interval | Regions |
-| --- | --- | --- | --- | --- | --- |
-| Website home | `https://loftlancer.com/api/health` | HTTP | `200`, JSON `"ok": true` | 3 min | EU + US (or all available) |
-| Auth | `https://loftlancer.com/auth/api/health` | HTTP | `200`, `"service": "auth"` | 3 min | EU + US |
-| Studio | `https://loftlancer.com/studio/api/health` | HTTP | `200`, `"service": "studio"` | 3 min | EU + US |
-| Console | `https://loftlancer.com/console/api/health` | HTTP | `200`, `"service": "console"` | 3 min | EU + US |
-| API / DB readiness | `https://loftlancer.com/api/health/db` | HTTP | `200`, `"ok": true` when DB healthy | 3 min | EU + US |
+| Monitor name (public) | URL                                         | Check type | Expected                            | Interval | Regions                    |
+| --------------------- | ------------------------------------------- | ---------- | ----------------------------------- | -------- | -------------------------- |
+| Website home          | `https://loftlancer.com/api/health`         | HTTP       | `200`, JSON `"ok": true`            | 3 min    | EU + US (or all available) |
+| Auth                  | `https://loftlancer.com/auth/api/health`    | HTTP       | `200`, `"service": "auth"`          | 3 min    | EU + US                    |
+| Studio                | `https://loftlancer.com/studio/api/health`  | HTTP       | `200`, `"service": "studio"`        | 3 min    | EU + US                    |
+| Console               | `https://loftlancer.com/console/api/health` | HTTP       | `200`, `"service": "console"`       | 3 min    | EU + US                    |
+| API / DB readiness    | `https://loftlancer.com/api/health/db`      | HTTP       | `200`, `"ok": true` when DB healthy | 3 min    | EU + US                    |
 
 Attach each monitor to status page **267755** (or your replacement page) in the section layout that matches the UI groups above.
 
