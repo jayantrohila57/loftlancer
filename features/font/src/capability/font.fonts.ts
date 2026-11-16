@@ -1,9 +1,9 @@
 import localFont from "next/font/local"
 
 export const fontSans = localFont({
-  src: "../assets/outfit.ttf",
+  src: "../assets/instrument-sans.ttf",
   variable: "--font-sans",
-  weight: "100 900",
+  weight: "400 700",
 })
 
 export const fontMono = localFont({

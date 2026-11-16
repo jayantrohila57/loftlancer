@@ -35,24 +35,36 @@ export const Shell = ({ children }: ShellComponent) => {
   return <>{children}</>
 }
 
-const Frame = React.forwardRef<HTMLDivElement, ShellTypes>(
-  ({ className, style, children, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "flex h-svh flex-col overflow-hidden bg-background text-foreground",
-          className
-        )}
-        data-slot="shell-frame"
-        style={style}
-        {...props}
-      >
-        {children}
-      </div>
-    )
-  }
-)
+const FrameVariants = cva("flex flex-col bg-background text-foreground", {
+  variants: {
+    variant: {
+      /** Viewport-locked app shell (studio, console, auth). */
+      app: "h-svh overflow-hidden",
+      /** Marketing / public site: natural document height and page scroll. */
+      site: "min-h-dvh",
+    },
+  },
+  defaultVariants: {
+    variant: "app",
+  },
+})
+
+const Frame = React.forwardRef<
+  HTMLDivElement,
+  ShellTypes & VariantProps<typeof FrameVariants>
+>(({ className, style, children, variant, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(FrameVariants({ variant }), className)}
+      data-slot="shell-frame"
+      style={style}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+})
 Frame.displayName = "Frame"
 Shell.Frame = Frame
 
@@ -163,6 +175,8 @@ const MainVariants = cva("min-w-0 bg-background text-foreground", {
     variant: {
       default: "min-h-screen overflow-x-hidden border-e border-border",
       dashboard: "flex min-h-0 flex-1 flex-col overflow-hidden",
+      /** Marketing / public site: grows with content, document scroll. */
+      site: "flex flex-1 flex-col",
     },
   },
   defaultVariants: {
@@ -201,6 +215,8 @@ const SectionVariants = cva("", {
         "flex min-h-0 flex-1 flex-col gap-0 bg-background text-foreground",
       center:
         "flex min-h-svh flex-col items-center justify-center px-6 py-12 text-foreground md:py-20",
+      /** Marketing / public site section — in-flow, no internal scroller. */
+      site: "w-full flex-1 bg-sidebar text-foreground",
     },
   },
   defaultVariants: {
@@ -237,6 +253,8 @@ const InsetVariants = cva("flex min-w-0 flex-col", {
       default: "min-h-0 flex-1",
       /** Fills viewport height; stacks app bar + `Shell.Main variant="dashboard"`. */
       dashboard: "h-svh min-h-0 flex-1 flex-col overflow-hidden",
+      /** Marketing / public site: stacks header, main, and footer without locking height. */
+      site: "flex-1 flex-col",
     },
   },
   defaultVariants: {
@@ -367,6 +385,8 @@ const BarVariants = cva(
     variants: {
       variant: {
         default: cn(SHELL_HEADER_HEIGHT, "px-2"),
+        /** Marketing header — sticks to the viewport while the document scrolls. */
+        site: cn(SHELL_HEADER_HEIGHT, "sticky top-0 z-50 px-2"),
       },
     },
     defaultVariants: {

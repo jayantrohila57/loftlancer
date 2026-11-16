@@ -21,6 +21,7 @@
     "@features/theme": "workspace:*",
     "@packages/analytics": "workspace:*",
     "@packages/better-auth": "workspace:*",
+    "@packages/brand": "workspace:*",
     "@packages/orpc": "workspace:*",
     "@packages/posthog": "workspace:*",
     "@packages/react-query": "workspace:*",

@@ -19,6 +19,8 @@
       ],
       "@features/theme": ["../../features/theme/src/index.ts"],
       "@features/theme/*": ["../../features/theme/src/*"],
+      "@features/action": ["../../features/action/src/index.ts"],
+      "@features/navigation": ["../../features/navigation/src/index.ts"],
       "@features/shell": ["../../features/shell/src/index.ts"],
       "@modules/shell": ["../../modules/shell/src/index.ts"],
       "@modules/shell/*": ["../../modules/shell/src/*"],
@@ -31,6 +33,7 @@
       "@packages/better-auth/client": [
         "../../packages/better-auth/src/integration/better-auth.client.ts"
       ],
+      "@packages/brand": ["../../packages/brand/src/index.ts"],
       "@packages/posthog": ["../../packages/posthog/src/index.ts"],
       "@modules/health": ["../../modules/health/src/index.ts"],
       "@modules/health/*": ["../../modules/health/src/*"],

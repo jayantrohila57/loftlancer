@@ -6,6 +6,10 @@ export function getTrustedAuthOrigins(): string[] {
     ...new Set(
       [
         serverEnv.BETTER_AUTH_URL,
+        serverEnv.WEB_APP_URL ??
+          (serverEnv.NODE_ENV === "development"
+            ? "http://localhost:3001"
+            : undefined),
         serverEnv.STUDIO_APP_URL ??
           (serverEnv.NODE_ENV === "development"
             ? "http://localhost:3003"

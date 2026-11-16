@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "node --input-type=module -e \"console.log('\\n  Auth → http://localhost:3002/auth/en-us\\n')\" && next dev --port 3002",
+    "dev": "node --input-type=module -e \"console.log('\\n  Auth \u2192 http://localhost:3002/auth/en-us\\n')\" && next dev --port 3002",
     "build": "next build",
     "start": "next start --port 3002",
     "typecheck": "tsc --noEmit",
@@ -34,6 +34,7 @@
     "@packages/better-auth": "workspace:*",
     "@packages/billing": "workspace:*",
     "@packages/blob": "workspace:*",
+    "@packages/brand": "workspace:*",
     "@packages/drizzle": "workspace:*",
     "@packages/logger": "workspace:*",
     "@packages/mcp": "workspace:*",
