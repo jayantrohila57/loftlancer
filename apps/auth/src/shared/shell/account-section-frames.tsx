@@ -1,41 +1,7 @@
-import { OrgOrganizationSettings } from "@modules/org/account-screens"
 import { ShellAccountFrame, ShellAccountFrameSection } from "@modules/shell"
 import { useTranslations } from "next-intl"
 
 import { AccountHeaderAction } from "@/shared/shell/account-header-action"
-
-export function OrganizationAccountSections() {
-  const t = useTranslations("ui")
-
-  return (
-    <ShellAccountFrame>
-      <ShellAccountFrameSection
-        description={t("organizationSummary")}
-        title={t("organizationSettings")}
-      >
-        <OrgOrganizationSettings />
-      </ShellAccountFrameSection>
-      <ShellAccountFrameSection
-        description={t("organizationMembersSummary")}
-        title={t("organizationMembers")}
-      >
-        <AccountHeaderAction
-          href="/account/organization/members"
-          label={t("organizationMembers")}
-        />
-      </ShellAccountFrameSection>
-      <ShellAccountFrameSection
-        description={t("organizationInvitationsSummary")}
-        title={t("organizationInvitations")}
-      >
-        <AccountHeaderAction
-          href="/account/organization/invitations"
-          label={t("organizationInvitations")}
-        />
-      </ShellAccountFrameSection>
-    </ShellAccountFrame>
-  )
-}
 
 export function SecurityAccountSections() {
   const t = useTranslations("ui")

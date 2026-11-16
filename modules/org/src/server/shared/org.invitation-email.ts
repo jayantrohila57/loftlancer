@@ -12,8 +12,14 @@ type OrgInvitationEmailInput = {
 }
 
 function buildReceivedInvitationsUrl() {
-  const authAppBase = serverEnv.BETTER_AUTH_URL.replace(/\/$/, "")
-  return `${authAppBase}/en-us/organizations/invitations`
+  const development = serverEnv.NODE_ENV !== "production"
+  const studioBase = (
+    serverEnv.STUDIO_APP_URL ??
+    (development
+      ? "http://localhost:3003"
+      : new URL("/studio", serverEnv.BETTER_AUTH_URL).toString())
+  ).replace(/\/$/, "")
+  return `${studioBase}/en-us/organizations/invitations`
 }
 
 export async function sendOrgInvitationEmail(

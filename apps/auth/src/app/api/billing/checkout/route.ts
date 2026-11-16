@@ -5,10 +5,10 @@ import {
   resolveCheckoutOrganization,
 } from "@modules/billing/server"
 import { getAuth } from "@packages/better-auth"
-import { serverEnv } from "@packages/t3-env/server"
 import { z } from "zod"
 import { billingCorsPreflight, jsonWithCors } from "@/shared/api/auth.cors"
 import { isAllowedBillingReturnUrl } from "@/shared/auth/auth.destination"
+import { buildStudioLocalePath } from "@/shared/auth/auth-studio-app-url"
 
 const checkoutBodySchema = z.object({
   planId: z.string().min(1).max(128),
@@ -56,8 +56,7 @@ export async function POST(request: Request) {
     }
     if (organization.code === "organization_required") {
       const lang = locale ?? "en-us"
-      const authBase = serverEnv.BETTER_AUTH_URL.replace(/\/$/, "")
-      const createUrl = new URL(`${authBase}/${lang}/organizations/create`)
+      const createUrl = new URL(buildStudioLocalePath(lang, "/onboarding"))
       createUrl.searchParams.set(
         "returnTo",
         returnTo && isAllowedBillingReturnUrl(returnTo) ? returnTo : successUrl

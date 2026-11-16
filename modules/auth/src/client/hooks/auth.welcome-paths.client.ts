@@ -22,6 +22,9 @@ export function useAuthWelcomePaths(): AuthWelcomePaths {
   const returnTo = useSearchParams().get("returnTo")
   const query = returnTo ? `?${new URLSearchParams({ returnTo })}` : ""
   const localeBase = `${authApp}/${locale}`
+  const studioBase = (
+    clientEnv.NEXT_PUBLIC_STUDIO_APP_URL ?? "http://localhost:3003"
+  ).replace(/\/$/, "")
 
   return {
     continueURL: `${localeBase}/continue${query}`,
@@ -31,6 +34,6 @@ export function useAuthWelcomePaths(): AuthWelcomePaths {
     accountOverviewURL: `${localeBase}/account/overview`,
     profileURL: `${localeBase}/account/profile`,
     securityURL: `${localeBase}/account/security`,
-    organizationsListURL: `${localeBase}/organizations/list`,
+    organizationsListURL: `${studioBase}/${locale}/organizations`,
   }
 }
