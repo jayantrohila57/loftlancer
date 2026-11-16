@@ -33,6 +33,15 @@ const nextConfig: NextConfig = {
     "@packages/orpc",
     "@packages/posthog",
     "@packages/react-query",
+    "@packages/billing",
+    "@modules/billing",
+    "@modules/org",
+    "@modules/storage",
+    "@modules/auth",
+    "@modules/security",
+    "@modules/shell",
+    "@features/navigation",
+    "@features/shell",
   ],
 }
 
