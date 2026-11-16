@@ -18,94 +18,10 @@ export function accountSectionTabs(
         value: "overview",
       },
     ],
-    aiUsage: [
-      {
-        href: "/account/ai-usage",
-        label: translate("overview"),
-        value: "overview",
-      },
-      {
-        href: "/account/ai-usage/model-usage",
-        label: translate("modelUsage"),
-        value: "model-usage",
-      },
-      {
-        href: "/account/ai-usage/usage-history",
-        label: translate("usageHistory"),
-        value: "usage-history",
-      },
-      {
-        href: "/account/ai-usage/limits-alerts",
-        label: translate("limitsAndAlerts"),
-        value: "limits-alerts",
-      },
-    ],
-    storage: [
-      {
-        href: "/account/storage",
-        label: translate("overview"),
-        value: "overview",
-      },
-      {
-        href: "/account/storage/files",
-        label: translate("files"),
-        value: "files",
-      },
-      {
-        href: "/account/storage/storage-activity",
-        label: translate("storageActivity"),
-        value: "storage-activity",
-      },
-      {
-        href: "/account/storage/trash",
-        label: translate("trash"),
-        value: "trash",
-      },
-    ],
-    subscription: [
-      {
-        href: "/account/subscription",
-        label: translate("overview"),
-        value: "overview",
-      },
-      {
-        href: "/account/subscription/available-plans",
-        label: translate("availablePlans"),
-        value: "available-plans",
-      },
-      {
-        href: "/account/subscription/usage-entitlements",
-        label: translate("usageAndEntitlements"),
-        value: "usage-entitlements",
-      },
-    ],
-    billing: [
-      {
-        href: "/account/billing",
-        label: translate("overview"),
-        value: "overview",
-      },
-      {
-        href: "/account/billing/payment-methods",
-        label: translate("paymentMethods"),
-        value: "payment-methods",
-      },
-      {
-        href: "/account/billing/payment-history",
-        label: translate("paymentHistory"),
-        value: "payment-history",
-      },
-      {
-        href: "/account/billing/invoices",
-        label: translate("invoices"),
-        value: "invoices",
-      },
-      {
-        href: "/account/billing/billing-details",
-        label: translate("billingDetails"),
-        value: "billing-details",
-      },
-    ],
+    aiUsage: [],
+    storage: [],
+    subscription: [],
+    billing: [],
     privacyData: [
       {
         href: "/account/privacy-data",
@@ -189,23 +105,7 @@ export function accountSectionTabs(
         value: "general",
       },
     ],
-    organization: [
-      {
-        href: "/account/organization",
-        label: translate("overview"),
-        value: "overview",
-      },
-      {
-        href: "/account/organization/members",
-        label: translate("organizationMembers"),
-        value: "members",
-      },
-      {
-        href: "/account/organization/invitations",
-        label: translate("organizationInvitations"),
-        value: "invitations",
-      },
-    ],
+    organization: [],
     security: [
       {
         href: "/account/security",

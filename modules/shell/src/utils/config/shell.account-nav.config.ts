@@ -4,40 +4,24 @@ import {
   Activity,
   BadgeCheck,
   Bell,
-  Bot,
-  Building2,
   CalendarClock,
-  ChartNoAxesCombined,
   CircleHelp,
-  Clock,
-  CreditCard,
   Database,
   Download,
-  File,
-  FileText,
   Globe,
-  HardDrive,
-  History,
   Languages,
   LayoutDashboard,
   Link2,
-  ListChecks,
-  Mail,
   Monitor,
   MousePointer2,
   Palette,
   Percent,
-  Receipt,
   Ruler,
   Settings2,
   Shield,
-  Sparkles,
   Terminal,
-  Trash2,
   User,
   UserRoundX,
-  Users,
-  WalletCards,
   ZoomIn,
 } from "lucide-react"
 import { accountSectionTabs } from "./shell.account-section-tabs.client"
@@ -60,27 +44,12 @@ const tabIcons: Readonly<Record<string, LucideIcon>> = {
   region: Globe,
   "date-time": CalendarClock,
   numbers: Percent,
-  currency: WalletCards,
   measurements: Ruler,
-  "model-usage": Bot,
-  "usage-history": History,
-  "limits-alerts": Bell,
-  files: File,
-  "storage-activity": Activity,
-  trash: Trash2,
-  "available-plans": ListChecks,
-  "usage-entitlements": ChartNoAxesCombined,
-  "payment-methods": CreditCard,
-  "payment-history": Clock,
-  invoices: Receipt,
-  "billing-details": FileText,
   consents: BadgeCheck,
   "data-export": Download,
   "account-deletion": UserRoundX,
   "help-center": CircleHelp,
-  "support-tickets": FileText,
-  members: Users,
-  invitations: Mail,
+  "support-tickets": CircleHelp,
 }
 
 export interface AccountSidebarNavItem {
@@ -94,16 +63,10 @@ export interface AccountSidebarNavGroup {
   readonly label: string
 }
 
-export type AccountSidebarNavOptions = {
-  readonly showBillingNav?: boolean
-}
-
 export function accountSidebarNavGroups(
-  translate: ShellTranslate,
-  options?: AccountSidebarNavOptions
+  translate: ShellTranslate
 ): readonly AccountSidebarNavGroup[] {
   const tabs = accountSectionTabs(translate)
-  const showBillingNav = options?.showBillingNav !== false
 
   const navGroups: AccountSidebarNavGroup[] = [
     {
@@ -113,16 +76,6 @@ export function accountSidebarNavGroups(
           href: "/account",
           icon: LayoutDashboard,
           label: translate("account"),
-        },
-        {
-          href: "/account/organization",
-          icon: Building2,
-          label: translate("organization"),
-          subItems: tabs.organization.map((tab) => ({
-            href: tab.href,
-            icon: tabIcons[tab.value] ?? LayoutDashboard,
-            label: tab.label,
-          })),
         },
         {
           href: "/account/profile",
@@ -197,31 +150,6 @@ export function accountSidebarNavGroups(
       ],
     },
     {
-      label: translate("resources"),
-      items: [
-        {
-          href: "/account/ai-usage",
-          icon: Sparkles,
-          label: translate("aiUsage"),
-          subItems: tabs.aiUsage.map((tab) => ({
-            href: tab.href,
-            icon: tabIcons[tab.value] ?? LayoutDashboard,
-            label: tab.label,
-          })),
-        },
-        {
-          href: "/account/storage",
-          icon: HardDrive,
-          label: translate("storage"),
-          subItems: tabs.storage.map((tab) => ({
-            href: tab.href,
-            icon: tabIcons[tab.value] ?? LayoutDashboard,
-            label: tab.label,
-          })),
-        },
-      ],
-    },
-    {
       label: translate("privacyAndSupport"),
       items: [
         {
@@ -247,34 +175,6 @@ export function accountSidebarNavGroups(
       ],
     },
   ]
-
-  if (showBillingNav) {
-    navGroups.splice(4, 0, {
-      label: translate("plansAndBilling"),
-      items: [
-        {
-          href: "/account/subscription",
-          icon: WalletCards,
-          label: translate("subscription"),
-          subItems: tabs.subscription.map((tab) => ({
-            href: tab.href,
-            icon: tabIcons[tab.value] ?? LayoutDashboard,
-            label: tab.label,
-          })),
-        },
-        {
-          href: "/account/billing",
-          icon: CreditCard,
-          label: translate("billing"),
-          subItems: tabs.billing.map((tab) => ({
-            href: tab.href,
-            icon: tabIcons[tab.value] ?? LayoutDashboard,
-            label: tab.label,
-          })),
-        },
-      ],
-    })
-  }
 
   return navGroups
 }
