@@ -1,4 +1,7 @@
-import { isOrganizationOwnerRole } from "@modules/org"
+import {
+  canManageOrganizationBilling,
+  canViewOrganizationBilling,
+} from "@modules/org"
 
 export type BillingOrgOwnerQueryInput = {
   organizationId: string | null | undefined
@@ -6,10 +9,21 @@ export type BillingOrgOwnerQueryInput = {
   rolePending: boolean
 }
 
-/** Matches {@link BillingAccessGate} and {@link billingOrgOwnerProcedure} policy. */
-export function isBillingOrgOwnerQueryEnabled(
+export function isBillingOrgViewQueryEnabled(input: BillingOrgOwnerQueryInput) {
+  if (!input.organizationId || input.rolePending || !input.role) return false
+  return canViewOrganizationBilling(input.role)
+}
+
+export function isBillingOrgManageQueryEnabled(
   input: BillingOrgOwnerQueryInput
 ) {
   if (!input.organizationId || input.rolePending || !input.role) return false
-  return isOrganizationOwnerRole(input.role)
+  return canManageOrganizationBilling(input.role)
+}
+
+/** @deprecated Use {@link isBillingOrgManageQueryEnabled}. */
+export function isBillingOrgOwnerQueryEnabled(
+  input: BillingOrgOwnerQueryInput
+) {
+  return isBillingOrgManageQueryEnabled(input)
 }

@@ -6,27 +6,23 @@ import {
   validateCreateOrganizationInput,
 } from "../../utils/validation/org.create.schema"
 import { invitationAssignsOwnerRole } from "../../utils/validation/org.invitation-role"
-
 import {
   assertUserCanCreateOwnedOrg,
   provisionOrganizationOnCreate,
 } from "../services/org.service.provisioning"
 import { sendOrgInvitationEmail } from "./org.invitation-email"
 import {
+  assertInvitationRolePolicy,
+  assertMemberRemovalPolicy,
+  assertMemberRoleUpdatePolicy,
+  resolveOrgMembershipActorRole,
+} from "./org.membership-policy"
+import {
   orgOrganizationAccessControl,
   orgOrganizationPluginRoles,
 } from "./org.organization-roles"
 
 const ORG_INVITATION_EXPIRES_IN_SECONDS = 60 * 60 * 24 * 7
-
-function assertInvitationRoleIsNotOwner(role: string) {
-  if (invitationAssignsOwnerRole(role)) {
-    throw APIError.from("FORBIDDEN", {
-      code: "ORG_INVITE_OWNER_NOT_ALLOWED",
-      message: "org.invite_owner_not_allowed",
-    })
-  }
-}
 
 /** Better Auth `organization()` options wired from `configureBetterAuth`. */
 export function buildOrgOrganizationPluginOptions(): BetterAuthOrganizationPluginOptions {
@@ -44,13 +40,59 @@ export function buildOrgOrganizationPluginOptions(): BetterAuthOrganizationPlugi
     },
     organizationHooks: {
       async beforeCreateInvitation(data) {
-        assertInvitationRoleIsNotOwner(data.invitation.role)
+        const actorRole = await resolveOrgMembershipActorRole({
+          organizationId: data.invitation.organizationId,
+          inviterId: data.invitation.inviterId,
+        })
+        if (!actorRole) {
+          throw APIError.from("FORBIDDEN", {
+            code: "ORG_ROLE_ASSIGN_FORBIDDEN",
+            message: "org.role_assign_forbidden",
+          })
+        }
+        assertInvitationRolePolicy({
+          actorRole,
+          invitationRole: data.invitation.role,
+        })
       },
       async beforeAcceptInvitation(data) {
-        assertInvitationRoleIsNotOwner(data.invitation.role)
+        if (invitationAssignsOwnerRole(data.invitation.role)) {
+          throw APIError.from("FORBIDDEN", {
+            code: "ORG_INVITE_OWNER_NOT_ALLOWED",
+            message: "org.invite_owner_not_allowed",
+          })
+        }
       },
       async beforeUpdateMemberRole(data) {
-        assertInvitationRoleIsNotOwner(data.newRole)
+        const actorRole = await resolveOrgMembershipActorRole({
+          organizationId: data.organization.id,
+        })
+        if (!actorRole) {
+          throw APIError.from("FORBIDDEN", {
+            code: "ORG_ROLE_ASSIGN_FORBIDDEN",
+            message: "org.role_assign_forbidden",
+          })
+        }
+        assertMemberRoleUpdatePolicy({
+          actorRole,
+          targetCurrentRole: data.member.role,
+          nextRole: data.newRole,
+        })
+      },
+      async beforeRemoveMember(data) {
+        const actorRole = await resolveOrgMembershipActorRole({
+          organizationId: data.organization.id,
+        })
+        if (!actorRole) {
+          throw APIError.from("FORBIDDEN", {
+            code: "ORG_MEMBER_ELEVATED_FORBIDDEN",
+            message: "org.member_elevated_forbidden",
+          })
+        }
+        assertMemberRemovalPolicy({
+          actorRole,
+          targetRole: data.member.role,
+        })
       },
       async beforeCreateOrganization(data) {
         const rawMetadata = data.organization.metadata

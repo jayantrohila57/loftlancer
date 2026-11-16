@@ -134,6 +134,20 @@
       "when": 1794823002816,
       "tag": "0018_org_entitlement_payment_grace",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794900000000,
+      "tag": "0019_studio_onboarding_progress",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794901000000,
+      "tag": "0020_studio_onboarding_plan_tier",
+      "breakpoints": true
     }
   ]
 }

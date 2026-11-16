@@ -97,7 +97,10 @@ export function AuthFirstLoginScreen({
   const t = useTranslations("ui")
   const home = useTranslations("home")
   const paths = useAuthWelcomePaths()
-  const organizationsHref = studioURL ?? paths.organizationsListURL
+  const organizationsHref =
+    studioURL != null
+      ? `${studioURL.replace(/\/$/, "")}/organizations`
+      : paths.organizationsListURL
   const primaryHref = studioURL ?? paths.accountOverviewURL
   const primaryLabel = studioURL ? t("goToStudio") : t("goToAccount")
 

@@ -12,14 +12,33 @@ export function readBillingCheckoutReturnUrl(
     ) {
       return undefined
     }
-    const expected =
+    const successSuffixes = [
+      "/billing/checkout/success",
+      "/onboarding/plan/checkout/success",
+    ]
+    const cancelSuffixes = [
+      "/billing/checkout/cancel",
+      "/onboarding/plan/checkout/cancel",
+    ]
+    const allowed =
       kind === "success"
-        ? "/billing/checkout/success"
-        : "/billing/checkout/cancel"
-    if (!url.pathname.endsWith(expected)) return undefined
+        ? successSuffixes.some((suffix) => url.pathname.endsWith(suffix))
+        : cancelSuffixes.some((suffix) => url.pathname.endsWith(suffix))
+    if (!allowed) return undefined
     return url.toString()
   } catch {
     return undefined
+  }
+}
+
+export function studioOnboardingPlanCheckoutReturnUrls(input: {
+  origin: string
+  lang: string
+}): { successUrl: string; cancelUrl: string } {
+  const base = `${input.origin.replace(/\/$/, "")}/${input.lang}/onboarding/plan/checkout`
+  return {
+    successUrl: `${base}/success`,
+    cancelUrl: `${base}/cancel`,
   }
 }
 

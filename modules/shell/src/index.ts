@@ -23,8 +23,6 @@ export { AccountUserMenuLoader } from "./client/components/shell.account-user-me
 export { HelpSupportPage } from "./client/components/shell.help-support"
 export { createAppLocaleSwitcher } from "./client/components/shell.locale-switcher"
 export { ShellOrgSwitcherLoader } from "./client/components/shell.org-switcher-loader"
-export { OrganizationsSidebarNav } from "./client/components/shell.organizations-sidebar-nav.client"
-export { OrganizationsSubnav } from "./client/components/shell.organizations-subnav.client"
 export { PrivacyDataPage } from "./client/components/shell.privacy-data"
 export type {
   AccountHubCategory,
@@ -40,7 +38,6 @@ export {
 export {
   type AccountSidebarNavGroup,
   type AccountSidebarNavItem,
-  type AccountSidebarNavOptions,
   accountSidebarNavGroups,
 } from "./utils/config/shell.account-nav.config"
 export { accountSectionTabs } from "./utils/config/shell.account-section-tabs.client"

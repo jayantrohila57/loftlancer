@@ -1,0 +1,1 @@
+ALTER TABLE "studio_onboarding_progress" ADD COLUMN "plan_tier" varchar(8);

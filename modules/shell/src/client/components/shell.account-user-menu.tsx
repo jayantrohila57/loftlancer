@@ -1,5 +1,6 @@
 "use client"
 
+import { buildAfterSignOutLocation } from "@modules/auth"
 import { authSessionApi } from "@modules/auth/client/hooks/auth.session.hooks"
 import { authClient } from "@packages/better-auth/client"
 import { QueryProvider } from "@packages/react-query"
@@ -43,20 +44,6 @@ function AccountUserMenuContent() {
   const user = data?.user ?? (signingOut ? previousUser.current : undefined)
   const base = clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")
   const accountUrl = `${base}/${locale}/account`
-  const signInUrl = `${base}/${locale}/sign-in`
-
-  function resolveAfterSignOutHref(): string {
-    if (typeof window === "undefined") return signInUrl
-    try {
-      const authOrigin = new URL(base).origin
-      if (window.location.origin !== authOrigin) {
-        return `/${locale}`
-      }
-    } catch {
-      // Fall through to the auth app sign-in screen.
-    }
-    return signInUrl
-  }
 
   async function signOut() {
     if (signingOut) return
@@ -73,7 +60,7 @@ function AccountUserMenuContent() {
             error instanceof Error ? error.message : t("couldNotSignOut"),
         }
       )
-      window.location.assign(resolveAfterSignOutHref())
+      window.location.assign(buildAfterSignOutLocation({ locale }))
     } catch {
       setSigningOut(false)
     }

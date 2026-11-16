@@ -11,7 +11,7 @@ export interface ShellScrollProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly className?: string
 }
 
-const shellScrollHiddenVariants = cva("min-h-0 flex-1 overscroll-contain p-2", {
+const shellScrollHiddenVariants = cva("min-h-0 flex-1 overscroll-contain", {
   defaultVariants: {
     variant: "default",
   },

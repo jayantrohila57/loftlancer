@@ -56,9 +56,13 @@ export function ShellOrgSwitcher() {
   const activeOrg =
     orgs.find((org: ListedOrganization) => org.id === activeOrganizationId) ??
     null
-  const base = clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")
-  const createOrgHref = `/${locale}/organizations/create`
-  const listOrgHref = `/${locale}/organizations/list`
+  const studioBase =
+    clientEnv.NEXT_PUBLIC_STUDIO_APP_URL?.replace(/\/$/, "") ??
+    (typeof window !== "undefined"
+      ? `${window.location.origin}/studio`
+      : "http://localhost:3003")
+  const createOrgHref = `${studioBase}/${locale}/organizations/new`
+  const listOrgHref = `${studioBase}/${locale}/organizations`
 
   async function switchOrganization(organizationId: string) {
     if (switchingId) return
@@ -165,11 +169,11 @@ export function ShellOrgSwitcher() {
                 })
               : null}
             <MenuSeparator />
-            <MenuLinkItem href={`${base}${listOrgHref}`}>
+            <MenuLinkItem href={listOrgHref}>
               <List />
               {t("organizations")}
             </MenuLinkItem>
-            <MenuLinkItem href={`${base}${createOrgHref}`}>
+            <MenuLinkItem href={createOrgHref}>
               <Plus />
               {t("createOrganization")}
             </MenuLinkItem>

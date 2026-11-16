@@ -23,6 +23,14 @@ export {
   ShellSectionLayout,
   type ShellSectionLayoutProps,
 } from "./capability/shell.section-layout"
+export {
+  SiteMarketingBar,
+  type SiteMarketingBarProps,
+} from "./capability/shell.site-marketing-bar"
+export {
+  SiteMarketingHeaderActions,
+  type SiteMarketingHeaderActionsProps,
+} from "./capability/shell.site-marketing-header-actions"
 export { ShellSkipToMainContent } from "./capability/shell.skip-to-main"
 export {
   ShellSubHeader,

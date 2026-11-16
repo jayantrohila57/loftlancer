@@ -35,7 +35,11 @@ type Invitation = {
   expiresAt: Date | string
 }
 
-export function OrgInvitationsScreen() {
+export function OrgInvitationsScreen({
+  onAccepted,
+}: {
+  readonly onAccepted?: (data: unknown) => void
+} = {}) {
   const t = useTranslations("ui")
   const locale = useLocale()
   const paths = useOrgAppPaths()
@@ -91,6 +95,7 @@ export function OrgInvitationsScreen() {
           result.data,
           { switchErrorMessage: t("couldNotSwitchOrganization") }
         )
+        onAccepted?.(result.data)
       }
       setError(null)
       await load()

@@ -8,11 +8,10 @@ import { Button } from "@packages/ui/components/button"
 import { Skeleton } from "@packages/ui/components/skeleton"
 import { Sparkles, Undo2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useState } from "react"
 import { shouldWarnBillingDowngradeOverQuota } from "../../utils/billing.downgrade-quota"
 import { useBillingApi } from "../hooks/billing.api"
+import { useBillingPlanActions } from "../hooks/billing.hook.plan-actions"
 import { useBillingPlans } from "../hooks/billing.hook.plans"
-import { useInvalidateBillingSubscriptionQueries } from "../hooks/billing.hook.subscription-cache"
 import { BillingAccessGate } from "./billing.access-gate.client"
 
 function PlansSkeleton() {
@@ -30,66 +29,17 @@ export function BillingPlansScreen() {
   const plans = useBillingPlans(organizationId)
   const overview = useBillingApi.useOverview(organizationId)
   const storageOverview = useStorageApi.useOverview(organizationId)
-  const invalidateSubscriptionQueries =
-    useInvalidateBillingSubscriptionQueries(organizationId)
-  const [pending, setPending] = useState(false)
-  const [actionError, setActionError] = useState<string | null>(null)
+  const {
+    actionPending,
+    actionKey,
+    actionError,
+    canManage,
+    onUpgrade,
+    onDowngrade,
+    onCancel,
+  } = useBillingPlanActions(organizationId)
 
-  async function onUpgrade() {
-    setActionError(null)
-    setPending(true)
-    try {
-      const result = await useBillingApi.postUpgrade()
-      if (result.paymentUrl) {
-        window.location.assign(result.paymentUrl)
-        return
-      }
-      await invalidateSubscriptionQueries()
-    } catch (error) {
-      setActionError(
-        error instanceof Error ? error.message : t("operationFailed")
-      )
-    } finally {
-      setPending(false)
-    }
-  }
-
-  async function onDowngrade() {
-    setActionError(null)
-    setPending(true)
-    try {
-      const result = await useBillingApi.postDowngrade()
-      if (result.paymentUrl) {
-        window.location.assign(result.paymentUrl)
-        return
-      }
-      await invalidateSubscriptionQueries()
-    } catch (error) {
-      setActionError(
-        error instanceof Error ? error.message : t("operationFailed")
-      )
-    } finally {
-      setPending(false)
-    }
-  }
-
-  async function onCancel() {
-    setActionError(null)
-    setPending(true)
-    try {
-      await useBillingApi.postCancel()
-      await invalidateSubscriptionQueries()
-    } catch (error) {
-      setActionError(
-        error instanceof Error ? error.message : t("operationFailed")
-      )
-    } finally {
-      setPending(false)
-    }
-  }
-
-  const autumnReady =
-    overview.data?.autumnConfigured && overview.data.autumnBound
+  const billingConfigured = Boolean(overview.data?.autumnConfigured)
   const currentPlanTier = plans.data?.plans.find((plan) => plan.isCurrent)?.tier
   const freeQuotaBytes = plans.data?.plans.find(
     (plan) => plan.tier === "free"
@@ -126,6 +76,8 @@ export function BillingPlansScreen() {
           {plans.data.plans.map((plan) => {
             const label =
               plan.tier === "paid" ? t("storagePlanPaid") : t("storagePlanFree")
+            const checkoutReady =
+              billingConfigured && canManage && !overview.isPending
             return (
               <li
                 key={plan.planId}
@@ -153,33 +105,45 @@ export function BillingPlansScreen() {
                     </dd>
                   </div>
                 </dl>
-                {!plan.isCurrent && autumnReady ? (
+                {!plan.isCurrent && checkoutReady ? (
                   plan.tier === "paid" ? (
-                    <Button disabled={pending} onClick={() => void onUpgrade()}>
+                    <Button
+                      disabled={actionPending}
+                      loading={actionKey === "upgrade"}
+                      onClick={() => void onUpgrade()}
+                    >
                       <Sparkles className="size-4" />
-                      {t("billingUpgradeToPaid")}
+                      {actionKey === "upgrade"
+                        ? t("billingUpgradePending")
+                        : t("billingUpgradeToPaid")}
                     </Button>
                   ) : (
                     <Button
-                      disabled={pending}
+                      disabled={actionPending}
+                      loading={actionKey === "downgrade"}
                       variant="outline"
                       onClick={() => void onDowngrade()}
                     >
                       <Undo2 className="size-4" />
-                      {t("billingDowngradeToFree")}
+                      {actionKey === "downgrade"
+                        ? t("billingDowngradePending")
+                        : t("billingDowngradeToFree")}
                     </Button>
                   )
                 ) : null}
                 {plan.isCurrent &&
                 plan.tier === "paid" &&
-                autumnReady &&
+                checkoutReady &&
                 !overview.data?.cancelAtPeriodEnd ? (
                   <Button
-                    disabled={pending}
+                    disabled={actionPending}
+                    loading={actionKey === "cancel"}
                     variant="outline"
                     onClick={() => void onCancel()}
                   >
-                    {t("billingCancelAtPeriodEnd")}
+                    {actionKey === "cancel"
+                      ? t("billingCancelPending")
+                      : t("billingCancelAtPeriodEnd")}
                   </Button>
                 ) : null}
                 {plan.isCurrent && overview.data?.cancelAtPeriodEnd ? (
@@ -192,7 +156,7 @@ export function BillingPlansScreen() {
           })}
         </ul>
       ) : null}
-      {!overview.data?.autumnConfigured ? (
+      {!billingConfigured && overview.data ? (
         <p className="mt-4 text-sm text-muted-foreground" role="status">
           {t("billingAutumnUnconfigured")}
         </p>

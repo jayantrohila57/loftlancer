@@ -215,7 +215,7 @@ export function BillingInvoicesTableScreen(props: {
   )
 
   return (
-    <BillingAccessGate>
+    <BillingAccessGate mode="manage">
       <BillingInvoicesTableBody
         variant={props.variant}
         list={{ ...list, pagination }}

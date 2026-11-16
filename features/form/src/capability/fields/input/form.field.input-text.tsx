@@ -36,7 +36,10 @@ import { useEffect, useId, useState } from "react"
 import type { FieldValues, Path } from "react-hook-form"
 import { Controller, useFormContext, useWatch } from "react-hook-form"
 import { PHONE_CALLING_CODES } from "../../../constants/form.constants"
-import type { TextFieldProps } from "../../../types/form.field.types"
+import type {
+  FieldAsyncStatus,
+  TextFieldProps,
+} from "../../../types/form.field.types"
 import {
   getFieldDescribedBy,
   getPasswordStrength,
@@ -60,6 +63,9 @@ export function FieldText<
   loading = false,
   inputType = "text",
   showStrength = false,
+  defaultCallingCode,
+  asyncStatus = "idle",
+  asyncStatusLabels,
 }: TextFieldProps<TValues, TName>) {
   const t = useTranslations("ui")
 
@@ -70,7 +76,14 @@ export function FieldText<
   } = useFormContext<TValues>()
   const id = useId()
   const [visible, setVisible] = useState(false)
-  const [emptyCallingCode, setEmptyCallingCode] = useState("+1")
+  const [emptyCallingCode, setEmptyCallingCode] = useState(
+    defaultCallingCode ?? "+1"
+  )
+  useEffect(() => {
+    if (defaultCallingCode !== undefined) {
+      setEmptyCallingCode(defaultCallingCode)
+    }
+  }, [defaultCallingCode])
   const nativeType =
     type === "text" ? inputType : type === "avatar-url" ? "url" : type
   const isPassword = nativeType === "password"
@@ -78,6 +91,7 @@ export function FieldText<
   const isTel = nativeType === "tel"
   const isUrl = nativeType === "url"
   const isAvatarUrl = type === "avatar-url"
+  const showAsyncStatus = asyncStatus !== "idle"
   const watchedValue = useWatch({
     control,
     name,
@@ -125,6 +139,30 @@ export function FieldText<
   }, [isPassword, watchedValue])
   if (hidden) return null
   const inactive = disabled || isSubmitting
+
+  function renderAsyncStatusIcon(status: FieldAsyncStatus) {
+    const statusLabel =
+      status === "checking"
+        ? asyncStatusLabels?.checking
+        : status === "valid"
+          ? asyncStatusLabels?.valid
+          : asyncStatusLabels?.invalid
+    return (
+      <span
+        role="status"
+        aria-label={statusLabel}
+        aria-hidden={statusLabel ? undefined : true}
+      >
+        {status === "checking" ? (
+          <LoaderCircleIcon className="size-4 animate-spin" />
+        ) : status === "valid" ? (
+          <CheckCircle2Icon className="size-4 text-success" />
+        ) : (
+          <XCircleIcon className="size-4 text-destructive" />
+        )}
+      </span>
+    )
+  }
 
   return (
     <Controller
@@ -199,9 +237,9 @@ export function FieldText<
                   <SelectTrigger
                     aria-label={t("countryCallingCode")}
                     aria-labelledby={`${id}-calling-code`}
-                    className="w-fit min-w-0"
+                    className="w-auto min-w-16 shrink-0 px-2.5"
                   >
-                    <SelectValue />
+                    <SelectValue className="flex-none whitespace-nowrap" />
                   </SelectTrigger>
                   <SelectPopup>
                     <SelectItem value="">{t("other")}</SelectItem>
@@ -321,6 +359,13 @@ export function FieldText<
                     </Button>
                   </InputGroupAddon>
                 ) : null}
+              </InputGroup>
+            ) : showAsyncStatus ? (
+              <InputGroup>
+                <InputGroupInput {...controlProps} />
+                <InputGroupAddon align="inline-end">
+                  {renderAsyncStatusIcon(asyncStatus)}
+                </InputGroupAddon>
               </InputGroup>
             ) : (
               <Input {...controlProps} className="w-full" />

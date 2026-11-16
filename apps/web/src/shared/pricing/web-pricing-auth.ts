@@ -38,6 +38,13 @@ function authAppBase(): string {
   return clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")
 }
 
+function studioAppBase(): string {
+  return (
+    clientEnv.NEXT_PUBLIC_STUDIO_APP_URL?.replace(/\/$/, "") ??
+    "http://localhost:3003"
+  )
+}
+
 /** Same-origin web proxy; forwards cookies to the auth billing API. */
 export function buildBillingApiUrl(path: string): string {
   return path.startsWith("/") ? path : `/${path}`
@@ -47,7 +54,7 @@ export function buildCreateOrganizationLocation(input: {
   readonly locale: string
   readonly returnTo: string
 }): string {
-  const url = new URL(`${authAppBase()}/${input.locale}/organizations/create`)
+  const url = new URL(`${studioAppBase()}/${input.locale}/onboarding`)
   url.searchParams.set("returnTo", input.returnTo)
   return url.toString()
 }

@@ -12,7 +12,17 @@ export const AUTH_ACCOUNT_LEGACY_REDIRECTS = [
   ["/account/permissions", "/account/security/permissions"],
 ] as const
 
-/** Locale-free auth entry and post-auth routes (excluding `/account` and `/organizations`). */
+/** Migrated to Studio — Auth keeps permanent redirects only. */
+export const AUTH_STUDIO_MIGRATED_PATH_PREFIXES = [
+  "/account/organization",
+  "/account/billing",
+  "/account/subscription",
+  "/account/ai-usage",
+  "/account/storage",
+  "/organizations",
+] as const
+
+/** Locale-free auth entry and post-auth routes (excluding `/account`). */
 export const AUTH_FLOW_LOCALE_FREE_PATHS = [
   "/",
   "/sign-in",
@@ -69,20 +79,25 @@ export function collectAuthAppLocaleFreePagePaths(
   const appLangRoot = join(repoRoot, "apps/auth/src/app/[lang]")
 
   walkAppPages(join(appLangRoot, "(account)/account"), "/account", hrefs)
-  walkAppPages(
-    join(appLangRoot, "(account)/organizations"),
-    "/organizations",
-    hrefs
-  )
   walkAppPages(join(appLangRoot, "(auth)"), "", hrefs)
 
   return hrefs
+}
+
+function isStudioMigratedAuthHref(href: string): boolean {
+  return AUTH_STUDIO_MIGRATED_PATH_PREFIXES.some(
+    (prefix) => href === prefix || href.startsWith(`${prefix}/`)
+  )
 }
 
 export function authAppPathHasPage(
   href: string,
   pagePaths: Set<string>
 ): boolean {
+  if (isStudioMigratedAuthHref(href)) {
+    return true
+  }
+
   if (pagePaths.has(href)) {
     return true
   }
