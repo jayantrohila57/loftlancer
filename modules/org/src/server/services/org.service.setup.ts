@@ -2,6 +2,7 @@ import { getDb } from "@packages/drizzle"
 import { createError, createSuccess } from "@packages/orpc"
 import { ORPCError } from "@packages/orpc/server"
 import type { z } from "zod"
+import { canEditOrganizationSettings } from "../../utils/org.member-role"
 import type {
   OrganizationSetupV2,
   organizationSetupPatchSchema,
@@ -37,16 +38,16 @@ export const orgSetupService = {
   async patch({
     organizationId,
     patch,
-    isOrgOwner,
+    orgRole,
   }: {
     organizationId: string
     patch: SetupPatch
-    isOrgOwner: boolean
+    orgRole: string
   }) {
-    if (!isOrgOwner) {
+    if (!canEditOrganizationSettings(orgRole)) {
       throw new ORPCError("FORBIDDEN", {
-        message: "Only organization owners can edit setup.",
-        data: { code: "rbac.org_owner_required" },
+        message: "Only organization owners and admins can edit setup.",
+        data: { code: "rbac.forbidden" },
       })
     }
     const current = await readOrganizationSetupV2(organizationId)

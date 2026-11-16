@@ -28,14 +28,20 @@ export function studioSettingsNavigationItems(input: {
   const canInvites = hideUntilKnown
     ? false
     : Boolean(access?.canManageInvitations)
-  const canBilling = hideUntilKnown ? false : Boolean(access?.canManageBilling)
+  const canBilling = hideUntilKnown ? false : Boolean(access?.canViewBilling)
+  const canBillingManage = hideUntilKnown
+    ? false
+    : Boolean(access?.canManageBilling)
   const canOwner = hideUntilKnown
     ? false
     : Boolean(access?.canTransferOwnership)
   const canDanger = hideUntilKnown ? false : Boolean(access?.canAccessDanger)
 
-  const items: NavigationItem[] = [
-    {
+  const canGeneral = hideUntilKnown ? false : Boolean(access?.canViewGeneral)
+
+  const items: NavigationItem[] = []
+  if (canGeneral) {
+    items.push({
       description: t("organizationSummary"),
       groupId: "studio-settings",
       groupLabel: t("organizationSettings"),
@@ -46,8 +52,8 @@ export function studioSettingsNavigationItems(input: {
       order: 0,
       placements: ["sidebar", "command"] as const,
       keywords: [t("general"), t("organizationSettings")],
-    },
-  ]
+    })
+  }
 
   if (canMembers) {
     items.push({
@@ -78,18 +84,20 @@ export function studioSettingsNavigationItems(input: {
     })
   }
 
-  items.push({
-    description: t("organizationRolesDescription"),
-    groupId: "studio-settings",
-    groupLabel: t("organizationSettings"),
-    href: href("/roles"),
-    icon: Shield,
-    id: "settings-roles",
-    label: t("organizationRoles"),
-    order: 30,
-    placements: ["sidebar", "command"] as const,
-    keywords: [t("organizationRoles")],
-  })
+  if (hideUntilKnown ? false : Boolean(access?.canViewRoles)) {
+    items.push({
+      description: t("organizationRolesDescription"),
+      groupId: "studio-settings",
+      groupLabel: t("organizationSettings"),
+      href: href("/roles"),
+      icon: Shield,
+      id: "settings-roles",
+      label: t("organizationRoles"),
+      order: 30,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("organizationRoles")],
+    })
+  }
 
   if (canBilling) {
     items.push(
@@ -130,60 +138,64 @@ export function studioSettingsNavigationItems(input: {
         parentId: "settings-billing",
         placements: ["sidebar", "command"] as const,
         keywords: [t("usageAndEntitlements")],
-      },
-      {
-        description: t("billingPaymentMethodsDescription"),
-        groupId: "studio-settings",
-        groupLabel: t("organizationSettings"),
-        href: href("/billing/payment-methods"),
-        icon: CreditCard,
-        id: "settings-billing-payment-methods",
-        label: t("paymentMethods"),
-        order: 43,
-        parentId: "settings-billing",
-        placements: ["sidebar", "command"] as const,
-        keywords: [t("paymentMethods")],
-      },
-      {
-        description: t("paymentHistory"),
-        groupId: "studio-settings",
-        groupLabel: t("organizationSettings"),
-        href: href("/billing/payment-history"),
-        icon: CreditCard,
-        id: "settings-billing-payment-history",
-        label: t("paymentHistory"),
-        order: 44,
-        parentId: "settings-billing",
-        placements: ["sidebar", "command"] as const,
-        keywords: [t("paymentHistory")],
-      },
-      {
-        description: t("billingInvoicesDescription"),
-        groupId: "studio-settings",
-        groupLabel: t("organizationSettings"),
-        href: href("/billing/invoices"),
-        icon: CreditCard,
-        id: "settings-billing-invoices",
-        label: t("invoices"),
-        order: 45,
-        parentId: "settings-billing",
-        placements: ["sidebar", "command"] as const,
-        keywords: [t("invoices")],
-      },
-      {
-        description: t("billingDetailsDescription"),
-        groupId: "studio-settings",
-        groupLabel: t("organizationSettings"),
-        href: href("/billing/details"),
-        icon: CreditCard,
-        id: "settings-billing-details",
-        label: t("billingDetails"),
-        order: 46,
-        parentId: "settings-billing",
-        placements: ["sidebar", "command"] as const,
-        keywords: [t("billingDetails")],
       }
     )
+    if (canBillingManage) {
+      items.push(
+        {
+          description: t("billingPaymentMethodsDescription"),
+          groupId: "studio-settings",
+          groupLabel: t("organizationSettings"),
+          href: href("/billing/payment-methods"),
+          icon: CreditCard,
+          id: "settings-billing-payment-methods",
+          label: t("paymentMethods"),
+          order: 43,
+          parentId: "settings-billing",
+          placements: ["sidebar", "command"] as const,
+          keywords: [t("paymentMethods")],
+        },
+        {
+          description: t("paymentHistory"),
+          groupId: "studio-settings",
+          groupLabel: t("organizationSettings"),
+          href: href("/billing/payment-history"),
+          icon: CreditCard,
+          id: "settings-billing-payment-history",
+          label: t("paymentHistory"),
+          order: 44,
+          parentId: "settings-billing",
+          placements: ["sidebar", "command"] as const,
+          keywords: [t("paymentHistory")],
+        },
+        {
+          description: t("billingInvoicesDescription"),
+          groupId: "studio-settings",
+          groupLabel: t("organizationSettings"),
+          href: href("/billing/invoices"),
+          icon: CreditCard,
+          id: "settings-billing-invoices",
+          label: t("invoices"),
+          order: 45,
+          parentId: "settings-billing",
+          placements: ["sidebar", "command"] as const,
+          keywords: [t("invoices")],
+        },
+        {
+          description: t("billingDetailsDescription"),
+          groupId: "studio-settings",
+          groupLabel: t("organizationSettings"),
+          href: href("/billing/details"),
+          icon: CreditCard,
+          id: "settings-billing-details",
+          label: t("billingDetails"),
+          order: 46,
+          parentId: "settings-billing",
+          placements: ["sidebar", "command"] as const,
+          keywords: [t("billingDetails")],
+        }
+      )
+    }
   }
 
   if (canOwner) {

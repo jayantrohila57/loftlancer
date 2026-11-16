@@ -7,10 +7,9 @@ import { Skeleton } from "@packages/ui/components/skeleton"
 import { BadgeCheck, Sparkles } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
-
 import { useBillingApi } from "../hooks/billing.api"
+import { useBillingPlanActions } from "../hooks/billing.hook.plan-actions"
 import { markBillingPortalLaunch } from "../hooks/billing.hook.portal-return-refresh"
-import { useInvalidateBillingSubscriptionQueries } from "../hooks/billing.hook.subscription-cache"
 import { BillingAccessGate } from "./billing.access-gate.client"
 import { BillingUsageMeters } from "./billing.usage-meters.client"
 
@@ -28,10 +27,16 @@ function BillingOverviewBody() {
   const t = useTranslations("ui")
   const organizationId = useOrgSessionActiveId()
   const overview = useBillingApi.useOverview(organizationId)
-  const invalidateSubscriptionQueries =
-    useInvalidateBillingSubscriptionQueries(organizationId)
-  const [actionPending, setActionPending] = useState(false)
-  const [actionError, setActionError] = useState<string | null>(null)
+  const {
+    actionPending,
+    actionKey,
+    actionError,
+    canManage,
+    onUpgrade,
+    onCancel,
+  } = useBillingPlanActions(organizationId)
+  const [portalPending, setPortalPending] = useState(false)
+  const [portalError, setPortalError] = useState<string | null>(null)
 
   if (overview.isPending) return <BillingOverviewSkeleton />
 
@@ -48,53 +53,19 @@ function BillingOverviewBody() {
     data.planTier === "paid" ? t("storagePlanPaid") : t("storagePlanFree")
   const quotaLabel = formatStorageBytes(data.quotaBytes)
 
-  async function onUpgrade() {
-    setActionError(null)
-    setActionPending(true)
-    try {
-      const result = await useBillingApi.postUpgrade()
-      if (result.paymentUrl) {
-        window.location.assign(result.paymentUrl)
-        return
-      }
-      await invalidateSubscriptionQueries()
-    } catch (error) {
-      setActionError(
-        error instanceof Error ? error.message : t("operationFailed")
-      )
-    } finally {
-      setActionPending(false)
-    }
-  }
-
   async function onPortal() {
-    setActionError(null)
-    setActionPending(true)
+    if (!canManage) return
+    setPortalError(null)
+    setPortalPending(true)
     try {
       const result = await useBillingApi.postPortal()
       markBillingPortalLaunch()
       window.location.assign(result.portalUrl)
     } catch (error) {
-      setActionError(
+      setPortalError(
         error instanceof Error ? error.message : t("operationFailed")
       )
-    } finally {
-      setActionPending(false)
-    }
-  }
-
-  async function onCancel() {
-    setActionError(null)
-    setActionPending(true)
-    try {
-      await useBillingApi.postCancel()
-      await invalidateSubscriptionQueries()
-    } catch (error) {
-      setActionError(
-        error instanceof Error ? error.message : t("operationFailed")
-      )
-    } finally {
-      setActionPending(false)
+      setPortalPending(false)
     }
   }
 
@@ -180,39 +151,51 @@ function BillingOverviewBody() {
         </p>
       ) : null}
 
-      <div className="flex flex-wrap gap-2">
-        {data.planTier === "free" && data.autumnConfigured ? (
-          <Button disabled={actionPending} onClick={() => void onUpgrade()}>
-            <Sparkles className="size-4" />
-            {t("billingUpgradeToPaid")}
-          </Button>
-        ) : null}
-        {data.autumnBound && data.autumnConfigured ? (
-          <Button
-            disabled={actionPending}
-            variant="outline"
-            onClick={() => void onPortal()}
-          >
-            <BadgeCheck className="size-4" />
-            {t("billingManagePortal")}
-          </Button>
-        ) : null}
-        {data.planTier === "paid" &&
-        data.autumnConfigured &&
-        !data.cancelAtPeriodEnd ? (
-          <Button
-            disabled={actionPending}
-            variant="outline"
-            onClick={() => void onCancel()}
-          >
-            {t("billingCancelAtPeriodEnd")}
-          </Button>
-        ) : null}
-      </div>
+      {canManage ? (
+        <div className="flex flex-wrap gap-2">
+          {data.planTier === "free" && data.autumnConfigured ? (
+            <Button
+              disabled={actionPending || portalPending}
+              loading={actionKey === "upgrade"}
+              onClick={() => void onUpgrade()}
+            >
+              <Sparkles className="size-4" />
+              {actionKey === "upgrade"
+                ? t("billingUpgradePending")
+                : t("billingUpgradeToPaid")}
+            </Button>
+          ) : null}
+          {data.autumnBound && data.autumnConfigured ? (
+            <Button
+              disabled={actionPending || portalPending}
+              loading={portalPending}
+              variant="outline"
+              onClick={() => void onPortal()}
+            >
+              <BadgeCheck className="size-4" />
+              {t("billingManagePortal")}
+            </Button>
+          ) : null}
+          {data.planTier === "paid" &&
+          data.autumnConfigured &&
+          !data.cancelAtPeriodEnd ? (
+            <Button
+              disabled={actionPending || portalPending}
+              loading={actionKey === "cancel"}
+              variant="outline"
+              onClick={() => void onCancel()}
+            >
+              {actionKey === "cancel"
+                ? t("billingCancelPending")
+                : t("billingCancelAtPeriodEnd")}
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
 
-      {actionError ? (
+      {actionError || portalError ? (
         <p className="text-sm text-destructive" role="alert">
-          {actionError}
+          {actionError ?? portalError}
         </p>
       ) : null}
     </div>

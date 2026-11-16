@@ -1,28 +1,35 @@
-import { ORG_OWNER_MEMBER_ROLE } from "./constants/org.constants.entitlements"
+import {
+  canEditOrganizationSettings,
+  canManageElevatedOrganizationMembers,
+  canManageOrganizationBilling,
+  canManageOrganizationMembers,
+  canViewOrganizationBilling,
+  isOrganizationAdminRole,
+  isOrganizationOwnerRole,
+  ORG_PLUGIN_MANAGER_ROLE,
+  parseOrganizationRoleList,
+  resolveOrgProductRole,
+} from "../shared/org.organization-access-control"
 
-/** Better Auth organization plugin role id for managers (v1 product label). */
-export const ORG_MANAGER_PLUGIN_ROLE = "manager"
-
-export type OrgProductMemberRole = "member" | "manager" | "owner"
-
-export function parseOrganizationRoleList(role: string): string[] {
-  return role
-    .split(",")
-    .map((part) => part.trim().toLowerCase())
-    .filter(Boolean)
+export {
+  canEditOrganizationSettings,
+  canManageElevatedOrganizationMembers,
+  canManageOrganizationBilling,
+  canManageOrganizationMembers,
+  canViewOrganizationBilling,
+  isOrganizationAdminRole,
+  isOrganizationOwnerRole,
+  parseOrganizationRoleList,
+  resolveOrgProductRole,
 }
 
-export function isOrganizationOwnerRole(role: string): boolean {
-  return parseOrganizationRoleList(role).includes(ORG_OWNER_MEMBER_ROLE)
-}
+export type OrgProductMemberRole = "owner" | "admin" | "manager" | "member"
+
+/** @deprecated Use {@link ORG_PLUGIN_MANAGER_ROLE}. */
+export const ORG_MANAGER_PLUGIN_ROLE = ORG_PLUGIN_MANAGER_ROLE
 
 export function toProductMemberRole(pluginRole: string): OrgProductMemberRole {
-  const roles = parseOrganizationRoleList(pluginRole)
-  if (roles.includes(ORG_OWNER_MEMBER_ROLE)) return "owner"
-  if (roles.includes(ORG_MANAGER_PLUGIN_ROLE) || roles.includes("admin")) {
-    return "manager"
-  }
-  return "member"
+  return resolveOrgProductRole(pluginRole)
 }
 
 export function toPluginMemberRole(
@@ -34,14 +41,5 @@ export function toPluginMemberRole(
 export const ORG_ASSIGNABLE_PRODUCT_MEMBER_ROLES = [
   "member",
   "manager",
+  "admin",
 ] as const satisfies readonly Exclude<OrgProductMemberRole, "owner">[]
-
-/** Owner, plugin admin, or product manager may manage billing. */
-export function canManageOrganizationBilling(role: string): boolean {
-  const roles = parseOrganizationRoleList(role)
-  return (
-    roles.includes(ORG_OWNER_MEMBER_ROLE) ||
-    roles.includes("admin") ||
-    roles.includes(ORG_MANAGER_PLUGIN_ROLE)
-  )
-}

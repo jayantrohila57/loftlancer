@@ -12,6 +12,8 @@ const BILLING_TRANSIENT_ENVELOPE_CODES = new Set([
   "auth.no_active_org",
   "rbac.not_member",
   "rbac.org_owner_required",
+  "rbac.forbidden",
+  "billing.customer_unbound",
 ])
 
 export async function callBillingRpc<Data>(

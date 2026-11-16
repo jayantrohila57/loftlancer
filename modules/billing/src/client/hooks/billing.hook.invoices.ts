@@ -4,7 +4,7 @@ import { isTransientError } from "@modules/auth"
 import { securityRpc } from "@modules/security/client"
 import { useQuery } from "@packages/react-query"
 import type { BillingInvoicesListData } from "../../utils/types/billing.types.rpc"
-import { useBillingOrgOwnerQueryEnabled } from "./billing.hook.query-enabled"
+import { useBillingOrgManageQueryEnabled } from "./billing.hook.query-enabled"
 import { callBillingRpc } from "./billing.hook.rpc"
 import { billingInvoicesKey } from "./billing.hooks.keys"
 
@@ -27,7 +27,7 @@ export function useBillingInvoices(
   variant: "invoices" | "payment-history",
   cursor?: string | null
 ) {
-  const queryEnabled = useBillingOrgOwnerQueryEnabled()
+  const queryEnabled = useBillingOrgManageQueryEnabled()
   return useQuery({
     queryKey: billingInvoicesKey(organizationId, variant, cursor),
     enabled: queryEnabled,

@@ -3,6 +3,7 @@
 import { useShellNavigation } from "@features/shell"
 import {
   canManageOrganizationBilling,
+  canViewOrganizationBilling,
   useOrgActiveMemberRole,
   useOrgSessionActiveId,
   useOrgSessionPending,
@@ -29,7 +30,11 @@ function BillingAccessGateSkeleton() {
   )
 }
 
-export function BillingAccessGate(props: { children: ReactNode }) {
+export function BillingAccessGate(props: {
+  readonly children: ReactNode
+  readonly mode?: "view" | "manage"
+}) {
+  const mode = props.mode ?? "view"
   const t = useTranslations("ui")
   const { Link } = useShellNavigation()
   const sessionPending = useOrgSessionPending()
@@ -59,7 +64,12 @@ export function BillingAccessGate(props: { children: ReactNode }) {
     )
   }
 
-  if (!rolePending && (!role || !canManageOrganizationBilling(role))) {
+  const canAccess =
+    mode === "manage"
+      ? Boolean(role && canManageOrganizationBilling(role))
+      : Boolean(role && canViewOrganizationBilling(role))
+
+  if (!rolePending && !canAccess) {
     return (
       <Empty>
         <EmptyHeader>

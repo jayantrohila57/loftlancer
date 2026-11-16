@@ -1,10 +1,11 @@
 import { withRequestLogging } from "@packages/logger/server"
 import { toNextJsHandler } from "better-auth/next-js"
-
 import { logFailedSignIn } from "./better-auth.failed-sign-in"
+import { runWithOrgAuthActor } from "./better-auth.org-request-context"
 import { getTrustedAuthOrigins } from "./better-auth.origins"
 import { resolveAuthAppUrl } from "./better-auth.paths"
 import { getAuth } from "./better-auth.server"
+import { getSessionUserIdFromRequest } from "./better-auth.session-user"
 
 function withAppBasePathOnRequest(request: Request): Request {
   const authAppUrl = resolveAuthAppUrl()
@@ -52,12 +53,18 @@ export function createAuthRouteHandlers() {
 
   return {
     GET: withRequestLogging("auth", "auth", async (request) => {
-      const response = await GET(withAppBasePathOnRequest(request))
+      const actorUserId = await getSessionUserIdFromRequest(request)
+      const response = await runWithOrgAuthActor(actorUserId, () =>
+        GET(withAppBasePathOnRequest(request))
+      )
       logFailedSignIn(request, response)
       return withCors(response, request)
     }),
     POST: withRequestLogging("auth", "auth", async (request) => {
-      const response = await POST(withAppBasePathOnRequest(request))
+      const actorUserId = await getSessionUserIdFromRequest(request)
+      const response = await runWithOrgAuthActor(actorUserId, () =>
+        POST(withAppBasePathOnRequest(request))
+      )
       logFailedSignIn(request, response)
       return withCors(response, request)
     }),

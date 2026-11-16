@@ -31,9 +31,10 @@ export function studioOrganizationsSectionTabs(
 
 export function studioBillingSectionTabs(
   org: string,
-  t: Translate
+  t: Translate,
+  access?: StudioOrgAccess
 ): readonly ShellSectionTabItem[] {
-  return [
+  const tabs: ShellSectionTabItem[] = [
     {
       href: studioSettingsPath(org, "/billing"),
       label: t("overview"),
@@ -49,27 +50,32 @@ export function studioBillingSectionTabs(
       label: t("usageAndEntitlements"),
       value: "usage-entitlements",
     },
-    {
-      href: studioSettingsPath(org, "/billing/payment-methods"),
-      label: t("paymentMethods"),
-      value: "payment-methods",
-    },
-    {
-      href: studioSettingsPath(org, "/billing/payment-history"),
-      label: t("paymentHistory"),
-      value: "payment-history",
-    },
-    {
-      href: studioSettingsPath(org, "/billing/invoices"),
-      label: t("invoices"),
-      value: "invoices",
-    },
-    {
-      href: studioSettingsPath(org, "/billing/details"),
-      label: t("billingDetails"),
-      value: "billing-details",
-    },
   ]
+  if (!access || access.canManageBilling) {
+    tabs.push(
+      {
+        href: studioSettingsPath(org, "/billing/payment-methods"),
+        label: t("paymentMethods"),
+        value: "payment-methods",
+      },
+      {
+        href: studioSettingsPath(org, "/billing/payment-history"),
+        label: t("paymentHistory"),
+        value: "payment-history",
+      },
+      {
+        href: studioSettingsPath(org, "/billing/invoices"),
+        label: t("invoices"),
+        value: "invoices",
+      },
+      {
+        href: studioSettingsPath(org, "/billing/details"),
+        label: t("billingDetails"),
+        value: "billing-details",
+      }
+    )
+  }
+  return tabs
 }
 
 export function studioUsageSectionTabs(
@@ -100,13 +106,14 @@ export function studioSettingsSectionTabs(
   t: Translate,
   access?: StudioOrgAccess
 ): readonly ShellSectionTabItem[] {
-  const tabs: ShellSectionTabItem[] = [
-    {
+  const tabs: ShellSectionTabItem[] = []
+  if (!access || access.canViewGeneral) {
+    tabs.push({
       href: studioSettingsPath(org, "/general"),
       label: t("general"),
       value: "general",
-    },
-  ]
+    })
+  }
   if (!access || access.canManageMembers) {
     tabs.push({
       href: studioSettingsPath(org, "/members"),
@@ -121,12 +128,14 @@ export function studioSettingsSectionTabs(
       value: "invitations",
     })
   }
-  tabs.push({
-    href: studioSettingsPath(org, "/roles"),
-    label: t("organizationRoles"),
-    value: "roles",
-  })
-  if (!access || access.canManageBilling) {
+  if (!access || access.canViewRoles) {
+    tabs.push({
+      href: studioSettingsPath(org, "/roles"),
+      label: t("organizationRoles"),
+      value: "roles",
+    })
+  }
+  if (!access || access.canViewBilling) {
     tabs.push({
       href: studioSettingsPath(org, "/billing"),
       label: t("billing"),

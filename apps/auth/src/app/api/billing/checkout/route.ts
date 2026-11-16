@@ -70,6 +70,9 @@ export async function POST(request: Request) {
         409
       )
     }
+    if (organization.code === "billing_forbidden") {
+      return jsonWithCors(request, { error: "billing_forbidden" }, 403)
+    }
     return jsonWithCors(request, { error: organization.code }, 403)
   }
 
