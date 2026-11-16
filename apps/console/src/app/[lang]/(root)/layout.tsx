@@ -5,6 +5,8 @@ import { HeaderLanguageSelector } from "@/shared/shell/console-header-language-s
 import { ConsoleSidebarNav } from "@/shared/shell/console-sidebar-nav"
 import type { LangLayoutProps } from "@/shared/types/console.app.types"
 
+export const instant = false
+
 export default async function ConsoleLayout({
   children,
 }: {

@@ -3,6 +3,8 @@ import Shell from "@packages/ui/components/shell"
 import { StudioOnboardingHeader } from "@/shared/shell/studio-onboarding-header"
 import type { LangLayoutProps } from "@/shared/types/studio.app.types"
 
+export const instant = false
+
 export default function StudioOnboardingLayout({ children }: LangLayoutProps) {
   return (
     <Shell>
