@@ -22,6 +22,10 @@ to write entries.
 
 ## [Unreleased]
 
+### Added
+
+- Marketing pricing page with Free and Paid plans, a sign-in gate before checkout, and success, cancel, and failure pages after subscription purchase.
+
 ## [0.0.1] - 2026-11-15
 
 ### Added

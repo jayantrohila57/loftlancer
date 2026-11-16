@@ -22,9 +22,15 @@ export {
 export { bindOrganizationAutumnCustomer } from "./integration/billing.customer-bind"
 export {
   deriveEntitlementPatchFromCustomer,
+  type EntitlementCachePatch,
   type EntitlementSyncResult,
   syncEntitlementsFromAutumnCustomer,
 } from "./integration/billing.entitlement-sync"
+export {
+  type BillingPlanCatalogEntry,
+  type BillingPlanCatalogPrice,
+  resolveBillingPlanCatalog,
+} from "./integration/billing.plan-catalog"
 export {
   planIdToProductTier,
   resolveAutumnPlanIdFree,

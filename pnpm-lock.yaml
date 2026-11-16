@@ -587,6 +587,9 @@ importers:
       '@packages/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
+      '@packages/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@packages/brand':
         specifier: workspace:*
         version: link:../../packages/brand

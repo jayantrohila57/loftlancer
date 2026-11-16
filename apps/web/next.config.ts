@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   transpilePackages: [
     "@packages/better-auth",
+    "@packages/billing",
     "@packages/drizzle",
     "@packages/logger",
     "@packages/posthog",

@@ -18,6 +18,7 @@
     "@modules/auth": "workspace:*",
     "@modules/shell": "workspace:*",
     "@packages/better-auth": "workspace:*",
+    "@packages/billing": "workspace:*",
     "@packages/brand": "workspace:*",
     "@packages/react-query": "workspace:*",
     "@features/theme": "workspace:*",

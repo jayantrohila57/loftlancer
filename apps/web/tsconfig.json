@@ -53,7 +53,8 @@
       ],
       "zod": ["../auth/node_modules/zod"],
       "@modules/whats-new": ["../../modules/whats-new/src/index.ts"],
-      "@modules/whats-new/*": ["../../modules/whats-new/src/*"]
+      "@modules/whats-new/*": ["../../modules/whats-new/src/*"],
+      "@packages/billing": ["../../packages/billing/src/index.ts"]
     },
     "plugins": [
       {
