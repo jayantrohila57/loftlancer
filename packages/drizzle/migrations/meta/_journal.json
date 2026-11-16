@@ -127,6 +127,13 @@
       "when": 1794667200000,
       "tag": "0017_org_ai_usage_policy",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1794823002816,
+      "tag": "0018_org_entitlement_payment_grace",
+      "breakpoints": true
     }
   ]
 }

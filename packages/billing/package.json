@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "SKIP_ENV_VALIDATION=true tsc --noEmit"
+    "typecheck": "SKIP_ENV_VALIDATION=true tsc --noEmit",
+    "test": "SKIP_ENV_VALIDATION=true node --experimental-strip-types --test src/integration/billing.webhook-events.test.ts"
   },
   "exports": {
     ".": "./src/index.ts"

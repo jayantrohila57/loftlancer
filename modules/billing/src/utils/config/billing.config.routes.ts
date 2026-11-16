@@ -68,4 +68,12 @@ export const billingRoutes = {
     description: "Creates a Stripe setup session URL (owner only).",
     tags: ["Billing"],
   },
+  beginCancel: {
+    method: "POST" as const,
+    path: "/openapi/security/billing/begin-cancel" as const,
+    summary: "Cancel Paid plan at period end",
+    description:
+      "Schedules the Paid plan to cancel at the end of the billing period (owner or admin).",
+    tags: ["Billing"],
+  },
 } as const

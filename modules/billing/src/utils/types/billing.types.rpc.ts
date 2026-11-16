@@ -7,7 +7,10 @@ import type {
   billingPlansDataSchema,
   billingSetupPaymentOutputSchema,
 } from "../validation/billing.catalog.schema"
-import type { billingUpgradeOutputSchema } from "../validation/billing.overview.schema"
+import type {
+  billingCancelOutputSchema,
+  billingUpgradeOutputSchema,
+} from "../validation/billing.overview.schema"
 
 type ResponseData<Schema extends z.ZodTypeAny> = NonNullable<
   z.infer<Schema> extends { data: infer Data } ? Data : never
@@ -27,3 +30,4 @@ export type BillingUpgradeData = ResponseData<typeof billingUpgradeOutputSchema>
 export type BillingSetupPaymentData = ResponseData<
   typeof billingSetupPaymentOutputSchema
 >
+export type BillingCancelData = ResponseData<typeof billingCancelOutputSchema>

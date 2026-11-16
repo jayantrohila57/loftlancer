@@ -16,6 +16,7 @@ const billingInvoiceItemSchema = z.object({
   amountPaidMinor: z.number().int().nullable(),
   createdAt: z.string().datetime(),
   hostedInvoiceUrl: billingHostedInvoiceUrlSchema,
+  invoicePdfUrl: billingHostedInvoiceUrlSchema,
 })
 
 export const billingPlansDataSchema = z.object({

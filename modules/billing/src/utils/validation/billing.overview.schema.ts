@@ -26,6 +26,11 @@ export const billingOverviewDataSchema = z.object({
   ]),
   entitlementsSyncedAt: z.string().datetime().nullable(),
   entitlementsDegraded: z.boolean(),
+  paymentGraceUntil: z.string().datetime().nullable(),
+  cancelAtPeriodEnd: z.boolean(),
+  usedBytes: z.number().int().nonnegative(),
+  organizationLimit: z.number().int().nonnegative(),
+  aiCreditsIncluded: z.number().int().nonnegative(),
 })
 
 export const billingOverviewOutputSchema = serviceResponseSchema(
@@ -42,5 +47,11 @@ export const billingUpgradeOutputSchema = serviceResponseSchema(
 export const billingPortalOutputSchema = serviceResponseSchema(
   z.object({
     portalUrl: z.string().url(),
+  })
+)
+
+export const billingCancelOutputSchema = serviceResponseSchema(
+  z.object({
+    cancelAtPeriodEnd: z.literal(true),
   })
 )

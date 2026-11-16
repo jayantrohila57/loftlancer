@@ -54,6 +54,12 @@ export const serverEnv = createEnv({
     AUTUMN_X_API_VERSION: z.string().min(1).optional(),
     /** Mailto target for Account → Help & support → Contact (batch E2). */
     SUPPORT_EMAIL: z.string().email().optional(),
+    /** Days of Paid access after a payment failure before downgrade to Free. */
+    BILLING_PAYMENT_GRACE_DAYS: z.coerce.number().int().positive().optional(),
+    /** Upstash Redis REST URL for per-plan rate limits. */
+    UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+    /** Upstash Redis REST token for per-plan rate limits. */
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
     /**
      * Tracing backend. `otel` exports via `@packages/observability`; `sentry`
      * keeps performance traces on Sentry only (OTel SDK stays off).
@@ -122,6 +128,9 @@ export const serverEnv = createEnv({
     AUTUMN_PLAN_ID_PAID: process.env.AUTUMN_PLAN_ID_PAID,
     AUTUMN_X_API_VERSION: process.env.AUTUMN_X_API_VERSION,
     SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+    BILLING_PAYMENT_GRACE_DAYS: process.env.BILLING_PAYMENT_GRACE_DAYS,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     OBSERVABILITY_TRACING_PROVIDER: process.env.OBSERVABILITY_TRACING_PROVIDER,
     OBSERVABILITY_TRACING_ENABLED: process.env.OBSERVABILITY_TRACING_ENABLED,
     OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,

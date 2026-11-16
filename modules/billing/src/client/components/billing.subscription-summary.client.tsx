@@ -2,7 +2,7 @@
 
 import { useShellNavigation } from "@features/shell"
 import { useOrgSessionActiveId } from "@modules/org"
-import { formatStorageBytes } from "@modules/storage"
+import { formatStorageBytes } from "@modules/storage/utils/storage.format-bytes"
 import { Button } from "@packages/ui/components/button"
 import { Skeleton } from "@packages/ui/components/skeleton"
 import { BadgeCheck } from "lucide-react"

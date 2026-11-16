@@ -157,7 +157,12 @@
       ],
       "zod": ["../../apps/auth/node_modules/zod"],
       "@packages/posthog": ["../../packages/posthog/src/index.ts"],
-      "next/navigation": ["../auth/node_modules/next/navigation"]
+      "next/navigation": ["../auth/node_modules/next/navigation"],
+      "@modules/billing": ["../../modules/billing/src/index.ts"],
+      "@modules/org": ["../../modules/org/src/index.ts"],
+      "@modules/storage": ["../../modules/storage/src/index.ts"],
+      "@modules/org/*": ["../../modules/org/src/*"],
+      "@modules/storage/*": ["../../modules/storage/src/*"]
     },
     "plugins": [
       {

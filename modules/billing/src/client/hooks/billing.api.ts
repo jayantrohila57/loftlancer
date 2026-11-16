@@ -4,6 +4,7 @@ import { TransientClientError, withClientRetry } from "@modules/auth"
 import { securityRpc } from "@modules/security/client"
 
 import type {
+  BillingCancelData,
   BillingDowngradeData,
   BillingSetupPaymentData,
   BillingUpgradeData,
@@ -36,6 +37,12 @@ async function postDowngrade(): Promise<BillingDowngradeData> {
   )
 }
 
+async function postCancel(): Promise<BillingCancelData> {
+  return callBillingRpc<BillingCancelData>(() =>
+    securityRpc.security.billing.beginCancel()
+  )
+}
+
 async function postSetupPayment(): Promise<BillingSetupPaymentData> {
   return callBillingRpc<BillingSetupPaymentData>(() =>
     securityRpc.security.billing.setupPayment()
@@ -46,6 +53,7 @@ export const useBillingApi = {
   useOverview: useBillingOverview,
   postUpgrade,
   postDowngrade,
+  postCancel,
   postPortal,
   postSetupPayment,
 }

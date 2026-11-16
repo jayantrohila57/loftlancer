@@ -22,6 +22,17 @@ to write entries.
 
 ## [Unreleased]
 
+### Added
+
+- Marketing pricing page with Starter, Pro, Studio, and Enterprise tiers (placeholder prices), a comparison table and FAQ, a sign-in gate before Pro checkout, and success, cancel, and failure pages after subscription purchase.
+- Subscription plans in the billing settings: Free and Paid, usage meters with 80% and 100% warnings, upgrade, cancel at period end, a customer billing portal, and an invoice list with PDF links.
+- Studio settings billing page and a console admin view to review an organization's plan and usage and grant or override a plan.
+- A 7-day grace period after a failed payment, then a downgrade to Free. Organizations that are over a plan limit stay read-only; existing files are not deleted.
+
+### Fixed
+
+- Start Pro trial on the pricing page no longer loops between sign-in and the pricing page. Signed-in users go to checkout; signed-out users are sent to sign-in once.
+
 ## [0.0.1] - 2026-11-15
 
 ### Added

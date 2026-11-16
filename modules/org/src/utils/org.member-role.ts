@@ -35,3 +35,13 @@ export const ORG_ASSIGNABLE_PRODUCT_MEMBER_ROLES = [
   "member",
   "manager",
 ] as const satisfies readonly Exclude<OrgProductMemberRole, "owner">[]
+
+/** Owner, plugin admin, or product manager may manage billing. */
+export function canManageOrganizationBilling(role: string): boolean {
+  const roles = parseOrganizationRoleList(role)
+  return (
+    roles.includes(ORG_OWNER_MEMBER_ROLE) ||
+    roles.includes("admin") ||
+    roles.includes(ORG_MANAGER_PLUGIN_ROLE)
+  )
+}

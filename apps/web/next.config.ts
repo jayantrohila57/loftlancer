@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   transpilePackages: [
     "@packages/better-auth",
+    "@packages/billing",
     "@packages/drizzle",
     "@packages/logger",
     "@packages/posthog",
@@ -26,6 +27,7 @@ const nextConfig: NextConfig = {
     "@packages/t3-env",
     "@packages/ui",
     "@features/font",
+    "@features/form",
     "@features/theme",
     "@features/i18n",
     "@modules/shell",

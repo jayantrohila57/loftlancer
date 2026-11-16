@@ -7,12 +7,19 @@ import type { securityRouter } from "../server/security.router"
 
 type SecurityClient = RouterClient<{ security: typeof securityRouter }>
 
-const base = new URL(clientEnv.NEXT_PUBLIC_AUTH_APP_URL).pathname.replace(
-  /\/$/,
-  ""
-)
+function billingRpcUrl() {
+  const auth = new URL(clientEnv.NEXT_PUBLIC_AUTH_APP_URL)
+  const path = auth.pathname.replace(/\/$/, "")
+  return `${auth.origin}${path}/api/rpc`
+}
+
 const link = new RPCLink({
-  url: () => `${window.location.origin}${base}/api/rpc`,
+  url: () => billingRpcUrl(),
+  fetch: (input, init) =>
+    fetch(input, {
+      ...init,
+      credentials: "include",
+    }),
 })
 
 export const securityRpc: SecurityClient = createORPCClient(link)

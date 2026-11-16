@@ -90,7 +90,8 @@
       "react/jsx-runtime": [
         "../../apps/auth/node_modules/@types/react/jsx-runtime"
       ],
-      "zod": ["../../apps/auth/node_modules/zod"]
+      "zod": ["../../apps/auth/node_modules/zod"],
+      "@modules/storage/*": ["../../modules/storage/src/*"]
     }
   },
   "include": [

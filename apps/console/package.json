@@ -32,7 +32,9 @@
     "@packages/logger": "workspace:*",
     "@packages/observability": "workspace:*",
     "@packages/sentry": "workspace:*",
-    "@sentry/nextjs": "^11.8.0"
+    "@sentry/nextjs": "^11.8.0",
+    "@packages/billing": "workspace:*",
+    "@features/navigation": "workspace:*"
   },
   "devDependencies": {
     "@packages/typescript-config": "workspace:*",

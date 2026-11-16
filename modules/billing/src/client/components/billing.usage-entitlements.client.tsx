@@ -1,12 +1,13 @@
 "use client"
 
 import { useOrgSessionActiveId } from "@modules/org"
-import { formatStorageBytes } from "@modules/storage"
+import { formatStorageBytes } from "@modules/storage/utils/storage.format-bytes"
 import { Skeleton } from "@packages/ui/components/skeleton"
 import { useFormatter, useTranslations } from "next-intl"
 
 import { useBillingApi } from "../hooks/billing.api"
 import { BillingAccessGate } from "./billing.access-gate.client"
+import { BillingUsageMeters } from "./billing.usage-meters.client"
 
 function EntitlementsSkeleton() {
   return (
@@ -39,6 +40,12 @@ export function BillingUsageEntitlementsScreen() {
               {t("billingUsageEntitlementsDescription")}
             </p>
           </section>
+          <BillingUsageMeters
+            usedBytes={overview.data.usedBytes}
+            quotaBytes={overview.data.quotaBytes}
+            aiCreditBalance={overview.data.aiCreditBalance}
+            aiCreditsIncluded={overview.data.aiCreditsIncluded}
+          />
           <dl className="grid gap-4 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-muted-foreground">

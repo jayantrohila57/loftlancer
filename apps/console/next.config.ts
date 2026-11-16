@@ -32,6 +32,9 @@ const nextConfig: NextConfig = {
     "@features/i18n",
     "@packages/orpc",
     "@packages/react-query",
+    "@packages/billing",
+    "@features/navigation",
+    "@features/shell",
   ],
 }
 

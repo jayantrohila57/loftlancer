@@ -5,10 +5,16 @@ import { logger } from "@packages/logger/server"
 import { serverEnv } from "@packages/t3-env/server"
 import { CustomerExpand } from "autumn-js"
 import { and, eq, lt, or } from "drizzle-orm"
-import { Webhook } from "standardwebhooks"
 
 import { getAutumnClient, isAutumnConfigured } from "./billing.autumn-client"
 import { syncEntitlementsFromAutumnCustomer } from "./billing.entitlement-sync"
+import {
+  clearPaymentGrace,
+  maybeDowngradeExpiredGrace,
+  startPaymentGrace,
+} from "./billing.grace"
+import { classifyBillingWebhookEvent } from "./billing.webhook-events"
+import { verifyAutumnWebhookSignatureWithSecret } from "./billing.webhook-signature"
 
 export function verifyAutumnWebhookSignature(input: {
   rawBody: string
@@ -19,22 +25,8 @@ export function verifyAutumnWebhookSignature(input: {
   }
 }) {
   const secret = serverEnv.AUTUMN_WEBHOOK_SECRET
-  const { id, timestamp, signature } = input.headers
-  if (!secret || !id || !timestamp || !signature) return false
-  try {
-    new Webhook(secret).verify(
-      input.rawBody,
-      {
-        "webhook-id": id,
-        "webhook-timestamp": timestamp,
-        "webhook-signature": signature,
-      },
-      { jsonParse: false }
-    )
-    return true
-  } catch {
-    return false
-  }
+  if (!secret) return false
+  return verifyAutumnWebhookSignatureWithSecret({ secret, ...input })
 }
 
 function payloadHash(rawBody: string) {
@@ -212,10 +204,24 @@ export async function handleAutumnBillingWebhook(input: {
         CustomerExpand.BalancesFeature,
       ],
     })
+    const kind = classifyBillingWebhookEvent({
+      eventType,
+      payload,
+    })
     const sync = await syncEntitlementsFromAutumnCustomer({
       db,
       organizationId,
       customer,
+    })
+    if (kind === "payment_failed") {
+      await startPaymentGrace({ db, organizationId })
+    }
+    if (kind === "invoice_paid") {
+      await clearPaymentGrace({ db, organizationId })
+    }
+    const graceDowngraded = await maybeDowngradeExpiredGrace({
+      db,
+      organizationId,
     })
     await db
       .update(billingWebhookEvent)
@@ -225,13 +231,15 @@ export async function handleAutumnBillingWebhook(input: {
       app: "auth",
       module: "billing",
       outcome: "success",
-      output: { eventId, eventType, organizationId },
+      output: { eventId, eventType, kind, organizationId, graceDowngraded },
     })
     return {
       status: 200 as const,
       body: {
         processed: true,
         organizationId,
+        kind,
+        graceDowngraded,
         planTierChanged: sync.planTierChanged,
         planTierBefore: sync.planTierBefore,
         planTierAfter: sync.planTierAfter,

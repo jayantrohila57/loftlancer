@@ -17,6 +17,8 @@
     "check": "pnpm format && pnpm lint && pnpm typecheck",
     "typecheck": "turbo typecheck",
     "check:i18n": "node scripts/i18n/check.mjs",
+    "billing:sync-autumn": "node scripts/billing/sync-autumn-plans.mjs",
+    "test:billing-webhooks": "pnpm --filter @packages/billing test",
     "check:ci": "pnpm exec biome ci . && pnpm check:i18n && pnpm typecheck",
     "prepare": "husky",
     "check:commit": "pnpm check:ci && pnpm build",

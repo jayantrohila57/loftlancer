@@ -30,6 +30,7 @@ export async function purgeExpiredOrgStorageTrash(input: { limit?: number }) {
       uploadedByUserId: item.uploadedByUserId,
       actorUserId: item.uploadedByUserId,
       trigger: "cron",
+      byteSize: item.byteSize,
     }).catch(() => null)
     if (result) purged += 1
   }

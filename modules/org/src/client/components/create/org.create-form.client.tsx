@@ -79,12 +79,23 @@ function OrgCreateFormBody({
   )
 }
 
+function isSafeHttpUrl(value: string) {
+  try {
+    const url = new URL(value)
+    return url.protocol === "http:" || url.protocol === "https:"
+  } catch {
+    return false
+  }
+}
+
 export function OrgCreateForm({
   compact = false,
   onCancel,
+  returnTo,
 }: {
   readonly compact?: boolean
   readonly onCancel?: () => void
+  readonly returnTo?: string
 }) {
   const t = useTranslations("ui")
   const schema = createOrganizationFormSchema(t)
@@ -223,10 +234,17 @@ export function OrgCreateForm({
               overview.data.autumnBound
             )
           }).catch(() => false)
+          const accountOrg = `${base}/${locale}/account/organization`
+          const createUrl = new URL(`${base}/${locale}/organizations/create`)
+          if (returnTo && isSafeHttpUrl(returnTo)) {
+            createUrl.searchParams.set("returnTo", returnTo)
+          }
           window.location.assign(
             provisioningComplete
-              ? `${base}/${locale}/account/organization`
-              : `${base}/${locale}/organizations/create`
+              ? returnTo && isSafeHttpUrl(returnTo)
+                ? returnTo
+                : accountOrg
+              : createUrl.toString()
           )
         })(),
         {

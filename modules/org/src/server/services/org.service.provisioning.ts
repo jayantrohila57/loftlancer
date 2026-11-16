@@ -1,6 +1,10 @@
 import { FREE_OWNED_ORG_LIMIT } from "@modules/org/utils/constants/org.constants.entitlements"
 import { APIError } from "@packages/better-auth"
-import { bindOrganizationAutumnCustomer } from "@packages/billing"
+import {
+  BILLING_PAID_ORGANIZATION_COUNT,
+  bindOrganizationAutumnCustomer,
+  trackBillingUsage,
+} from "@packages/billing"
 import { logger } from "@packages/logger/server"
 import type { OrganizationSetup } from "../../utils/validation/org.create.schema"
 import type { OrganizationSetupV2 } from "../../utils/validation/org.setup.schema"
@@ -9,6 +13,7 @@ import {
   countOwnedOrganizationsForUser,
   ensureDefaultOrgStorageRoot,
   ensureOrgEntitlementRow,
+  loadMaxOwnedOrganizationLimitForUser,
   lockUserForOrgCreate,
   markOrgProvisioningAutumnPending,
   provisionOrganizationSetupRows,
@@ -23,7 +28,13 @@ export async function assertUserCanCreateOwnedOrg(input: { userId: string }) {
       userId: input.userId,
       executor: tx,
     })
-    if (ownedCount >= FREE_OWNED_ORG_LIMIT) {
+    const limit = await loadMaxOwnedOrganizationLimitForUser({
+      userId: input.userId,
+      executor: tx,
+      fallback: FREE_OWNED_ORG_LIMIT,
+      paidLimit: BILLING_PAID_ORGANIZATION_COUNT,
+    })
+    if (ownedCount >= limit) {
       throw APIError.from("FORBIDDEN", {
         message: "entitlement.org_limit",
         code: "ENTITLEMENT_ORG_LIMIT",
@@ -68,6 +79,12 @@ export async function provisionOrganizationOnCreate(input: {
       organizationId: input.organizationId,
       organizationName: input.organizationName,
       ownerEmail: input.ownerEmail,
+    })
+    await trackBillingUsage({
+      organizationId: input.organizationId,
+      featureId: "organization_count",
+      value: 1,
+      idempotencyKey: `org-create:${input.organizationId}`,
     })
   } catch (error) {
     logger.error("org.provision.failed", {

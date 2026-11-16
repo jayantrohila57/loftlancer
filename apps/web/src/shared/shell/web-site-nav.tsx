@@ -18,6 +18,7 @@ import {
   CircleQuestionMark,
   Code,
   Cookie,
+  CreditCard,
   FileText,
   Globe,
   Handshake,
@@ -48,8 +49,8 @@ import type {
   WebSiteNavLabelKey,
 } from "@/shared/shell/web-site-navigation"
 import {
-  getWebSiteNavItemSpecById,
   getWebSiteNavItemSpecsForHeaderDropdown,
+  getWebSiteNavItemSpecsForHeaderStandalone,
   isWebSiteNavItemActive,
   WEB_SITE_HEADER_DROPDOWN_GROUPS,
   WEB_SITE_NAV_GROUP_HEADING_KEYS,
@@ -62,6 +63,7 @@ const webSiteNavIcons: Record<WebSiteNavIconName, LucideIcon> = {
   "circle-question-mark": CircleQuestionMark,
   code: Code,
   cookie: Cookie,
+  "credit-card": CreditCard,
   "file-text": FileText,
   globe: Globe,
   handshake: Handshake,
@@ -215,8 +217,7 @@ function WebSiteNavMenuGroup({
 export function WebSiteNav() {
   const t = useTranslations("siteShell")
   const pathname = usePathname()
-  const home = getWebSiteNavItemSpecById("site.home")
-  const homeActive = home ? isWebSiteNavItemActive(pathname, home.href) : false
+  const standaloneItems = getWebSiteNavItemSpecsForHeaderStandalone()
 
   return (
     <NavigationMenu
@@ -224,18 +225,20 @@ export function WebSiteNav() {
       className="hidden max-w-max min-w-0 justify-start md:flex"
     >
       <NavigationMenuList className="justify-start gap-1">
-        {home ? (
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              active={homeActive}
-              className={navMenuLinkClass}
-              closeOnClick
-              render={<Link href={home.href} />}
-            >
-              {t(home.labelKey)}
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ) : null}
+        {standaloneItems
+          .filter((item) => item.id === "site.home")
+          .map((item) => (
+            <NavigationMenuItem key={item.id}>
+              <NavigationMenuLink
+                active={isWebSiteNavItemActive(pathname, item.href)}
+                className={navMenuLinkClass}
+                closeOnClick
+                render={<Link href={item.href} />}
+              >
+                {t(item.labelKey)}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ))}
         {WEB_SITE_HEADER_DROPDOWN_GROUPS.map((group) => (
           <WebSiteNavMenuGroup
             key={group}
@@ -245,6 +248,20 @@ export function WebSiteNav() {
             translate={(key) => t(key)}
           />
         ))}
+        {standaloneItems
+          .filter((item) => item.id !== "site.home")
+          .map((item) => (
+            <NavigationMenuItem key={item.id}>
+              <NavigationMenuLink
+                active={isWebSiteNavItemActive(pathname, item.href)}
+                className={navMenuLinkClass}
+                closeOnClick
+                render={<Link href={item.href} />}
+              >
+                {t(item.labelKey)}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ))}
       </NavigationMenuList>
     </NavigationMenu>
   )

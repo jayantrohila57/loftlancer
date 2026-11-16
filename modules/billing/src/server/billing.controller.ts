@@ -8,10 +8,12 @@ import {
   billingSetupPaymentOutputSchema,
 } from "../utils/validation/billing.catalog.schema"
 import {
+  billingCancelOutputSchema,
   billingOverviewOutputSchema,
   billingPortalOutputSchema,
   billingUpgradeOutputSchema,
 } from "../utils/validation/billing.overview.schema"
+import { billingBeginCancelService } from "./services/billing.service.cancel"
 import { billingCustomerProfileService } from "./services/billing.service.customer-profile"
 import { billingBeginDowngradeService } from "./services/billing.service.downgrade"
 import { billingListInvoicesService } from "./services/billing.service.invoices"
@@ -116,6 +118,16 @@ export const billingController = {
     .handler(async ({ context }) =>
       billingSetupPaymentOutputSchema.parse(
         await billingSetupPaymentService({
+          organizationId: context.organizationId,
+        })
+      )
+    ),
+  beginCancel: billingOrgOwnerProcedure
+    .route(billingRoutes.beginCancel)
+    .output(billingCancelOutputSchema)
+    .handler(async ({ context }) =>
+      billingCancelOutputSchema.parse(
+        await billingBeginCancelService({
           organizationId: context.organizationId,
         })
       )
