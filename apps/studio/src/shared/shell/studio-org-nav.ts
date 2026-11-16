@@ -1,0 +1,132 @@
+import {
+  Activity,
+  Building2,
+  CreditCard,
+  HardDrive,
+  Home,
+  Settings,
+  Sparkles,
+  WalletCards,
+} from "lucide-react"
+import { studioOrgPath } from "@/shared/org/studio-org.paths"
+
+type Translate = (key: string) => string
+
+export function studioOrgNavigationItems(input: {
+  readonly slug: string | null
+  readonly t: Translate
+  readonly tCommand: Translate
+}) {
+  const { slug, t, tCommand } = input
+  const href = (suffix = "") => (slug ? studioOrgPath(slug, suffix) : "/")
+  return [
+    {
+      description: tCommand("homeDescription"),
+      groupId: "studio-root",
+      groupLabel: t("studio"),
+      href: href(),
+      icon: Home,
+      id: "home",
+      label: t("home"),
+      order: 0,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("home"), t("studio")],
+    },
+    {
+      description: t("billingOverviewDescription"),
+      groupId: "studio-root",
+      groupLabel: t("studio"),
+      href: href("/billing"),
+      icon: CreditCard,
+      id: "billing",
+      label: t("billing"),
+      order: 10,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("billing"), t("subscription"), t("invoices")],
+    },
+    {
+      description: t("billingPlansDescription"),
+      groupId: "studio-root",
+      groupLabel: t("studio"),
+      href: href("/billing/plans"),
+      icon: WalletCards,
+      id: "plans",
+      label: t("availablePlans"),
+      order: 11,
+      placements: ["command"] as const,
+      keywords: [t("availablePlans"), t("subscription")],
+    },
+    {
+      description: t("billingUsageEntitlementsDescription"),
+      groupId: "studio-root",
+      groupLabel: t("studio"),
+      href: href("/usage"),
+      icon: WalletCards,
+      id: "usage",
+      label: t("usageAndEntitlements"),
+      order: 20,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("usageAndEntitlements"), t("storage"), t("aiUsage")],
+    },
+    {
+      description: t("aiUsageOverviewDescription"),
+      groupId: "studio-root",
+      groupLabel: t("studio"),
+      href: href("/usage/ai"),
+      icon: Sparkles,
+      id: "usage-ai",
+      label: t("aiUsage"),
+      order: 21,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("aiUsage"), t("modelUsage")],
+    },
+    {
+      description: t("storageOverviewDescription"),
+      groupId: "studio-root",
+      groupLabel: t("studio"),
+      href: href("/usage/storage"),
+      icon: HardDrive,
+      id: "usage-storage",
+      label: t("storage"),
+      order: 22,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("storage"), t("files")],
+    },
+    {
+      description: t("organizationMembersSummary"),
+      groupId: "studio-settings",
+      groupLabel: t("organizationSettings"),
+      href: href("/settings/general"),
+      icon: Settings,
+      id: "settings-general",
+      label: t("general"),
+      order: 30,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("general"), t("organizationSettings")],
+    },
+    {
+      description: t("organizationMembersSummary"),
+      groupId: "studio-settings",
+      groupLabel: t("organizationSettings"),
+      href: href("/settings/members"),
+      icon: Building2,
+      id: "settings-members",
+      label: t("organizationMembers"),
+      order: 31,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("organizationMembers"), t("organizationInvitations")],
+    },
+    {
+      description: t("resourceActivityUnavailable"),
+      groupId: "studio-root",
+      groupLabel: t("studio"),
+      href: href("/activity"),
+      icon: Activity,
+      id: "activity",
+      label: t("activity"),
+      order: 40,
+      placements: ["sidebar", "command"] as const,
+      keywords: [t("activity"), t("resourceActivity")],
+    },
+  ]
+}

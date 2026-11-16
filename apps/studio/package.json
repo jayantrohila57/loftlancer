@@ -42,7 +42,10 @@
     "@modules/billing": "workspace:*",
     "@modules/org": "workspace:*",
     "@modules/storage": "workspace:*",
-    "@modules/auth": "workspace:*"
+    "@modules/auth": "workspace:*",
+    "@modules/ai-usage": "workspace:*",
+    "@modules/activity": "workspace:*",
+    "@modules/security": "workspace:*"
   },
   "devDependencies": {
     "@packages/typescript-config": "workspace:*",

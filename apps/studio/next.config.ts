@@ -38,6 +38,8 @@ const nextConfig: NextConfig = {
     "@modules/org",
     "@modules/storage",
     "@modules/auth",
+    "@modules/activity",
+    "@modules/ai-usage",
     "@modules/security",
     "@modules/shell",
     "@features/navigation",
