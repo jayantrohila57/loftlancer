@@ -919,6 +919,7 @@
     "onboardingStepSeparator": "/",
     "onboardingStepLabel": "{step}. {label}",
     "onboardingStepProgress": "Paso {current} de {total}",
+    "onboardingStepCompletedA11y": ", completado",
     "enterpriseSsoDomainDiscovery": "Buscaremos una conexión SSO para {domain}.",
     "enterpriseSsoCallbackError": "No se pudo completar el SSO. El proveedor puede haber denegado el acceso, puede faltar la conexión para tu dominio o el enlace expiró.",
     "enterpriseSsoRecoveryHint": "Verifica el dominio de tu correo de trabajo, pide al administrador que termine la configuración SSO o lee",

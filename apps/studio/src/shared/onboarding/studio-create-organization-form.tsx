@@ -32,7 +32,7 @@ import {
   StudioOnboardingSlugPreview,
 } from "@/shared/onboarding/studio-onboarding-slug-fields.client"
 import { studioAbsolutePath } from "@/shared/org/studio-org.paths"
-import { StudioOnboardingFooterPortal } from "@/shared/onboarding/studio-onboarding-footer-portal.client"
+import { StudioOnboardingPageFooter } from "@/shared/shell/studio-onboarding-page-footer"
 
 type StudioOnboardingOrganizationValues = z.infer<
   ReturnType<typeof studioOnboardingOrganizationSchema>
@@ -147,11 +147,7 @@ function StudioOnboardingContactSection() {
   )
 }
 
-export function StudioCreateOrganizationForm({
-  nextPath,
-}: {
-  readonly nextPath: "plan" | "org-home"
-}) {
+export function StudioCreateOrganizationForm() {
   const t = useTranslations("ui")
   const locale = useLocale()
   const format = useFormatter()
@@ -230,12 +226,7 @@ export function StudioCreateOrganizationForm({
             }
           }
           await resumeProvisioning()
-          const createdSlug = created?.slug ?? values.slug.trim()
-          const dest =
-            nextPath === "plan"
-              ? studioAbsolutePath(locale, "/onboarding/plan")
-              : studioAbsolutePath(locale, `/${createdSlug}`)
-          window.location.assign(dest)
+          window.location.assign(studioAbsolutePath(locale, "/onboarding/plan"))
         })(),
         {
           loading: t("creatingOrganization"),
@@ -288,11 +279,11 @@ export function StudioCreateOrganizationForm({
         currencyOptions={currencyOptions}
         languageOptions={languageOptions}
       />
-      <StudioOnboardingFooterPortal>
-        <FormKit.Actions className="justify-end bg-transparent p-0">
+      <StudioOnboardingPageFooter>
+        <div className="flex w-full flex-wrap items-center justify-end gap-2">
           <StudioOnboardingCreateSubmit />
-        </FormKit.Actions>
-      </StudioOnboardingFooterPortal>
+        </div>
+      </StudioOnboardingPageFooter>
     </FormKit>
   )
 }
@@ -400,12 +391,7 @@ function StudioOnboardingRegionalPrefill({
         shouldValidate: true,
       })
     }
-  }, [
-    detectedDefaults.countryCode,
-    detectedDefaults.timezone,
-    getValues,
-    setValue,
-  ])
+  }, [getValues, setValue])
 
   return null
 }

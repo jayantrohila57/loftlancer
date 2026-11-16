@@ -12,7 +12,8 @@
     "./server": "./src/server/index.ts",
     "./server/shared/org.membership-context": "./src/server/shared/org.membership-context.ts",
     "./utils/constants/org.constants.entitlements": "./src/utils/constants/org.constants.entitlements.ts",
-    "./utils/org.session": "./src/utils/org.session.ts"
+    "./utils/org.session": "./src/utils/org.session.ts",
+    "./utils/validation/org.timezone": "./src/utils/validation/org.timezone.ts"
   },
   "dependencies": {
     "@features/form": "workspace:*",

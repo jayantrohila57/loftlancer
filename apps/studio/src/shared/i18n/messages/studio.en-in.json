@@ -919,6 +919,7 @@
     "onboardingStepSeparator": "/",
     "onboardingStepLabel": "{step}. {label}",
     "onboardingStepProgress": "Step {current} of {total}",
+    "onboardingStepCompletedA11y": ", completed",
     "enterpriseSsoDomainDiscovery": "We will look for an SSO connection for {domain}.",
     "enterpriseSsoCallbackError": "SSO could not finish. Your identity provider may have denied access, the connection may be missing for your domain, or the link expired.",
     "enterpriseSsoRecoveryHint": "Verify your work email domain, ask your administrator to finish SSO setup, or read",

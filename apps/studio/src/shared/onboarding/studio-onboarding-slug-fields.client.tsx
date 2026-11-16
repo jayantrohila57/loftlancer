@@ -6,15 +6,15 @@ import { withClientRetry } from "@modules/auth"
 import { organizationSlugFromName } from "@modules/org"
 import { authClient } from "@packages/better-auth/client"
 import { useTranslations } from "next-intl"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useFormContext, useWatch } from "react-hook-form"
 import type { z } from "zod"
+import type { studioOnboardingOrganizationSchema } from "@/shared/onboarding/studio-onboarding-organization-schema.client"
 import {
   STUDIO_ORG_SLUG_MAX_LENGTH,
   STUDIO_ORG_SLUG_PATTERN,
 } from "@/shared/org/studio-org.constants"
 import { isReservedStudioOrgSlug } from "@/shared/org/studio-org.paths"
-import type { studioOnboardingOrganizationSchema } from "@/shared/onboarding/studio-onboarding-organization-schema.client"
 
 type StudioOnboardingOrganizationValues = z.infer<
   ReturnType<typeof studioOnboardingOrganizationSchema>
@@ -77,7 +77,7 @@ export function StudioOnboardingSlugPreview() {
   const value = String(slug ?? "").trim()
   if (!value) return null
   return (
-    <p className="text-muted-foreground text-sm" aria-live="polite">
+    <p className="text-sm text-muted-foreground" aria-live="polite">
       {t("organizationSlugPreview", { slug: value })}
     </p>
   )
@@ -109,12 +109,12 @@ export function StudioOnboardingSlugField() {
     invalid: t("organizationSlugUnavailable"),
   }
 
-  function clearSlugAvailabilityError() {
+  const clearSlugAvailabilityError = useCallback(() => {
     if (!hadAvailabilityErrorRef.current) return
     hadAvailabilityErrorRef.current = false
     clearErrors("slug")
     void trigger("slug")
-  }
+  }, [clearErrors, trigger])
 
   useEffect(() => {
     if (!trimmedSlug || !passesClientRules) {
@@ -169,7 +169,7 @@ export function StudioOnboardingSlugField() {
     return () => {
       window.clearTimeout(timer)
     }
-  }, [clearErrors, passesClientRules, setError, t, trigger, trimmedSlug])
+  }, [passesClientRules, setError, t, trimmedSlug, clearSlugAvailabilityError])
 
   return (
     <FormKit.Field
