@@ -982,7 +982,7 @@
     "navDescLegalRefund": "When and how refunds are issued.",
     "navDescLegalTerms": "Your agreement when using the site.",
     "navDescPartnerships": "Partner programs and ecosystem alliances.",
-    "navDescPricing": "Compare Free and Paid plans and subscribe.",
+    "navDescPricing": "Compare plans and choose what fits your workflow.",
     "navDescProductAnalytics": "Measure performance and user engagement.",
     "navDescProductApi": "Build on our platform with a modern API.",
     "navDescProductCloudPlatform": "Deploy and scale on managed infrastructure.",
@@ -1032,5 +1032,180 @@
     "removed": "Removed",
     "breaking": "Breaking",
     "close": "Close"
+  },
+  "pricingPage": {
+    "eyebrow": "Plans",
+    "title": "Pricing that scales with client work",
+    "subtitle": "Start planning and validating scope for free. Upgrade when you need more active projects, client seats, and delivery tooling.",
+    "billingToggleLabel": "Billing period",
+    "billingMonthly": "Monthly",
+    "billingYearly": "Yearly",
+    "yearlySaveBadge": "Save 20%",
+    "billingNote": "Yearly billing includes a 20% discount on paid plans.",
+    "perMonth": "/mo",
+    "perYear": "/yr",
+    "popularBadge": "Most popular",
+    "comparisonTitle": "Compare features across plans",
+    "comparisonDescription": "See what each tier includes—from project limits and collaboration tools to support response times.",
+    "comparisonIncluded": "Included",
+    "comparisonNotIncluded": "Not included",
+    "faqTitle": "Frequently asked questions",
+    "faqDescription": "Quick answers about billing, trials, plan changes, and enterprise options.",
+    "faqFilterLabel": "Filter questions by topic",
+    "faqSearchLabel": "Search FAQ",
+    "faqSearchPlaceholder": "Search questions and answers",
+    "faqCategories": {
+      "all": {
+        "label": "All topics"
+      },
+      "gettingStarted": {
+        "label": "Getting started"
+      },
+      "features": {
+        "label": "Features"
+      },
+      "billing": {
+        "label": "Billing"
+      },
+      "support": {
+        "label": "Support"
+      }
+    },
+    "faqItems": [
+      {
+        "question": "When am I billed?",
+        "answer": "Paid plans are charged at the start of each billing period—monthly or yearly, depending on what you select. Starter stays free until you upgrade. Invoices and receipts are available from your account billing settings.",
+        "category": "billing"
+      },
+      {
+        "question": "Is there a free trial on Pro?",
+        "answer": "Yes. Pro includes a 14-day trial with full Pro features. No credit card is required to start Starter; you can add payment details when you are ready to upgrade after the trial.",
+        "category": "gettingStarted"
+      },
+      {
+        "question": "Do I need a credit card to use Starter?",
+        "answer": "No. Starter is free without a payment method. Add billing details only when you upgrade to a paid plan or when a Pro trial converts to a paid subscription.",
+        "category": "gettingStarted"
+      },
+      {
+        "question": "Can I upgrade or downgrade later?",
+        "answer": "You can change plans anytime from billing settings. Upgrades take effect immediately with prorated charges. Downgrades apply at the end of your current billing period so you keep access until then.",
+        "category": "features"
+      },
+      {
+        "question": "How are project and seat limits enforced?",
+        "answer": "Each plan caps active projects and seats. When you hit a limit, archive a project, remove a seat, or upgrade. API and storage usage reset on your normal billing cycle where applicable.",
+        "category": "features"
+      },
+      {
+        "question": "How does Enterprise pricing work?",
+        "answer": "Enterprise is tailored to team size, compliance needs, and custom SLAs. Contact sales for a quote, procurement-friendly contracts, and a rollout plan with white-glove onboarding.",
+        "category": "support"
+      },
+      {
+        "question": "How fast does support respond?",
+        "answer": "Starter and Pro include email support with targets of 48h and 24h on business days. Studio and Enterprise include priority channels with faster SLAs defined in your agreement.",
+        "category": "support"
+      },
+      {
+        "question": "What is your refund policy?",
+        "answer": "If you cancel within 14 days of your first paid charge and have not substantially used paid quota, contact support for a refund review. After that window, plans remain active through the paid period without partial refunds unless required by law.",
+        "category": "billing"
+      },
+      {
+        "question": "Can I cancel anytime?",
+        "answer": "Yes. Cancel from billing settings to stop renewal. You keep access until the period ends, then your workspace moves to Starter limits unless you resubscribe.",
+        "category": "billing"
+      }
+    ],
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "description": "For solo builders validating ideas with clients.",
+        "priceMonthly": "$0",
+        "priceYearly": "$0",
+        "cta": "Get started",
+        "usageLabel": "Included usage",
+        "usageItems": [
+          "1 seat",
+          "2 active projects",
+          "5 GB storage",
+          "1,000 API calls / mo",
+          "48h email support"
+        ],
+        "features": [
+          "Up to 2 active client projects",
+          "Client-approved scope documents",
+          "Core planning and intake templates",
+          "Email support"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "For freelancers shipping multiple engagements in parallel.",
+        "priceMonthly": "$29",
+        "priceYearly": "$278",
+        "cta": "Start Pro trial",
+        "usageLabel": "Included usage",
+        "usageItems": [
+          "1 seat (add-ons available)",
+          "Unlimited projects",
+          "50 GB storage",
+          "25,000 API calls / mo",
+          "24h priority support"
+        ],
+        "features": [
+          "Unlimited client projects",
+          "Agent-ready work breakdowns",
+          "Versioned scope change history",
+          "Integrations and webhooks",
+          "Priority support"
+        ]
+      },
+      "studio": {
+        "name": "Studio",
+        "description": "For small agencies coordinating planners and builders.",
+        "priceMonthly": "$79",
+        "priceYearly": "$758",
+        "cta": "Talk to sales",
+        "usageLabel": "Included usage",
+        "usageItems": [
+          "Up to 10 seats",
+          "Unlimited projects",
+          "200 GB storage",
+          "100,000 API calls / mo",
+          "4h support SLA"
+        ],
+        "features": [
+          "Shared workspaces and roles",
+          "Client portal branding",
+          "Audit trail and approvals",
+          "SSO and advanced security",
+          "Dedicated success manager"
+        ]
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "For larger teams with compliance, procurement, and custom rollout needs.",
+        "priceMonthly": "$149",
+        "priceYearly": "$1,430",
+        "cta": "Contact sales",
+        "usageLabel": "Included usage",
+        "usageItems": [
+          "Unlimited seats",
+          "Unlimited projects",
+          "Custom storage quota",
+          "Custom API limits",
+          "1h support SLA"
+        ],
+        "features": [
+          "Everything in Studio",
+          "Unlimited team seats",
+          "Custom contracts and SLAs",
+          "SOC 2 and advanced compliance",
+          "White-glove onboarding"
+        ]
+      }
+    }
   }
 }

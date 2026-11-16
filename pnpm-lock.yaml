@@ -575,6 +575,9 @@ importers:
       '@features/font':
         specifier: workspace:*
         version: link:../../features/font
+      '@features/form':
+        specifier: workspace:*
+        version: link:../../features/form
       '@features/i18n':
         specifier: workspace:*
         version: link:../../features/i18n

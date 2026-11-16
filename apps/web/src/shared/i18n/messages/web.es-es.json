@@ -982,7 +982,7 @@
     "navDescLegalRefund": "Cuándo y cómo se emiten los reembolsos.",
     "navDescLegalTerms": "Tu acuerdo al usar el sitio.",
     "navDescPartnerships": "Programas de partners y alianzas del ecosistema.",
-    "navDescPricing": "Compara los planes Gratis y De pago y suscríbete.",
+    "navDescPricing": "Compara planes y elige lo que encaja con tu flujo.",
     "navDescProductAnalytics": "Mide el rendimiento y la interacción de los usuarios.",
     "navDescProductApi": "Construye sobre nuestra plataforma con una API moderna.",
     "navDescProductCloudPlatform": "Despliega y escala en infraestructura gestionada.",
@@ -1032,5 +1032,180 @@
     "removed": "Eliminado",
     "breaking": "Cambios incompatibles",
     "close": "Cerrar"
+  },
+  "pricingPage": {
+    "eyebrow": "Planes",
+    "title": "Precios que crecen con tu trabajo con clientes",
+    "subtitle": "Empieza a planificar y validar el alcance gratis. Mejora cuando necesites más proyectos activos, asientos de cliente y herramientas de entrega.",
+    "billingToggleLabel": "Periodo de facturación",
+    "billingMonthly": "Mensual",
+    "billingYearly": "Anual",
+    "yearlySaveBadge": "−20 %",
+    "billingNote": "La facturación anual incluye un 20 % de descuento en los planes de pago.",
+    "perMonth": "/mes",
+    "perYear": "/año",
+    "popularBadge": "Más popular",
+    "comparisonTitle": "Compara las funciones de cada plan",
+    "comparisonDescription": "Consulta qué incluye cada plan: límites de proyectos, herramientas de colaboración y tiempos de respuesta del soporte.",
+    "comparisonIncluded": "Incluido",
+    "comparisonNotIncluded": "No incluido",
+    "faqTitle": "Preguntas frecuentes",
+    "faqDescription": "Respuestas rápidas sobre facturación, pruebas, cambios de plan y opciones Enterprise.",
+    "faqFilterLabel": "Filtrar preguntas por tema",
+    "faqSearchLabel": "Buscar en las preguntas frecuentes",
+    "faqSearchPlaceholder": "Buscar en preguntas y respuestas",
+    "faqCategories": {
+      "all": {
+        "label": "Todos los temas"
+      },
+      "gettingStarted": {
+        "label": "Primeros pasos"
+      },
+      "features": {
+        "label": "Funciones"
+      },
+      "billing": {
+        "label": "Facturación"
+      },
+      "support": {
+        "label": "Soporte"
+      }
+    },
+    "faqItems": [
+      {
+        "question": "¿Cuándo se me cobra?",
+        "answer": "Los planes de pago se cobran al inicio de cada periodo—mensual o anual, según lo que elijas. Starter sigue siendo gratis hasta que mejores el plan. Las facturas y recibos están en la configuración de facturación de tu cuenta.",
+        "category": "billing"
+      },
+      {
+        "question": "¿Hay prueba gratis en Pro?",
+        "answer": "Sí. Pro incluye 14 días de prueba con todas las funciones Pro. No hace falta tarjeta para empezar con Starter; puedes añadir el pago cuando quieras pasar a de pago tras la prueba.",
+        "category": "gettingStarted"
+      },
+      {
+        "question": "¿Necesito tarjeta para usar Starter?",
+        "answer": "No. Starter es gratis sin método de pago. Añade datos de facturación solo cuando mejores a un plan de pago o cuando una prueba Pro pase a suscripción de pago.",
+        "category": "gettingStarted"
+      },
+      {
+        "question": "¿Puedo subir o bajar de plan más tarde?",
+        "answer": "Puedes cambiar de plan en cualquier momento desde facturación. Las mejoras se aplican al momento con cargos prorrateados. Las bajadas entran al final del periodo actual para que mantengas el acceso hasta entonces.",
+        "category": "features"
+      },
+      {
+        "question": "¿Cómo se aplican los límites de proyectos y plazas?",
+        "answer": "Cada plan limita proyectos activos y plazas. Si llegas al límite, archiva un proyecto, quita una plaza o mejora el plan. El uso de API y almacenamiento se reinicia en tu ciclo de facturación habitual cuando corresponda.",
+        "category": "features"
+      },
+      {
+        "question": "¿Cómo funciona el precio Enterprise?",
+        "answer": "Enterprise se adapta al tamaño del equipo, requisitos de cumplimiento y SLAs personalizados. Contacta con ventas para presupuesto, contratos compatibles con compras y un plan de despliegue con onboarding dedicado.",
+        "category": "support"
+      },
+      {
+        "question": "¿Qué rapidez tiene el soporte?",
+        "answer": "Starter y Pro incluyen soporte por correo con objetivos de 48 h y 24 h en días laborables. Studio y Enterprise incluyen canales prioritarios con SLAs más rápidos definidos en tu acuerdo.",
+        "category": "support"
+      },
+      {
+        "question": "¿Cuál es la política de reembolsos?",
+        "answer": "Si cancelas en los 14 días posteriores al primer cobro de pago y no has usado de forma significativa la cuota de pago, contacta con soporte para revisar un reembolso. Después, el plan sigue activo hasta el final del periodo pagado sin reembolsos parciales salvo que la ley lo exija.",
+        "category": "billing"
+      },
+      {
+        "question": "¿Puedo cancelar en cualquier momento?",
+        "answer": "Sí. Cancela desde facturación para detener la renovación. Mantienes el acceso hasta que termine el periodo; después el espacio de trabajo pasa a los límites de Starter salvo que vuelvas a suscribirte.",
+        "category": "billing"
+      }
+    ],
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "description": "Para autónomos que validan ideas con clientes.",
+        "priceMonthly": "0 €",
+        "priceYearly": "0 €",
+        "cta": "Empezar",
+        "usageLabel": "Uso incluido",
+        "usageItems": [
+          "1 asiento",
+          "2 proyectos activos",
+          "5 GB de almacenamiento",
+          "1.000 llamadas API / mes",
+          "Soporte por correo en 48 h"
+        ],
+        "features": [
+          "Hasta 2 proyectos de cliente activos",
+          "Documentos de alcance aprobados por el cliente",
+          "Plantillas básicas de planificación e intake",
+          "Soporte por correo"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "Para freelancers con varios encargos en paralelo.",
+        "priceMonthly": "29 €",
+        "priceYearly": "278 €",
+        "cta": "Probar Pro",
+        "usageLabel": "Uso incluido",
+        "usageItems": [
+          "1 asiento (complementos disponibles)",
+          "Proyectos ilimitados",
+          "50 GB de almacenamiento",
+          "25.000 llamadas API / mes",
+          "Soporte prioritario en 24 h"
+        ],
+        "features": [
+          "Proyectos de cliente ilimitados",
+          "Desglose de trabajo listo para agentes",
+          "Historial versionado de cambios de alcance",
+          "Integraciones y webhooks",
+          "Soporte prioritario"
+        ]
+      },
+      "studio": {
+        "name": "Studio",
+        "description": "Para pequeñas agencias que coordinan planificación y desarrollo.",
+        "priceMonthly": "79 €",
+        "priceYearly": "758 €",
+        "cta": "Hablar con ventas",
+        "usageLabel": "Uso incluido",
+        "usageItems": [
+          "Hasta 10 asientos",
+          "Proyectos ilimitados",
+          "200 GB de almacenamiento",
+          "100.000 llamadas API / mes",
+          "SLA de soporte en 4 h"
+        ],
+        "features": [
+          "Espacios compartidos y roles",
+          "Marca en el portal del cliente",
+          "Auditoría y aprobaciones",
+          "SSO y seguridad avanzada",
+          "Gestor de éxito dedicado"
+        ]
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "Para equipos grandes con requisitos de cumplimiento, compras y despliegue a medida.",
+        "priceMonthly": "149 €",
+        "priceYearly": "1430 €",
+        "cta": "Contactar ventas",
+        "usageLabel": "Uso incluido",
+        "usageItems": [
+          "Asientos ilimitados",
+          "Proyectos ilimitados",
+          "Cuota de almacenamiento a medida",
+          "Límites de API personalizados",
+          "SLA de soporte en 1 h"
+        ],
+        "features": [
+          "Todo lo incluido en Studio",
+          "Asientos de equipo ilimitados",
+          "Contratos y SLA personalizados",
+          "SOC 2 y cumplimiento avanzado",
+          "Onboarding guiado"
+        ]
+      }
+    }
   }
 }

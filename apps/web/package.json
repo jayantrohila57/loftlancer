@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "node --input-type=module -e \"console.log('\\n  Web \u2192 http://localhost:3001/en-us  ( / redirects here )\\n')\" && next dev --port 3001",
+    "dev": "node --input-type=module -e \"console.log('\\n  Web → http://localhost:3001/en-us  ( / redirects here )\\n')\" && next dev --port 3001",
     "build": "next build",
     "start": "next start --port 3001",
     "typecheck": "tsc --noEmit"
@@ -12,6 +12,7 @@
   "dependencies": {
     "@features/action": "workspace:*",
     "@features/font": "workspace:*",
+    "@features/form": "workspace:*",
     "@features/i18n": "workspace:*",
     "@features/navigation": "workspace:*",
     "@features/shell": "workspace:*",
