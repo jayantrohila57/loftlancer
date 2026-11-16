@@ -3,11 +3,11 @@
 import { isTransientError } from "@modules/auth"
 import { useQuery } from "@packages/react-query"
 import { fetchBillingOverview } from "./billing.hook.overview-query"
-import { useBillingOrgOwnerQueryEnabled } from "./billing.hook.query-enabled"
+import { useBillingOrgViewQueryEnabled } from "./billing.hook.query-enabled"
 import { billingOverviewKey } from "./billing.hooks.keys"
 
 export function useBillingOverview(organizationId: string | null | undefined) {
-  const queryEnabled = useBillingOrgOwnerQueryEnabled()
+  const queryEnabled = useBillingOrgViewQueryEnabled()
   return useQuery({
     queryKey: billingOverviewKey(organizationId),
     enabled: queryEnabled,

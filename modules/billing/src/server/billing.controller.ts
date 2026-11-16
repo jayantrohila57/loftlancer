@@ -24,10 +24,13 @@ import { billingListPlansService } from "./services/billing.service.plans"
 import { billingOpenPortalService } from "./services/billing.service.portal"
 import { billingSetupPaymentService } from "./services/billing.service.setup-payment"
 import { billingBeginUpgradeService } from "./services/billing.service.upgrade"
-import { billingOrgOwnerProcedure } from "./shared/billing.procedure"
+import {
+  billingOrgManageProcedure,
+  billingOrgViewProcedure,
+} from "./shared/billing.procedure"
 
 export const billingController = {
-  overview: billingOrgOwnerProcedure
+  overview: billingOrgViewProcedure
     .route(billingRoutes.overview)
     .output(billingOverviewOutputSchema)
     .handler(async ({ context }) =>
@@ -37,7 +40,7 @@ export const billingController = {
         })
       )
     ),
-  beginUpgrade: billingOrgOwnerProcedure
+  beginUpgrade: billingOrgManageProcedure
     .route(billingRoutes.beginUpgrade)
     .input(billingCheckoutReturnInputSchema)
     .output(billingUpgradeOutputSchema)
@@ -51,7 +54,7 @@ export const billingController = {
         })
       )
     ),
-  beginDowngrade: billingOrgOwnerProcedure
+  beginDowngrade: billingOrgManageProcedure
     .route(billingRoutes.beginDowngrade)
     .input(billingCheckoutReturnInputSchema)
     .output(billingDowngradeOutputSchema)
@@ -65,7 +68,7 @@ export const billingController = {
         })
       )
     ),
-  openPortal: billingOrgOwnerProcedure
+  openPortal: billingOrgManageProcedure
     .route(billingRoutes.openPortal)
     .output(billingPortalOutputSchema)
     .handler(async ({ context }) =>
@@ -75,7 +78,7 @@ export const billingController = {
         })
       )
     ),
-  listPlans: billingOrgOwnerProcedure
+  listPlans: billingOrgViewProcedure
     .route(billingRoutes.listPlans)
     .output(billingPlansOutputSchema)
     .handler(async ({ context }) =>
@@ -85,7 +88,7 @@ export const billingController = {
         })
       )
     ),
-  listInvoices: billingOrgOwnerProcedure
+  listInvoices: billingOrgManageProcedure
     .route(billingRoutes.listInvoices)
     .input(billingListInvoicesInputSchema)
     .output(billingInvoicesOutputSchema)
@@ -97,7 +100,7 @@ export const billingController = {
         })
       )
     ),
-  listPaymentHistory: billingOrgOwnerProcedure
+  listPaymentHistory: billingOrgManageProcedure
     .route(billingRoutes.listPaymentHistory)
     .input(billingListInvoicesInputSchema)
     .output(billingInvoicesOutputSchema)
@@ -110,7 +113,7 @@ export const billingController = {
         })
       )
     ),
-  customerProfile: billingOrgOwnerProcedure
+  customerProfile: billingOrgManageProcedure
     .route(billingRoutes.customerProfile)
     .output(billingCustomerProfileOutputSchema)
     .handler(async ({ context }) =>
@@ -120,7 +123,7 @@ export const billingController = {
         })
       )
     ),
-  setupPayment: billingOrgOwnerProcedure
+  setupPayment: billingOrgManageProcedure
     .route(billingRoutes.setupPayment)
     .output(billingSetupPaymentOutputSchema)
     .handler(async ({ context }) =>
@@ -130,7 +133,7 @@ export const billingController = {
         })
       )
     ),
-  beginCancel: billingOrgOwnerProcedure
+  beginCancel: billingOrgManageProcedure
     .route(billingRoutes.beginCancel)
     .output(billingCancelOutputSchema)
     .handler(async ({ context }) =>

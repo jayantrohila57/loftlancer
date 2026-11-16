@@ -13,7 +13,8 @@ export default async function StudioOrgBillingLayout({
 }: OrgLayoutProps) {
   const { lang, org } = await params
   const { organization } = await requireStudioOrganization(lang, org)
-  if (!studioOrgRoleAccess(organization.role).canManageBilling) {
+  const access = studioOrgRoleAccess(organization.role)
+  if (!access.canViewBilling) {
     return <StudioUnauthorized params={params} />
   }
   const t = await getServerTranslations(params, "ui")
@@ -21,7 +22,7 @@ export default async function StudioOrgBillingLayout({
     <StudioOrgSectionLayout
       description={t("billingOverviewDescription")}
       icon={CreditCard}
-      tabs={studioBillingSectionTabs(org, t)}
+      tabs={studioBillingSectionTabs(org, t, access)}
       title={t("billing")}
     >
       {children}

@@ -10,7 +10,7 @@ export function createOrganizationInviteFormSchema(t: Translate) {
       .trim()
       .min(1, t("organizationInviteEmailRequired"))
       .email(t("organizationInviteEmailInvalid")),
-    role: z.enum(["member", "manager"]),
+    role: z.enum(["member", "manager", "admin"]),
   })
 }
 

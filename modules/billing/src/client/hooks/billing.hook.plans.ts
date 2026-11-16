@@ -4,7 +4,7 @@ import { isTransientError } from "@modules/auth"
 import { securityRpc } from "@modules/security/client"
 import { useQuery } from "@packages/react-query"
 import type { BillingPlansData } from "../../utils/types/billing.types.rpc"
-import { useBillingOrgOwnerQueryEnabled } from "./billing.hook.query-enabled"
+import { useBillingOrgViewQueryEnabled } from "./billing.hook.query-enabled"
 import { callBillingRpc } from "./billing.hook.rpc"
 import { billingPlansKey } from "./billing.hooks.keys"
 
@@ -17,7 +17,7 @@ async function fetchBillingPlans(): Promise<BillingPlansData> {
 }
 
 export function useBillingPlans(organizationId: string | null | undefined) {
-  const queryEnabled = useBillingOrgOwnerQueryEnabled()
+  const queryEnabled = useBillingOrgViewQueryEnabled()
   return useQuery({
     queryKey: billingPlansKey(organizationId),
     enabled: queryEnabled,

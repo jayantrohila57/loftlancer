@@ -50,7 +50,7 @@ export function BillingPaymentMethodsScreen() {
   }
 
   return (
-    <BillingAccessGate>
+    <BillingAccessGate mode="manage">
       {profile.isLoading ? <ProfileSkeleton /> : null}
       {profile.isError ? (
         <BillingQueryErrorState
@@ -123,7 +123,7 @@ export function BillingDetailsScreen() {
   const [portalError, setPortalError] = useState<string | null>(null)
 
   return (
-    <BillingAccessGate>
+    <BillingAccessGate mode="manage">
       {profile.isLoading ? <ProfileSkeleton /> : null}
       {profile.isError ? (
         <BillingQueryErrorState

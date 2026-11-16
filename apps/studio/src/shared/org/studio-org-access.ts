@@ -1,17 +1,26 @@
 import {
+  canEditOrganizationSettings,
+  canManageElevatedOrganizationMembers,
   canManageOrganizationBilling,
-  isOrganizationOwnerRole,
+  canManageOrganizationMembers,
+  canViewOrganizationBilling,
+  orgRoleHasPermission,
+  resolveOrgProductRole,
 } from "@modules/org"
 
 export type StudioOrgAccess = {
+  readonly productRole: ReturnType<typeof resolveOrgProductRole>
   readonly isOwner: boolean
   readonly isAdmin: boolean
+  readonly isManager: boolean
   readonly canViewGeneral: boolean
   readonly canEditGeneral: boolean
   readonly canViewRoles: boolean
   readonly canManageMembers: boolean
+  readonly canManageElevatedMembers: boolean
   readonly canManageInvitations: boolean
   readonly canManageBilling: boolean
+  readonly canViewBilling: boolean
   readonly canViewBillingDetails: boolean
   readonly canViewUsage: boolean
   readonly canViewActivity: boolean
@@ -19,29 +28,27 @@ export type StudioOrgAccess = {
   readonly canAccessDanger: boolean
 }
 
-/**
- * Studio UI and page rules from the member role string.
- * Owner, admin, and manager (plugin alias of admin) are privileged.
- * Unknown custom plugin roles default to member visibility.
- */
 export function studioOrgRoleAccess(
   role: string | null | undefined
 ): StudioOrgAccess {
-  const isOwner = Boolean(role && isOrganizationOwnerRole(role))
-  const isAdmin = Boolean(role && canManageOrganizationBilling(role))
+  const productRole = resolveOrgProductRole(role)
   return {
-    isOwner,
-    isAdmin,
-    canViewGeneral: true,
-    canEditGeneral: isAdmin,
-    canViewRoles: true,
-    canManageMembers: isAdmin,
-    canManageInvitations: isAdmin,
-    canManageBilling: isAdmin,
-    canViewBillingDetails: isAdmin,
-    canViewUsage: true,
-    canViewActivity: true,
-    canTransferOwnership: isOwner,
-    canAccessDanger: isOwner,
+    productRole,
+    isOwner: productRole === "owner",
+    isAdmin: productRole === "admin",
+    isManager: productRole === "manager",
+    canViewGeneral: orgRoleHasPermission(role, "orgSettingsView"),
+    canEditGeneral: canEditOrganizationSettings(role),
+    canViewRoles: orgRoleHasPermission(role, "rolesView"),
+    canManageMembers: canManageOrganizationMembers(role),
+    canManageElevatedMembers: canManageElevatedOrganizationMembers(role),
+    canManageInvitations: orgRoleHasPermission(role, "invitationsManage"),
+    canManageBilling: canManageOrganizationBilling(role),
+    canViewBilling: canViewOrganizationBilling(role),
+    canViewBillingDetails: canManageOrganizationBilling(role),
+    canViewUsage: orgRoleHasPermission(role, "usageActivity"),
+    canViewActivity: orgRoleHasPermission(role, "usageActivity"),
+    canTransferOwnership: orgRoleHasPermission(role, "ownershipTransfer"),
+    canAccessDanger: orgRoleHasPermission(role, "orgDelete"),
   }
 }

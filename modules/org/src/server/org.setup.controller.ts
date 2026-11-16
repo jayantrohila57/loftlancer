@@ -50,7 +50,7 @@ export const orgSetupController = {
         await orgSetupService.patch({
           organizationId: context.organizationId,
           patch: input.patch,
-          isOrgOwner: context.isOrgOwner,
+          orgRole: context.orgRole,
         })
       )
     ),

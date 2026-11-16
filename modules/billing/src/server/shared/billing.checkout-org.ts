@@ -1,4 +1,4 @@
-import { ORG_OWNER_MEMBER_ROLE } from "@modules/org/utils/constants/org.constants.entitlements"
+import { canManageOrganizationBilling } from "@modules/org/utils/org.member-role"
 import { readActiveOrganizationId } from "@modules/org/utils/org.session"
 import { getDb } from "@packages/drizzle"
 import { member } from "@packages/drizzle/schema"
@@ -11,7 +11,7 @@ export type CheckoutOrganizationResolution =
       readonly code:
         | "database_unavailable"
         | "organization_required"
-        | "owner_required"
+        | "billing_forbidden"
     }
 
 type CheckoutSessionCarrier = {
@@ -35,33 +35,40 @@ export async function resolveCheckoutOrganization(
     return { ok: false, code: "database_unavailable" }
   }
 
-  const owned = await db
-    .select({ organizationId: member.organizationId })
+  const rows = await db
+    .select({
+      organizationId: member.organizationId,
+      role: member.role,
+    })
     .from(member)
-    .where(
-      and(eq(member.userId, userId), eq(member.role, ORG_OWNER_MEMBER_ROLE))
-    )
+    .where(eq(member.userId, userId))
 
-  if (owned.length === 0) {
+  const billingOrganizations = rows.filter((row) =>
+    canManageOrganizationBilling(row.role)
+  )
+
+  if (billingOrganizations.length === 0) {
     const activeOrganizationId = readActiveOrganizationId(auth)
     if (activeOrganizationId) {
-      return { ok: false, code: "owner_required" }
+      return { ok: false, code: "billing_forbidden" }
     }
     return { ok: false, code: "organization_required" }
   }
 
-  const ownedIds = new Set(owned.map((row) => row.organizationId))
+  const billingIds = new Set(
+    billingOrganizations.map((row) => row.organizationId)
+  )
   const activeOrganizationId = readActiveOrganizationId(auth)
   if (activeOrganizationId) {
-    if (ownedIds.has(activeOrganizationId)) {
+    if (billingIds.has(activeOrganizationId)) {
       return { ok: true, organizationId: activeOrganizationId }
     }
-    return { ok: false, code: "owner_required" }
+    return { ok: false, code: "billing_forbidden" }
   }
 
-  const firstOwned = owned[0]
-  if (!firstOwned) {
+  const first = billingOrganizations[0]
+  if (!first) {
     return { ok: false, code: "organization_required" }
   }
-  return { ok: true, organizationId: firstOwned.organizationId }
+  return { ok: true, organizationId: first.organizationId }
 }

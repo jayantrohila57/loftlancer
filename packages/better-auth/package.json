@@ -27,6 +27,8 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./client": "./src/integration/better-auth.client.ts"
+    "./client": "./src/integration/better-auth.client.ts",
+    "./integration/better-auth.org-access-control": "./src/integration/better-auth.org-access-control.ts",
+    "./integration/better-auth.org-request-context": "./src/integration/better-auth.org-request-context.ts"
   }
 }

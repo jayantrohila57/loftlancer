@@ -30,7 +30,7 @@ export async function GET(request: Request) {
         hasProduct: false,
         error: organization.code,
       },
-      organization.code === "owner_required" ? 403 : 409
+      organization.code === "billing_forbidden" ? 403 : 409
     )
   }
 
