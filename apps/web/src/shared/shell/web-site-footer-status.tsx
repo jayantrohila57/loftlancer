@@ -1,4 +1,5 @@
 import { cn } from "@packages/ui/lib/utils"
+import { Link } from "@/shared/i18n/web.i18n"
 import { getServerTranslations } from "@/shared/i18n/web.i18n.server"
 import type { WebStatusLevel } from "@/shared/status/web-better-stack-status"
 import {
@@ -63,6 +64,21 @@ export async function WebSiteFooterStatus({
 
   if (!status.href) {
     return <span className={statusLinkClassName}>{content}</span>
+  }
+
+  const isInternal =
+    status.href.startsWith("/") || status.href.includes("loftlancer.com/status")
+
+  if (isInternal) {
+    return (
+      <Link
+        aria-label={`${label}, ${t("statusPage")}`}
+        className={statusLinkClassName}
+        href="/status"
+      >
+        {content}
+      </Link>
+    )
   }
 
   return (
