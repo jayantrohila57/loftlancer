@@ -3,11 +3,10 @@
 import { withClientRetry } from "@modules/auth"
 import { securityRpc } from "@modules/security/client"
 import { authClient } from "@packages/better-auth/client"
-import { clientEnv } from "@packages/t3-env/client"
 import { Button } from "@packages/ui/components/button"
 import { Spinner } from "@packages/ui/components/spinner"
 import { toastManager } from "@packages/ui/components/toast"
-import { useLocale, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useState } from "react"
 
 import { isOrganizationOwnerRole } from "../../../utils/org.member-role"
@@ -19,6 +18,7 @@ import {
   useOrgSessionActiveIdPending,
 } from "../../hooks/org.session.client"
 import { switchActiveOrganization } from "../../utils/org.switch-active.client"
+import { useOrgAppPaths } from "../org.app-paths.client"
 
 type BillingOverviewShape = {
   provisioningStep: string
@@ -132,13 +132,12 @@ export function OrgCreateProvisionResume(props: {
   readonly returnTo?: string
 }) {
   const t = useTranslations("ui")
-  const locale = useLocale()
+  const paths = useOrgAppPaths()
   const [pending, setPending] = useState(false)
-  const accountOrgUrl = `${clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")}/${locale}/account/organization`
   const finishedUrl =
     props.returnTo && isSafeHttpUrl(props.returnTo)
       ? props.returnTo
-      : accountOrgUrl
+      : paths.afterCreateUrl()
 
   async function onResume() {
     if (!props.organizationId || pending) return

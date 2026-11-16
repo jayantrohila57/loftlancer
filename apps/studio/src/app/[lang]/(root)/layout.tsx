@@ -7,6 +7,8 @@ import { StudioShellCommandMenu } from "@/shared/shell/studio-shell-command-menu
 import { StudioSidebarNav } from "@/shared/shell/studio-sidebar-nav"
 import type { LangLayoutProps } from "@/shared/types/studio.app.types"
 
+export const instant = false
+
 export default async function StudioLayout({
   children,
   params,

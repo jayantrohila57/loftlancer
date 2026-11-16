@@ -33,3 +33,17 @@ export async function activateOrganizationAfterJoin(
     throw new Error(result.error.message?.trim() || input.switchErrorMessage)
   }
 }
+
+export function readOrganizationSlugFromResponse(data: unknown): string | null {
+  if (!data || typeof data !== "object") return null
+  const record = data as Record<string, unknown>
+  if (typeof record.slug === "string" && record.slug.length > 0) {
+    return record.slug
+  }
+  const organization = record.organization
+  if (organization && typeof organization === "object") {
+    const slug = (organization as Record<string, unknown>).slug
+    if (typeof slug === "string" && slug.length > 0) return slug
+  }
+  return null
+}

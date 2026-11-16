@@ -2,37 +2,58 @@
 
 import {
   createNavigationRegistry,
-  defineHomeNavigationItems,
   toShellSidebarNavGroups,
 } from "@features/navigation"
 import { ShellSidebarNav } from "@features/shell"
-import { CreditCard } from "lucide-react"
+import { useOrgActiveMemberRole } from "@modules/org"
 import { useTranslations } from "next-intl"
+import { usePathname } from "@/shared/i18n/studio.i18n"
+import {
+  readOrgSlugFromPathname,
+  readStudioNavArea,
+} from "@/shared/org/studio-org.paths"
+import { studioOrgRoleAccess } from "@/shared/org/studio-org-access"
+import { StudioOrgSwitcher } from "@/shared/shell/studio-org-switcher"
+import { studioOrganizationsNavigationItems } from "@/shared/shell/studio-organizations-nav"
+import { studioSettingsNavigationItems } from "@/shared/shell/studio-settings-nav"
+import { studioWorkspaceNavigationItems } from "@/shared/shell/studio-workspace-nav"
 
 export function StudioSidebarNav() {
   const t = useTranslations("ui")
   const tCommand = useTranslations("command")
-  const registry = createNavigationRegistry({
-    items: [
-      ...defineHomeNavigationItems({
-        groupLabel: t("studio"),
-        homeDescription: tCommand("homeDescription"),
-        homeLabel: t("home"),
-      }),
-      {
-        description: t("billingOverviewDescription"),
-        groupId: "home-root",
-        groupLabel: t("studio"),
-        href: "/settings/billing",
-        icon: CreditCard,
-        id: "billing",
-        label: t("billing"),
-        order: 10,
-        placements: ["sidebar", "command"],
-        keywords: [t("billing"), "plan", "invoice"],
-      },
-    ],
-  })
+  const pathname = usePathname()
+  const slug = readOrgSlugFromPathname(pathname)
+  const area = readStudioNavArea(pathname)
+  const { role, isPending: rolePending } = useOrgActiveMemberRole()
+  const translate = t as unknown as (key: string) => string
+  const translateCommand = tCommand as unknown as (key: string) => string
+  const access = role ? studioOrgRoleAccess(role) : null
 
-  return <ShellSidebarNav groups={toShellSidebarNavGroups(registry)} />
+  const items =
+    area === "organizations"
+      ? studioOrganizationsNavigationItems({
+          t: translate,
+          tCommand: translateCommand,
+        })
+      : area === "settings"
+        ? studioSettingsNavigationItems({
+            slug,
+            access,
+            rolePending,
+            t: translate,
+          })
+        : studioWorkspaceNavigationItems({
+            slug,
+            t: translate,
+            tCommand: translateCommand,
+          })
+
+  const registry = createNavigationRegistry({ items })
+
+  return (
+    <ShellSidebarNav
+      leading={<StudioOrgSwitcher />}
+      groups={toShellSidebarNavGroups(registry)}
+    />
+  )
 }
