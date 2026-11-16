@@ -887,7 +887,10 @@
     "billingTaxIds": "Tax IDs",
     "billingAutumnUnconfiguredTitle": "Billing not configured",
     "billingCustomerUnboundTitle": "Billing customer not linked",
-    "billingCustomerUnboundDescription": "Complete a plan checkout or upgrade so this organization is linked to Autumn before viewing payment methods, invoices, or billing details."
+    "billingCustomerUnboundDescription": "Complete a plan checkout or upgrade so this organization is linked to Autumn before viewing payment methods, invoices, or billing details.",
+    "goToStudio": "Go to Studio",
+    "openStudio": "Open Studio",
+    "firstLoginStudioHint": "Create or open your organization in Studio. Billing and team settings live there."
   },
   "metadata": {
     "title": "Console",

@@ -887,7 +887,10 @@
     "billingDetailsEmptyDescription": "Usa el portal de facturación para añadir dirección e información fiscal.",
     "billingDetailsUnavailableDescription": "No se pudieron cargar los datos de facturación. Puedes gestionarlos en el portal de facturación.",
     "billingAddress": "Dirección de facturación",
-    "billingTaxIds": "Identificadores fiscales"
+    "billingTaxIds": "Identificadores fiscales",
+    "goToStudio": "Ir a Studio",
+    "openStudio": "Abrir Studio",
+    "firstLoginStudioHint": "Crea o abre tu organización en Studio. Allí están la facturación y los ajustes del equipo."
   },
   "metadata": {
     "title": "Consola",
