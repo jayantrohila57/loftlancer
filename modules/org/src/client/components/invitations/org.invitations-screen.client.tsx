@@ -25,6 +25,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useCallback, useEffect, useState } from "react"
 import { activateOrganizationAfterJoin } from "../../../utils/org.organization-id"
 import { isInvitationAcceptable } from "../../../utils/validation/org.invitation-role"
+import { useOrgAppPaths } from "../org.app-paths.client"
 
 type Invitation = {
   id: string
@@ -37,6 +38,7 @@ type Invitation = {
 export function OrgInvitationsScreen() {
   const t = useTranslations("ui")
   const locale = useLocale()
+  const paths = useOrgAppPaths()
   const { data: session, isPending: sessionPending } = authClient.useSession()
   const signedInEmail = session?.user.email?.trim() ?? null
   const [invitations, setInvitations] = useState<Invitation[]>([])
@@ -143,7 +145,7 @@ export function OrgInvitationsScreen() {
                     fetchOptions: {
                       onSuccess: () => {
                         window.location.assign(
-                          `${base}/${locale}/sign-in?redirect=${encodeURIComponent(`/${locale}/organizations/invitations`)}`
+                          `${base}/${locale}/sign-in?redirect=${encodeURIComponent(paths.organizationsInvitationsUrl)}`
                         )
                       },
                     },

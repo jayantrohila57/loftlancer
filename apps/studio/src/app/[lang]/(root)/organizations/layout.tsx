@@ -1,3 +1,7 @@
+import {
+  OrgCreateSheetAction,
+  OrgCreateSheetProvider,
+} from "@modules/org/account-screens"
 import { Building2 } from "lucide-react"
 import { getServerTranslations } from "@/shared/i18n/studio.i18n.server"
 import { StudioOrgSectionLayout } from "@/shared/shell/studio-org-section-layout"
@@ -10,13 +14,16 @@ export default async function StudioOrganizationsLayout({
 }: LangLayoutProps) {
   const t = await getServerTranslations(params, "ui")
   return (
-    <StudioOrgSectionLayout
-      description={t("organizationsDashboardDescription")}
-      icon={Building2}
-      tabs={studioOrganizationsSectionTabs(t)}
-      title={t("organizations")}
-    >
-      {children}
-    </StudioOrgSectionLayout>
+    <OrgCreateSheetProvider>
+      <StudioOrgSectionLayout
+        action={<OrgCreateSheetAction />}
+        description={t("organizationsDashboardDescription")}
+        icon={Building2}
+        tabs={studioOrganizationsSectionTabs(t)}
+        title={t("organizations")}
+      >
+        {children}
+      </StudioOrgSectionLayout>
+    </OrgCreateSheetProvider>
   )
 }

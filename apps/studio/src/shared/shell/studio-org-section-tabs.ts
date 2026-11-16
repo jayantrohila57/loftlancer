@@ -45,6 +45,11 @@ export function studioBillingSectionTabs(
       value: "plans",
     },
     {
+      href: studioSettingsPath(org, "/billing/usage-entitlements"),
+      label: t("usageAndEntitlements"),
+      value: "usage-entitlements",
+    },
+    {
       href: studioSettingsPath(org, "/billing/payment-methods"),
       label: t("paymentMethods"),
       value: "payment-methods",
@@ -143,4 +148,60 @@ export function studioSettingsSectionTabs(
     })
   }
   return tabs
+}
+
+export function studioAiUsageSectionTabs(
+  org: string,
+  t: Translate
+): readonly ShellSectionTabItem[] {
+  return [
+    {
+      href: studioOrgPath(org, "/usage/ai"),
+      label: t("overview"),
+      value: "overview",
+    },
+    {
+      href: studioOrgPath(org, "/usage/ai/model-usage"),
+      label: t("modelUsage"),
+      value: "model-usage",
+    },
+    {
+      href: studioOrgPath(org, "/usage/ai/usage-history"),
+      label: t("usageHistory"),
+      value: "usage-history",
+    },
+    {
+      href: studioOrgPath(org, "/usage/ai/limits-alerts"),
+      label: t("limitsAndAlerts"),
+      value: "limits-alerts",
+    },
+  ]
+}
+
+export function studioStorageSectionTabs(
+  org: string,
+  t: Translate
+): readonly ShellSectionTabItem[] {
+  return [
+    {
+      href: studioOrgPath(org, "/usage/storage"),
+      label: t("overview"),
+      value: "overview",
+    },
+    {
+      href: studioOrgPath(org, "/usage/storage/files"),
+      label: t("files"),
+      value: "files",
+    },
+    {
+      href: studioOrgPath(org, "/usage/storage/storage-activity"),
+      label: t("storageActivity"),
+      value: "storage-activity",
+    },
+    {
+      href: studioOrgPath(org, "/usage/storage/trash"),
+      label: t("trash"),
+      value: "trash",
+    },
+  ]
 }

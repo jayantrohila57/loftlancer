@@ -24,6 +24,7 @@ to write entries.
 
 ### Added
 
+- Studio now includes the full Auth organization, billing, subscription, AI usage, storage, and resource activity screens, including AI model usage, usage history, limits and alerts, storage files, storage activity, and trash.
 - Studio organization home: a short onboarding flow when you have no organization, an organization switcher, and org-scoped pages for members, invitations, roles, ownership, billing, usage, and activity.
 - Marketing pricing page with Starter, Pro, Studio, and Enterprise tiers (placeholder prices), a comparison table and FAQ, a sign-in gate before Pro checkout, and success, cancel, and failure pages after subscription purchase.
 - Subscription plans in the billing settings: Free and Paid, usage meters with 80% and 100% warnings, upgrade, cancel at period end, a customer billing portal, and an invoice list with PDF links.

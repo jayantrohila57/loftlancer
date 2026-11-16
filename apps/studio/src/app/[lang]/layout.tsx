@@ -20,6 +20,7 @@ import {
   generateLangStaticParams,
   initRequestI18n,
 } from "@/shared/i18n/studio.i18n.server"
+import { StudioOrgAppPathsProvider } from "@/shared/org/studio-org-app-paths"
 import { StudioShellNavigationProvider } from "@/shared/shell/studio-shell-navigation"
 import type { LangLayoutProps } from "@/shared/types/studio.app.types"
 
@@ -86,9 +87,11 @@ export default async function LangLayout({
                     <StudioPostHog />
                     <StudioSentry />
                     <AppearancePreferencesEffects />
-                    <StudioShellNavigationProvider>
-                      {children}
-                    </StudioShellNavigationProvider>
+                    <StudioOrgAppPathsProvider>
+                      <StudioShellNavigationProvider>
+                        {children}
+                      </StudioShellNavigationProvider>
+                    </StudioOrgAppPathsProvider>
                   </StudioQueryProvider>
                 </ToastProvider>
               </ThemeProvider>
