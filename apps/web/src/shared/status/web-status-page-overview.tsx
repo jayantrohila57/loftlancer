@@ -1,4 +1,3 @@
-import Shell from "@packages/ui/components/shell"
 import { groupResourcesByService } from "@/shared/status/web-betterstack.mapper"
 import type { WebStatusPageSnapshot } from "@/shared/status/web-betterstack.types"
 import { WEB_STATUS_MONITOR_GROUP_RULES } from "@/shared/status/web-betterstack-monitor-groups.config"
@@ -8,7 +7,6 @@ import { WebStatusUpdatedAt } from "@/shared/status/web-status-timezone.client"
 import { WebStatusToolbar } from "@/shared/status/web-status-toolbar.client"
 
 type StatusPageCopy = {
-  readonly title: string
   readonly overviewTab: string
   readonly historyTab: string
   readonly updatedPrefix: string
@@ -38,23 +36,17 @@ export function WebStatusPageOverview({
   const banner = copy.banner[snapshot.aggregateState]
 
   return (
-    <Shell.Section
-      className="mx-auto w-full max-w-3xl space-y-8 p-6"
-      variant="site"
-    >
+    <div className="flex w-full flex-col gap-8 self-stretch">
       <WebStatusToolbar
         historyLabel={copy.historyTab}
         overviewLabel={copy.overviewTab}
       />
 
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">{copy.title}</h1>
-        <WebStatusUpdatedAt
-          isoDate={snapshot.updatedAt}
-          prefix={copy.updatedPrefix}
-          emptyLabel={copy.updatedAtEmpty}
-        />
-      </div>
+      <WebStatusUpdatedAt
+        emptyLabel={copy.updatedAtEmpty}
+        isoDate={snapshot.updatedAt}
+        prefix={copy.updatedPrefix}
+      />
 
       <WebStatusBanner
         description={banner.description}
@@ -99,6 +91,6 @@ export function WebStatusPageOverview({
           />
         ))}
       </div>
-    </Shell.Section>
+    </div>
   )
 }
