@@ -5,7 +5,6 @@ import {
   resolveCheckoutOrganization,
 } from "@modules/billing/server"
 import { getAuth } from "@packages/better-auth"
-import { serverEnv } from "@packages/t3-env/server"
 import { z } from "zod"
 import { billingCorsPreflight, jsonWithCors } from "@/shared/api/auth.cors"
 import { isAllowedBillingReturnUrl } from "@/shared/auth/auth.destination"
@@ -57,9 +56,7 @@ export async function POST(request: Request) {
     }
     if (organization.code === "organization_required") {
       const lang = locale ?? "en-us"
-      const createUrl = new URL(
-        buildStudioLocalePath(lang, "/organizations/new")
-      )
+      const createUrl = new URL(buildStudioLocalePath(lang, "/onboarding"))
       createUrl.searchParams.set(
         "returnTo",
         returnTo && isAllowedBillingReturnUrl(returnTo) ? returnTo : successUrl

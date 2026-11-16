@@ -54,7 +54,7 @@ export function buildCreateOrganizationLocation(input: {
   readonly locale: string
   readonly returnTo: string
 }): string {
-  const url = new URL(`${studioAppBase()}/${input.locale}/organizations/new`)
+  const url = new URL(`${studioAppBase()}/${input.locale}/onboarding`)
   url.searchParams.set("returnTo", input.returnTo)
   return url.toString()
 }
