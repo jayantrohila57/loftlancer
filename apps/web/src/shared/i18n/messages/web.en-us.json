@@ -875,7 +875,10 @@
     "billingDetailsEmptyDescription": "Use the billing portal to add an address and tax information.",
     "billingDetailsUnavailableDescription": "Billing details could not be loaded. You can manage them in the billing portal.",
     "billingAddress": "Billing address",
-    "billingTaxIds": "Tax IDs"
+    "billingTaxIds": "Tax IDs",
+    "goToStudio": "Go to Studio",
+    "openStudio": "Open Studio",
+    "firstLoginStudioHint": "Create or open your organization in Studio. Billing and team settings live there."
   },
   "metadata": {
     "title": "Loftlancer",
