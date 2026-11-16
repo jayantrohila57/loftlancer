@@ -2,7 +2,7 @@
 
 import { TransientClientError, withClientRetry } from "@modules/auth"
 import { securityRpc } from "@modules/security/client"
-
+import { billingCheckoutReturnUrlsFromLocation } from "../../utils/billing.checkout-return-url"
 import type {
   BillingCancelData,
   BillingDowngradeData,
@@ -13,8 +13,9 @@ import { useBillingOverview } from "./billing.hook.overview"
 import { callBillingRpc } from "./billing.hook.rpc"
 
 async function postUpgrade(): Promise<BillingUpgradeData> {
+  const returnUrls = billingCheckoutReturnUrlsFromLocation(window.location.href)
   return callBillingRpc<BillingUpgradeData>(() =>
-    securityRpc.security.billing.beginUpgrade()
+    securityRpc.security.billing.beginUpgrade(returnUrls)
   )
 }
 
@@ -32,8 +33,9 @@ async function postPortal() {
 }
 
 async function postDowngrade(): Promise<BillingDowngradeData> {
+  const returnUrls = billingCheckoutReturnUrlsFromLocation(window.location.href)
   return callBillingRpc<BillingDowngradeData>(() =>
-    securityRpc.security.billing.beginDowngrade()
+    securityRpc.security.billing.beginDowngrade(returnUrls)
   )
 }
 

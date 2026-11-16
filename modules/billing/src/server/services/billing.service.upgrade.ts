@@ -15,6 +15,8 @@ import { recordBillingPlanChangedIfNeeded } from "./billing.service.activity"
 export async function billingBeginUpgradeService(input: {
   organizationId: string
   actorUserId?: string
+  successUrl?: string
+  cancelUrl?: string
 }) {
   if (!isAutumnConfigured()) {
     throw new ORPCError("SERVICE_UNAVAILABLE", {
@@ -48,6 +50,10 @@ export async function billingBeginUpgradeService(input: {
   const attach = await client.billing.attach({
     customerId,
     planId: resolveAutumnPlanIdPaid(),
+    ...(input.successUrl ? { successUrl: input.successUrl } : {}),
+    ...(input.cancelUrl
+      ? { checkoutSessionParams: { cancel_url: input.cancelUrl } }
+      : {}),
   })
 
   if (!attach.paymentUrl) {

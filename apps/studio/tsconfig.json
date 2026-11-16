@@ -5,6 +5,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/shared/*": ["./src/shared/*"],
+      "@features/form": ["../../features/form/src/index.ts"],
+      "@features/form/*": ["../../features/form/src/*"],
       "@features/font": ["../../features/font/src/index.ts"],
       "@features/font/*": ["../../features/font/src/*"],
       "@features/i18n": ["../../features/i18n/src/index.ts"],
@@ -42,6 +44,8 @@
       "@modules/connected-accounts/server": [
         "../../modules/connected-accounts/src/server/index.ts"
       ],
+      "@modules/activity": ["../../modules/activity/src/index.ts"],
+      "@modules/activity/*": ["../../modules/activity/src/*"],
       "@modules/activity/server": [
         "../../modules/activity/src/server/index.ts"
       ],

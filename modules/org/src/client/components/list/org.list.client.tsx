@@ -2,40 +2,38 @@
 
 import { authClient } from "@packages/better-auth/client"
 import { useQueryClient } from "@packages/react-query"
-import { clientEnv } from "@packages/t3-env/client"
 import { Button } from "@packages/ui/components/button"
 import { Skeleton } from "@packages/ui/components/skeleton"
 import { toastManager } from "@packages/ui/components/toast"
 import { Building2, Check, Plus, Settings2 } from "lucide-react"
-import { useLocale, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { readActiveOrganizationId } from "../../../utils/org.session"
 import type { OrgListedOrganization } from "../../hooks/org.hook.list-organizations"
 import { useOrgListOrganizations } from "../../hooks/org.hook.list-organizations"
 import { switchActiveOrganization } from "../../utils/org.switch-active.client"
 import { useOrgCreateSheet } from "../create/org.create-sheet.client"
+import { useOrgAppPaths } from "../org.app-paths.client"
 
 export function OrgList() {
   const t = useTranslations("ui")
   const openCreate = useOrgCreateSheet()
-  const locale = useLocale()
+  const paths = useOrgAppPaths()
   const queryClient = useQueryClient()
   const [switching, setSwitching] = useState<string | null>(null)
   const { data: session, isPending: sessionPending } = authClient.useSession()
   const { data: organizations, isPending, error } = useOrgListOrganizations()
   const activeId = readActiveOrganizationId(session)
-  const base = clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")
-  const settingsUrl = `${base}/${locale}/account/organization`
 
-  async function selectOrganization(id: string) {
-    setSwitching(id)
+  async function selectOrganization(org: OrgListedOrganization) {
+    setSwitching(org.id)
     try {
       await switchActiveOrganization({
-        organizationId: id,
+        organizationId: org.id,
         queryClient,
         switchErrorMessage: t("couldNotSwitchOrganization"),
       })
-      window.location.assign(settingsUrl)
+      window.location.assign(paths.organizationSettingsUrl({ slug: org.slug }))
     } catch (error) {
       toastManager.add({
         title:
@@ -91,7 +89,7 @@ export function OrgList() {
                 disabled={switching !== null}
                 loading={switching === org.id}
                 onClick={() => {
-                  selectOrganization(org.id).catch(() => setSwitching(null))
+                  selectOrganization(org).catch(() => setSwitching(null))
                 }}
               >
                 <Settings2 aria-hidden="true" />

@@ -43,6 +43,11 @@ export const billingDowngradeOutputSchema = serviceResponseSchema(
   })
 )
 
+export const billingCheckoutReturnInputSchema = z.object({
+  cancelUrl: z.url().optional(),
+  successUrl: z.url().optional(),
+})
+
 export const billingListInvoicesInputSchema = z.object({
   cursor: z.string().nullable().optional(),
 })
