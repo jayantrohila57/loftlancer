@@ -11,8 +11,12 @@ import {
 } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 import { autumnClient } from "./autumn-js.client"
-
 import { betterAuthAdminRoles } from "./better-auth.admin-roles"
+import type { BetterAuthOrganizationPluginOptions } from "./better-auth.configure"
+import {
+  orgOrganizationAccessControl,
+  orgOrganizationPluginRoles,
+} from "./better-auth.org-access-control"
 
 const authAppBase = clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")
 
@@ -27,7 +31,10 @@ export const authClient = createAuthClient({
     adminClient({ roles: betterAuthAdminRoles }),
     magicLinkClient(),
     deviceAuthorizationClient(),
-    organizationClient(),
+    organizationClient({
+      ac: orgOrganizationAccessControl as BetterAuthOrganizationPluginOptions["ac"],
+      roles: orgOrganizationPluginRoles,
+    }),
     autumnClient(),
   ],
 })

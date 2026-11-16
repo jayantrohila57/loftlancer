@@ -10,7 +10,9 @@
     ".": "./src/index.ts",
     "./account-screens": "./src/account-screens.ts",
     "./server": "./src/server/index.ts",
+    "./server/shared/org.auth-request-context": "./src/server/shared/org.auth-request-context.ts",
     "./server/shared/org.membership-context": "./src/server/shared/org.membership-context.ts",
+    "./shared/org.organization-access-control": "./src/shared/org.organization-access-control.ts",
     "./utils/constants/org.constants.entitlements": "./src/utils/constants/org.constants.entitlements.ts",
     "./utils/org.session": "./src/utils/org.session.ts",
     "./utils/validation/org.timezone": "./src/utils/validation/org.timezone.ts"

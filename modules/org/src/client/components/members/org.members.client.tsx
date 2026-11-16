@@ -17,10 +17,12 @@ import { Users } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { z } from "zod"
-import { ORG_OWNER_MEMBER_ROLE } from "../../../utils/constants/org.constants.entitlements"
 import { formatOrgClientError } from "../../../utils/org.client-error"
 import type { OrgProductMemberRole } from "../../../utils/org.member-role"
 import {
+  canManageElevatedOrganizationMembers,
+  canManageOrganizationMembers,
+  isOrganizationAdminRole,
   isOrganizationOwnerRole,
   ORG_ASSIGNABLE_PRODUCT_MEMBER_ROLES,
   toProductMemberRole,
@@ -68,25 +70,30 @@ type UiTranslate = ReturnType<typeof useTranslations<"ui">>
 
 function roleLabel(role: OrgProductMemberRole, t: UiTranslate): string {
   if (role === "owner") return t("organizationRoleOwner")
+  if (role === "admin") return t("organizationRoleAdmin")
   if (role === "manager") return t("organizationRoleManager")
   return t("organizationRoleMember")
 }
 
 const memberRoleFieldSchema = z.object({
-  role: z.enum(["member", "manager"]),
+  role: z.enum(["member", "manager", "admin"]),
 })
 
 function OrgMemberRoleSelect({
   value,
   disabled,
+  allowAdmin,
   onPick,
 }: {
   readonly value: Exclude<OrgProductMemberRole, "owner">
   readonly disabled: boolean
+  readonly allowAdmin: boolean
   readonly onPick: (role: Exclude<OrgProductMemberRole, "owner">) => void
 }) {
   const t = useTranslations("ui")
-  const roleOptions = ORG_ASSIGNABLE_PRODUCT_MEMBER_ROLES.map((role) => ({
+  const roleOptions = ORG_ASSIGNABLE_PRODUCT_MEMBER_ROLES.filter(
+    (role) => allowAdmin || role !== "admin"
+  ).map((role) => ({
     value: role,
     label: roleLabel(role, t),
   }))
@@ -97,7 +104,13 @@ function OrgMemberRoleSelect({
       values={{ role: value }}
       onValuesChange={(next) => {
         if (disabled) return
-        if (next.role !== "member" && next.role !== "manager") return
+        if (
+          next.role !== "member" &&
+          next.role !== "manager" &&
+          next.role !== "admin"
+        ) {
+          return
+        }
         if (next.role === value) return
         onPick(next.role)
       }}
@@ -113,9 +126,22 @@ function OrgMemberRoleSelect({
   )
 }
 
-function OrgMembersInviteForm({ onSent }: { readonly onSent: () => void }) {
+function OrgMembersInviteForm({
+  onSent,
+  allowAdmin,
+}: {
+  readonly onSent: () => void
+  readonly allowAdmin: boolean
+}) {
   const t = useTranslations("ui")
   const schema = useMemo(() => createOrganizationInviteFormSchema(t), [t])
+  const inviteRoleOptions = [
+    { value: "member", label: t("organizationRoleMember") },
+    { value: "manager", label: t("organizationRoleManager") },
+    ...(allowAdmin
+      ? [{ value: "admin", label: t("organizationRoleAdmin") }]
+      : []),
+  ]
 
   return (
     <FormKit
@@ -166,10 +192,7 @@ function OrgMembersInviteForm({ onSent }: { readonly onSent: () => void }) {
             name="role"
             type="select"
             label={t("organizationInviteRole")}
-            options={[
-              { value: "member", label: t("organizationRoleMember") },
-              { value: "manager", label: t("organizationRoleManager") },
-            ]}
+            options={inviteRoleOptions}
           />
           <FormKit.Submit />
         </div>
@@ -181,6 +204,7 @@ function OrgMembersInviteForm({ onSent }: { readonly onSent: () => void }) {
 function OrgMemberRow({
   member,
   canManage,
+  canManageElevated,
   currentUserId,
   busyMemberId,
   onRoleChange,
@@ -188,6 +212,7 @@ function OrgMemberRow({
 }: {
   readonly member: OrganizationMember
   readonly canManage: boolean
+  readonly canManageElevated: boolean
   readonly currentUserId: string | undefined
   readonly busyMemberId: string | null
   readonly onRoleChange: (
@@ -199,9 +224,15 @@ function OrgMemberRow({
   const t = useTranslations("ui")
   const productRole = toProductMemberRole(member.role)
   const isOwner = isOrganizationOwnerRole(member.role)
+  const isElevated = isOwner || isOrganizationAdminRole(member.role)
+  const canEditMember = canManage && (!isElevated || canManageElevated)
   const isSelf = member.userId === currentUserId
   const editableRole: Exclude<OrgProductMemberRole, "owner"> =
-    productRole === "manager" ? "manager" : "member"
+    productRole === "admin"
+      ? "admin"
+      : productRole === "manager"
+        ? "manager"
+        : "member"
 
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-border py-3 last:border-b-0">
@@ -218,8 +249,9 @@ function OrgMemberRow({
           </p>
         ) : null}
       </div>
-      {canManage && !isOwner ? (
+      {canEditMember && !isOwner ? (
         <OrgMemberRoleSelect
+          allowAdmin={canManageElevated}
           value={editableRole}
           disabled={busyMemberId !== null}
           onPick={(role) => onRoleChange(member.id, role)}
@@ -229,7 +261,7 @@ function OrgMemberRow({
           {roleLabel(productRole, t)}
         </span>
       )}
-      {canManage && !isOwner ? (
+      {canEditMember && !isOwner ? (
         <Button
           variant="outline"
           size="sm"
@@ -259,7 +291,12 @@ export function OrgMembers() {
   const [busyMemberId, setBusyMemberId] = useState<string | null>(null)
   const [busyInvitationId, setBusyInvitationId] = useState<string | null>(null)
 
-  const canManage = !rolePending && activeRole === ORG_OWNER_MEMBER_ROLE
+  const canManage =
+    !rolePending &&
+    Boolean(activeRole && canManageOrganizationMembers(activeRole))
+  const canManageElevated =
+    !rolePending &&
+    Boolean(activeRole && canManageElevatedOrganizationMembers(activeRole))
 
   const members = (organization?.members ?? []) as OrganizationMember[]
   const invitations = (
@@ -397,7 +434,9 @@ export function OrgMembers() {
           {t("organizationMembersReadOnlyNotice")}
         </p>
       ) : null}
-      {canManage ? <OrgMembersInviteForm onSent={reload} /> : null}
+      {canManage ? (
+        <OrgMembersInviteForm allowAdmin={canManageElevated} onSent={reload} />
+      ) : null}
       <div>
         <p className="mb-2 text-sm font-medium">
           {t("organizationMembersListTitle")}
@@ -412,6 +451,7 @@ export function OrgMembers() {
               key={member.id}
               member={member}
               canManage={canManage}
+              canManageElevated={canManageElevated}
               currentUserId={session?.user.id}
               busyMemberId={busyMemberId}
               onRoleChange={updateRole}

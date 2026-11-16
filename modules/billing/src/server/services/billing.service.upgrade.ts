@@ -1,4 +1,5 @@
 import {
+  bindOrganizationAutumnCustomer,
   getAutumnClient,
   isAutumnConfigured,
   resolveAutumnPlanIdPaid,
@@ -32,13 +33,24 @@ export async function billingBeginUpgradeService(input: {
     })
   }
 
+  const bound = await bindOrganizationAutumnCustomer({
+    organizationId: input.organizationId,
+  })
+  if (!bound.bound) {
+    throw new ORPCError("SERVICE_UNAVAILABLE", {
+      message: "Billing customer is not ready for checkout.",
+      data: { code: "billing.customer_unbound" },
+    })
+  }
+
   const [row] = await db
     .select({ autumnCustomerId: orgEntitlement.autumnCustomerId })
     .from(orgEntitlement)
     .where(eq(orgEntitlement.organizationId, input.organizationId))
     .limit(1)
 
-  const customerId = row?.autumnCustomerId ?? input.organizationId
+  const customerId =
+    row?.autumnCustomerId ?? bound.customerId ?? input.organizationId
   const client = getAutumnClient()
   if (!client) {
     throw new ORPCError("SERVICE_UNAVAILABLE", {
