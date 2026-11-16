@@ -1002,7 +1002,10 @@
     "billingAdminEmpty": "No se encontraron organizaciones.",
     "billingAdminOrganization": "Organización",
     "consoleUsersNav": "Usuarios",
-    "billingUsageFraction": "{used} / {included}"
+    "billingUsageFraction": "{used} / {included}",
+    "openStudio": "Abrir Studio",
+    "goToStudio": "Ir a Studio",
+    "firstLoginStudioHint": "Crea o abre tu organización en Studio. Allí están la facturación y los ajustes del equipo."
   },
   "command": {
     "placeholder": "Buscar páginas y acciones…",
