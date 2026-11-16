@@ -10,11 +10,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@features/action": "workspace:*",
     "@features/font": "workspace:*",
     "@features/i18n": "workspace:*",
+    "@features/navigation": "workspace:*",
     "@features/shell": "workspace:*",
+    "@modules/auth": "workspace:*",
     "@modules/shell": "workspace:*",
     "@packages/better-auth": "workspace:*",
+    "@packages/brand": "workspace:*",
     "@packages/react-query": "workspace:*",
     "@features/theme": "workspace:*",
     "@next/third-parties": "16.4.6",

@@ -4,7 +4,7 @@ Theme follows [Coss neutral colors](https://coss.com/ui/docs/styling). **Mira** 
 
 ## Fonts
 
-Coss expects `--font-sans`, `--font-mono`, `--font-heading` (aliased to sans). Wired by `@features/font` on `<html>` (`Outfit`, `Geist Mono`) — not Coss Inter/Geist defaults.
+Coss expects `--font-sans`, `--font-mono`, `--font-heading` (aliased to sans). Wired by `@features/font` on `<html>` (`Instrument Sans`, `Geist Mono`) — not Coss Inter/Geist defaults.
 
 ## Add a component
 
