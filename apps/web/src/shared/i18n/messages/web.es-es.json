@@ -1211,5 +1211,42 @@
         ]
       }
     }
+  },
+  "statusPage": {
+    "metaTitle": "Estado del servicio",
+    "metaDescription": "Disponibilidad actual de Loftlancer, historial de tiempo activo e incidencias.",
+    "historyMetaTitle": "Historial de estado",
+    "historyMetaDescription": "Incidencias y mantenimientos anteriores de Loftlancer.",
+    "title": "Estado del servicio",
+    "historyTitle": "Historial de estado",
+    "overviewTab": "Resumen",
+    "historyTab": "Historial",
+    "updatedPrefix": "Actualizado",
+    "updatedAtEmpty": "Actualizado: —",
+    "daysLabel": "90 días",
+    "noIncidentsTitle": "No hay incidencias activas",
+    "noIncidentsBody": "No conocemos incidencias publicadas que afecten a nuestros servicios.",
+    "incidentsTitle": "Incidencias",
+    "incidentStatusAt": "{status} · {time}",
+    "updatedUnavailable": "—",
+    "historyEmptyTitle": "Sin historial de incidencias",
+    "historyEmptyBody": "Los informes resueltos y de mantenimiento aparecerán aquí cuando Better Stack reciba un token de API válido.",
+    "historyIncidentRange": "{status} · {start} – {end}",
+    "historyOngoing": "en curso",
+    "bannerOperationalTitle": "Todos los sistemas operativos",
+    "bannerOperationalDescription": "Los servicios de Loftlancer funcionan con normalidad.",
+    "bannerDegradedTitle": "Rendimiento degradado",
+    "bannerDegradedDescription": "Algunos servicios pueden ir más lentos de lo habitual. Estamos investigando.",
+    "bannerOutageTitle": "Interrupción del servicio",
+    "bannerOutageDescription": "Uno o más servicios de Loftlancer no están disponibles.",
+    "bannerUnknownTitle": "Estado no disponible",
+    "bannerUnknownDescription": "No pudimos cargar datos de monitorización en vivo. Vuelve a intentarlo pronto.",
+    "groups": {
+      "website": "Sitio web",
+      "auth": "Auth",
+      "studio": "Studio",
+      "console": "Consola",
+      "api": "API"
+    }
   }
 }

@@ -11,6 +11,8 @@ Readiness probe for Postgres. Shared by **auth** and **web**; logic lives in the
 | Auth | `GET http://localhost:3002/auth/api/health/db` | Includes `basePath` `/auth` |
 | Web  | `GET http://localhost:3001/api/health/db`      | No `basePath`               |
 
+Liveness JSON (optional DB check when `DATABASE_URL` is set): `GET /api/health` on each app — see [../betterstack.md](../betterstack.md).
+
 ### Responses
 
 | Status | Body (example)                                               | Meaning                              |

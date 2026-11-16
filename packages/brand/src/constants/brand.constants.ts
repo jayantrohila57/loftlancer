@@ -138,11 +138,10 @@ export const brandLinks = {
   github: "https://github.com/jayantrohila57/loftlancer",
   issues: "https://github.com/jayantrohila57/loftlancer/issues",
   /**
-   * Public Better Stack status page (team t617013, page id 267755),
-   * confirmed live at loftlancer.betteruptime.com on 16 Nov 2026.
-   * JSON: https://loftlancer.betteruptime.com/index.json
+   * First-party status page on the marketing site. Better Stack fallback JSON:
+   * https://loftlancer.betteruptime.com/index.json (page id 267755).
    */
-  status: "https://loftlancer.betteruptime.com",
+  status: "https://loftlancer.com/status",
   domains: {
     apex: "loftlancer.com",
     www: "www.loftlancer.com",
