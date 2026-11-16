@@ -14,6 +14,7 @@ const checkoutBodySchema = z.object({
   planId: z.string().min(1).max(128),
   successUrl: z.url(),
   cancelUrl: z.url(),
+  returnTo: z.url().optional(),
   locale: z.string().min(2).max(12).optional(),
 })
 
@@ -39,10 +40,11 @@ export async function POST(request: Request) {
     return jsonWithCors(request, { error: "invalid_body" }, 400)
   }
 
-  const { planId, successUrl, cancelUrl, locale } = parsed.data
+  const { planId, successUrl, cancelUrl, returnTo, locale } = parsed.data
   if (
     !isAllowedBillingReturnUrl(successUrl) ||
-    !isAllowedBillingReturnUrl(cancelUrl)
+    !isAllowedBillingReturnUrl(cancelUrl) ||
+    (returnTo && !isAllowedBillingReturnUrl(returnTo))
   ) {
     return jsonWithCors(request, { error: "invalid_return_url" }, 400)
   }
@@ -56,7 +58,10 @@ export async function POST(request: Request) {
       const lang = locale ?? "en-us"
       const authBase = serverEnv.BETTER_AUTH_URL.replace(/\/$/, "")
       const createUrl = new URL(`${authBase}/${lang}/organizations/create`)
-      createUrl.searchParams.set("returnTo", successUrl)
+      createUrl.searchParams.set(
+        "returnTo",
+        returnTo && isAllowedBillingReturnUrl(returnTo) ? returnTo : successUrl
+      )
       return jsonWithCors(
         request,
         {

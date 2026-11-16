@@ -47,6 +47,7 @@ export function WebPricingCheckoutButton({
         planId: plan.planId,
         successUrl,
         cancelUrl,
+        returnTo: pricingReturnTo(locale, plan.planId),
         locale,
       })
       if (result.status === 401) {
@@ -152,6 +153,7 @@ export function WebPricingCheckoutResume({
       planId: plan.planId,
       successUrl,
       cancelUrl,
+      returnTo: pricingReturnTo(locale, plan.planId),
       locale,
     })
       .then((result) => {

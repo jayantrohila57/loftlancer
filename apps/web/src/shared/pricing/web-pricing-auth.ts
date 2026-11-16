@@ -48,6 +48,7 @@ export async function postPricingCheckout(input: {
   readonly planId: string
   readonly successUrl: string
   readonly cancelUrl: string
+  readonly returnTo?: string
   readonly locale: string
 }): Promise<{ status: number; body: WebPricingCheckoutResponse }> {
   const response = await fetch(buildBillingApiUrl("/api/billing/checkout"), {

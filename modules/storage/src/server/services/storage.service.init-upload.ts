@@ -1,4 +1,10 @@
 import { repairOrganizationProvisioningRows } from "@modules/org/server"
+import {
+  BillingAccessError,
+  BillingRateLimitError,
+  enforceBillingRateLimit,
+  requireFeature,
+} from "@packages/billing"
 import { orgStorageItem } from "@packages/drizzle/schema"
 import { logger } from "@packages/logger/server"
 import { createFailed, createSuccess } from "@packages/orpc"
@@ -16,11 +22,6 @@ import {
   findOrgFolder,
   resolveOrgRootFolderId,
 } from "../repositories/storage.repository.items"
-import {
-  loadOrgQuotaBytes,
-  loadOrgQuotaUsedBytes,
-  wouldExceedOrgQuota,
-} from "../repositories/storage.repository.quota"
 import { buildStorageAccessScope } from "../shared/storage.access-scope"
 import {
   beginStorageActivity,
@@ -99,32 +100,44 @@ export async function initStorageUploadService(input: {
     })
   }
 
-  const [usedBytes, quotaBytes] = await Promise.all([
-    loadOrgQuotaUsedBytes(input.organizationId),
-    loadOrgQuotaBytes(input.organizationId),
-  ])
-  if (
-    wouldExceedOrgQuota({
-      usedBytes,
-      quotaBytes,
-      additionalBytes: input.byteSize,
+  try {
+    const access = await requireFeature({
+      organizationId: input.organizationId,
+      featureId: "org_storage_bytes",
+      required: input.byteSize,
     })
-  ) {
-    const activity = beginStorageActivity({
-      actionId: "storage.quota_denied",
-      actorUserId: input.userId,
+    await enforceBillingRateLimit({
+      organizationId: input.organizationId,
+      planTier: access.planTier,
     })
-    await recordStorageActivity(activity, {
-      outcome: "denied",
-      metadata: {
-        organizationId: input.organizationId,
-        byteSize: input.byteSize,
-      },
-    })
-    throw new ORPCError("FORBIDDEN", {
-      message: "Organization storage is full.",
-      data: { code: "quota.storage_exceeded" },
-    })
+  } catch (error) {
+    if (error instanceof BillingRateLimitError) {
+      throw new ORPCError("TOO_MANY_REQUESTS", {
+        message: "Too many requests for this plan.",
+        data: { code: "billing.rate_limited" },
+      })
+    }
+    if (error instanceof BillingAccessError) {
+      const activity = beginStorageActivity({
+        actionId: "storage.quota_denied",
+        actorUserId: input.userId,
+      })
+      await recordStorageActivity(activity, {
+        outcome: "denied",
+        metadata: {
+          organizationId: input.organizationId,
+          byteSize: input.byteSize,
+        },
+      })
+      throw new ORPCError("FORBIDDEN", {
+        message:
+          error.code === "write_blocked"
+            ? "This organization is over its plan limit and is read-only."
+            : "Organization storage is full.",
+        data: { code: "quota.storage_exceeded" },
+      })
+    }
+    throw error
   }
 
   const itemId = crypto.randomUUID()

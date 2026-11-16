@@ -20,6 +20,9 @@ export {
 } from "./client/utils/org.switch-cache"
 export { ORG_OWNER_MEMBER_ROLE } from "./utils/constants/org.constants.entitlements"
 export { formatOrgClientError } from "./utils/org.client-error"
-export { isOrganizationOwnerRole } from "./utils/org.member-role"
+export {
+  canManageOrganizationBilling,
+  isOrganizationOwnerRole,
+} from "./utils/org.member-role"
 export { readActiveOrganizationId } from "./utils/org.session"
 export { organizationSlugFromName } from "./utils/org.slug"

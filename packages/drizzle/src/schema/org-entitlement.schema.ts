@@ -40,6 +40,8 @@ export const orgEntitlement = pgTable(
     entitlementsDegraded: boolean("entitlements_degraded")
       .notNull()
       .default(false),
+    paymentGraceUntil: timestamp("payment_grace_until"),
+    cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
     subscriptionRevision: integer("subscription_revision").notNull().default(0),
     orgProvisioningStep: text("org_provisioning_step", {
       enum: [

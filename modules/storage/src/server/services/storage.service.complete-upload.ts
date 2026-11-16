@@ -1,3 +1,4 @@
+import { trackBillingUsage } from "@packages/billing"
 import { del, put } from "@packages/blob"
 import { orgStorageItem } from "@packages/drizzle/schema"
 import { logger } from "@packages/logger/server"
@@ -159,6 +160,12 @@ export async function completeStorageUploadService(input: {
         displayName: row.displayName,
         byteSize: row.byteSize,
       },
+    })
+    await trackBillingUsage({
+      organizationId: input.organizationId,
+      featureId: "org_storage_bytes",
+      value: row.byteSize,
+      idempotencyKey: `storage-upload:${input.itemId}`,
     })
     return createSuccess(
       { itemId: input.itemId, displayName: row.displayName },

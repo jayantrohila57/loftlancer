@@ -114,6 +114,9 @@ function BillingInvoicesTableBody(props: {
             const hostedInvoiceUrl = normalizeHostedInvoiceUrl(
               invoice.hostedInvoiceUrl
             )
+            const invoicePdfUrl = normalizeHostedInvoiceUrl(
+              invoice.invoicePdfUrl ?? invoice.hostedInvoiceUrl
+            )
             return (
               <TableRow key={invoice.id}>
                 <TableCell className="tabular-nums">
@@ -127,18 +130,29 @@ function BillingInvoicesTableBody(props: {
                   })}
                 </TableCell>
                 <TableCell>
-                  {hostedInvoiceUrl ? (
-                    <a
-                      className="text-sm text-primary underline-offset-4 hover:underline"
-                      href={hostedInvoiceUrl}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {t("billingInvoiceView")}
-                    </a>
-                  ) : (
-                    "—"
-                  )}
+                  <span className="flex flex-wrap justify-end gap-2">
+                    {hostedInvoiceUrl ? (
+                      <a
+                        className="text-sm text-primary underline-offset-4 hover:underline"
+                        href={hostedInvoiceUrl}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {t("billingInvoiceView")}
+                      </a>
+                    ) : null}
+                    {invoicePdfUrl ? (
+                      <a
+                        className="text-sm text-primary underline-offset-4 hover:underline"
+                        href={invoicePdfUrl}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {t("billingInvoicePdf")}
+                      </a>
+                    ) : null}
+                    {!hostedInvoiceUrl && !invoicePdfUrl ? "—" : null}
+                  </span>
                 </TableCell>
               </TableRow>
             )

@@ -116,15 +116,29 @@ export function useOrgCreateProvisionResume() {
   }
 }
 
+function isSafeHttpUrl(value: string) {
+  try {
+    const url = new URL(value)
+    return url.protocol === "http:" || url.protocol === "https:"
+  } catch {
+    return false
+  }
+}
+
 export function OrgCreateProvisionResume(props: {
   readonly organizationId: string | null
   readonly organizationName?: string | null
   readonly onFinished?: () => void
+  readonly returnTo?: string
 }) {
   const t = useTranslations("ui")
   const locale = useLocale()
   const [pending, setPending] = useState(false)
   const accountOrgUrl = `${clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")}/${locale}/account/organization`
+  const finishedUrl =
+    props.returnTo && isSafeHttpUrl(props.returnTo)
+      ? props.returnTo
+      : accountOrgUrl
 
   async function onResume() {
     if (!props.organizationId || pending) return
@@ -144,7 +158,7 @@ export function OrgCreateProvisionResume(props: {
               : t("organizationProvisionResumeError"),
         }
       )
-      window.location.assign(accountOrgUrl)
+      window.location.assign(finishedUrl)
     } catch {
       // Toast reports failure.
     } finally {
@@ -174,7 +188,7 @@ export function OrgCreateProvisionResume(props: {
           variant="outline"
           disabled={pending}
           onClick={() => {
-            window.location.assign(accountOrgUrl)
+            window.location.assign(finishedUrl)
           }}
         >
           {t("organizationSettings")}
@@ -186,8 +200,10 @@ export function OrgCreateProvisionResume(props: {
 
 export function OrgCreateScreenProvisionerGate({
   children,
+  returnTo,
 }: {
   readonly children: React.ReactNode
+  readonly returnTo?: string
 }) {
   const t = useTranslations("ui")
   const { data: session } = authClient.useSession()
@@ -208,6 +224,7 @@ export function OrgCreateScreenProvisionerGate({
   if (resume.showResume && resume.organizationId) {
     return (
       <OrgCreateProvisionResume
+        returnTo={returnTo}
         organizationId={resume.organizationId}
         organizationName={organizationName}
         onFinished={resume.reloadOverview}

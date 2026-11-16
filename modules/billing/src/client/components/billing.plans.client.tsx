@@ -1,7 +1,8 @@
 "use client"
 
 import { useOrgSessionActiveId } from "@modules/org"
-import { formatStorageBytes, useStorageApi } from "@modules/storage"
+import { useStorageApi } from "@modules/storage/client/hooks/storage.api"
+import { formatStorageBytes } from "@modules/storage/utils/storage.format-bytes"
 import { Badge } from "@packages/ui/components/badge"
 import { Button } from "@packages/ui/components/button"
 import { Skeleton } from "@packages/ui/components/skeleton"
@@ -62,6 +63,21 @@ export function BillingPlansScreen() {
         window.location.assign(result.paymentUrl)
         return
       }
+      await invalidateSubscriptionQueries()
+    } catch (error) {
+      setActionError(
+        error instanceof Error ? error.message : t("operationFailed")
+      )
+    } finally {
+      setPending(false)
+    }
+  }
+
+  async function onCancel() {
+    setActionError(null)
+    setPending(true)
+    try {
+      await useBillingApi.postCancel()
       await invalidateSubscriptionQueries()
     } catch (error) {
       setActionError(
@@ -153,6 +169,23 @@ export function BillingPlansScreen() {
                       {t("billingDowngradeToFree")}
                     </Button>
                   )
+                ) : null}
+                {plan.isCurrent &&
+                plan.tier === "paid" &&
+                autumnReady &&
+                !overview.data?.cancelAtPeriodEnd ? (
+                  <Button
+                    disabled={pending}
+                    variant="outline"
+                    onClick={() => void onCancel()}
+                  >
+                    {t("billingCancelAtPeriodEnd")}
+                  </Button>
+                ) : null}
+                {plan.isCurrent && overview.data?.cancelAtPeriodEnd ? (
+                  <p className="text-sm text-muted-foreground" role="status">
+                    {t("billingCancelScheduled")}
+                  </p>
                 ) : null}
               </li>
             )
