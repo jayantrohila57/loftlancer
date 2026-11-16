@@ -1,4 +1,3 @@
-export { callingCodeForRegion } from "./constants/form.constants"
 export type { AppearancePreviewId } from "./capability/fields/appearance/appearance-preview-svgs.generated"
 export {
   AppearancePreviewImage,
@@ -35,8 +34,9 @@ export { FieldTextarea } from "./capability/fields/textarea/form.field.textarea"
 export { FieldToggle } from "./capability/fields/toggle/form.field.toggle"
 export { FieldToggleGroup } from "./capability/fields/toggle/form.field.toggle-group"
 export { FieldKit } from "./capability/form.field-kit"
-export { FormKit } from "./capability/form.form-kit"
 export { useFormKitFormId } from "./capability/form.form-id.context"
+export { FormKit } from "./capability/form.form-kit"
+export { callingCodeForRegion } from "./constants/form.constants"
 export type {
   AppearancePreviewSrc,
   AutocompleteFieldProps,

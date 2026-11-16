@@ -1,5 +1,9 @@
 import { readActiveOrganizationId } from "@modules/org"
 import { listStudioOrganizationsForSession } from "@/shared/auth/studio.session"
+import {
+  loadStudioOnboardingView,
+  studioOnboardingResumePath,
+} from "@/shared/onboarding/studio-onboarding.state.server"
 import { redirectStudio } from "@/shared/org/studio-org.redirect"
 import {
   pickStudioLandingSlug,
@@ -18,6 +22,10 @@ export default async function StudioHomePage({ params }: LangPageProps) {
   })
   if (!slug) {
     redirectStudio(lang, "/onboarding")
+  }
+  const view = await loadStudioOnboardingView(session.user.id, organizations)
+  if (!view.finished) {
+    redirectStudio(lang, studioOnboardingResumePath(view))
   }
   redirectStudio(lang, `/${slug}`)
 }

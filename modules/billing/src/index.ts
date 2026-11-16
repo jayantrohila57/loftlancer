@@ -12,3 +12,4 @@ export { BillingSubscriptionOverviewPage } from "./client/components/billing.sub
 export { BillingUsageEntitlementsPage } from "./client/components/billing.usage-entitlements"
 export { BillingUsageEntitlementsScreen } from "./client/components/billing.usage-entitlements.client"
 export { useBillingApi } from "./client/hooks/billing.api"
+export { useBillingPlans } from "./client/hooks/billing.hook.plans"

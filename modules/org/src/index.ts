@@ -1,4 +1,7 @@
-export { OrgOrganizationInvitationsScreen } from "./client/components/invitations/org.organization-invitations-screen.client"
+export {
+  OrgOrganizationInvitationsScreen,
+  STUDIO_ONBOARDING_INVITE_FORM_ID,
+} from "./client/components/invitations/org.organization-invitations-screen.client"
 export { OrgMembersScreen } from "./client/components/members/org.members-screen.client"
 export { OrgActiveSummary } from "./client/components/org.active-summary.client"
 export { OrgSessionEffects } from "./client/components/org.session-effects.client"

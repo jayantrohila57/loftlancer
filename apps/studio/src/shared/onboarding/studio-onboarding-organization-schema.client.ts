@@ -1,3 +1,4 @@
+import { isValidIanaTimeZone } from "@modules/org/utils/validation/org.timezone"
 import type { useTranslations } from "next-intl"
 import { z } from "zod"
 import {
@@ -7,15 +8,6 @@ import {
 import { isReservedStudioOrgSlug } from "@/shared/org/studio-org.paths"
 
 type UiT = ReturnType<typeof useTranslations<"ui">>
-
-function isValidIanaTimeZone(zone: string): boolean {
-  try {
-    new Intl.DateTimeFormat("en", { timeZone: zone })
-    return true
-  } catch {
-    return false
-  }
-}
 
 function timezoneSchema(t: UiT) {
   return z
@@ -38,9 +30,15 @@ export function studioOnboardingOrganizationSchema(t: UiT) {
       .trim()
       .toLowerCase()
       .min(1, t("organizationSlugRequired"))
-      .max(STUDIO_ORG_SLUG_MAX_LENGTH, t("organizationSlugTooLong", { max: STUDIO_ORG_SLUG_MAX_LENGTH }))
+      .max(
+        STUDIO_ORG_SLUG_MAX_LENGTH,
+        t("organizationSlugTooLong", { max: STUDIO_ORG_SLUG_MAX_LENGTH })
+      )
       .regex(STUDIO_ORG_SLUG_PATTERN, t("organizationSlugInvalid"))
-      .refine((value) => !isReservedStudioOrgSlug(value), t("organizationSlugInvalid")),
+      .refine(
+        (value) => !isReservedStudioOrgSlug(value),
+        t("organizationSlugInvalid")
+      ),
     type: z.enum(["freelancer", "studio", "agency", "company"]),
     contact: z.object({
       primaryEmail: z
