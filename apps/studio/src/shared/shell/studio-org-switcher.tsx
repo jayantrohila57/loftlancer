@@ -26,11 +26,20 @@ import { toastManager } from "@packages/ui/components/toast"
 import { Building2, Check, ChevronsUpDown, List, Plus } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
-import { studioAbsolutePath } from "@/shared/org/studio-org.paths"
+import { usePathname } from "@/shared/i18n/studio.i18n"
+import {
+  readOrgSlugFromPathname,
+  readStudioNavArea,
+  studioAbsolutePath,
+  studioOrgPath,
+  studioSettingsPath,
+  studioSettingsSuffixFromPathname,
+} from "@/shared/org/studio-org.paths"
 
 export function StudioOrgSwitcher() {
   const t = useTranslations("ui")
   const locale = useLocale()
+  const pathname = usePathname()
   const queryClient = useQueryClient()
   const [switchingId, setSwitchingId] = useState<string | null>(null)
 
@@ -65,9 +74,19 @@ export function StudioOrgSwitcher() {
           await refetchOrganizations()
           const targetSlug =
             slug ?? orgs.find((org) => org.id === organizationId)?.slug
-          window.location.assign(
-            targetSlug ? studioAbsolutePath(locale, `/${targetSlug}`) : listHref
-          )
+          const currentSlug = readOrgSlugFromPathname(pathname)
+          const area = readStudioNavArea(pathname)
+          const targetPath = targetSlug
+            ? area === "settings"
+              ? studioSettingsPath(
+                  targetSlug,
+                  currentSlug
+                    ? studioSettingsSuffixFromPathname(pathname, currentSlug)
+                    : "/general"
+                )
+              : studioOrgPath(targetSlug)
+            : "/organizations"
+          window.location.assign(studioAbsolutePath(locale, targetPath))
         })(),
         {
           loading: t("switchingOrganization"),

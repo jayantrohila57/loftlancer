@@ -1,5 +1,6 @@
 import { readActiveOrganizationId } from "@modules/org"
 import { listStudioOrganizationsForSession } from "@/shared/auth/studio.session"
+import { studioSettingsPath } from "@/shared/org/studio-org.paths"
 import { redirectStudio } from "@/shared/org/studio-org.redirect"
 import {
   pickStudioLandingSlug,
@@ -7,7 +8,7 @@ import {
 } from "@/shared/org/studio-org.server"
 import type { LangPageProps } from "@/shared/types/studio.app.types"
 
-export default async function StudioLegacyBillingRedirectPage({
+export default async function StudioLegacySettingsBillingPage({
   params,
 }: LangPageProps) {
   const { lang } = await params
@@ -21,5 +22,5 @@ export default async function StudioLegacyBillingRedirectPage({
   if (!slug) {
     redirectStudio(lang, "/onboarding")
   }
-  redirectStudio(lang, `/${slug}/billing`)
+  redirectStudio(lang, studioSettingsPath(slug, "/billing"))
 }

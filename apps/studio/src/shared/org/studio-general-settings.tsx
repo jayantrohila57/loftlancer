@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  isOrganizationOwnerRole,
   organizationSlugFromName,
   useOrgActiveMemberRole,
   useOrgSessionActiveId,
@@ -22,8 +21,9 @@ import {
 import {
   isReservedStudioOrgSlug,
   studioAbsolutePath,
-  studioOrgPath,
+  studioSettingsPath,
 } from "@/shared/org/studio-org.paths"
+import { studioOrgRoleAccess } from "@/shared/org/studio-org-access"
 
 export function StudioGeneralSettings({
   currentSlug,
@@ -35,7 +35,7 @@ export function StudioGeneralSettings({
   const { data: organization } = authClient.useActiveOrganization()
   const { role, isPending } = useOrgActiveMemberRole()
   const organizationId = useOrgSessionActiveId()
-  const canEdit = Boolean(role && isOrganizationOwnerRole(role))
+  const canEdit = studioOrgRoleAccess(role).canEditGeneral
   const [name, setName] = useState("")
   const [slug, setSlug] = useState(currentSlug)
   const [busy, setBusy] = useState(false)
@@ -76,7 +76,7 @@ export function StudioGeneralSettings({
             window.location.assign(
               studioAbsolutePath(
                 locale,
-                studioOrgPath(trimmedSlug, "/settings/general")
+                studioSettingsPath(trimmedSlug, "/general")
               )
             )
           }

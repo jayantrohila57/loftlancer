@@ -33,6 +33,7 @@ to write entries.
 ### Changed
 
 - After email verification, welcome and first-login now continue into Studio. Organization billing, usage, and settings are available there; the existing Auth account pages are unchanged for now.
+- Studio is split into three areas with their own sidebars: Organizations (`/organizations`), the org workspace (`/{org}` for home, usage, and activity), and Settings (`/settings/{org}` for general, members, invitations, roles, billing, ownership, and danger). Old `/{org}/settings` and `/{org}/billing` addresses redirect to the new settings paths.
 
 ### Fixed
 

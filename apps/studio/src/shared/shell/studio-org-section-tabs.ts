@@ -1,7 +1,33 @@
 import type { ShellSectionTabItem } from "@features/shell"
-import { studioOrgPath } from "@/shared/org/studio-org.paths"
+import {
+  studioOrgPath,
+  studioSettingsPath,
+} from "@/shared/org/studio-org.paths"
+import type { StudioOrgAccess } from "@/shared/org/studio-org-access"
 
 type Translate = (key: string) => string
+
+export function studioOrganizationsSectionTabs(
+  t: Translate
+): readonly ShellSectionTabItem[] {
+  return [
+    {
+      href: "/organizations",
+      label: t("organizations"),
+      value: "organizations",
+    },
+    {
+      href: "/organizations/new",
+      label: t("createOrganization"),
+      value: "new",
+    },
+    {
+      href: "/organizations/invitations",
+      label: t("organizationInvitations"),
+      value: "invitations",
+    },
+  ]
+}
 
 export function studioBillingSectionTabs(
   org: string,
@@ -9,32 +35,32 @@ export function studioBillingSectionTabs(
 ): readonly ShellSectionTabItem[] {
   return [
     {
-      href: studioOrgPath(org, "/billing"),
+      href: studioSettingsPath(org, "/billing"),
       label: t("overview"),
       value: "overview",
     },
     {
-      href: studioOrgPath(org, "/billing/plans"),
+      href: studioSettingsPath(org, "/billing/plans"),
       label: t("availablePlans"),
       value: "plans",
     },
     {
-      href: studioOrgPath(org, "/billing/payment-methods"),
+      href: studioSettingsPath(org, "/billing/payment-methods"),
       label: t("paymentMethods"),
       value: "payment-methods",
     },
     {
-      href: studioOrgPath(org, "/billing/payment-history"),
+      href: studioSettingsPath(org, "/billing/payment-history"),
       label: t("paymentHistory"),
       value: "payment-history",
     },
     {
-      href: studioOrgPath(org, "/billing/invoices"),
+      href: studioSettingsPath(org, "/billing/invoices"),
       label: t("invoices"),
       value: "invoices",
     },
     {
-      href: studioOrgPath(org, "/billing/details"),
+      href: studioSettingsPath(org, "/billing/details"),
       label: t("billingDetails"),
       value: "billing-details",
     },
@@ -66,38 +92,55 @@ export function studioUsageSectionTabs(
 
 export function studioSettingsSectionTabs(
   org: string,
-  t: Translate
+  t: Translate,
+  access?: StudioOrgAccess
 ): readonly ShellSectionTabItem[] {
-  return [
+  const tabs: ShellSectionTabItem[] = [
     {
-      href: studioOrgPath(org, "/settings/general"),
+      href: studioSettingsPath(org, "/general"),
       label: t("general"),
       value: "general",
     },
-    {
-      href: studioOrgPath(org, "/settings/members"),
+  ]
+  if (!access || access.canManageMembers) {
+    tabs.push({
+      href: studioSettingsPath(org, "/members"),
       label: t("organizationMembers"),
       value: "members",
-    },
-    {
-      href: studioOrgPath(org, "/settings/members/invitations"),
+    })
+  }
+  if (!access || access.canManageInvitations) {
+    tabs.push({
+      href: studioSettingsPath(org, "/invitations"),
       label: t("organizationInvitations"),
       value: "invitations",
-    },
-    {
-      href: studioOrgPath(org, "/settings/roles"),
-      label: t("organizationRoles"),
-      value: "roles",
-    },
-    {
-      href: studioOrgPath(org, "/settings/ownership"),
+    })
+  }
+  tabs.push({
+    href: studioSettingsPath(org, "/roles"),
+    label: t("organizationRoles"),
+    value: "roles",
+  })
+  if (!access || access.canManageBilling) {
+    tabs.push({
+      href: studioSettingsPath(org, "/billing"),
+      label: t("billing"),
+      value: "billing",
+    })
+  }
+  if (!access || access.canTransferOwnership) {
+    tabs.push({
+      href: studioSettingsPath(org, "/ownership"),
       label: t("transferOwnership"),
       value: "ownership",
-    },
-    {
-      href: studioOrgPath(org, "/settings/danger"),
+    })
+  }
+  if (!access || access.canAccessDanger) {
+    tabs.push({
+      href: studioSettingsPath(org, "/danger"),
       label: t("dangerZone"),
       value: "danger",
-    },
-  ]
+    })
+  }
+  return tabs
 }
