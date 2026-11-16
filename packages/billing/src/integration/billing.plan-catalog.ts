@@ -123,8 +123,14 @@ export function mergeAutumnCatalogPrices(
   })
 }
 
+function isNextProductionBuild(): boolean {
+  return process.env.NEXT_PHASE === "phase-production-build"
+}
+
 export async function listAutumnPlansForCatalog(): Promise<ListPlansList[]> {
-  if (!isAutumnConfigured()) return []
+  // autumn-js may retry fetch() after a prerender finishes, which logs
+  // HANGING_PROMISE_REJECTION and "Network failed to reach Autumn".
+  if (isNextProductionBuild() || !isAutumnConfigured()) return []
   const client = getAutumnClient()
   if (!client) return []
   try {
