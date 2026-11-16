@@ -4,6 +4,10 @@
     {
       "path": "/auth/api/cron/storage-purge",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/auth/api/cron/billing-grace",
+      "schedule": "0 4 * * *"
     }
   ],
   "trailingSlash": false,

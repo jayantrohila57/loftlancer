@@ -17,7 +17,7 @@ import {
   orgStorageFolder,
   user,
 } from "@packages/drizzle/schema"
-import { and, eq, sql } from "drizzle-orm"
+import { and, eq, inArray, sql } from "drizzle-orm"
 import type { OrganizationSetup } from "../../utils/validation/org.create.schema"
 import type { OrganizationSetupV2 } from "../../utils/validation/org.setup.schema"
 import { provisionOrganizationSetupV2 } from "./org.repository.setup-provision"
@@ -80,6 +80,38 @@ export async function countOwnedOrganizationsForUser(input: {
       )
     )
   return row?.count ?? 0
+}
+
+export async function listOwnedOrganizationIdsForUser(input: {
+  userId: string
+  executor: OrgProvisioningDbExecutor
+}) {
+  const rows = await input.executor
+    .select({ organizationId: member.organizationId })
+    .from(member)
+    .where(
+      and(
+        eq(member.userId, input.userId),
+        eq(member.role, ORG_OWNER_MEMBER_ROLE)
+      )
+    )
+  return rows.map((row) => row.organizationId)
+}
+
+export async function loadMaxOwnedOrganizationLimitForUser(input: {
+  userId: string
+  executor: OrgProvisioningDbExecutor
+  fallback: number
+  paidLimit: number
+}) {
+  const organizationIds = await listOwnedOrganizationIdsForUser(input)
+  if (organizationIds.length === 0) return input.fallback
+  const rows = await input.executor
+    .select({ planTier: orgEntitlement.planTier })
+    .from(orgEntitlement)
+    .where(inArray(orgEntitlement.organizationId, organizationIds))
+  if (rows.some((row) => row.planTier === "paid")) return input.paidLimit
+  return input.fallback
 }
 
 export async function lockUserForOrgCreate(input: {

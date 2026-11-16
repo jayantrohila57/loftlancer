@@ -1,5 +1,6 @@
 import { repairOrganizationProvisioningRows } from "@modules/org/server"
-import { isAutumnConfigured } from "@packages/billing"
+import { loadOrgQuotaUsedBytes } from "@modules/storage/server"
+import { billingPlanConfigForTier, isAutumnConfigured } from "@packages/billing"
 import { getDb } from "@packages/drizzle"
 import { createSuccess } from "@packages/orpc"
 import { ORPCError } from "@packages/orpc/server"
@@ -36,6 +37,8 @@ export async function billingOverviewService(input: {
     })
   }
 
+  const usedBytes = await loadOrgQuotaUsedBytes(input.organizationId)
+  const plan = billingPlanConfigForTier(row.planTier)
   return createSuccess(
     {
       organizationId: input.organizationId,
@@ -52,6 +55,13 @@ export async function billingOverviewService(input: {
         ? row.entitlementsSyncedAt.toISOString()
         : null,
       entitlementsDegraded: row.entitlementsDegraded,
+      paymentGraceUntil: row.paymentGraceUntil
+        ? row.paymentGraceUntil.toISOString()
+        : null,
+      cancelAtPeriodEnd: row.cancelAtPeriodEnd,
+      usedBytes,
+      organizationLimit: plan.features.organizationCount.included,
+      aiCreditsIncluded: plan.features.aiCredits.included,
     },
     "Billing overview loaded."
   )

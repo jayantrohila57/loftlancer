@@ -21,10 +21,15 @@ const welcomeStepKeys = [
   },
 ] as const
 
-export function AuthWelcomeScreen() {
+export function AuthWelcomeScreen({
+  studioURL,
+}: {
+  readonly studioURL?: string
+} = {}) {
   const t = useTranslations("ui")
   const home = useTranslations("home")
   const { continueURL, firstLoginURL } = useAuthWelcomePaths()
+  const continueHref = studioURL ?? continueURL
 
   return (
     <Shell.Section variant="center">
@@ -46,7 +51,11 @@ export function AuthWelcomeScreen() {
           ))}
         </ol>
         <Button
-          render={<a href={continueURL}>{home("continue")}</a>}
+          render={
+            <a href={continueHref}>
+              {studioURL ? t("goToStudio") : home("continue")}
+            </a>
+          }
           type="button"
         />
         <p className="text-center text-sm">
@@ -80,10 +89,17 @@ const firstLoginGuideKeys = [
   },
 ] as const
 
-export function AuthFirstLoginScreen() {
+export function AuthFirstLoginScreen({
+  studioURL,
+}: {
+  readonly studioURL?: string
+} = {}) {
   const t = useTranslations("ui")
   const home = useTranslations("home")
   const paths = useAuthWelcomePaths()
+  const organizationsHref = studioURL ?? paths.organizationsListURL
+  const primaryHref = studioURL ?? paths.accountOverviewURL
+  const primaryLabel = studioURL ? t("goToStudio") : t("goToAccount")
 
   return (
     <Shell.Section variant="center">
@@ -101,7 +117,11 @@ export function AuthFirstLoginScreen() {
             <li className="space-y-0.5" key={item.label}>
               <a
                 className="font-medium text-primary underline-offset-4 hover:underline"
-                href={paths[item.hrefKey]}
+                href={
+                  item.hrefKey === "organizationsListURL"
+                    ? organizationsHref
+                    : paths[item.hrefKey]
+                }
               >
                 {t(item.label)}
               </a>
@@ -111,11 +131,13 @@ export function AuthFirstLoginScreen() {
         </ul>
         <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
           <Button
-            render={<a href={paths.accountOverviewURL}>{t("goToAccount")}</a>}
+            render={<a href={primaryHref}>{primaryLabel}</a>}
             type="button"
           />
           <Button
-            render={<a href={paths.continueURL}>{home("continue")}</a>}
+            render={
+              <a href={studioURL ?? paths.continueURL}>{home("continue")}</a>
+            }
             type="button"
             variant="outline"
           />

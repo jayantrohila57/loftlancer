@@ -8,6 +8,7 @@ import {
   BILLING_PAID_PLAN_QUOTA_BYTES,
 } from "./billing.constants"
 import { planIdToProductTier } from "./billing.plan-ids"
+import { extractCancelAtPeriodEnd } from "./billing.webhook-events"
 
 const ACTIVE_SUBSCRIPTION_STATUSES = new Set(["active", "trialing", "past_due"])
 
@@ -23,6 +24,7 @@ export type EntitlementCachePatch = {
   aiEnabled: boolean
   aiCreditBalance?: number
   autumnCustomerId: string
+  cancelAtPeriodEnd?: boolean
 }
 
 export function deriveEntitlementPatchFromCustomer(
@@ -109,6 +111,9 @@ export async function applyEntitlementPatchForOrganization(input: {
   if (input.patch.aiCreditBalance !== undefined) {
     set.aiCreditBalance = input.patch.aiCreditBalance
   }
+  if (input.patch.cancelAtPeriodEnd !== undefined) {
+    set.cancelAtPeriodEnd = input.patch.cancelAtPeriodEnd
+  }
 
   if (input.subscriptionRevisionDelta !== undefined) {
     const [current] = await input.db
@@ -148,7 +153,10 @@ export async function syncEntitlementsFromAutumnCustomer(input: {
   organizationId: string
   customer: Customer
 }): Promise<EntitlementSyncResult> {
-  const patch = deriveEntitlementPatchFromCustomer(input.customer)
+  const patch = {
+    ...deriveEntitlementPatchFromCustomer(input.customer),
+    cancelAtPeriodEnd: extractCancelAtPeriodEnd(input.customer),
+  }
   return applyEntitlementPatchForOrganization({
     db: input.db,
     organizationId: input.organizationId,

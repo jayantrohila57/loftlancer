@@ -360,6 +360,9 @@ importers:
       '@features/i18n':
         specifier: workspace:*
         version: link:../../features/i18n
+      '@features/navigation':
+        specifier: workspace:*
+        version: link:../../features/navigation
       '@features/shell':
         specifier: workspace:*
         version: link:../../features/shell
@@ -378,6 +381,9 @@ importers:
       '@packages/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
+      '@packages/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@packages/brand':
         specifier: workspace:*
         version: link:../../packages/brand
@@ -454,6 +460,9 @@ importers:
       '@features/font':
         specifier: workspace:*
         version: link:../../features/font
+      '@features/form':
+        specifier: workspace:*
+        version: link:../../features/form
       '@features/i18n':
         specifier: workspace:*
         version: link:../../features/i18n
@@ -466,12 +475,33 @@ importers:
       '@features/theme':
         specifier: workspace:*
         version: link:../../features/theme
+      '@modules/activity':
+        specifier: workspace:*
+        version: link:../../modules/activity
+      '@modules/ai-usage':
+        specifier: workspace:*
+        version: link:../../modules/ai-usage
+      '@modules/auth':
+        specifier: workspace:*
+        version: link:../../modules/auth
+      '@modules/billing':
+        specifier: workspace:*
+        version: link:../../modules/billing
+      '@modules/org':
+        specifier: workspace:*
+        version: link:../../modules/org
       '@modules/privacy':
         specifier: workspace:*
         version: link:../../modules/privacy
+      '@modules/security':
+        specifier: workspace:*
+        version: link:../../modules/security
       '@modules/shell':
         specifier: workspace:*
         version: link:../../modules/shell
+      '@modules/storage':
+        specifier: workspace:*
+        version: link:../../modules/storage
       '@packages/analytics':
         specifier: workspace:*
         version: link:../../packages/analytics
@@ -557,6 +587,9 @@ importers:
       '@features/font':
         specifier: workspace:*
         version: link:../../features/font
+      '@features/form':
+        specifier: workspace:*
+        version: link:../../features/form
       '@features/i18n':
         specifier: workspace:*
         version: link:../../features/i18n
@@ -587,6 +620,9 @@ importers:
       '@packages/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
+      '@packages/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@packages/brand':
         specifier: workspace:*
         version: link:../../packages/brand
@@ -1674,6 +1710,9 @@ importers:
       '@packages/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
+      '@packages/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@packages/blob':
         specifier: workspace:*
         version: link:../../packages/blob

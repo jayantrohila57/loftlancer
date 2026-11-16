@@ -1,3 +1,4 @@
+export { loadOrgQuotaUsedBytes } from "./repositories/storage.repository.quota"
 export { storageService } from "./services/storage.service.router"
 export { storageOrgProcedure } from "./shared/storage.procedure"
 export { storageOrgOwnerProcedure } from "./shared/storage.procedure.owner"

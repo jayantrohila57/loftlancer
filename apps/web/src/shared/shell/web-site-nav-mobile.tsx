@@ -15,7 +15,7 @@ import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { Link, usePathname } from "@/shared/i18n/web.i18n"
 import {
-  getWebSiteNavItemSpecsForHeaderDropdown,
+  getWebSiteNavItemSpecsForMobileGroup,
   isWebSiteNavItemActive,
   WEB_SITE_NAV_GROUP_HEADING_KEYS,
   WEB_SITE_SURFACE_NAV_GROUPS,
@@ -52,7 +52,7 @@ export function WebSiteNavMobile() {
           <SheetPanel scrollFade={false}>
             <div className="flex flex-col gap-6 py-2">
               {WEB_SITE_SURFACE_NAV_GROUPS.map((group) => {
-                const items = getWebSiteNavItemSpecsForHeaderDropdown(group)
+                const items = getWebSiteNavItemSpecsForMobileGroup(group)
 
                 return (
                   <nav

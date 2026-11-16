@@ -7,4 +7,9 @@ export {
 } from "./client/components/create/org.create-sheet.client"
 export { OrgInvitationsScreen } from "./client/components/invitations/org.invitations-screen.client"
 export { OrgListScreen } from "./client/components/list/org.list-screen"
+export {
+  type OrgAppPaths,
+  OrgAppPathsProvider,
+  useOrgAppPaths,
+} from "./client/components/org.app-paths.client"
 export { OrgOrganizationSettings } from "./client/components/org.organization-settings.client"

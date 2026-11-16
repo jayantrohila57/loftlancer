@@ -1,7 +1,7 @@
 "use client"
 
 import { useOrgSessionActiveId } from "@modules/org"
-import { formatStorageBytes } from "@modules/storage"
+import { formatStorageBytes } from "@modules/storage/utils/storage.format-bytes"
 import { Button } from "@packages/ui/components/button"
 import { Skeleton } from "@packages/ui/components/skeleton"
 import { BadgeCheck, Sparkles } from "lucide-react"
@@ -12,6 +12,7 @@ import { useBillingApi } from "../hooks/billing.api"
 import { markBillingPortalLaunch } from "../hooks/billing.hook.portal-return-refresh"
 import { useInvalidateBillingSubscriptionQueries } from "../hooks/billing.hook.subscription-cache"
 import { BillingAccessGate } from "./billing.access-gate.client"
+import { BillingUsageMeters } from "./billing.usage-meters.client"
 
 function BillingOverviewSkeleton() {
   return (
@@ -82,6 +83,21 @@ function BillingOverviewBody() {
     }
   }
 
+  async function onCancel() {
+    setActionError(null)
+    setActionPending(true)
+    try {
+      await useBillingApi.postCancel()
+      await invalidateSubscriptionQueries()
+    } catch (error) {
+      setActionError(
+        error instanceof Error ? error.message : t("operationFailed")
+      )
+    } finally {
+      setActionPending(false)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <dl className="grid gap-4 text-sm sm:grid-cols-2">
@@ -121,6 +137,31 @@ function BillingOverviewBody() {
         </div>
       </dl>
 
+      <BillingUsageMeters
+        usedBytes={data.usedBytes}
+        quotaBytes={data.quotaBytes}
+        aiCreditBalance={data.aiCreditBalance}
+        aiCreditsIncluded={data.aiCreditsIncluded}
+      />
+
+      {data.paymentGraceUntil ? (
+        <p className="text-sm text-amber-600 dark:text-amber-500" role="status">
+          {t("billingGracePeriod")}
+        </p>
+      ) : null}
+
+      {data.cancelAtPeriodEnd ? (
+        <p className="text-sm text-muted-foreground" role="status">
+          {t("billingCancelScheduled")}
+        </p>
+      ) : null}
+
+      {data.usedBytes > data.quotaBytes && data.planTier === "free" ? (
+        <p className="text-sm text-destructive" role="status">
+          {t("billingReadOnlyOverLimit")}
+        </p>
+      ) : null}
+
       {!data.autumnConfigured ? (
         <p className="text-sm text-muted-foreground" role="status">
           {t("billingAutumnUnconfigured")}
@@ -154,6 +195,17 @@ function BillingOverviewBody() {
           >
             <BadgeCheck className="size-4" />
             {t("billingManagePortal")}
+          </Button>
+        ) : null}
+        {data.planTier === "paid" &&
+        data.autumnConfigured &&
+        !data.cancelAtPeriodEnd ? (
+          <Button
+            disabled={actionPending}
+            variant="outline"
+            onClick={() => void onCancel()}
+          >
+            {t("billingCancelAtPeriodEnd")}
           </Button>
         ) : null}
       </div>

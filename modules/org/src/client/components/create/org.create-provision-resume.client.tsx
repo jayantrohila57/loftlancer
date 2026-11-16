@@ -3,11 +3,10 @@
 import { withClientRetry } from "@modules/auth"
 import { securityRpc } from "@modules/security/client"
 import { authClient } from "@packages/better-auth/client"
-import { clientEnv } from "@packages/t3-env/client"
 import { Button } from "@packages/ui/components/button"
 import { Spinner } from "@packages/ui/components/spinner"
 import { toastManager } from "@packages/ui/components/toast"
-import { useLocale, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useState } from "react"
 
 import { isOrganizationOwnerRole } from "../../../utils/org.member-role"
@@ -19,6 +18,7 @@ import {
   useOrgSessionActiveIdPending,
 } from "../../hooks/org.session.client"
 import { switchActiveOrganization } from "../../utils/org.switch-active.client"
+import { useOrgAppPaths } from "../org.app-paths.client"
 
 type BillingOverviewShape = {
   provisioningStep: string
@@ -116,15 +116,28 @@ export function useOrgCreateProvisionResume() {
   }
 }
 
+function isSafeHttpUrl(value: string) {
+  try {
+    const url = new URL(value)
+    return url.protocol === "http:" || url.protocol === "https:"
+  } catch {
+    return false
+  }
+}
+
 export function OrgCreateProvisionResume(props: {
   readonly organizationId: string | null
   readonly organizationName?: string | null
   readonly onFinished?: () => void
+  readonly returnTo?: string
 }) {
   const t = useTranslations("ui")
-  const locale = useLocale()
+  const paths = useOrgAppPaths()
   const [pending, setPending] = useState(false)
-  const accountOrgUrl = `${clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")}/${locale}/account/organization`
+  const finishedUrl =
+    props.returnTo && isSafeHttpUrl(props.returnTo)
+      ? props.returnTo
+      : paths.afterCreateUrl()
 
   async function onResume() {
     if (!props.organizationId || pending) return
@@ -144,7 +157,7 @@ export function OrgCreateProvisionResume(props: {
               : t("organizationProvisionResumeError"),
         }
       )
-      window.location.assign(accountOrgUrl)
+      window.location.assign(finishedUrl)
     } catch {
       // Toast reports failure.
     } finally {
@@ -174,7 +187,7 @@ export function OrgCreateProvisionResume(props: {
           variant="outline"
           disabled={pending}
           onClick={() => {
-            window.location.assign(accountOrgUrl)
+            window.location.assign(finishedUrl)
           }}
         >
           {t("organizationSettings")}
@@ -186,8 +199,10 @@ export function OrgCreateProvisionResume(props: {
 
 export function OrgCreateScreenProvisionerGate({
   children,
+  returnTo,
 }: {
   readonly children: React.ReactNode
+  readonly returnTo?: string
 }) {
   const t = useTranslations("ui")
   const { data: session } = authClient.useSession()
@@ -208,6 +223,7 @@ export function OrgCreateScreenProvisionerGate({
   if (resume.showResume && resume.organizationId) {
     return (
       <OrgCreateProvisionResume
+        returnTo={returnTo}
         organizationId={resume.organizationId}
         organizationName={organizationName}
         onFinished={resume.reloadOverview}

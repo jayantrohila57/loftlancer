@@ -31,8 +31,15 @@ export function mapAutumnInvoiceRow(invoice: {
   amountPaid: number | null
   createdAt: number
   hostedInvoiceUrl?: string | null
+  invoicePdfUrl?: string | null
+  invoice_pdf?: string | null
+  invoicePdf?: string | null
 }) {
   const createdAt = new Date(invoice.createdAt)
+  const invoicePdfUrl = normalizeHostedInvoiceUrl(
+    invoice.invoicePdfUrl ?? invoice.invoice_pdf ?? invoice.invoicePdf ?? null
+  )
+  const hostedInvoiceUrl = normalizeHostedInvoiceUrl(invoice.hostedInvoiceUrl)
   return {
     id: invoice.id,
     status: invoice.status,
@@ -42,6 +49,7 @@ export function mapAutumnInvoiceRow(invoice: {
     createdAt: Number.isNaN(createdAt.getTime())
       ? new Date(0).toISOString()
       : createdAt.toISOString(),
-    hostedInvoiceUrl: normalizeHostedInvoiceUrl(invoice.hostedInvoiceUrl),
+    hostedInvoiceUrl,
+    invoicePdfUrl: invoicePdfUrl ?? hostedInvoiceUrl,
   }
 }

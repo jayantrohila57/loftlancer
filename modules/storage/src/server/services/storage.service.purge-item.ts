@@ -39,6 +39,7 @@ export async function purgeStorageItemService(input: {
     uploadedByUserId: item.uploadedByUserId,
     actorUserId: input.actorUserId,
     trigger: "user",
+    byteSize: item.byteSize,
   })
 
   if (!result) {

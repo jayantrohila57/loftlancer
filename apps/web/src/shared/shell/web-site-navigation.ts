@@ -70,6 +70,7 @@ export type WebSiteNavLabelKey =
   | "navLegalRefund"
   | "navLegalTerms"
   | "navPartnerships"
+  | "navPricing"
   | "navProductAnalytics"
   | "navProductApi"
   | "navProductCloudPlatform"
@@ -97,6 +98,7 @@ export type WebSiteNavDescriptionKey =
   | "navDescLegalRefund"
   | "navDescLegalTerms"
   | "navDescPartnerships"
+  | "navDescPricing"
   | "navDescProductAnalytics"
   | "navDescProductApi"
   | "navDescProductCloudPlatform"
@@ -114,6 +116,7 @@ export type WebSiteNavIconName =
   | "circle-question-mark"
   | "code"
   | "cookie"
+  | "credit-card"
   | "file-text"
   | "globe"
   | "handshake"
@@ -152,6 +155,7 @@ export type WebSiteNavHref =
   | "/legal/privacy"
   | "/legal/refund"
   | "/legal/terms"
+  | "/pricing"
   | "/product/analytics"
   | "/product/api"
   | "/product/cloud-platform"
@@ -164,6 +168,7 @@ export type WebSiteNavHref =
 export type WebSiteNavItemSpec = {
   readonly descriptionKey?: WebSiteNavDescriptionKey
   readonly group: WebSiteNavGroup
+  readonly headerPresentation?: "dropdown" | "standalone"
   readonly href: WebSiteNavHref
   readonly icon?: WebSiteNavIconName
   readonly id: string
@@ -184,6 +189,7 @@ export const webSiteNavItemSpecs: readonly WebSiteNavItemSpec[] = [
   {
     descriptionKey: "navDescHome",
     group: "resources",
+    headerPresentation: "standalone",
     href: "/",
     icon: "house",
     id: "site.home",
@@ -250,6 +256,17 @@ export const webSiteNavItemSpecs: readonly WebSiteNavItemSpec[] = [
     keywords: ["api", "developers", "sdk", "rest"],
     labelKey: "navProductApi",
     order: 5,
+  },
+  {
+    descriptionKey: "navDescPricing",
+    group: "product",
+    headerPresentation: "standalone",
+    href: "/pricing",
+    icon: "credit-card",
+    id: "site.pricing",
+    keywords: ["pricing", "plans", "subscribe", "billing", "paid"],
+    labelKey: "navPricing",
+    order: 6,
   },
   {
     descriptionKey: "navDescAbout",
@@ -483,15 +500,35 @@ export function getWebSiteNavItemSpecsForHeaderDropdown(
   group: WebSiteNavGroup
 ): readonly WebSiteNavItemSpec[] {
   return getWebSiteNavItemSpecsByGroup(group).filter(
+    (item) => item.headerPresentation !== "standalone"
+  )
+}
+
+export function getWebSiteNavItemSpecsForHeaderStandalone(): readonly WebSiteNavItemSpec[] {
+  return webSiteNavItemSpecs
+    .filter((spec) => spec.headerPresentation === "standalone")
+    .sort((left, right) => left.order - right.order)
+}
+
+export function getWebSiteNavItemSpecsForFooterGroup(
+  group: WebSiteNavGroup
+): readonly WebSiteNavItemSpec[] {
+  return getWebSiteNavItemSpecsByGroup(group).filter(
     (item) => item.id !== "site.home"
   )
+}
+
+export function getWebSiteNavItemSpecsForMobileGroup(
+  group: WebSiteNavGroup
+): readonly WebSiteNavItemSpec[] {
+  return getWebSiteNavItemSpecsForFooterGroup(group)
 }
 
 export function getWebSiteNavItemSpecsForFooterColumn(
   column: WebSiteFooterNavColumn
 ): readonly WebSiteNavItemSpec[] {
   if (column.kind === "group") {
-    return getWebSiteNavItemSpecsForHeaderDropdown(column.group)
+    return getWebSiteNavItemSpecsForFooterGroup(column.group)
   }
 
   return webSiteNavItemSpecs

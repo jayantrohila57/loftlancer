@@ -1,5 +1,7 @@
+import { readBillingCheckoutReturnUrl } from "../utils/billing.checkout-return-url"
 import { billingRoutes } from "../utils/config/billing.config.routes"
 import {
+  billingCheckoutReturnInputSchema,
   billingCustomerProfileOutputSchema,
   billingDowngradeOutputSchema,
   billingInvoicesOutputSchema,
@@ -8,10 +10,12 @@ import {
   billingSetupPaymentOutputSchema,
 } from "../utils/validation/billing.catalog.schema"
 import {
+  billingCancelOutputSchema,
   billingOverviewOutputSchema,
   billingPortalOutputSchema,
   billingUpgradeOutputSchema,
 } from "../utils/validation/billing.overview.schema"
+import { billingBeginCancelService } from "./services/billing.service.cancel"
 import { billingCustomerProfileService } from "./services/billing.service.customer-profile"
 import { billingBeginDowngradeService } from "./services/billing.service.downgrade"
 import { billingListInvoicesService } from "./services/billing.service.invoices"
@@ -35,23 +39,29 @@ export const billingController = {
     ),
   beginUpgrade: billingOrgOwnerProcedure
     .route(billingRoutes.beginUpgrade)
+    .input(billingCheckoutReturnInputSchema)
     .output(billingUpgradeOutputSchema)
-    .handler(async ({ context }) =>
+    .handler(async ({ context, input }) =>
       billingUpgradeOutputSchema.parse(
         await billingBeginUpgradeService({
           organizationId: context.organizationId,
           actorUserId: context.auth.user.id,
+          successUrl: readBillingCheckoutReturnUrl(input.successUrl, "success"),
+          cancelUrl: readBillingCheckoutReturnUrl(input.cancelUrl, "cancel"),
         })
       )
     ),
   beginDowngrade: billingOrgOwnerProcedure
     .route(billingRoutes.beginDowngrade)
+    .input(billingCheckoutReturnInputSchema)
     .output(billingDowngradeOutputSchema)
-    .handler(async ({ context }) =>
+    .handler(async ({ context, input }) =>
       billingDowngradeOutputSchema.parse(
         await billingBeginDowngradeService({
           organizationId: context.organizationId,
           actorUserId: context.auth.user.id,
+          successUrl: readBillingCheckoutReturnUrl(input.successUrl, "success"),
+          cancelUrl: readBillingCheckoutReturnUrl(input.cancelUrl, "cancel"),
         })
       )
     ),
@@ -116,6 +126,16 @@ export const billingController = {
     .handler(async ({ context }) =>
       billingSetupPaymentOutputSchema.parse(
         await billingSetupPaymentService({
+          organizationId: context.organizationId,
+        })
+      )
+    ),
+  beginCancel: billingOrgOwnerProcedure
+    .route(billingRoutes.beginCancel)
+    .output(billingCancelOutputSchema)
+    .handler(async ({ context }) =>
+      billingCancelOutputSchema.parse(
+        await billingBeginCancelService({
           organizationId: context.organizationId,
         })
       )

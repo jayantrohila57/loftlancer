@@ -5,13 +5,16 @@ import { FormKit } from "@features/form"
 import { withClientRetry } from "@modules/auth"
 import { securityRpc } from "@modules/security/client"
 import { authClient } from "@packages/better-auth/client"
-import { clientEnv } from "@packages/t3-env/client"
 import { toastManager } from "@packages/ui/components/toast"
-import { useFormatter, useLocale, useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import { useMemo } from "react"
 import type { z } from "zod"
 import { formatOrgClientError } from "../../../utils/org.client-error"
-import { activateOrganizationAfterJoin } from "../../../utils/org.organization-id"
+import {
+  activateOrganizationAfterJoin,
+  readOrganizationSlugFromResponse,
+} from "../../../utils/org.organization-id"
+import { useOrgAppPaths } from "../org.app-paths.client"
 import {
   buildOrgCountryOptions,
   buildOrgCurrencyOptions,
@@ -79,16 +82,27 @@ function OrgCreateFormBody({
   )
 }
 
+function isSafeHttpUrl(value: string) {
+  try {
+    const url = new URL(value)
+    return url.protocol === "http:" || url.protocol === "https:"
+  } catch {
+    return false
+  }
+}
+
 export function OrgCreateForm({
   compact = false,
   onCancel,
+  returnTo,
 }: {
   readonly compact?: boolean
   readonly onCancel?: () => void
+  readonly returnTo?: string
 }) {
   const t = useTranslations("ui")
   const schema = createOrganizationFormSchema(t)
-  const locale = useLocale()
+  const paths = useOrgAppPaths()
   const format = useFormatter()
   const { data: session } = authClient.useSession()
   const countryOptions = useMemo(() => buildOrgCountryOptions(format), [format])
@@ -214,7 +228,6 @@ export function OrgCreateForm({
             response.data,
             { switchErrorMessage: t("couldNotSwitchOrganization") }
           )
-          const base = clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")
           const provisioningComplete = await withClientRetry(async () => {
             const overview = await securityRpc.security.billing.overview()
             if (overview.status !== "success" || !overview.data) return false
@@ -223,10 +236,20 @@ export function OrgCreateForm({
               overview.data.autumnBound
             )
           }).catch(() => false)
+          const createdSlug = readOrganizationSlugFromResponse(response.data)
+          const createUrl = new URL(
+            paths.createOrganizationUrl,
+            window.location.origin
+          )
+          if (returnTo && isSafeHttpUrl(returnTo)) {
+            createUrl.searchParams.set("returnTo", returnTo)
+          }
           window.location.assign(
             provisioningComplete
-              ? `${base}/${locale}/account/organization`
-              : `${base}/${locale}/organizations/create`
+              ? returnTo && isSafeHttpUrl(returnTo)
+                ? returnTo
+                : paths.afterCreateUrl({ slug: createdSlug })
+              : createUrl.toString()
           )
         })(),
         {

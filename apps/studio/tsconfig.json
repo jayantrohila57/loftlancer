@@ -5,6 +5,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/shared/*": ["./src/shared/*"],
+      "@features/form": ["../../features/form/src/index.ts"],
+      "@features/form/*": ["../../features/form/src/*"],
       "@features/font": ["../../features/font/src/index.ts"],
       "@features/font/*": ["../../features/font/src/*"],
       "@features/i18n": ["../../features/i18n/src/index.ts"],
@@ -42,6 +44,8 @@
       "@modules/connected-accounts/server": [
         "../../modules/connected-accounts/src/server/index.ts"
       ],
+      "@modules/activity": ["../../modules/activity/src/index.ts"],
+      "@modules/activity/*": ["../../modules/activity/src/*"],
       "@modules/activity/server": [
         "../../modules/activity/src/server/index.ts"
       ],
@@ -157,7 +161,12 @@
       ],
       "zod": ["../../apps/auth/node_modules/zod"],
       "@packages/posthog": ["../../packages/posthog/src/index.ts"],
-      "next/navigation": ["../auth/node_modules/next/navigation"]
+      "next/navigation": ["../auth/node_modules/next/navigation"],
+      "@modules/billing": ["../../modules/billing/src/index.ts"],
+      "@modules/org": ["../../modules/org/src/index.ts"],
+      "@modules/storage": ["../../modules/storage/src/index.ts"],
+      "@modules/org/*": ["../../modules/org/src/*"],
+      "@modules/storage/*": ["../../modules/storage/src/*"]
     },
     "plugins": [
       {

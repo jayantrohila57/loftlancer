@@ -2,7 +2,7 @@
 
 import { useShellNavigation } from "@features/shell"
 import {
-  isOrganizationOwnerRole,
+  canManageOrganizationBilling,
   useOrgActiveMemberRole,
   useOrgSessionActiveId,
   useOrgSessionPending,
@@ -59,7 +59,7 @@ export function BillingAccessGate(props: { children: ReactNode }) {
     )
   }
 
-  if (!rolePending && (!role || !isOrganizationOwnerRole(role))) {
+  if (!rolePending && (!role || !canManageOrganizationBilling(role))) {
     return (
       <Empty>
         <EmptyHeader>

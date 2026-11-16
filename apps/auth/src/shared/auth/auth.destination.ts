@@ -72,7 +72,13 @@ export function getPostSignInDestination(lang: string, value?: string): string {
       (development ? "http://localhost:3004" : "/console"),
     auth.origin
   )
-  const allowed = [studio, consoleApp, auth]
+  const web = new URL(
+    serverEnv.WEB_APP_URL ??
+      serverEnv.APP_PUBLIC_URL ??
+      (development ? "http://localhost:3001" : "/"),
+    auth.origin
+  )
+  const allowed = [studio, consoleApp, auth, web]
   const authBase = auth.pathname.replace(/\/$/, "")
   const fallback = new URL(
     `${studio.pathname.replace(/\/$/, "")}/${lang}`,
@@ -116,5 +122,42 @@ export function getPostSignInDestination(lang: string, value?: string): string {
     return matches ? target.toString() : fallback
   } catch {
     return fallback
+  }
+}
+
+function resolveWebAppRoot(): URL {
+  const auth = new URL(serverEnv.BETTER_AUTH_URL)
+  const development = serverEnv.NODE_ENV !== "production"
+  return new URL(
+    serverEnv.WEB_APP_URL ??
+      serverEnv.APP_PUBLIC_URL ??
+      (development ? "http://localhost:3001" : "/"),
+    auth.origin
+  )
+}
+
+/** Marketing checkout return URLs must stay on the configured web app origin. */
+export function isAllowedBillingReturnUrl(value: string): boolean {
+  const trimmed = value.trim()
+  if (
+    !trimmed ||
+    returnToContainsControlCharacter(trimmed) ||
+    returnToContainsParentPathSegment(trimmed)
+  ) {
+    return false
+  }
+  try {
+    const target = new URL(trimmed)
+    if (
+      target.username ||
+      target.password ||
+      !["http:", "https:"].includes(target.protocol) ||
+      resolvedPathContainsParentHop(target.pathname)
+    ) {
+      return false
+    }
+    return appRootMatches(target, resolveWebAppRoot())
+  } catch {
+    return false
   }
 }

@@ -1,3 +1,4 @@
+import { trackBillingUsage } from "@packages/billing"
 import { del } from "@packages/blob"
 import { orgStorageItem } from "@packages/drizzle/schema"
 import { logger } from "@packages/logger/server"
@@ -19,6 +20,7 @@ export async function purgeOrgStorageItemRow(input: {
   uploadedByUserId: string
   actorUserId: string
   trigger: "user" | "cron"
+  byteSize?: number
 }): Promise<{ purgedAt: Date } | null> {
   const activity = beginStorageActivity({
     actionId: "storage.purge",
@@ -92,6 +94,15 @@ export async function purgeOrgStorageItemRow(input: {
       trigger: input.trigger,
     },
   })
+
+  if (input.byteSize && input.byteSize > 0) {
+    await trackBillingUsage({
+      organizationId: input.organizationId,
+      featureId: "org_storage_bytes",
+      value: -input.byteSize,
+      idempotencyKey: `storage-purge:${input.itemId}`,
+    })
+  }
 
   return { purgedAt }
 }

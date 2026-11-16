@@ -1,15 +1,23 @@
-import { requireStudioAccess } from "@/shared/auth/studio.session"
-import { getServerTranslations } from "@/shared/i18n/studio.i18n.server"
+import { readActiveOrganizationId } from "@modules/org"
+import { listStudioOrganizationsForSession } from "@/shared/auth/studio.session"
+import { redirectStudio } from "@/shared/org/studio-org.redirect"
+import {
+  pickStudioLandingSlug,
+  readLastStudioOrgSlug,
+} from "@/shared/org/studio-org.server"
 import type { LangPageProps } from "@/shared/types/studio.app.types"
 
 export default async function StudioHomePage({ params }: LangPageProps) {
   const { lang } = await params
-  await requireStudioAccess(lang)
-  const t = await getServerTranslations(params, "home")
-
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold">{t("title")}</h1>
-    </div>
-  )
+  const { session, organizations } =
+    await listStudioOrganizationsForSession(lang)
+  const lastSlug = await readLastStudioOrgSlug()
+  const slug = pickStudioLandingSlug(organizations, {
+    lastSlug,
+    activeOrganizationId: readActiveOrganizationId(session),
+  })
+  if (!slug) {
+    redirectStudio(lang, "/onboarding")
+  }
+  redirectStudio(lang, `/${slug}`)
 }

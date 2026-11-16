@@ -149,7 +149,10 @@
       "@modules/ai-usage/server": [
         "../../modules/ai-usage/src/server/index.ts"
       ],
-      "zod": ["../auth/node_modules/zod"]
+      "zod": ["../auth/node_modules/zod"],
+      "@packages/billing": ["../../packages/billing/src/index.ts"],
+      "@modules/org/*": ["../../modules/org/src/*"],
+      "@modules/storage/*": ["../../modules/storage/src/*"]
     },
     "plugins": [
       {

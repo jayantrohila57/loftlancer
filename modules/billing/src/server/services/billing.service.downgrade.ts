@@ -13,6 +13,8 @@ import { recordBillingPlanChangedIfNeeded } from "./billing.service.activity"
 export async function billingBeginDowngradeService(input: {
   organizationId: string
   actorUserId?: string
+  successUrl?: string
+  cancelUrl?: string
 }) {
   const { client, customerId } = await requireBillingAutumnContext(input)
 
@@ -27,6 +29,10 @@ export async function billingBeginDowngradeService(input: {
     customerId,
     planId: resolveAutumnPlanIdFree(),
     removePlanIds: [resolveAutumnPlanIdPaid()],
+    ...(input.successUrl ? { successUrl: input.successUrl } : {}),
+    ...(input.cancelUrl
+      ? { checkoutSessionParams: { cancel_url: input.cancelUrl } }
+      : {}),
   })
 
   if (!attach.paymentUrl) {

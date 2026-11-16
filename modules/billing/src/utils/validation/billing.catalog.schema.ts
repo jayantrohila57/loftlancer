@@ -16,6 +16,7 @@ const billingInvoiceItemSchema = z.object({
   amountPaidMinor: z.number().int().nullable(),
   createdAt: z.string().datetime(),
   hostedInvoiceUrl: billingHostedInvoiceUrlSchema,
+  invoicePdfUrl: billingHostedInvoiceUrlSchema,
 })
 
 export const billingPlansDataSchema = z.object({
@@ -41,6 +42,11 @@ export const billingDowngradeOutputSchema = serviceResponseSchema(
     paymentUrl: z.union([z.string().url(), z.null()]),
   })
 )
+
+export const billingCheckoutReturnInputSchema = z.object({
+  cancelUrl: z.url().optional(),
+  successUrl: z.url().optional(),
+})
 
 export const billingListInvoicesInputSchema = z.object({
   cursor: z.string().nullable().optional(),

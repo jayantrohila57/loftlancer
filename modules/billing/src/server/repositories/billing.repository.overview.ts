@@ -18,6 +18,8 @@ export async function readOrgBillingOverviewRow(input: {
       orgProvisioningStep: orgEntitlement.orgProvisioningStep,
       entitlementsSyncedAt: orgEntitlement.entitlementsSyncedAt,
       entitlementsDegraded: orgEntitlement.entitlementsDegraded,
+      paymentGraceUntil: orgEntitlement.paymentGraceUntil,
+      cancelAtPeriodEnd: orgEntitlement.cancelAtPeriodEnd,
     })
     .from(orgEntitlement)
     .where(eq(orgEntitlement.organizationId, input.organizationId))

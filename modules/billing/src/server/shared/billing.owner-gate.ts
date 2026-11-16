@@ -1,10 +1,15 @@
 import { ORPCError } from "@packages/orpc/server"
 
-export function assertBillingOrgOwner(input: { isOrgOwner: boolean }) {
-  if (!input.isOrgOwner) {
+export function assertBillingOrgManager(input: { canManageBilling: boolean }) {
+  if (!input.canManageBilling) {
     throw new ORPCError("FORBIDDEN", {
-      message: "Only organization owners can manage billing.",
+      message: "Only organization owners and admins can manage billing.",
       data: { code: "rbac.org_owner_required" },
     })
   }
+}
+
+/** @deprecated Use assertBillingOrgManager */
+export function assertBillingOrgOwner(input: { isOrgOwner: boolean }) {
+  assertBillingOrgManager({ canManageBilling: input.isOrgOwner })
 }

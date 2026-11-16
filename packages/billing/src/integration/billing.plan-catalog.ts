@@ -1,9 +1,10 @@
 import type { ListPlansList } from "autumn-js"
 import { getAutumnClient, isAutumnConfigured } from "./billing.autumn-client"
 import {
-  BILLING_FREE_PLAN_QUOTA_BYTES,
-  BILLING_PAID_PLAN_QUOTA_BYTES,
-} from "./billing.constants"
+  BILLING_DISPLAY_CURRENCY,
+  BILLING_FREE_PLAN_CONFIG,
+  BILLING_PAID_PLAN_CONFIG,
+} from "./billing.plan-config"
 import {
   resolveAutumnPlanIdFree,
   resolveAutumnPlanIdPaid,
@@ -25,8 +26,6 @@ export type BillingPlanCatalogEntry = {
   price: BillingPlanCatalogPrice
 }
 
-const DEFAULT_DISPLAY_CURRENCY = "usd"
-
 function priceFromAutumnPlan(
   autumnPlan: ListPlansList | undefined
 ): BillingPlanCatalogPrice {
@@ -43,7 +42,7 @@ function priceFromAutumnPlan(
 
   return {
     amount: typeof base.amount === "number" ? base.amount : null,
-    currency: DEFAULT_DISPLAY_CURRENCY,
+    currency: BILLING_DISPLAY_CURRENCY,
     interval: base.interval ?? null,
     displayPrimary: base.display?.primaryText ?? null,
     displaySecondary: base.display?.secondaryText ?? null,
@@ -51,16 +50,18 @@ function priceFromAutumnPlan(
 }
 
 export function buildProductPlanCatalog(): BillingPlanCatalogEntry[] {
+  const free = BILLING_FREE_PLAN_CONFIG
+  const paid = BILLING_PAID_PLAN_CONFIG
   return [
     {
       planId: resolveAutumnPlanIdFree(),
       tier: "free",
-      quotaBytes: BILLING_FREE_PLAN_QUOTA_BYTES,
-      aiEnabled: false,
+      quotaBytes: free.features.storage.included,
+      aiEnabled: free.aiEnabled,
       price: {
-        amount: 0,
-        currency: DEFAULT_DISPLAY_CURRENCY,
-        interval: null,
+        amount: free.price.amount,
+        currency: free.price.currency,
+        interval: free.price.interval,
         displayPrimary: null,
         displaySecondary: null,
       },
@@ -68,12 +69,12 @@ export function buildProductPlanCatalog(): BillingPlanCatalogEntry[] {
     {
       planId: resolveAutumnPlanIdPaid(),
       tier: "paid",
-      quotaBytes: BILLING_PAID_PLAN_QUOTA_BYTES,
-      aiEnabled: true,
+      quotaBytes: paid.features.storage.included,
+      aiEnabled: paid.aiEnabled,
       price: {
-        amount: null,
-        currency: DEFAULT_DISPLAY_CURRENCY,
-        interval: "month",
+        amount: paid.price.amount,
+        currency: paid.price.currency,
+        interval: paid.price.interval,
         displayPrimary: null,
         displaySecondary: null,
       },
