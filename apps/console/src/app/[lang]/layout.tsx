@@ -5,6 +5,7 @@ import { I18nProvider } from "@features/i18n/provider"
 import { ThemeProvider, themeProviderProps } from "@features/theme"
 import { AppearancePreferencesEffects } from "@modules/appearance-preferences/effects"
 import { VercelWebTelemetry } from "@packages/analytics"
+import { brand, brandSeo } from "@packages/brand"
 import { DirectionProvider } from "@packages/ui"
 import { ToastProvider } from "@packages/ui/components/toast"
 import type { Metadata } from "next"
@@ -26,8 +27,16 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "metadata" })
   return {
     metadataBase: new URL(serverEnv.APP_PUBLIC_URL),
-    title: t("title"),
+    applicationName: brand.name,
+    title: {
+      default: t("title"),
+      template: brandSeo.titleTemplate,
+    },
     description: t("description"),
+    openGraph: {
+      type: brandSeo.openGraphType,
+      siteName: brand.name,
+    },
   }
 }
 

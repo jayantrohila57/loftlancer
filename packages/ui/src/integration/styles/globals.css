@@ -440,9 +440,32 @@ html[data-interface-density="comfortable"] {
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* Firefox — thin themed scrollbar (loftlancer-draft v1.26.5). */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) var(--background);
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Text selection — same tokens as loftlancer-draft v1.26.5. */
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+  /* WebKit / Blink thin themed scrollbar (loftlancer-draft v1.26.5). */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--foreground);
   }
   code,
   kbd,
