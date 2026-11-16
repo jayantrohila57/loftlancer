@@ -5,6 +5,7 @@ import {
 } from "@/shared/i18n/web.i18n.server"
 import { getWebStatusPageSnapshot } from "@/shared/status/web-betterstack.client"
 import { worstAggregateLevel } from "@/shared/status/web-betterstack.mapper"
+import { WebStatusPageLayout } from "@/shared/status/web-status-page-layout"
 import { WebStatusPageOverview } from "@/shared/status/web-status-page-overview"
 import type { LangPageProps } from "@/shared/types/web.app.types"
 
@@ -30,7 +31,6 @@ export default async function StatusPage({ params }: LangPageProps) {
   const snapshot = { ...loaded, aggregateState }
 
   const copy = {
-    title: t("title"),
     overviewTab: t("overviewTab"),
     historyTab: t("historyTab"),
     updatedPrefix: t("updatedPrefix"),
@@ -68,5 +68,13 @@ export default async function StatusPage({ params }: LangPageProps) {
     },
   }
 
-  return <WebStatusPageOverview copy={copy} snapshot={snapshot} />
+  return (
+    <WebStatusPageLayout
+      eyebrow={t("eyebrow")}
+      subtitle={t("subtitle")}
+      title={t("title")}
+    >
+      <WebStatusPageOverview copy={copy} snapshot={snapshot} />
+    </WebStatusPageLayout>
+  )
 }
