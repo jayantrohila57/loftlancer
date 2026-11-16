@@ -29,6 +29,10 @@ to write entries.
 - Studio settings billing page and a console admin view to review an organization's plan and usage and grant or override a plan.
 - A 7-day grace period after a failed payment, then a downgrade to Free. Organizations that are over a plan limit stay read-only; existing files are not deleted.
 
+### Fixed
+
+- Start Pro trial on the pricing page no longer loops between sign-in and the pricing page. Signed-in users go to checkout; signed-out users are sent to sign-in once.
+
 ## [0.0.1] - 2026-11-15
 
 ### Added

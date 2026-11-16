@@ -1,16 +1,20 @@
 "use client"
 
 import { buildAuthSignInLocation } from "@modules/auth"
-import { authClient } from "@packages/better-auth/client"
 import { Button } from "@packages/ui/components/button"
 import { Skeleton } from "@packages/ui/components/skeleton"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { Link } from "@/shared/i18n/web.i18n"
+import type { PricingSessionState } from "@/shared/pricing/web-pricing-auth"
 import {
   buildSignedInContinueLocation,
-  postPricingCheckout,
+  readPricingSession,
 } from "@/shared/pricing/web-pricing-auth"
+import {
+  pricingReturnTo,
+  startPaidCheckoutFlow,
+} from "@/shared/pricing/web-pricing-checkout-flow"
 import type { WebPricingPlanView } from "@/shared/pricing/web-pricing-types"
 
 type CtaKind = "start" | "checkout" | "contact"
@@ -34,14 +38,20 @@ export function WebSitePricingCta({
 }) {
   const locale = useLocale()
   const t = useTranslations("pricing")
-  const [mounted, setMounted] = useState(false)
+  const [session, setSession] = useState<PricingSessionState | null>(null)
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
-  const { data, isPending } = authClient.useSession()
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    if (kind === "contact") return
+    let cancelled = false
+    void readPricingSession().then((state) => {
+      if (!cancelled) setSession(state)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [kind])
 
   if (kind === "contact") {
     return (
@@ -56,11 +66,24 @@ export function WebSitePricingCta({
     )
   }
 
-  if (!mounted || isPending) {
+  if (!session) {
     return <Skeleton className={className} />
   }
 
-  const signedIn = Boolean(data?.user)
+  if (session.kind === "error") {
+    return (
+      <div className="flex w-full flex-col items-center gap-2">
+        <Button className={className} disabled size={size} variant={variant}>
+          {label}
+        </Button>
+        <p className="min-h-5 text-sm text-destructive" role="alert">
+          {t("errorSessionCheck")}
+        </p>
+      </div>
+    )
+  }
+
+  const signedIn = session.kind !== "signed_out"
 
   if (kind === "start") {
     const href = signedIn
@@ -111,49 +134,21 @@ export function WebSitePricingCta({
     )
   }
 
-  async function startPaidCheckout() {
+  async function onPaidClick() {
     if (!paidPlan) return
     setMessage(null)
     setPending(true)
     try {
-      const origin = window.location.origin
-      const successUrl = `${origin}/${locale}/billing/success?plan=${encodeURIComponent(paidPlan.planId)}`
-      const cancelUrl = `${origin}/${locale}/billing/cancel?plan=${encodeURIComponent(paidPlan.planId)}`
-      const result = await postPricingCheckout({
-        planId: paidPlan.planId,
-        successUrl,
-        cancelUrl,
-        returnTo: pricingReturnTo(locale, paidPlan.planId),
+      const result = await startPaidCheckoutFlow({
         locale,
+        plan: paidPlan,
+        source: "click",
       })
-      if (result.status === 401) {
-        window.location.assign(
-          buildAuthSignInLocation({
-            locale,
-            returnTo: pricingReturnTo(locale, paidPlan.planId),
-          })
-        )
+      if (result.kind === "redirect") {
+        window.location.assign(result.url)
         return
       }
-      if (result.status === 409 && result.body.createOrganizationUrl) {
-        window.location.assign(result.body.createOrganizationUrl)
-        return
-      }
-      if (result.body.error === "owner_required") {
-        setMessage(t("errorOwnerRequired"))
-        return
-      }
-      if (result.body.alreadySubscribed) {
-        window.location.assign(successUrl)
-        return
-      }
-      if (result.body.paymentUrl) {
-        window.location.assign(result.body.paymentUrl)
-        return
-      }
-      setMessage(checkoutErrorMessage(result.body.error, t))
-    } catch {
-      setMessage(t("errorGeneric"))
+      setMessage(t(result.key))
     } finally {
       setPending(false)
     }
@@ -164,7 +159,7 @@ export function WebSitePricingCta({
       <Button
         className={className}
         disabled={pending}
-        onClick={() => void startPaidCheckout()}
+        onClick={() => void onPaidClick()}
         size={size}
         variant={variant}
       >
@@ -175,32 +170,4 @@ export function WebSitePricingCta({
       </p>
     </div>
   )
-}
-
-function pricingReturnTo(locale: string, planId: string): string {
-  return `${window.location.origin}/${locale}/pricing?plan=${encodeURIComponent(planId)}`
-}
-
-function checkoutErrorMessage(
-  code: string | undefined,
-  t: (
-    key:
-      | "errorGeneric"
-      | "errorBillingUnavailable"
-      | "errorOrganizationRequired"
-      | "errorOwnerRequired"
-      | "errorAlreadySubscribed"
-  ) => string
-): string {
-  if (code === "organization_required") return t("errorOrganizationRequired")
-  if (code === "owner_required") return t("errorOwnerRequired")
-  if (code === "already_subscribed") return t("errorAlreadySubscribed")
-  if (
-    code === "autumn_unconfigured" ||
-    code === "autumn_unavailable" ||
-    code === "database_unavailable"
-  ) {
-    return t("errorBillingUnavailable")
-  }
-  return t("errorGeneric")
 }

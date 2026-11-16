@@ -939,6 +939,7 @@
     "errorOrganizationRequired": "Create an organization before you subscribe.",
     "errorOwnerRequired": "Only organization owners can subscribe.",
     "errorAlreadySubscribed": "Your organization is already on this plan.",
+    "errorSessionCheck": "We could not verify your sign-in. Refresh the page and try again.",
     "backToPricing": "Back to pricing"
   },
   "siteShell": {

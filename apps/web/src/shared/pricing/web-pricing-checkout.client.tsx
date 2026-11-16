@@ -1,16 +1,19 @@
 "use client"
 
 import { buildAuthSignInLocation } from "@modules/auth"
-import { authClient } from "@packages/better-auth/client"
 import { Button } from "@packages/ui/components/button"
 import { Skeleton } from "@packages/ui/components/skeleton"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useRef, useState } from "react"
+import { usePathname, useRouter } from "@/shared/i18n/web.i18n"
+import type { PricingSessionState } from "@/shared/pricing/web-pricing-auth"
 import {
-  buildCreateOrganizationLocation,
   buildSignedInContinueLocation,
-  postPricingCheckout,
+  readPricingResumeGuard,
+  readPricingSession,
+  writePricingResumeGuard,
 } from "@/shared/pricing/web-pricing-auth"
+import { startPaidCheckoutFlow } from "@/shared/pricing/web-pricing-checkout-flow"
 import type { WebPricingPlanView } from "@/shared/pricing/web-pricing-types"
 
 export function WebPricingCheckoutButton({
@@ -20,64 +23,54 @@ export function WebPricingCheckoutButton({
 }) {
   const locale = useLocale()
   const t = useTranslations("pricing")
-  const [mounted, setMounted] = useState(false)
+  const [session, setSession] = useState<PricingSessionState | null>(null)
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
-  const { data, isPending } = authClient.useSession()
   const isPaid = plan.tier === "paid"
 
   useEffect(() => {
-    setMounted(true)
+    let cancelled = false
+    void readPricingSession().then((state) => {
+      if (!cancelled) setSession(state)
+    })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
-  if (!mounted || isPending) {
+  if (!session) {
     return <Skeleton className="h-9 w-full" />
   }
 
-  const signedIn = Boolean(data?.user)
+  if (session.kind === "error") {
+    return (
+      <div className="flex w-full flex-col gap-2">
+        <Button className="w-full" disabled variant="outline">
+          {isPaid ? t("ctaSubscribe") : t("ctaGetStarted")}
+        </Button>
+        <p className="min-h-5 text-sm text-destructive" role="alert">
+          {t("errorSessionCheck")}
+        </p>
+      </div>
+    )
+  }
 
-  async function startPaidCheckout() {
+  const signedIn = session.kind !== "signed_out"
+
+  async function onPaidClick() {
     setMessage(null)
     setPending(true)
     try {
-      const origin = window.location.origin
-      const successUrl = `${origin}/${locale}/billing/success?plan=${encodeURIComponent(plan.planId)}`
-      const cancelUrl = `${origin}/${locale}/billing/cancel?plan=${encodeURIComponent(plan.planId)}`
-      const result = await postPricingCheckout({
-        planId: plan.planId,
-        successUrl,
-        cancelUrl,
-        returnTo: pricingReturnTo(locale, plan.planId),
+      const result = await startPaidCheckoutFlow({
         locale,
+        plan,
+        source: "click",
       })
-      if (result.status === 401) {
-        window.location.assign(
-          buildAuthSignInLocation({
-            locale,
-            returnTo: pricingReturnTo(locale, plan.planId),
-          })
-        )
+      if (result.kind === "redirect") {
+        window.location.assign(result.url)
         return
       }
-      if (result.status === 409 && result.body.createOrganizationUrl) {
-        window.location.assign(result.body.createOrganizationUrl)
-        return
-      }
-      if (result.body.error === "owner_required") {
-        setMessage(t("errorOwnerRequired"))
-        return
-      }
-      if (result.body.alreadySubscribed) {
-        window.location.assign(successUrl)
-        return
-      }
-      if (result.body.paymentUrl) {
-        window.location.assign(result.body.paymentUrl)
-        return
-      }
-      setMessage(checkoutErrorMessage(result.body.error, t))
-    } catch {
-      setMessage(t("errorGeneric"))
+      setMessage(t(result.key))
     } finally {
       setPending(false)
     }
@@ -102,7 +95,7 @@ export function WebPricingCheckoutButton({
           <a
             href={buildAuthSignInLocation({
               locale,
-              returnTo: pricingReturnTo(locale, plan.planId),
+              returnTo: `${window.location.origin}/${locale}/pricing?plan=${encodeURIComponent(plan.planId)}`,
             })}
           />
         }
@@ -117,7 +110,7 @@ export function WebPricingCheckoutButton({
       <Button
         className="w-full"
         disabled={pending}
-        onClick={() => void startPaidCheckout()}
+        onClick={() => void onPaidClick()}
       >
         {t("ctaSubscribe")}
       </Button>
@@ -137,56 +130,38 @@ export function WebPricingCheckoutResume({
 }) {
   const locale = useLocale()
   const t = useTranslations("pricing")
-  const { data, isPending } = authClient.useSession()
+  const router = useRouter()
+  const pathname = usePathname()
   const started = useRef(false)
   const [message, setMessage] = useState<string | null>(null)
   const plan = plans.find((entry) => entry.planId === planId) ?? null
 
   useEffect(() => {
-    if (isPending || started.current || !plan || plan.tier !== "paid") return
-    if (!data?.user) return
+    const paidPlan = plan?.tier === "paid" ? plan : null
+    if (!paidPlan || started.current) return
+    const guard = readPricingResumeGuard(paidPlan.planId)
+    if (guard === "completed") {
+      router.replace(pathname, { scroll: false })
+      return
+    }
     started.current = true
-    const origin = window.location.origin
-    const successUrl = `${origin}/${locale}/billing/success?plan=${encodeURIComponent(plan.planId)}`
-    const cancelUrl = `${origin}/${locale}/billing/cancel?plan=${encodeURIComponent(plan.planId)}`
-    void postPricingCheckout({
-      planId: plan.planId,
-      successUrl,
-      cancelUrl,
-      returnTo: pricingReturnTo(locale, plan.planId),
+    if (guard !== "pending-org") {
+      writePricingResumeGuard(paidPlan.planId, "completed")
+    }
+    router.replace(pathname, { scroll: false })
+    void startPaidCheckoutFlow({
       locale,
+      plan: paidPlan,
+      source: "resume",
+    }).then((result) => {
+      if (result.kind === "redirect") {
+        window.location.assign(result.url)
+        return
+      }
+      writePricingResumeGuard(paidPlan.planId, "completed")
+      setMessage(t(result.key))
     })
-      .then((result) => {
-        if (result.status === 409 && result.body.createOrganizationUrl) {
-          window.location.assign(
-            result.body.createOrganizationUrl ||
-              buildCreateOrganizationLocation({
-                locale,
-                returnTo: pricingReturnTo(locale, plan.planId),
-              })
-          )
-          return
-        }
-        if (result.body.error === "owner_required") {
-          setMessage(t("errorOwnerRequired"))
-          return
-        }
-        if (result.body.alreadySubscribed) {
-          window.location.assign(successUrl)
-          return
-        }
-        if (result.body.paymentUrl) {
-          window.location.assign(result.body.paymentUrl)
-          return
-        }
-        if (result.body.error) {
-          setMessage(checkoutErrorMessage(result.body.error, t))
-        }
-      })
-      .catch(() => {
-        setMessage(t("errorGeneric"))
-      })
-  }, [data?.user, isPending, locale, plan, t])
+  }, [locale, pathname, plan, router, t])
 
   if (!message) return null
 
@@ -195,32 +170,4 @@ export function WebPricingCheckoutResume({
       {message}
     </p>
   )
-}
-
-function pricingReturnTo(locale: string, planId: string): string {
-  return `${window.location.origin}/${locale}/pricing?plan=${encodeURIComponent(planId)}`
-}
-
-function checkoutErrorMessage(
-  code: string | undefined,
-  t: (
-    key:
-      | "errorGeneric"
-      | "errorBillingUnavailable"
-      | "errorOrganizationRequired"
-      | "errorOwnerRequired"
-      | "errorAlreadySubscribed"
-  ) => string
-): string {
-  if (code === "organization_required") return t("errorOrganizationRequired")
-  if (code === "owner_required") return t("errorOwnerRequired")
-  if (code === "already_subscribed") return t("errorAlreadySubscribed")
-  if (
-    code === "autumn_unconfigured" ||
-    code === "autumn_unavailable" ||
-    code === "database_unavailable"
-  ) {
-    return t("errorBillingUnavailable")
-  }
-  return t("errorGeneric")
 }

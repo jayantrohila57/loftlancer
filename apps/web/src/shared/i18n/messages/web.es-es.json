@@ -939,6 +939,7 @@
     "errorOrganizationRequired": "Crea una organización antes de suscribirte.",
     "errorOwnerRequired": "Solo los propietarios de la organización pueden suscribirse.",
     "errorAlreadySubscribed": "Tu organización ya está en este plan.",
+    "errorSessionCheck": "No pudimos comprobar tu inicio de sesión. Actualiza la página e inténtalo de nuevo.",
     "backToPricing": "Volver a precios"
   },
   "siteShell": {
