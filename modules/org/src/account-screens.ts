@@ -6,6 +6,7 @@ export {
   useOrgCreateSheet,
 } from "./client/components/create/org.create-sheet.client"
 export { OrgInvitationsScreen } from "./client/components/invitations/org.invitations-screen.client"
+export { readOrganizationSlugFromResponse } from "./utils/org.organization-id"
 export { OrgListScreen } from "./client/components/list/org.list-screen"
 export {
   type OrgAppPaths,

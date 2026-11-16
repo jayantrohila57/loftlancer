@@ -1,30 +1,42 @@
 "use client"
 
+import type { ComboboxOption } from "@features/form"
+import { callingCodeForRegion, FormKit, useFormKitFormId } from "@features/form"
 import { withClientRetry } from "@modules/auth"
-import { formatOrgClientError, organizationSlugFromName } from "@modules/org"
+import { formatOrgClientError } from "@modules/org"
 import { securityRpc } from "@modules/security/client"
 import { authClient } from "@packages/better-auth/client"
 import { Button } from "@packages/ui/components/button"
-import { Input } from "@packages/ui/components/input"
-import { Label } from "@packages/ui/components/label"
 import { toastManager } from "@packages/ui/components/toast"
-import { useLocale, useTranslations } from "next-intl"
-import type { FormEvent } from "react"
-import { useMemo, useState } from "react"
+import { useFormatter, useLocale, useTranslations } from "next-intl"
+import { useEffect, useMemo, useRef } from "react"
+import { useFormContext, useWatch } from "react-hook-form"
+import type { z } from "zod"
 import {
-  STUDIO_ORG_SLUG_MAX_LENGTH,
-  STUDIO_ORG_SLUG_PATTERN,
-} from "@/shared/org/studio-org.constants"
+  buildStudioOnboardingCountryOptions,
+  buildStudioOnboardingCurrencyOptions,
+  buildStudioOnboardingLanguageOptions,
+} from "@/shared/onboarding/studio-onboarding-organization-options.client"
+import { studioOnboardingOrganizationSchema } from "@/shared/onboarding/studio-onboarding-organization-schema.client"
+import type { studioOnboardingRegionalDefaultsFromDetected } from "@/shared/onboarding/studio-onboarding-setup.client"
 import {
-  isReservedStudioOrgSlug,
-  studioAbsolutePath,
-} from "@/shared/org/studio-org.paths"
+  buildStudioOnboardingSetupV2,
+  getStudioOnboardingRegionalPlaceholderDefaults,
+  studioOnboardingCurrencyForCountry,
+  studioOnboardingTimezoneForCountry,
+  useStudioOnboardingRegionalDefaults,
+} from "@/shared/onboarding/studio-onboarding-setup.client"
+import {
+  StudioOnboardingSlugAutoFill,
+  StudioOnboardingSlugField,
+  StudioOnboardingSlugPreview,
+} from "@/shared/onboarding/studio-onboarding-slug-fields.client"
+import { studioAbsolutePath } from "@/shared/org/studio-org.paths"
+import { StudioOnboardingFooterPortal } from "@/shared/onboarding/studio-onboarding-footer-portal.client"
 
-function slugify(name: string, currentSlug: string, lastAuto: string) {
-  const next = organizationSlugFromName(name)
-  const wasAuto = currentSlug.length === 0 || currentSlug === lastAuto
-  return wasAuto ? next : currentSlug
-}
+type StudioOnboardingOrganizationValues = z.infer<
+  ReturnType<typeof studioOnboardingOrganizationSchema>
+>
 
 async function resumeProvisioning() {
   try {
@@ -40,6 +52,101 @@ async function resumeProvisioning() {
   }
 }
 
+function StudioOnboardingCreateSubmit() {
+  const t = useTranslations("ui")
+  const formId = useFormKitFormId()
+  const {
+    formState: { isSubmitting },
+  } = useFormContext<StudioOnboardingOrganizationValues>()
+  return (
+    <Button type="submit" form={formId} loading={isSubmitting}>
+      {isSubmitting ? t("creatingOrganization") : t("createOrganization")}
+    </Button>
+  )
+}
+
+function StudioOnboardingOrganizationTypeSection() {
+  const t = useTranslations("ui")
+  const organizationTypeOptions = useMemo(
+    () =>
+      [
+        {
+          value: "freelancer" as const,
+          label: t("organizationTypeFreelancer"),
+          description: t("organizationTypeFreelancerDescription"),
+        },
+        {
+          value: "studio" as const,
+          label: t("organizationTypeStudio"),
+          description: t("organizationTypeStudioDescription"),
+        },
+        {
+          value: "agency" as const,
+          label: t("organizationTypeAgency"),
+          description: t("organizationTypeAgencyDescription"),
+        },
+        {
+          value: "company" as const,
+          label: t("organizationTypeCompany"),
+          description: t("organizationTypeCompanyDescription"),
+        },
+      ] as const,
+    [t]
+  )
+
+  return (
+    <FormKit.Section
+      title={t("onboardingOrganizationTypeTitle")}
+      description={t("onboardingOrganizationTypeDescription")}
+    >
+      <div className="[&_[data-slot=field]]:items-stretch [&_[data-slot=radio-group]]:grid [&_[data-slot=radio-group]]:w-full [&_[data-slot=radio-group]]:min-w-0 [&_[data-slot=radio-group]]:gap-4 [&_[data-slot=radio-group]]:md:grid-cols-2 [&_[data-slot=radio-group]>*]:w-full [&_[data-slot=radio-group]>*]:min-w-0">
+        <FormKit.Field
+          type="radio-group"
+          name="type"
+          label={t("organizationType")}
+          options={[...organizationTypeOptions]}
+          card
+          required
+        />
+      </div>
+    </FormKit.Section>
+  )
+}
+
+function StudioOnboardingContactSection() {
+  const t = useTranslations("ui")
+  const { control } = useFormContext<StudioOnboardingOrganizationValues>()
+  const countryCode = useWatch({ control, name: "location.countryCode" })
+  const defaultCallingCode = useMemo(
+    () => callingCodeForRegion(countryCode),
+    [countryCode]
+  )
+
+  return (
+    <FormKit.Section
+      title={t("onboardingOrganizationContactTitle")}
+      description={t("onboardingOrganizationContactDescription")}
+    >
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FormKit.Field
+          type="email"
+          name="contact.primaryEmail"
+          label={t("organizationPrimaryEmail")}
+          description={t("organizationPrimaryEmailDescription")}
+          required
+        />
+        <FormKit.Field
+          type="tel"
+          name="contact.businessPhone"
+          label={t("organizationBusinessPhoneOptional")}
+          description={t("organizationOptionalWizardFieldDescription")}
+          defaultCallingCode={defaultCallingCode}
+        />
+      </div>
+    </FormKit.Section>
+  )
+}
+
 export function StudioCreateOrganizationForm({
   nextPath,
 }: {
@@ -47,43 +154,57 @@ export function StudioCreateOrganizationForm({
 }) {
   const t = useTranslations("ui")
   const locale = useLocale()
-  const [name, setName] = useState("")
-  const [slug, setSlug] = useState("")
-  const [autoSlug, setAutoSlug] = useState("")
-  const [submitting, setSubmitting] = useState(false)
+  const format = useFormatter()
+  const schema = studioOnboardingOrganizationSchema(t)
+  const { data: session } = authClient.useSession()
 
-  const previewSlug = useMemo(() => slug.trim(), [slug])
+  const countryOptions = useMemo(
+    () => buildStudioOnboardingCountryOptions(format),
+    [format]
+  )
+  const currencyOptions = useMemo(
+    () => buildStudioOnboardingCurrencyOptions(format),
+    [format]
+  )
+  const languageOptions = useMemo(
+    () => buildStudioOnboardingLanguageOptions(),
+    []
+  )
+  const regionalDefaults = useMemo(
+    () => getStudioOnboardingRegionalPlaceholderDefaults(locale),
+    [locale]
+  )
+  const detectedRegionalDefaults = useStudioOnboardingRegionalDefaults(locale)
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (submitting) return
-    const trimmedName = name.trim()
-    const trimmedSlug = slug.trim().toLowerCase()
-    if (trimmedName.length < 2) {
-      toastManager.add({
-        type: "error",
-        title: t("organizationNameRequired"),
-      })
-      return
-    }
-    if (
-      !STUDIO_ORG_SLUG_PATTERN.test(trimmedSlug) ||
-      trimmedSlug.length > STUDIO_ORG_SLUG_MAX_LENGTH ||
-      isReservedStudioOrgSlug(trimmedSlug)
-    ) {
-      toastManager.add({
-        type: "error",
-        title: t("organizationSlugInvalid"),
-      })
-      return
-    }
-    setSubmitting(true)
+  const defaultValues = useMemo<StudioOnboardingOrganizationValues>(
+    () => ({
+      name: "",
+      slug: "",
+      type: "studio",
+      contact: {
+        primaryEmail: session?.user.email ?? "",
+        businessPhone: "",
+      },
+      location: {
+        countryCode: regionalDefaults.countryCode,
+        timezone: regionalDefaults.timezone,
+        currencyCode: regionalDefaults.currencyCode,
+        defaultLanguage: regionalDefaults.defaultLanguage,
+        city: "",
+      },
+    }),
+    [session?.user.email, regionalDefaults]
+  )
+
+  async function onSubmit(values: StudioOnboardingOrganizationValues) {
+    const setup = buildStudioOnboardingSetupV2(values)
     try {
       await toastManager.promise(
         (async () => {
           const response = await authClient.organization.create({
-            name: trimmedName,
-            slug: trimmedSlug,
+            name: values.name.trim(),
+            slug: values.slug.trim(),
+            metadata: { setup },
           })
           if (response.error) {
             throw new Error(
@@ -109,7 +230,7 @@ export function StudioCreateOrganizationForm({
             }
           }
           await resumeProvisioning()
-          const createdSlug = created?.slug ?? trimmedSlug
+          const createdSlug = created?.slug ?? values.slug.trim()
           const dest =
             nextPath === "plan"
               ? studioAbsolutePath(locale, "/onboarding/plan")
@@ -126,57 +247,248 @@ export function StudioCreateOrganizationForm({
         }
       )
     } catch {
-      setSubmitting(false)
+      // toastManager.promise already surfaced the failure.
     }
   }
 
   return (
-    <form className="flex max-w-lg flex-col gap-4" onSubmit={onSubmit}>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="organization-name">{t("organizationName")}</Label>
-        <Input
-          id="organization-name"
-          name="name"
-          autoComplete="organization"
-          value={name}
-          onChange={(event) => {
-            const nextName = event.target.value
-            const nextSlug = slugify(nextName, slug, autoSlug)
-            setName(nextName)
-            setSlug(nextSlug)
-            setAutoSlug(organizationSlugFromName(nextName))
-          }}
+    <FormKit
+      schema={schema}
+      defaultValues={defaultValues}
+      onSubmit={onSubmit}
+      variant="embedded"
+    >
+      <StudioOnboardingRegionalPrefill
+        activeLocale={locale}
+        detectedDefaults={detectedRegionalDefaults}
+        placeholderDefaults={regionalDefaults}
+        sessionEmail={session?.user.email}
+      />
+      <FormKit.Section
+        title={t("onboardingOrganizationBasicsTitle")}
+        description={t("onboardingOrganizationBasicsDescription")}
+      >
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormKit.Field
+            type="text"
+            name="name"
+            label={t("organizationName")}
+            description={t("organizationNameFieldDescription")}
+            required
+          />
+          <StudioOnboardingSlugField />
+        </div>
+        <StudioOnboardingSlugAutoFill />
+        <StudioOnboardingSlugPreview />
+      </FormKit.Section>
+      <StudioOnboardingOrganizationTypeSection />
+      <StudioOnboardingContactSection />
+      <StudioOnboardingLocationSection
+        countryOptions={countryOptions}
+        currencyOptions={currencyOptions}
+        languageOptions={languageOptions}
+      />
+      <StudioOnboardingFooterPortal>
+        <FormKit.Actions className="justify-end bg-transparent p-0">
+          <StudioOnboardingCreateSubmit />
+        </FormKit.Actions>
+      </StudioOnboardingFooterPortal>
+    </FormKit>
+  )
+}
+
+function StudioOnboardingRegionalPrefill({
+  activeLocale,
+  detectedDefaults,
+  placeholderDefaults,
+  sessionEmail,
+}: {
+  readonly activeLocale: string
+  readonly detectedDefaults: ReturnType<
+    typeof studioOnboardingRegionalDefaultsFromDetected
+  >
+  readonly placeholderDefaults: ReturnType<
+    typeof studioOnboardingRegionalDefaultsFromDetected
+  >
+  readonly sessionEmail: string | undefined
+}) {
+  const { getValues, setValue } =
+    useFormContext<StudioOnboardingOrganizationValues>()
+  const syncedLocaleRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    const email = sessionEmail?.trim()
+    if (!email) return
+    if (!getValues("contact.primaryEmail")?.trim()) {
+      setValue("contact.primaryEmail", email, {
+        shouldDirty: false,
+        shouldValidate: true,
+      })
+    }
+  }, [getValues, sessionEmail, setValue])
+
+  useEffect(() => {
+    const location = getValues("location")
+    const localeChanged =
+      syncedLocaleRef.current !== null &&
+      syncedLocaleRef.current !== activeLocale
+
+    if (localeChanged) {
+      setValue("location.defaultLanguage", detectedDefaults.defaultLanguage, {
+        shouldDirty: false,
+        shouldValidate: true,
+      })
+      syncedLocaleRef.current = activeLocale
+      return
+    }
+
+    if (syncedLocaleRef.current !== null) return
+
+    const matchesPlaceholder =
+      location.countryCode === placeholderDefaults.countryCode &&
+      location.timezone === placeholderDefaults.timezone &&
+      location.currencyCode === placeholderDefaults.currencyCode
+
+    if (!matchesPlaceholder) {
+      syncedLocaleRef.current = activeLocale
+      return
+    }
+
+    if (
+      detectedDefaults.countryCode === location.countryCode &&
+      detectedDefaults.timezone === location.timezone &&
+      detectedDefaults.currencyCode === location.currencyCode &&
+      detectedDefaults.defaultLanguage === location.defaultLanguage
+    ) {
+      syncedLocaleRef.current = activeLocale
+      return
+    }
+
+    setValue("location.countryCode", detectedDefaults.countryCode, {
+      shouldDirty: false,
+      shouldValidate: true,
+    })
+    setValue("location.timezone", detectedDefaults.timezone, {
+      shouldDirty: false,
+      shouldValidate: true,
+    })
+    setValue("location.currencyCode", detectedDefaults.currencyCode, {
+      shouldDirty: false,
+      shouldValidate: true,
+    })
+    setValue("location.defaultLanguage", detectedDefaults.defaultLanguage, {
+      shouldDirty: false,
+      shouldValidate: true,
+    })
+    syncedLocaleRef.current = activeLocale
+  }, [activeLocale, detectedDefaults, getValues, placeholderDefaults, setValue])
+
+  useEffect(() => {
+    const location = getValues("location")
+    const regionalTimezone = studioOnboardingTimezoneForCountry(
+      location.countryCode
+    )
+    if (
+      regionalTimezone === "UTC" ||
+      (location.timezone !== "UTC" && location.timezone !== "Etc/UTC")
+    ) {
+      return
+    }
+    if (location.timezone !== regionalTimezone) {
+      setValue("location.timezone", regionalTimezone, {
+        shouldDirty: false,
+        shouldValidate: true,
+      })
+    }
+  }, [
+    detectedDefaults.countryCode,
+    detectedDefaults.timezone,
+    getValues,
+    setValue,
+  ])
+
+  return null
+}
+
+function StudioOnboardingLocationCountryCurrencySync() {
+  const { control, setValue } =
+    useFormContext<StudioOnboardingOrganizationValues>()
+  const countryCode = useWatch({ control, name: "location.countryCode" })
+  const skipNextCountrySync = useRef(true)
+
+  useEffect(() => {
+    if (!countryCode) return
+    if (skipNextCountrySync.current) {
+      skipNextCountrySync.current = false
+      return
+    }
+    setValue(
+      "location.currencyCode",
+      studioOnboardingCurrencyForCountry(countryCode),
+      { shouldValidate: true }
+    )
+  }, [countryCode, setValue])
+
+  return null
+}
+
+function StudioOnboardingLocationSection({
+  countryOptions,
+  currencyOptions,
+  languageOptions,
+}: {
+  readonly countryOptions: ComboboxOption[]
+  readonly currencyOptions: ComboboxOption[]
+  readonly languageOptions: ComboboxOption[]
+}) {
+  const t = useTranslations("ui")
+  return (
+    <FormKit.Section
+      title={t("onboardingOrganizationLocationTitle")}
+      description={t("onboardingOrganizationLocationDescription")}
+    >
+      <StudioOnboardingLocationCountryCurrencySync />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FormKit.Field
+          type="combobox"
+          name="location.countryCode"
+          label={t("organizationCountryCode")}
+          description={t("organizationCountryCodeFieldDescription")}
+          options={countryOptions}
+          placeholder={t("searchRegion")}
           required
-          minLength={2}
         />
-        <p className="text-sm text-muted-foreground">
-          {t("organizationNameFieldDescription")}
-        </p>
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="organization-slug">{t("organizationSlug")}</Label>
-        <Input
-          id="organization-slug"
-          name="slug"
-          value={slug}
-          onChange={(event) => setSlug(event.target.value.toLowerCase())}
+        <FormKit.Field
+          type="text"
+          name="location.city"
+          label={t("organizationCityOptional")}
+          description={t("organizationOptionalWizardFieldDescription")}
+        />
+        <FormKit.Field
+          type="select-timezone"
+          name="location.timezone"
+          label={t("organizationTimezone")}
+          description={t("organizationTimezoneFieldDescription")}
           required
         />
-        {previewSlug ? (
-          <p className="text-sm text-muted-foreground">
-            {t("organizationSlugPreview", { slug: previewSlug })}
-          </p>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            {t("organizationSlugFieldDescription")}
-          </p>
-        )}
+        <FormKit.Field
+          type="combobox"
+          name="location.currencyCode"
+          label={t("organizationCurrencyCode")}
+          description={t("organizationCurrencyCodeFieldDescription")}
+          options={currencyOptions}
+          placeholder={t("searchCurrency")}
+          required
+        />
+        <FormKit.Field
+          type="combobox"
+          name="location.defaultLanguage"
+          label={t("language")}
+          description={t("organizationOptionalWizardFieldDescription")}
+          options={languageOptions}
+          placeholder={t("selectLanguage")}
+        />
       </div>
-      <div>
-        <Button type="submit" disabled={submitting}>
-          {submitting ? t("creatingOrganization") : t("createOrganization")}
-        </Button>
-      </div>
-    </form>
+    </FormKit.Section>
   )
 }

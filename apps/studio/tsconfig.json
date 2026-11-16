@@ -90,6 +90,9 @@
       "@modules/regional-preferences/server": [
         "../../modules/regional-preferences/src/server/index.ts"
       ],
+      "@modules/regional-preferences/utils": [
+        "../../modules/regional-preferences/src/utils/index.ts"
+      ],
       "@modules/sessions/server": [
         "../../modules/sessions/src/server/index.ts"
       ],

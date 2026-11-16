@@ -27,6 +27,15 @@ export type FieldBaseProps<
   readOnly?: boolean
   loading?: boolean
 }
+
+export type FieldAsyncStatus = "idle" | "checking" | "valid" | "invalid"
+
+export type FieldAsyncStatusLabels = {
+  checking?: string
+  valid?: string
+  invalid?: string
+}
+
 export type TextFieldProps<
   TValues extends FieldValues = FieldValues,
   TName extends Path<TValues> = Path<TValues>,
@@ -34,6 +43,11 @@ export type TextFieldProps<
   type: "text" | "email" | "tel" | "url" | "search" | "password" | "avatar-url"
   inputType?: "text" | "email" | "password" | "tel" | "url" | "search"
   showStrength?: boolean
+  /** Default international prefix when the tel value is empty. */
+  defaultCallingCode?: string
+  /** Optional inline availability indicator (spinner, success, error). */
+  asyncStatus?: FieldAsyncStatus
+  asyncStatusLabels?: FieldAsyncStatusLabels
 }
 export type AvatarUploadFieldProps<
   TValues extends FieldValues = FieldValues,

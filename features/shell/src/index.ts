@@ -25,6 +25,14 @@ export {
 } from "./capability/shell.section-layout"
 export { ShellSkipToMainContent } from "./capability/shell.skip-to-main"
 export {
+  SiteMarketingBar,
+  type SiteMarketingBarProps,
+} from "./capability/shell.site-marketing-bar"
+export {
+  SiteMarketingHeaderActions,
+  type SiteMarketingHeaderActionsProps,
+} from "./capability/shell.site-marketing-header-actions"
+export {
   ShellSubHeader,
   type ShellSubHeaderProps,
 } from "./capability/shell.sub-header"
