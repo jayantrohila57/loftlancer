@@ -42,6 +42,7 @@ const nextConfig: NextConfig = {
     "@modules/activity",
     "@modules/ai-usage",
     "@modules/security",
+    "@modules/regional-preferences",
     "@modules/shell",
     "@features/navigation",
     "@features/shell",

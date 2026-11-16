@@ -42,7 +42,17 @@ function formatInvitationRoleLabel(
   return value
 }
 
-function OrgOrganizationInvitationsBody() {
+export const STUDIO_ONBOARDING_INVITE_FORM_ID = "studio-onboarding-invite-form"
+
+function OrgOrganizationInvitationsBody({
+  formId,
+  hideInviteSubmit,
+  onInviteSent,
+}: {
+  readonly formId?: string
+  readonly hideInviteSubmit?: boolean
+  readonly onInviteSent?: () => void | Promise<void>
+}) {
   const t = useTranslations("ui")
   const inviteSchema = useMemo(() => createOrganizationInviteFormSchema(t), [t])
   const [invitations, setInvitations] = useState<PendingInvitation[]>([])
@@ -97,6 +107,7 @@ function OrgOrganizationInvitationsBody() {
             )
           }
           await load()
+          await onInviteSent?.()
         })(),
         {
           error: t("organizationInviteSendError"),
@@ -186,6 +197,7 @@ function OrgOrganizationInvitationsBody() {
         <FramePanel>
           <FormKit
             variant="embedded"
+            formId={formId}
             schema={inviteSchema}
             defaultValues={{ email: "", role: "member" }}
             onSubmit={sendInvite}
@@ -204,9 +216,11 @@ function OrgOrganizationInvitationsBody() {
                 { value: "manager", label: t("organizationRoleManager") },
               ]}
             />
-            <FormKit.Actions>
-              <FormKit.Submit />
-            </FormKit.Actions>
+            {hideInviteSubmit ? null : (
+              <FormKit.Actions>
+                <FormKit.Submit />
+              </FormKit.Actions>
+            )}
           </FormKit>
         </FramePanel>
       </Frame>
@@ -285,10 +299,22 @@ function OrgOrganizationInvitationsBody() {
   )
 }
 
-export function OrgOrganizationInvitationsScreen() {
+export function OrgOrganizationInvitationsScreen({
+  formId,
+  hideInviteSubmit,
+  onInviteSent,
+}: {
+  readonly formId?: string
+  readonly hideInviteSubmit?: boolean
+  readonly onInviteSent?: () => void | Promise<void>
+} = {}) {
   return (
     <OrgInvitationAccessGate>
-      <OrgOrganizationInvitationsBody />
+      <OrgOrganizationInvitationsBody
+        formId={formId}
+        hideInviteSubmit={hideInviteSubmit}
+        onInviteSent={onInviteSent}
+      />
     </OrgInvitationAccessGate>
   )
 }

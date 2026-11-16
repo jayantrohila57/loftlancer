@@ -34,7 +34,9 @@ export { FieldTextarea } from "./capability/fields/textarea/form.field.textarea"
 export { FieldToggle } from "./capability/fields/toggle/form.field.toggle"
 export { FieldToggleGroup } from "./capability/fields/toggle/form.field.toggle-group"
 export { FieldKit } from "./capability/form.field-kit"
+export { useFormKitFormId } from "./capability/form.form-id.context"
 export { FormKit } from "./capability/form.form-kit"
+export { callingCodeForRegion } from "./constants/form.constants"
 export type {
   AppearancePreviewSrc,
   AutocompleteFieldProps,
@@ -44,6 +46,8 @@ export type {
   ComboboxFieldProps,
   ComboboxOption,
   DateFieldProps,
+  FieldAsyncStatus,
+  FieldAsyncStatusLabels,
   FieldBaseProps,
   FieldOption,
   FieldType,

@@ -5,7 +5,14 @@ import { Button } from "@packages/ui/components/button"
 import { cn } from "@packages/ui/lib/utils"
 import { useTranslations } from "next-intl"
 import type { ReactNode } from "react"
-import { Children, Fragment, isValidElement, useEffect, useRef } from "react"
+import {
+  Children,
+  Fragment,
+  isValidElement,
+  useEffect,
+  useId,
+  useRef,
+} from "react"
 import type { FieldValues, Path } from "react-hook-form"
 import {
   FormProvider,
@@ -22,6 +29,7 @@ import type {
 import { mapUnknownServerError } from "../utils/form.server-errors"
 import { applyServerErrors } from "./form.errors"
 import { FormField } from "./form.fields"
+import { FormKitFormIdProvider, useFormKitFormId } from "./form.form-id.context"
 
 function flattenFormKitSlots(children: ReactNode): ReactNode[] {
   const slots: ReactNode[] = []
@@ -54,7 +62,10 @@ function FormKitRoot<
   children,
   variant = "card",
   fillViewport = false,
+  formId: formIdProp,
 }: FormKitProps<TInput, TOutput>) {
+  const generatedFormId = useId()
+  const formId = formIdProp ?? generatedFormId
   const form = useForm<TInput, unknown, TOutput>({
     resolver: zodResolver(schema),
     defaultValues,
@@ -93,54 +104,57 @@ function FormKitRoot<
   const error = errors.root?.server?.message
   return (
     <FormProvider {...form}>
-      <form
-        onSubmit={submit}
-        onReset={(event) => {
-          event.preventDefault()
-          form.reset()
-        }}
-        noValidate
-        className={
-          variant === "embedded"
-            ? "flex min-h-0 w-full flex-col gap-4 [&_[data-slot=form-kit-actions]]:p-0"
-            : "flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm"
-        }
-      >
-        {error ? (
-          <p role="alert" className="px-4 py-2 text-sm text-destructive">
-            {error}
-          </p>
-        ) : null}
-        <div
+      <FormKitFormIdProvider formId={formId}>
+        <form
+          id={formId}
+          onSubmit={submit}
+          onReset={(event) => {
+            event.preventDefault()
+            form.reset()
+          }}
+          noValidate
           className={
             variant === "embedded"
-              ? "flex w-full min-w-0 flex-col gap-4"
-              : fillViewport
-                ? "flex min-h-0 flex-1 flex-col overflow-hidden"
-                : "min-h-0 flex-1 overflow-y-auto"
+              ? "flex min-h-0 w-full flex-col gap-4 [&_[data-slot=form-kit-actions]]:p-0"
+              : "flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm"
           }
         >
+          {error ? (
+            <p role="alert" className="px-4 py-2 text-sm text-destructive">
+              {error}
+            </p>
+          ) : null}
           <div
             className={
               variant === "embedded"
                 ? "flex w-full min-w-0 flex-col gap-4"
                 : fillViewport
-                  ? "flex min-h-0 flex-1 flex-col overflow-hidden p-0"
-                  : "flex flex-col gap-4 p-4"
+                  ? "flex min-h-0 flex-1 flex-col overflow-hidden"
+                  : "min-h-0 flex-1 overflow-y-auto"
             }
           >
-            {fields}
+            <div
+              className={
+                variant === "embedded"
+                  ? "flex w-full min-w-0 flex-col gap-4"
+                  : fillViewport
+                    ? "flex min-h-0 flex-1 flex-col overflow-hidden p-0"
+                    : "flex flex-col gap-4 p-4"
+              }
+            >
+              {fields}
+            </div>
           </div>
-        </div>
-        {actions}
-      </form>
+          {actions}
+        </form>
+      </FormKitFormIdProvider>
     </FormProvider>
   )
 }
 
 function FormKitSection({ title, description, children }: FormKitSectionProps) {
   return (
-    <section className="grid w-full grid-cols-6 gap-4 border-b pb-6 last:border-b-0 last:pb-0">
+    <section className="grid w-full grid-cols-6 gap-4 border-b border-border pb-6 last:border-b-0 last:pb-0">
       <div className="col-span-2 w-full space-y-1">
         <h2 className="text-base font-semibold">{title}</h2>
         {description ? (
@@ -170,11 +184,12 @@ function FormKitActions({ children, className }: FormKitActionsProps) {
 
 function FormKitSubmit() {
   const t = useTranslations("ui")
-
+  const formId = useFormKitFormId()
   const { isSubmitting } = useFormState()
   return (
     <Button
       type="submit"
+      form={formId}
       loading={isSubmitting}
       aria-label={isSubmitting ? t("submitting") : t("submit")}
     >

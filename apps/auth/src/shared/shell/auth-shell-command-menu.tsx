@@ -5,14 +5,13 @@ import type { CommandPaletteItem } from "@features/command"
 import { createNavigationRegistry } from "@features/navigation"
 import { ShellCommandMenu } from "@features/shell"
 import { useTheme } from "@features/theme"
-import { authSessionApi } from "@modules/auth"
+import { authSessionApi, buildAfterSignOutLocation } from "@modules/auth"
 import { defineConnectedAccountsCommandActions } from "@modules/connected-accounts/utils"
 import { defineDeviceAuthorizationCommandActions } from "@modules/device-authorization/utils"
 import { defineAccountDeletionCommandActions } from "@modules/security/utils"
 import { defineSessionsCommandActions } from "@modules/sessions/utils"
 import { accountSidebarNavGroups } from "@modules/shell"
 import { createRuntimeLogger } from "@packages/logger"
-import { clientEnv } from "@packages/t3-env/client"
 import { toastManager } from "@packages/ui/components/toast"
 import { LogOut, Moon, Sun } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
@@ -42,8 +41,7 @@ export function AuthShellCommandMenu({ children }: AuthShellCommandMenuProps) {
         error: (error: unknown) =>
           error instanceof Error ? error.message : tUi("couldNotSignOut"),
       })
-      const base = clientEnv.NEXT_PUBLIC_AUTH_APP_URL.replace(/\/$/, "")
-      window.location.assign(`${base}/${locale}/sign-in`)
+      window.location.assign(buildAfterSignOutLocation({ locale }))
     } catch {
       // The toast already reports the error and the user can retry.
     }

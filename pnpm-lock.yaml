@@ -493,6 +493,9 @@ importers:
       '@modules/privacy':
         specifier: workspace:*
         version: link:../../modules/privacy
+      '@modules/regional-preferences':
+        specifier: workspace:*
+        version: link:../../modules/regional-preferences
       '@modules/security':
         specifier: workspace:*
         version: link:../../modules/security

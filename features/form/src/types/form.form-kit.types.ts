@@ -13,6 +13,8 @@ export type FormKitProps<
   variant?: "card" | "embedded"
   /** Card variant: lock body height and omit outer scroll (nested panes scroll). */
   fillViewport?: boolean
+  /** Overrides the native `<form>` id (used for detached submit buttons). */
+  formId?: string
 }
 export type FormKitActionsProps = {
   children: ReactNode
