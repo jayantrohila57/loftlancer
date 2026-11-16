@@ -13,6 +13,8 @@ import {
 } from "@/shared/onboarding/studio-onboarding.config"
 import type { StudioUserOrganization } from "@/shared/org/studio-org.server"
 
+export type StudioOnboardingPlanTier = "free" | "paid"
+
 export type StudioOnboardingView = {
   readonly completedSteps: ReadonlySet<StudioOnboardingStepId>
   readonly currentStep: StudioOnboardingStepId
@@ -21,6 +23,7 @@ export type StudioOnboardingView = {
   readonly progressPercent: number
   readonly finished: boolean
   readonly organizationSlug: string | null
+  readonly planTier: StudioOnboardingPlanTier | null
 }
 
 function parseCompletedSteps(
@@ -72,6 +75,8 @@ export function buildStudioOnboardingView(
   const progressPercent = Math.round(
     (Math.max(0, currentStepNumber - 1) / totalSteps) * 100
   )
+  const planTier =
+    row?.planTier === "free" || row?.planTier === "paid" ? row.planTier : null
   return {
     completedSteps: completed,
     currentStep,
@@ -80,6 +85,7 @@ export function buildStudioOnboardingView(
     progressPercent,
     finished,
     organizationSlug: organizations[0]?.slug ?? null,
+    planTier,
   }
 }
 
@@ -96,6 +102,7 @@ export async function upsertStudioOnboardingProgress(
   input: {
     readonly completedSteps: readonly StudioOnboardingStepId[]
     readonly finished?: boolean
+    readonly planTier?: StudioOnboardingPlanTier | null
   }
 ) {
   const db = await requireDb()
@@ -106,6 +113,8 @@ export async function upsertStudioOnboardingProgress(
       .update(studioOnboardingProgress)
       .set({
         completedSteps,
+        planTier:
+          input.planTier === undefined ? existing.planTier : input.planTier,
         finishedAt: input.finished ? new Date() : existing.finishedAt,
       })
       .where(eq(studioOnboardingProgress.userId, userId))
@@ -114,7 +123,20 @@ export async function upsertStudioOnboardingProgress(
   await db.insert(studioOnboardingProgress).values({
     userId,
     completedSteps,
+    planTier: input.planTier ?? null,
     finishedAt: input.finished ? new Date() : null,
+  })
+}
+
+export async function setStudioOnboardingPlanTier(
+  userId: string,
+  planTier: StudioOnboardingPlanTier
+) {
+  const existing = await readStudioOnboardingProgressRow(userId)
+  const completedSteps = existing?.completedSteps ?? []
+  await upsertStudioOnboardingProgress(userId, {
+    completedSteps: completedSteps as StudioOnboardingStepId[],
+    planTier,
   })
 }
 

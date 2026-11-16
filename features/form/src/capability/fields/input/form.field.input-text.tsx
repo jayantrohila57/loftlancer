@@ -153,15 +153,15 @@ export function FieldText<
         aria-label={statusLabel}
         aria-hidden={statusLabel ? undefined : true}
       >
-      {status === "checking" ? (
-        <LoaderCircleIcon className="size-4 animate-spin" />
-      ) : status === "valid" ? (
-        <CheckCircle2Icon className="size-4 text-success" />
-      ) : (
-        <XCircleIcon className="size-4 text-destructive" />
-      )}
-    </span>
-  )
+        {status === "checking" ? (
+          <LoaderCircleIcon className="size-4 animate-spin" />
+        ) : status === "valid" ? (
+          <CheckCircle2Icon className="size-4 text-success" />
+        ) : (
+          <XCircleIcon className="size-4 text-destructive" />
+        )}
+      </span>
+    )
   }
 
   return (
@@ -237,7 +237,7 @@ export function FieldText<
                   <SelectTrigger
                     aria-label={t("countryCallingCode")}
                     aria-labelledby={`${id}-calling-code`}
-                    className="w-auto shrink-0 min-w-16 px-2.5"
+                    className="w-auto min-w-16 shrink-0 px-2.5"
                   >
                     <SelectValue className="flex-none whitespace-nowrap" />
                   </SelectTrigger>

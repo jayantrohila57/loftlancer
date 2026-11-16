@@ -1,9 +1,16 @@
 "use server"
 
+import { redirectToExternalDestination } from "@features/i18n/redirect-external"
+import {
+  billingBeginDowngradeService,
+  billingBeginUpgradeService,
+} from "@modules/billing/server"
+import { studioOnboardingPlanCheckoutReturnUrls } from "@modules/billing/utils/billing.checkout-return-url"
 import {
   listStudioOrganizationsForSession,
   requireStudioAccess,
 } from "@/shared/auth/studio.session"
+import { serverEnv } from "@/shared/config/studio.server-env"
 import type { StudioOnboardingStepId } from "@/shared/onboarding/studio-onboarding.config"
 import {
   studioOnboardingCanAccessStep,
@@ -12,6 +19,7 @@ import {
 import {
   loadStudioOnboardingView,
   markStudioOnboardingStepComplete,
+  setStudioOnboardingPlanTier,
   upsertStudioOnboardingProgress,
 } from "@/shared/onboarding/studio-onboarding.state.server"
 import { redirectStudio } from "@/shared/org/studio-org.redirect"
@@ -38,19 +46,69 @@ async function guardOnboardingStep(
   return { session, organizations, view }
 }
 
-export async function completeStudioOnboardingPlanStep(lang: string) {
-  await guardOnboardingStep(lang, "plan")
-  const { session, organizations } =
-    await listStudioOrganizationsForSession(lang)
+export async function continueStudioOnboardingPlan(
+  lang: string,
+  planTier: "free" | "paid"
+) {
+  const { session, organizations } = await guardOnboardingStep(lang, "plan")
+  const organization = organizations[0]
+  if (!organization) {
+    redirectStudio(lang, "/onboarding/organization")
+  }
+
+  await setStudioOnboardingPlanTier(session.user.id, planTier)
+  const returnUrls = studioOnboardingPlanCheckoutReturnUrls({
+    origin: serverEnv.APP_PUBLIC_URL,
+    lang,
+  })
+
+  if (planTier === "free") {
+    const downgrade = await billingBeginDowngradeService({
+      organizationId: organization.id,
+      actorUserId: session.user.id,
+      successUrl: returnUrls.successUrl,
+      cancelUrl: returnUrls.cancelUrl,
+    })
+    if (downgrade.data.paymentUrl) {
+      redirectToExternalDestination(downgrade.data.paymentUrl)
+    }
+    await markStudioOnboardingStepComplete(
+      session.user.id,
+      "plan",
+      organizations
+    )
+    redirectStudio(lang, "/onboarding/invite")
+  }
+
+  const upgrade = await billingBeginUpgradeService({
+    organizationId: organization.id,
+    actorUserId: session.user.id,
+    successUrl: returnUrls.successUrl,
+    cancelUrl: returnUrls.cancelUrl,
+  })
+  if (upgrade.data?.paymentUrl) {
+    redirectToExternalDestination(upgrade.data.paymentUrl)
+  }
   await markStudioOnboardingStepComplete(session.user.id, "plan", organizations)
   redirectStudio(lang, "/onboarding/invite")
 }
 
-export async function skipStudioOnboardingPlanStep(lang: string) {
-  await completeStudioOnboardingPlanStep(lang)
+export async function completeStudioOnboardingPlanCheckout(lang: string) {
+  const { session, organizations } = await guardOnboardingStep(lang, "plan")
+  await setStudioOnboardingPlanTier(session.user.id, "paid")
+  await markStudioOnboardingStepComplete(session.user.id, "plan", organizations)
+  redirectStudio(lang, "/onboarding/invite")
 }
 
-export async function completeStudioOnboardingInviteStep(lang: string) {
+export async function skipStudioOnboardingInviteStep(lang: string) {
+  await finishStudioOnboarding(lang)
+}
+
+export async function finishStudioOnboardingAfterInvite(lang: string) {
+  await finishStudioOnboarding(lang)
+}
+
+async function finishStudioOnboarding(lang: string) {
   const { session, organizations, view } = await guardOnboardingStep(
     lang,
     "invite"

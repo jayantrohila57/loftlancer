@@ -5,15 +5,14 @@ import {
   defaultLocaleLabels,
   defaultSupportedLocales,
 } from "@features/i18n/constants"
-import {
-  currencyCodes,
-  regionCodes,
-} from "@modules/regional-preferences/utils"
+import { currencyCodes, regionCodes } from "@modules/regional-preferences/utils"
 import type { useFormatter } from "next-intl"
 
 type Format = ReturnType<typeof useFormatter>
 
-export function buildStudioOnboardingCountryOptions(format: Format): ComboboxOption[] {
+export function buildStudioOnboardingCountryOptions(
+  format: Format
+): ComboboxOption[] {
   return [...regionCodes].map((value: string) => {
     const name = format.displayName(value, "region") ?? value
     return {
@@ -23,7 +22,9 @@ export function buildStudioOnboardingCountryOptions(format: Format): ComboboxOpt
   })
 }
 
-export function buildStudioOnboardingCurrencyOptions(format: Format): ComboboxOption[] {
+export function buildStudioOnboardingCurrencyOptions(
+  format: Format
+): ComboboxOption[] {
   return [...currencyCodes].map((value: string) => {
     const name = format.displayName(value, { type: "currency" }) ?? value
     return {

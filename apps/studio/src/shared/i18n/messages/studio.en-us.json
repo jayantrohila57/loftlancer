@@ -870,6 +870,7 @@
     "onboardingOrganizationLegalTitle": "Legal (optional)",
     "onboardingOrganizationLegalDescription": "Registered business details for invoices and tax. Skip if you are a freelancer without a formal entity.",
     "onboardingChoosePlanDescription": "Start on Free or upgrade to Paid. You can change this later in billing.",
+    "onboardingPlanChoiceRequired": "Choose Free or Paid to continue.",
     "continueToInvite": "Continue to invites",
     "skipThisStep": "Skip and go to Studio",
     "organizationRoles": "Roles",

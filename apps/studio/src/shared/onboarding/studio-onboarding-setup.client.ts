@@ -44,12 +44,16 @@ const REGION_DEFAULT_TIMEZONE: Record<string, string> = {
 
 const GENERIC_BROWSER_TIMEZONES = new Set(["UTC", "Etc/UTC", "Etc/GMT"])
 
-function isGenericBrowserTimezone(timeZone: string | null | undefined): boolean {
+function isGenericBrowserTimezone(
+  timeZone: string | null | undefined
+): boolean {
   if (!timeZone?.trim()) return true
   return GENERIC_BROWSER_TIMEZONES.has(timeZone)
 }
 
-export function studioOnboardingTimezoneForCountry(countryCode: string): string {
+export function studioOnboardingTimezoneForCountry(
+  countryCode: string
+): string {
   return REGION_DEFAULT_TIMEZONE[countryCode] ?? "UTC"
 }
 

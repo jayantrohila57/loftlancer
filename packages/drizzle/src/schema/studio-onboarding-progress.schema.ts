@@ -1,4 +1,4 @@
-import { jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { jsonb, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core"
 
 import { user } from "./auth.schema"
 
@@ -11,6 +11,7 @@ export const studioOnboardingProgress = pgTable("studio_onboarding_progress", {
     .$type<readonly string[]>()
     .default([])
     .notNull(),
+  planTier: varchar("plan_tier", { length: 8 }).$type<"free" | "paid" | null>(),
   finishedAt: timestamp("finished_at"),
   updatedAt: timestamp("updated_at")
     .defaultNow()

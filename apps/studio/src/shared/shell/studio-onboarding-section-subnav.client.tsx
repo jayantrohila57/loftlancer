@@ -1,7 +1,7 @@
 "use client"
 
-import { ShellSectionSubnav } from "@features/shell"
 import type { ShellSectionTabItem } from "@features/shell"
+import { ShellSectionSubnav } from "@features/shell"
 import { resolveStudioOnboardingSectionTabValue } from "@/shared/shell/studio-onboarding-tab.utils"
 
 export function StudioOnboardingSectionSubnav({

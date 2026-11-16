@@ -13,10 +13,6 @@ import {
   useId,
   useRef,
 } from "react"
-import {
-  FormKitFormIdProvider,
-  useFormKitFormId,
-} from "./form.form-id.context"
 import type { FieldValues, Path } from "react-hook-form"
 import {
   FormProvider,
@@ -33,6 +29,7 @@ import type {
 import { mapUnknownServerError } from "../utils/form.server-errors"
 import { applyServerErrors } from "./form.errors"
 import { FormField } from "./form.fields"
+import { FormKitFormIdProvider, useFormKitFormId } from "./form.form-id.context"
 
 function flattenFormKitSlots(children: ReactNode): ReactNode[] {
   const slots: ReactNode[] = []
@@ -122,32 +119,32 @@ function FormKitRoot<
               : "flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm"
           }
         >
-        {error ? (
-          <p role="alert" className="px-4 py-2 text-sm text-destructive">
-            {error}
-          </p>
-        ) : null}
-        <div
-          className={
-            variant === "embedded"
-              ? "flex w-full min-w-0 flex-col gap-4"
-              : fillViewport
-                ? "flex min-h-0 flex-1 flex-col overflow-hidden"
-                : "min-h-0 flex-1 overflow-y-auto"
-          }
-        >
+          {error ? (
+            <p role="alert" className="px-4 py-2 text-sm text-destructive">
+              {error}
+            </p>
+          ) : null}
           <div
             className={
               variant === "embedded"
                 ? "flex w-full min-w-0 flex-col gap-4"
                 : fillViewport
-                  ? "flex min-h-0 flex-1 flex-col overflow-hidden p-0"
-                  : "flex flex-col gap-4 p-4"
+                  ? "flex min-h-0 flex-1 flex-col overflow-hidden"
+                  : "min-h-0 flex-1 overflow-y-auto"
             }
           >
-            {fields}
+            <div
+              className={
+                variant === "embedded"
+                  ? "flex w-full min-w-0 flex-col gap-4"
+                  : fillViewport
+                    ? "flex min-h-0 flex-1 flex-col overflow-hidden p-0"
+                    : "flex flex-col gap-4 p-4"
+              }
+            >
+              {fields}
+            </div>
           </div>
-        </div>
           {actions}
         </form>
       </FormKitFormIdProvider>
