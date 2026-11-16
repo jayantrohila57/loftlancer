@@ -1,6 +1,5 @@
 "use client"
 
-import Shell from "@packages/ui/components/shell"
 import { useFormatter, useTranslations } from "next-intl"
 import { useMemo } from "react"
 import type { WebBetterStackStatusReport } from "@/shared/status/web-betterstack.types"
@@ -29,25 +28,17 @@ export function WebStatusPageHistory({
   )
 
   return (
-    <Shell.Section
-      className="mx-auto w-full max-w-3xl space-y-8 p-6"
-      variant="site"
-    >
+    <div className="flex w-full flex-col gap-8 self-stretch">
       <WebStatusToolbar
         historyLabel={t("historyTab")}
         overviewLabel={t("overviewTab")}
       />
 
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {t("historyTitle")}
-        </h1>
-        <WebStatusUpdatedAt
-          emptyLabel={t("updatedAtEmpty")}
-          isoDate={updatedAt}
-          prefix={t("updatedPrefix")}
-        />
-      </div>
+      <WebStatusUpdatedAt
+        emptyLabel={t("updatedAtEmpty")}
+        isoDate={updatedAt}
+        prefix={t("updatedPrefix")}
+      />
 
       {groups.length === 0 ? (
         <section className="rounded-md border border-border bg-muted/20 px-4 py-3 text-sm">
@@ -88,7 +79,7 @@ export function WebStatusPageHistory({
           ))}
         </div>
       )}
-    </Shell.Section>
+    </div>
   )
 }
 

@@ -41,7 +41,13 @@ export const WEB_STATUS_MONITOR_GROUP_RULES: readonly WebStatusMonitorGroupRule[
     {
       id: "api",
       labelKey: "api",
-      patterns: [/\/api\b/i, /\bapi\./i, /\/docs\b/i, /\bgraphql\b/i],
+      patterns: [
+        /\/api\b/i,
+        /\bapi\b/i,
+        /\bapi\./i,
+        /\/docs\b/i,
+        /\bgraphql\b/i,
+      ],
     },
     {
       id: "website",
