@@ -66,6 +66,7 @@ export const privacyRouter = {
         dataExportRequestResponseSchema.parse(
           await privacyDataExportService.request(
             context.auth.user.id,
+            context.auth.user.email,
             input.payload
           )
         )

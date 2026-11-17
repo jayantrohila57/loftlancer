@@ -34,6 +34,11 @@ export function SecurityAccountDeletionScreen() {
   const locale = useLocale()
   const { data: session, isPending } = authClient.useSession()
   const deleteAccount = useSecurityAccountDeletionApi.useDelete()
+  const deletionStatus = useSecurityAccountDeletionApi.useStatus(
+    session?.user.id
+  )
+  const blockers = deletionStatus.data?.blockers ?? []
+  const deleteBlocked = blockers.length > 0
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmation, setConfirmation] = useState("")
   const [, setFreshnessVersion] = useState(0)
@@ -57,7 +62,7 @@ export function SecurityAccountDeletionScreen() {
   }, [createdAt])
 
   async function removeAccount() {
-    if (!confirmationMatches || deleteAccount.isPending) return
+    if (!confirmationMatches || deleteAccount.isPending || deleteBlocked) return
     if (!sessionIsFresh(createdAt)) {
       setFreshnessVersion((value) => value + 1)
       return
@@ -73,7 +78,9 @@ export function SecurityAccountDeletionScreen() {
           error: (error) =>
             error instanceof Error && /session/i.test(error.message)
               ? t("sessionNotFreshForDeletion")
-              : t("couldNotDeleteAccount"),
+              : /transfer ownership/i.test(error.message)
+                ? t("deleteAccountTransferRequired")
+                : t("couldNotDeleteAccount"),
         }
       )
       setConfirmOpen(false)
@@ -124,6 +131,28 @@ export function SecurityAccountDeletionScreen() {
             </div>
           </dl>
         </div>
+        {deleteBlocked ? (
+          <div className="space-y-3 rounded-md border border-amber-500/40 bg-amber-500/5 p-3 text-sm">
+            <p className="font-medium text-foreground">
+              {t("deleteAccountOwnedOrgBlockerTitle")}
+            </p>
+            <p className="text-muted-foreground">
+              {t("deleteAccountOwnedOrgBlockerDescription")}
+            </p>
+            <ul className="space-y-2">
+              {blockers.map((org) => (
+                <li key={org.organizationId}>
+                  <a
+                    className="font-medium text-foreground underline"
+                    href={org.settingsPath}
+                  >
+                    {t("deleteAccountTransferOwnership", { name: org.name })}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         {!fresh ? (
           <p
             role="status"
@@ -135,7 +164,7 @@ export function SecurityAccountDeletionScreen() {
         <Button
           type="button"
           variant="destructive"
-          disabled={!fresh}
+          disabled={!fresh || deleteBlocked}
           onClick={() => {
             setConfirmation("")
             setConfirmOpen(true)
@@ -181,7 +210,7 @@ export function SecurityAccountDeletionScreen() {
               type="button"
               variant="destructive"
               loading={deleteAccount.isPending}
-              disabled={!confirmationMatches || !fresh}
+              disabled={!confirmationMatches || !fresh || deleteBlocked}
               onClick={() => void removeAccount()}
             >
               {t("deleteAccount")}
