@@ -1,17 +1,38 @@
 import { sendResendEmail } from "@packages/resend"
 
 import { escapeHtmlAttribute, escapeHtmlText } from "./better-auth.email.escape"
+import type { BetterAuthEmailLocale } from "./better-auth.email.locale"
 import { resolveBetterAuthEmailLocale } from "./better-auth.email.locale"
 import { getBetterAuthEmailMessages } from "./better-auth.email.messages"
+import {
+  buildBrandedEmailHtml,
+  buildBrandedEmailPlainText,
+} from "./better-auth.email-template"
 
 export interface MagicLinkEmailInput {
   readonly email: string
   readonly url: string
+  readonly locale?: string
   readonly request?: Request
 }
 
 function escapedUrlForEmail(url: string): string {
   return escapeHtmlAttribute(url)
+}
+
+function resolveMagicLinkLocale(input: {
+  readonly locale?: string
+  readonly request?: Request
+}): BetterAuthEmailLocale {
+  const normalized = input.locale?.trim().toLowerCase()
+  if (
+    normalized === "en-us" ||
+    normalized === "en-in" ||
+    normalized === "es-es"
+  ) {
+    return normalized
+  }
+  return resolveBetterAuthEmailLocale(input.request)
 }
 
 async function deliverLocalizedEmail(input: {
@@ -31,16 +52,21 @@ async function deliverLocalizedEmail(input: {
 export async function sendMagicLinkEmail({
   email,
   url,
+  locale,
   request,
 }: MagicLinkEmailInput): Promise<void> {
-  const locale = resolveBetterAuthEmailLocale(request)
-  const copy = getBetterAuthEmailMessages(locale)
+  const resolvedLocale = resolveMagicLinkLocale({ locale, request })
+  const copy = getBetterAuthEmailMessages(resolvedLocale)
   const safeUrl = escapedUrlForEmail(url)
+  const branded = copy.magicLinkBranded
+  const html = buildBrandedEmailHtml({ actionUrl: safeUrl, copy: branded })
+  const text = buildBrandedEmailPlainText({ actionUrl: url, copy: branded })
+
   await deliverLocalizedEmail({
     to: email,
-    subject: copy.magicLinkSubject,
-    html: copy.magicLinkHtml(safeUrl),
-    text: copy.magicLinkText(url),
+    subject: branded.subject,
+    html,
+    text,
   })
 }
 
