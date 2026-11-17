@@ -4,13 +4,14 @@ import { rootFontClassName } from "@features/font"
 import { I18nProvider } from "@features/i18n/provider"
 import { ThemeProvider, themeProviderProps } from "@features/theme"
 import { AuthAppearancePreferencesEffects } from "@modules/appearance-preferences"
-import { VercelWebTelemetry } from "@packages/analytics"
+import { PrivacyCookieConsentBanner } from "@modules/privacy/client/components/privacy.cookie-consent-banner.client"
 import { brand, brandSeo } from "@packages/brand"
 import { DirectionProvider } from "@packages/ui"
 import Shell from "@packages/ui/components/shell"
 import { ToastProvider } from "@packages/ui/components/toast"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
+import { AuthMarketingAnalytics } from "@/shared/analytics/auth.marketing-analytics.client"
 import { AuthSentry } from "@/shared/analytics/auth.sentry.client"
 import { AuthQueryProvider } from "@/shared/auth/auth.query-provider"
 import { AuthAutumnProvider } from "@/shared/auth/auth-autumn-provider.client"
@@ -64,7 +65,9 @@ export default async function LangLayout({
               <ThemeProvider {...themeProviderProps}>
                 <ToastProvider position="bottom-center">
                   <AuthQueryProvider>
+                    <AuthMarketingAnalytics />
                     <AuthSentry />
+                    <PrivacyCookieConsentBanner />
                     <AuthAutumnProvider>
                       <AuthAppearancePreferencesEffects />
                       <AuthShellNavigationProvider>
@@ -77,7 +80,6 @@ export default async function LangLayout({
             </DirectionProvider>
           </I18nProvider>
         </Shell.Host>
-        <VercelWebTelemetry />
       </body>
     </html>
   )

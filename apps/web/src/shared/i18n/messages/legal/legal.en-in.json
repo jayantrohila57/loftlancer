@@ -1,0 +1,248 @@
+{
+  "lastUpdatedLabel": "Last updated",
+  "lastUpdatedDate": "November 17, 2026",
+  "lastUpdatedLine": "Last updated: November 17, 2026",
+  "terms": {
+    "title": "Terms of Service",
+    "description": "These Terms govern your access to and use of Loftlancer, a planning and validation workspace for freelance software builders.",
+    "sections": [
+      {
+        "heading": "1. Agreement",
+        "paragraphs": [
+          "These Terms of Service (\"Terms\") are a binding agreement between you and Loftlancer (\"Loftlancer,\" \"we,\" \"us,\" or \"our\") for use of the Loftlancer websites and applications at loftlancer.com, including the marketing site, authentication service (/auth), Studio (/studio), and Console (/console) (collectively, the \"Service\").",
+          "By creating an account or using the Service, you agree to these Terms and to our Privacy Policy. If you do not agree, do not use the Service."
+        ]
+      },
+      {
+        "heading": "2. Who may use the Service",
+        "paragraphs": [
+          "You must be at least 16 years old and able to form a binding contract. If you use the Service on behalf of an organization, you represent that you have authority to bind that organization, and \"you\" includes that organization.",
+          "You are responsible for safeguarding your sign-in methods and for activity under your account."
+        ]
+      },
+      {
+        "heading": "3. Accounts and authentication",
+        "paragraphs": [
+          "We offer passwordless sign-in via GitHub, Google (when configured), and email magic links through Resend. You must provide accurate account information and keep it updated.",
+          "We may suspend or terminate accounts that violate these Terms or pose security or abuse risk."
+        ]
+      },
+      {
+        "heading": "4. Plans, billing, and payments",
+        "paragraphs": [
+          "Loftlancer offers Free and Paid organization plans. Paid plans are sold through Autumn and billed by Stripe. Prices, features, and limits are shown at checkout and may change with notice where required.",
+          "Subscriptions renew automatically until canceled. You authorize us and our payment partners to charge your payment method. Taxes may apply. Refunds are handled according to our Refund Policy and applicable law.",
+          "Failure to pay may result in downgrade, suspension, or loss of paid features after any grace period we communicate."
+        ]
+      },
+      {
+        "heading": "5. Your content and organizations",
+        "paragraphs": [
+          "You retain ownership of content you submit to the Service. You grant Loftlancer a limited license to host, process, and display that content solely to operate the Service for you and your organization members.",
+          "Organization owners and managers control access within their workspace. You are responsible for invitations, roles, and compliance with client or employer obligations."
+        ]
+      },
+      {
+        "heading": "6. Acceptable use",
+        "paragraphs": [
+          "You must not misuse the Service, including by attempting unauthorized access, interfering with other users, uploading malware, scraping in violation of our policies, or using the Service for unlawful purposes.",
+          "You must not use the Service to store or process data in violation of third-party rights or applicable export, privacy, or security laws. Additional rules may appear in our Acceptable Use Policy."
+        ]
+      },
+      {
+        "heading": "7. Third-party services",
+        "paragraphs": [
+          "The Service integrates with third parties such as hosting (Vercel), database (Neon Postgres), file storage (Vercel Blob), billing (Autumn, Stripe), email (Resend), analytics (Google Analytics 4, PostHog, Vercel Web Analytics), and error reporting (Sentry). Your use of those services may be subject to their terms.",
+          "Loftlancer is not responsible for third-party products you connect or for client projects you manage outside the Service."
+        ]
+      },
+      {
+        "heading": "8. Intellectual property",
+        "paragraphs": [
+          "Loftlancer and its licensors own the Service, including software, branding, and documentation, except for your content. No rights are granted except as expressly stated in these Terms.",
+          "Feedback you provide may be used without restriction or compensation to improve the Service."
+        ]
+      },
+      {
+        "heading": "9. Disclaimers",
+        "paragraphs": [
+          "The Service is provided \"as is\" and \"as available.\" Loftlancer does not warrant uninterrupted or error-free operation, or that the Service will meet every planning or delivery need.",
+          "Loftlancer does not provide legal, tax, or professional advice. Validate scope and contracts with your clients independently."
+        ]
+      },
+      {
+        "heading": "10. Limitation of liability",
+        "paragraphs": [
+          "To the fullest extent permitted by law, Loftlancer will not be liable for indirect, incidental, special, consequential, or punitive damages, or for lost profits, revenue, data, or goodwill.",
+          "Our aggregate liability for claims relating to the Service is limited to the greater of (a) amounts you paid Loftlancer in the twelve months before the claim or (b) one hundred U.S. dollars, except where liability cannot be limited by law."
+        ]
+      },
+      {
+        "heading": "11. Indemnity",
+        "paragraphs": [
+          "You will defend and indemnify Loftlancer against claims arising from your content, your use of the Service, or your violation of these Terms or applicable law."
+        ]
+      },
+      {
+        "heading": "12. Termination",
+        "paragraphs": [
+          "You may stop using the Service at any time. You may delete your account through account settings, subject to retention described in our Privacy Policy.",
+          "We may suspend or terminate access if you materially breach these Terms or if required for security, legal, or operational reasons."
+        ]
+      },
+      {
+        "heading": "13. Changes",
+        "paragraphs": [
+          "We may update these Terms. We will post the revised Terms with an updated date. Material changes may be notified by email or in-product notice where required. Continued use after changes take effect constitutes acceptance."
+        ]
+      },
+      {
+        "heading": "14. Governing law and disputes",
+        "paragraphs": [
+          "These Terms are governed by the laws of India, without regard to conflict-of-law rules, except where mandatory consumer protections in your country of residence apply.",
+          "Before filing a claim, contact us at support@loftlancer.com to seek informal resolution. Courts in New Delhi, India have exclusive jurisdiction where permitted by law."
+        ]
+      },
+      {
+        "heading": "15. Contact",
+        "paragraphs": ["Questions about these Terms: support@loftlancer.com."]
+      }
+    ]
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "How Loftlancer collects, uses, and protects personal data when you use our websites and applications.",
+    "sections": [
+      {
+        "heading": "1. Introduction",
+        "paragraphs": [
+          "Loftlancer (\"we,\" \"us,\" or \"our\") operates loftlancer.com and related applications. This Privacy Policy explains what personal data we process, why, with whom we share it, and your rights.",
+          "Controller: Loftlancer. Privacy inquiries: privacy@loftlancer.com. Support: support@loftlancer.com."
+        ]
+      },
+      {
+        "heading": "2. Data we collect",
+        "paragraphs": [
+          "Account data: name, email address, profile image URL, authentication provider identifiers, organization memberships, roles, and preferences you set in the product.",
+          "Usage and technical data: pages viewed, feature interactions, device and browser type, IP address, approximate location derived from IP (where enabled), timestamps, and diagnostic logs.",
+          "Billing data: plan tier, subscription status, payment metadata processed by Stripe (we do not store full card numbers).",
+          "Content you upload: organization and project data, files stored in Vercel Blob, and communications we send on your behalf.",
+          "Cookies and similar technologies: as described in our Cookie Policy."
+        ]
+      },
+      {
+        "heading": "3. How we use data",
+        "paragraphs": [
+          "We use personal data to provide and secure the Service, authenticate users, operate organizations and billing, send transactional email (magic links, security notices), improve product quality, comply with law, and communicate about the Service.",
+          "Marketing email is sent only when you opt in. Product analytics run only when you consent through the cookie banner or account privacy settings."
+        ]
+      },
+      {
+        "heading": "4. Legal bases (EEA/UK)",
+        "paragraphs": [
+          "Where GDPR applies, we rely on contract performance (providing the Service), legitimate interests (security, fraud prevention, product improvement with appropriate safeguards), consent (marketing, non-essential analytics), and legal obligation."
+        ]
+      },
+      {
+        "heading": "5. Processors and subprocessors",
+        "paragraphs": [
+          "We use trusted providers: Vercel (hosting, analytics, blob storage), Neon (Postgres), Stripe (payments), Autumn (entitlements and metering), Resend (email), PostHog and Google Analytics 4 (analytics, when consented), Sentry (error monitoring), and GitHub/Google (authentication).",
+          "Providers process data under agreements that require appropriate security and limit use to our instructions."
+        ]
+      },
+      {
+        "heading": "6. Retention",
+        "paragraphs": [
+          "We retain account data while your account is active and as needed thereafter for backup, security, billing records, and legal compliance.",
+          "Deleted accounts are soft-deleted in our database; related records may be retained until manual purge or as required by law, as described in our account deletion documentation.",
+          "Logs and analytics data are retained for limited periods configured with each vendor."
+        ]
+      },
+      {
+        "heading": "7. Your rights",
+        "paragraphs": [
+          "Depending on your location, you may have rights to access, correct, delete, export, restrict, or object to processing, and to withdraw consent.",
+          "EEA/UK: you may lodge a complaint with your supervisory authority.",
+          "India (Digital Personal Data Protection Act): you may exercise rights to access, correction, erasure, and grievance redressal. Contact privacy@loftlancer.com.",
+          "Account deletion: available in account settings. Data export: requested through privacy settings where available, or by emailing privacy@loftlancer.com."
+        ]
+      },
+      {
+        "heading": "8. International transfers",
+        "paragraphs": [
+          "We may process data in the United States, European Union, India, and other regions where our providers operate. We use appropriate safeguards such as standard contractual clauses where required."
+        ]
+      },
+      {
+        "heading": "9. Security",
+        "paragraphs": [
+          "We use encryption in transit, access controls, and industry practices appropriate to a SaaS workspace. No method of transmission or storage is completely secure."
+        ]
+      },
+      {
+        "heading": "10. Children",
+        "paragraphs": [
+          "The Service is not directed to children under 16. We do not knowingly collect personal data from children."
+        ]
+      },
+      {
+        "heading": "11. Changes",
+        "paragraphs": [
+          "We may update this Privacy Policy. We will post the new version with an updated date and provide additional notice for material changes where required."
+        ]
+      },
+      {
+        "heading": "12. Contact",
+        "paragraphs": [
+          "Privacy questions or requests: privacy@loftlancer.com. Support: support@loftlancer.com."
+        ]
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Cookie Policy",
+    "description": "How Loftlancer uses cookies and similar technologies on our websites and applications.",
+    "sections": [
+      {
+        "heading": "1. What are cookies",
+        "paragraphs": [
+          "Cookies are small text files stored on your device. We also use similar technologies such as local storage and analytics scripts where described below."
+        ]
+      },
+      {
+        "heading": "2. Essential cookies",
+        "paragraphs": [
+          "These cookies are required for the Service to function. They include session and authentication cookies (Better Auth), security cookies, locale preferences, organization context in Studio, and sidebar or layout state.",
+          "Essential cookies do not require consent and cannot be disabled through our banner without breaking sign-in or core features."
+        ]
+      },
+      {
+        "heading": "3. Analytics cookies (optional)",
+        "paragraphs": [
+          "With your consent, we load analytics to understand how the product is used: Google Analytics 4 (when configured), PostHog, and Vercel Web Analytics (including speed insights).",
+          "These tools may set their own cookies or use local storage. They are blocked until you accept analytics in our cookie banner or enable analytics in account privacy settings when signed in."
+        ]
+      },
+      {
+        "heading": "4. How to manage preferences",
+        "paragraphs": [
+          "Use the cookie banner on our sites to accept or reject analytics cookies. You can change account analytics preferences when signed in under Privacy & data → Consents.",
+          "You can also control cookies through your browser settings. Blocking essential cookies may prevent sign-in."
+        ]
+      },
+      {
+        "heading": "5. Retention",
+        "paragraphs": [
+          "Our analytics consent cookie is stored for up to one year. Session cookies expire when you sign out or close your browser, depending on the cookie type."
+        ]
+      },
+      {
+        "heading": "6. Changes and contact",
+        "paragraphs": [
+          "We may update this Cookie Policy. See the date at the top of this page.",
+          "Questions: privacy@loftlancer.com."
+        ]
+      }
+    ]
+  }
+}

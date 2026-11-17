@@ -776,6 +776,7 @@
     "organizationSlugAlreadyTaken": "That organization URL slug is already in use. Choose a different slug.",
     "resendMagicLink": "Resend sign-in link",
     "signInEmailInvalid": "Enter a valid email address",
+    "signInLegalConsent": "By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
     "socialSignInNotConfigured": "{provider} sign-in is not configured.",
     "authErrorProviderNotConfigured": "{provider} sign-in is not configured.",
     "authErrorInvalidToken": "This sign-in link is invalid. Request a new link.",
@@ -1194,5 +1195,11 @@
   "metadata": {
     "title": "Studio",
     "description": "Your workspace."
+  },
+  "cookieConsent": {
+    "bannerLabel": "Cookie consent",
+    "message": "We use essential cookies for sign-in and security. With your permission we also use analytics cookies to improve Loftlancer. See our <cookiesLink>Cookie Policy</cookiesLink>.",
+    "accept": "Accept analytics",
+    "reject": "Reject analytics"
   }
 }

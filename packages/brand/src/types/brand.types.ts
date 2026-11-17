@@ -5,6 +5,7 @@ import type {
   brandEmails,
   brandHero,
   brandLegacy,
+  brandLegal,
   brandLinks,
   brandLogo,
   brandSeo,
@@ -14,6 +15,7 @@ import type {
 
 export type Brand = typeof brand
 export type BrandHero = typeof brandHero
+export type BrandLegal = typeof brandLegal
 export type BrandColors = typeof brandColors
 export type BrandContact = typeof brandContact
 export type BrandEmails = typeof brandEmails

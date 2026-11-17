@@ -834,6 +834,7 @@
     "organizationSlugAlreadyTaken": "Ese identificador URL ya está en uso. Elige otro slug.",
     "resendMagicLink": "Reenviar enlace de acceso",
     "signInEmailInvalid": "Introduce una dirección de correo válida",
+    "signInLegalConsent": "Al continuar, acepta nuestros <terms>Términos del servicio</terms> y la <privacy>Política de privacidad</privacy>.",
     "socialSignInNotConfigured": "El acceso con {provider} no está configurado.",
     "authErrorProviderNotConfigured": "El acceso con {provider} no está configurado.",
     "authErrorInvalidToken": "Este enlace de acceso no es válido. Solicita uno nuevo.",

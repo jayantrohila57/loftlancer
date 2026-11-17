@@ -24,6 +24,9 @@ to write entries.
 
 ### Added
 
+- Public legal pages (Terms, Privacy, Cookie Policy) on the marketing site with localized copy (`en-us`, `en-in`, `es-es`).
+- Sign-in legal notice and recording of terms acceptance for new accounts.
+- Cookie consent banner on web, auth, and studio; analytics loads only after consent.
 - Email verification on sign-up, a verify-email landing page, and **Resend verification** on the profile screen; organization invitations require a verified email before accept, with a clear prompt to verify.
 - Change email from profile (confirmation to your current address, then verification at the new address).
 - Sign-up and magic link reject disposable email domains; OAuth sign-in explains when an email is already registered with another provider and should be linked from Connected accounts.

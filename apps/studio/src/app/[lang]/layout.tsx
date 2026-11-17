@@ -4,13 +4,13 @@ import { rootFontClassName } from "@features/font"
 import { I18nProvider } from "@features/i18n/provider"
 import { ThemeProvider, themeProviderProps } from "@features/theme"
 import { AppearancePreferencesEffects } from "@modules/appearance-preferences/effects"
-import { VercelWebTelemetry } from "@packages/analytics"
+import { PrivacyCookieConsentBanner } from "@modules/privacy/client/components/privacy.cookie-consent-banner.client"
 import { brand, brandSeo } from "@packages/brand"
 import { DirectionProvider } from "@packages/ui"
 import { ToastProvider } from "@packages/ui/components/toast"
 import type { Metadata, Viewport } from "next"
 import { getTranslations } from "next-intl/server"
-import { StudioPostHog } from "@/shared/analytics/studio.posthog.client"
+import { StudioProductAnalytics } from "@/shared/analytics/studio.product-analytics.client"
 import { StudioSentry } from "@/shared/analytics/studio.sentry.client"
 import { StudioQueryProvider } from "@/shared/auth/studio.query-provider"
 import studioPwaManifest from "@/shared/config/studio.pwa.manifest.json"
@@ -84,8 +84,9 @@ export default async function LangLayout({
               <ThemeProvider {...themeProviderProps}>
                 <ToastProvider position="bottom-center">
                   <StudioQueryProvider>
-                    <StudioPostHog />
+                    <StudioProductAnalytics />
                     <StudioSentry />
+                    <PrivacyCookieConsentBanner />
                     <AppearancePreferencesEffects />
                     <StudioOrgAppPathsProvider>
                       <StudioShellNavigationProvider>
@@ -98,7 +99,6 @@ export default async function LangLayout({
             </DirectionProvider>
           </I18nProvider>
         </div>
-        <VercelWebTelemetry />
       </body>
     </html>
   )

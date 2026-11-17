@@ -13,6 +13,7 @@
   "dependencies": {
     "@features/shell": "workspace:*",
     "@packages/better-auth": "workspace:*",
+    "@packages/brand": "workspace:*",
     "@packages/react-query": "workspace:*",
     "@packages/t3-env": "workspace:*",
     "@packages/ui": "workspace:*",

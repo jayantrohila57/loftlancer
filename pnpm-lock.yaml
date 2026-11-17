@@ -611,6 +611,9 @@ importers:
       '@modules/auth':
         specifier: workspace:*
         version: link:../../modules/auth
+      '@modules/privacy':
+        specifier: workspace:*
+        version: link:../../modules/privacy
       '@modules/shell':
         specifier: workspace:*
         version: link:../../modules/shell
@@ -1163,6 +1166,9 @@ importers:
       '@packages/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
+      '@packages/brand':
+        specifier: workspace:*
+        version: link:../../packages/brand
       '@packages/react-query':
         specifier: workspace:*
         version: link:../../packages/react-query
@@ -1531,6 +1537,9 @@ importers:
       '@packages/blob':
         specifier: workspace:*
         version: link:../../packages/blob
+      '@packages/brand':
+        specifier: workspace:*
+        version: link:../../packages/brand
       '@packages/drizzle':
         specifier: workspace:*
         version: link:../../packages/drizzle

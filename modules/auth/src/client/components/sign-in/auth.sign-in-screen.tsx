@@ -2,6 +2,7 @@ import type { SocialProviderAvailability } from "@packages/better-auth"
 import Shell from "@packages/ui/components/shell"
 import { useTranslations } from "next-intl"
 import { authSignInLayout } from "./auth.sign-in-layout"
+import { AuthSignInLegalNotice } from "./auth.sign-in-legal-notice.client"
 import { AuthSignInOauthFeedback } from "./auth.sign-in-oauth-feedback.client"
 import { AuthGithubSignIn } from "./github/auth.github-sign-in.client"
 import { AuthGoogleSignIn } from "./google/auth.google-sign-in.client"
@@ -34,6 +35,8 @@ export function AuthSignInScreen(props: AuthSignInScreenProps) {
         </div>
 
         <AuthMagicLinkForm />
+
+        <AuthSignInLegalNotice />
 
         {props.enterpriseSsoHref ? (
           <p className="text-center text-sm">

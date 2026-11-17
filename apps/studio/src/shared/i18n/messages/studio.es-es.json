@@ -776,6 +776,7 @@
     "organizationSlugAlreadyTaken": "Ese identificador URL ya está en uso. Elige otro slug.",
     "resendMagicLink": "Reenviar enlace de acceso",
     "signInEmailInvalid": "Introduce una dirección de correo válida",
+    "signInLegalConsent": "Al continuar, acepta nuestros <terms>Términos del servicio</terms> y la <privacy>Política de privacidad</privacy>.",
     "socialSignInNotConfigured": "El acceso con {provider} no está configurado.",
     "authErrorProviderNotConfigured": "El acceso con {provider} no está configurado.",
     "authErrorInvalidToken": "Este enlace de acceso no es válido. Solicita uno nuevo.",
@@ -1194,5 +1195,11 @@
   "metadata": {
     "title": "Estudio",
     "description": "Tu espacio de trabajo."
+  },
+  "cookieConsent": {
+    "bannerLabel": "Consentimiento de cookies",
+    "message": "Usamos cookies esenciales para el acceso y la seguridad. Con su permiso también usamos cookies de analítica para mejorar Loftlancer. Consulte nuestra <cookiesLink>Política de cookies</cookiesLink>.",
+    "accept": "Aceptar analítica",
+    "reject": "Rechazar analítica"
   }
 }
