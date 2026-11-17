@@ -25,6 +25,25 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  async redirects() {
+    return [
+      {
+        source: "/:lang/product/website-builder",
+        destination: "/:lang/product/planning-workspace",
+        permanent: true,
+      },
+      {
+        source: "/:lang/product/cloud-platform",
+        destination: "/:lang/product/client-validation",
+        permanent: true,
+      },
+      {
+        source: "/:lang/product/analytics",
+        destination: "/:lang/product/scope-insights",
+        permanent: true,
+      },
+    ]
+  },
   transpilePackages: [
     "@packages/better-auth",
     "@packages/billing",
@@ -41,6 +60,8 @@ const nextConfig: NextConfig = {
     "@features/i18n",
     "@modules/shell",
     "@modules/auth",
+    "@packages/resend",
+    "@packages/brand",
   ],
 }
 

@@ -241,5 +241,208 @@
         ]
       }
     ]
+  },
+  "acceptableUse": {
+    "title": "Política de uso aceptable",
+    "description": "Normas para usar Loftlancer SaaS de forma segura y conforme a la ley.",
+    "sections": [
+      {
+        "heading": "1. Ámbito",
+        "paragraphs": [
+          "Esta política aplica a todos los usuarios de sitios y aplicaciones Loftlancer operados desde India.",
+          "Complementa nuestros Términos del servicio."
+        ]
+      },
+      {
+        "heading": "2. Conducta prohibida",
+        "paragraphs": [
+          "No intentes acceso no autorizado, distribuyas malware ni interfieras con otros usuarios.",
+          "No uses el servicio para spam, acoso, contenido ilícito ni datos sujetos a exportación sin cumplimiento."
+        ]
+      },
+      {
+        "heading": "3. Contenido y datos de clientes",
+        "paragraphs": [
+          "Eres responsable de los derechos sobre datos de clientes que subas.",
+          "No almacenes categorías especiales de datos personales sin base legal y consentimiento."
+        ]
+      },
+      {
+        "heading": "4. Automatización y scraping",
+        "paragraphs": [
+          "Respeta límites de velocidad. El scraping automatizado sin permiso escrito está prohibido."
+        ]
+      },
+      {
+        "heading": "5. Aplicación",
+        "paragraphs": [
+          "Podemos suspender cuentas que violen esta política. Informa abusos a support@loftlancer.com."
+        ]
+      }
+    ]
+  },
+  "refund": {
+    "title": "Política de reembolso",
+    "description": "Cómo funcionan los reembolsos en suscripciones de pago.",
+    "sections": [
+      {
+        "heading": "1. General",
+        "paragraphs": [
+          "Los planes de pago se facturan por adelantado vía Stripe y Autumn.",
+          "Salvo obligación legal, las tasas no son reembolsables tras la ventana indicada."
+        ]
+      },
+      {
+        "heading": "2. Primer cargo",
+        "paragraphs": [
+          "Si cancelas en 14 días desde el primer cargo de pago sin consumir cuota de pago de forma sustancial, contacta support@loftlancer.com."
+        ]
+      },
+      {
+        "heading": "3. Renovaciones",
+        "paragraphs": [
+          "Los cargos de renovación generalmente no son reembolsables. Cancela antes de renovar."
+        ]
+      },
+      {
+        "heading": "4. Contracargos",
+        "paragraphs": [
+          "Contáctanos antes de un contracargo para resolver facturación."
+        ]
+      }
+    ]
+  },
+  "disclaimer": {
+    "title": "Aviso legal",
+    "description": "Limitaciones importantes sobre la información de Loftlancer.",
+    "sections": [
+      {
+        "heading": "1. No es asesoramiento profesional",
+        "paragraphs": [
+          "Loftlancer no ofrece asesoramiento legal, fiscal ni contractual.",
+          "Valida con profesionales y con tus clientes."
+        ]
+      },
+      {
+        "heading": "2. Sin garantía adicional",
+        "paragraphs": [
+          "El marketing y funciones beta pueden cambiar.",
+          "El servicio se ofrece según los Términos sin garantías adicionales."
+        ]
+      },
+      {
+        "heading": "3. Enlaces de terceros",
+        "paragraphs": [
+          "Enlaces a Stripe, GitHub u otros proveedores son de conveniencia; aplican sus términos."
+        ]
+      }
+    ]
+  },
+  "licenses": {
+    "title": "Licencias de código abierto",
+    "description": "Principales componentes de código abierto de Loftlancer.",
+    "sections": [
+      {
+        "heading": "1. Stack de la aplicación",
+        "paragraphs": [
+          "Construido con Next.js (MIT), React (MIT), TypeScript, Tailwind CSS, Drizzle ORM, Better Auth y otros paquetes OSS.",
+          "Cada dependencia tiene su propia licencia."
+        ]
+      },
+      {
+        "heading": "2. Avisos",
+        "paragraphs": [
+          "Los textos completos están en NOTICE y archivos de licencias del repositorio.",
+          "Para divulgación OSS de compras, escribe a support@loftlancer.com."
+        ]
+      }
+    ]
+  },
+  "overview": {
+    "title": "Resumen legal",
+    "description": "Índice de documentos legales de Loftlancer.",
+    "indexTitle": "Todos los documentos legales",
+    "sections": [
+      {
+        "heading": "Políticas",
+        "paragraphs": [
+          "Términos (/legal/terms), Privacidad (/legal/privacy), Cookies (/legal/cookies), Uso aceptable (/legal/acceptable-use), Reembolsos (/legal/refund)."
+        ]
+      },
+      {
+        "heading": "Cumplimiento y confianza",
+        "paragraphs": [
+          "Seguridad (/legal/security), Subencargados (/legal/subprocessors), Aviso legal (/legal/disclaimer), Licencias OSS (/legal/licenses)."
+        ]
+      },
+      {
+        "heading": "Controles de privacidad",
+        "paragraphs": [
+          "Gestiona privacidad en la cuenta en /auth/{locale}/account/privacy-data.",
+          "Derechos RGPD y DPDP India en la Política de privacidad; privacy@loftlancer.com."
+        ]
+      }
+    ]
+  },
+  "security": {
+    "title": "Seguridad",
+    "description": "Cómo protegemos datos y gestionamos informes.",
+    "sections": [
+      {
+        "heading": "1. Prácticas",
+        "paragraphs": [
+          "Cifrado en tránsito, infraestructura en la nube (Vercel, Neon), controles de acceso y monitorización (Sentry)."
+        ]
+      },
+      {
+        "heading": "2. Divulgación responsable",
+        "paragraphs": [
+          "Informa vulnerabilidades a security@loftlancer.com con pasos de reproducción.",
+          "Permite tiempo razonable antes de divulgación pública."
+        ]
+      },
+      {
+        "heading": "3. Contacto",
+        "paragraphs": [
+          "Preguntas generales de seguridad también a support@loftlancer.com."
+        ]
+      }
+    ]
+  },
+  "subprocessors": {
+    "title": "Subencargados del tratamiento",
+    "description": "Terceros que tratan datos personales por cuenta de Loftlancer.",
+    "sections": [
+      {
+        "heading": "1. Infraestructura",
+        "paragraphs": [
+          "Vercel — hosting, analítica, almacenamiento blob.",
+          "Neon — base de datos Postgres.",
+          "Upstash — caché y limitación de velocidad cuando está habilitado."
+        ]
+      },
+      {
+        "heading": "2. Pagos",
+        "paragraphs": [
+          "Stripe — procesamiento de pagos.",
+          "Autumn — derechos de suscripción y medición."
+        ]
+      },
+      {
+        "heading": "3. Comunicación y observabilidad",
+        "paragraphs": [
+          "Resend — correo transaccional.",
+          "Sentry — monitorización de errores.",
+          "PostHog y Google Analytics 4 — analítica con consentimiento."
+        ]
+      },
+      {
+        "heading": "4. Actualizaciones",
+        "paragraphs": [
+          "Actualizamos esta lista cuando cambian subencargados de forma relevante.",
+          "Privacidad: privacy@loftlancer.com."
+        ]
+      }
+    ]
   }
 }
