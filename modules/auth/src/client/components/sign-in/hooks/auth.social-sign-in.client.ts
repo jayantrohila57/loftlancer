@@ -42,7 +42,7 @@ export function useAuthSocialSignIn(
         title: formatAuthClientError(
           { code: "PROVIDER_NOT_FOUND" },
           copy.error,
-          { provider }
+          { provider, translate: (key, values) => t(key, values) }
         ),
         type: "error",
       })
@@ -82,6 +82,7 @@ export function useAuthSocialSignIn(
     copy.success,
     provider,
     signInSocial,
+    t,
   ])
 
   return { pending, signIn }

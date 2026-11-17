@@ -10,7 +10,11 @@ import { connection } from "next/server"
 import { hasLocale } from "next-intl"
 import { cache } from "react"
 import { getPostSignInDestination } from "@/shared/auth/auth.destination"
-import { resolveRefererReturnTo } from "@/shared/auth/auth.session-return-to"
+import {
+  AUTH_RETURN_TO_HEADER,
+  resolveRefererReturnTo,
+  resolveRequestReturnTo,
+} from "@/shared/auth/auth.session-return-to"
 import type { I18nLocale } from "@/shared/i18n/auth.i18n"
 import { appI18n, redirect } from "@/shared/i18n/auth.i18n"
 import type { LangRouteParams } from "@/shared/types/auth.app.types"
@@ -31,6 +35,9 @@ export async function readSafeReturnToForSignIn(
   lang: I18nLocale
 ): Promise<string | undefined> {
   const requestHeaders = await headers()
+  const requestPath = requestHeaders.get(AUTH_RETURN_TO_HEADER)
+  const fromPath = resolveRequestReturnTo(lang, requestPath)
+  if (fromPath) return fromPath
   return resolveRefererReturnTo(lang, requestHeaders.get("referer"))
 }
 

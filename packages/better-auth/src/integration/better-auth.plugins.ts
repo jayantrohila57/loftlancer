@@ -25,8 +25,11 @@ export function buildAuthPlugins() {
       roles: betterAuthAdminRoles,
     }),
     magicLink({
-      sendMagicLink: async ({ email, url }) => {
-        await sendMagicLinkEmail({ email, url })
+      storeToken: "hashed",
+      sendMagicLink: async ({ email, url, metadata }) => {
+        const locale =
+          typeof metadata?.locale === "string" ? metadata.locale : undefined
+        await sendMagicLinkEmail({ email, locale, url })
       },
     }),
     buildSsoPlugin(),

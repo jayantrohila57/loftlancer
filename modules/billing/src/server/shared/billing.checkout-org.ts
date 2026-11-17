@@ -2,7 +2,7 @@ import { canManageOrganizationBilling } from "@modules/org/utils/org.member-role
 import { readActiveOrganizationId } from "@modules/org/utils/org.session"
 import { getDb } from "@packages/drizzle"
 import { member } from "@packages/drizzle/schema"
-import { and, eq } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
 export type CheckoutOrganizationResolution =
   | { readonly ok: true; readonly organizationId: string }
