@@ -148,6 +148,13 @@
       "when": 1794901000000,
       "tag": "0020_studio_onboarding_plan_tier",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1794888541425,
+      "tag": "0021_ambitious_dazzler",
+      "breakpoints": true
     }
   ]
 }

@@ -9,17 +9,25 @@ const stateErrors = new Set([
   "state_security_mismatch",
 ])
 
-/** Preserve the auth response and cookies while routing unrecoverable GitHub state errors to sign-in. */
-export function githubStateErrorResponse(
+const oauthCallbackSuffixes = [
+  "/api/auth/callback/github",
+  "/api/auth/callback/google",
+] as const
+
+/** Preserve the auth response and cookies while routing unrecoverable OAuth state errors to sign-in. */
+export function oauthStateErrorResponse(
   request: Request,
   response: Response
 ): Response {
   const requestUrl = new URL(request.url)
   if (
-    !requestUrl.pathname.endsWith("/api/auth/callback/github") ||
+    !oauthCallbackSuffixes.some((suffix) =>
+      requestUrl.pathname.endsWith(suffix)
+    ) ||
     response.status !== 302
-  )
+  ) {
     return response
+  }
   const location = response.headers.get("location")
   if (!location) return response
   let errorUrl: URL
@@ -36,8 +44,9 @@ export function githubStateErrorResponse(
     errorUrl.pathname !== `${appBase}/api/auth/error` ||
     !error ||
     !stateErrors.has(error)
-  )
+  ) {
     return response
+  }
   const target = new URL(
     `${appBase}/${appI18n.routing.defaultLocale}/sign-in`,
     authApp.origin
@@ -51,3 +60,6 @@ export function githubStateErrorResponse(
     headers,
   })
 }
+
+/** @deprecated Use `oauthStateErrorResponse`. */
+export const githubStateErrorResponse = oauthStateErrorResponse
