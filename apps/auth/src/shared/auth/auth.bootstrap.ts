@@ -3,6 +3,7 @@ import "server-only"
 import { buildAdminAuthDatabaseHooks } from "@modules/admin/server"
 import { buildNotificationAuthDatabaseHooks } from "@modules/notifications/server"
 import { buildOrgOrganizationPluginOptions } from "@modules/org/server"
+import { buildPrivacyAuthDatabaseHooks } from "@modules/privacy/server"
 import { buildProfileAuthDatabaseHooks } from "@modules/profile/server"
 import {
   buildDeviceAuthorizationActivityPlugin,
@@ -18,7 +19,8 @@ configureBetterAuth({
     buildSecurityAuthDatabaseHooks(),
     buildNotificationAuthDatabaseHooks(),
     buildAdminAuthDatabaseHooks(),
-    buildProfileAuthDatabaseHooks()
+    buildProfileAuthDatabaseHooks(),
+    buildPrivacyAuthDatabaseHooks()
   ),
   deleteUser: buildSecurityDeleteUserCallbacks(),
   organizationPlugin: buildOrgOrganizationPluginOptions(),

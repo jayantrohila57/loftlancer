@@ -5,6 +5,7 @@ export {
   brandEmails,
   brandHero,
   brandLegacy,
+  brandLegal,
   brandLinks,
   brandLogo,
   brandSeo,

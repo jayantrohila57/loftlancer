@@ -9,7 +9,11 @@
   "exports": {
     ".": "./src/index.ts",
     "./client": "./src/client/index.ts",
-    "./server": "./src/server/index.ts"
+    "./client/components/privacy.cookie-consent-banner.client": "./src/client/components/privacy.cookie-consent-banner.client.tsx",
+    "./client/hooks/privacy.cookie-analytics-consent.hook": "./src/client/hooks/privacy.cookie-analytics-consent.hook.ts",
+    "./client/hooks/privacy.effective-analytics-consent.hook": "./src/client/hooks/privacy.effective-analytics-consent.hook.ts",
+    "./server": "./src/server/index.ts",
+    "./utils": "./src/utils/index.ts"
   },
   "dependencies": {
     "@features/form": "workspace:*",
@@ -18,6 +22,7 @@
     "@modules/shell": "workspace:*",
     "@packages/posthog": "workspace:*",
     "@packages/better-auth": "workspace:*",
+    "@packages/brand": "workspace:*",
     "@packages/drizzle": "workspace:*",
     "@packages/orpc": "workspace:*",
     "@packages/react-query": "workspace:*",

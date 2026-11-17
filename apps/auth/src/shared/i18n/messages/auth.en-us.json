@@ -132,6 +132,7 @@
     "continueWithGoogle": "Continue with Google",
     "continueWithGitHub": "Continue with GitHub",
     "signIn": "Sign in",
+    "signInLegalConsent": "By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
     "enterpriseSso": "Enterprise SSO",
     "enterpriseSsoDescription": "Sign in with your work email when your organization has a configured SSO connection.",
     "workEmail": "Work email",
@@ -1273,5 +1274,11 @@
     "notFoundTitle": "Page not found",
     "notFoundDescription": "That link may be outdated or the page was removed.",
     "backToSection": "Back to this section"
+  },
+  "cookieConsent": {
+    "bannerLabel": "Cookie consent",
+    "message": "We use essential cookies for sign-in and security. With your permission we also use analytics cookies to improve Loftlancer. See our <cookiesLink>Cookie Policy</cookiesLink>.",
+    "accept": "Accept analytics",
+    "reject": "Reject analytics"
   }
 }

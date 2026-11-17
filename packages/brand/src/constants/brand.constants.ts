@@ -198,10 +198,22 @@ export const brandEmails = {
   sendingDomain: "mail.loftlancer.com",
   from: "Loftlancer <noreply@mail.loftlancer.com>",
   noreply: "noreply@mail.loftlancer.com",
-  /** TODO: no Loftlancer support inbox was found. */
-  support: null,
+  support: "support@loftlancer.com",
+  privacy: "privacy@loftlancer.com",
   /** TODO: no Loftlancer contact or hello inbox was found. */
   contact: null,
+} as const
+
+/**
+ * Legal entity, contact, and document versions for public policies and sign-up consent.
+ * Draft copy is pending formal legal review.
+ */
+export const brandLegal = {
+  entityName: "Loftlancer",
+  supportEmail: brandEmails.support,
+  privacyEmail: brandEmails.privacy,
+  termsVersion: "2026-11-17",
+  lastUpdatedIso: "2026-11-17",
 } as const
 
 /**
@@ -225,8 +237,8 @@ export const brandContact = {
   emails: {
     from: "Loftlancer <noreply@mail.loftlancer.com>",
     noreply: "noreply@mail.loftlancer.com",
-    /** TODO: no Loftlancer support inbox was found. */
-    support: null,
+    support: brandEmails.support,
+    privacy: brandEmails.privacy,
     /** TODO: no Loftlancer contact or hello inbox was found. */
     contact: null,
   },
@@ -234,11 +246,8 @@ export const brandContact = {
   phone: null,
   /** TODO: no Loftlancer business or postal address was found. */
   address: null,
-  /**
-   * TODO: no Loftlancer legal or registered company name was found.
-   * Footer copyright uses the product name "Loftlancer" only.
-   */
-  legalName: null,
+  /** Product legal name used in policies until a registered entity is documented. */
+  legalName: brandLegal.entityName,
   /** TODO: no Loftlancer business hours were found. */
   hours: null,
   /** TODO: no public GST or registration number was found for Loftlancer. */

@@ -820,6 +820,7 @@
     "organizationSlugAlreadyTaken": "That organization URL slug is already in use. Choose a different slug.",
     "resendMagicLink": "Resend sign-in link",
     "signInEmailInvalid": "Enter a valid email address",
+    "signInLegalConsent": "By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
     "socialSignInNotConfigured": "{provider} sign-in is not configured. Add OAuth client ID and secret to apps/auth/.env.",
     "unauthorizedConsoleDescription": "This area is limited to platform administrators. Return to your account or go back.",
     "unauthorizedDescription": "You don't have permission to view this page. Return to your account or go back.",

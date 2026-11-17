@@ -1,3 +1,6 @@
 export { PrivacyConsentsView } from "./components/privacy.consents"
+export { PrivacyCookieConsentBanner } from "./components/privacy.cookie-consent-banner.client"
 export { PrivacyDataExportView } from "./components/privacy.data-export"
 export { usePrivacyAnalyticsConsent } from "./hooks/privacy.analytics-consent.hook"
+export { useCookieAnalyticsConsent } from "./hooks/privacy.cookie-analytics-consent.hook"
+export { useEffectiveAnalyticsConsent } from "./hooks/privacy.effective-analytics-consent.hook"

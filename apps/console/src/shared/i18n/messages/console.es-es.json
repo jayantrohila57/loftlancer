@@ -820,6 +820,7 @@
     "organizationSlugAlreadyTaken": "Ese identificador URL ya está en uso. Elige otro slug.",
     "resendMagicLink": "Reenviar enlace de acceso",
     "signInEmailInvalid": "Introduce una dirección de correo válida",
+    "signInLegalConsent": "Al continuar, acepta nuestros <terms>Términos del servicio</terms> y la <privacy>Política de privacidad</privacy>.",
     "socialSignInNotConfigured": "El acceso con {provider} no está configurado. Añade el ID y el secreto de cliente OAuth en apps/auth/.env.",
     "unauthorizedConsoleDescription": "Esta zona está limitada a administradores de la plataforma. Vuelve a tu cuenta o regresa.",
     "unauthorizedDescription": "No tienes permiso para ver esta página. Vuelve a tu cuenta o regresa.",

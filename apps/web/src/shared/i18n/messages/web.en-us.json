@@ -175,6 +175,7 @@
     "continueWithGoogle": "Continue with Google",
     "continueWithGitHub": "Continue with GitHub",
     "signIn": "Sign in",
+    "signInLegalConsent": "By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
     "googleGitHubOrEmailMagicLink": "Google, GitHub, or email magic link",
     "emailMeALink": "Email me a link",
     "helpProtectYourAccount": "Help protect your account",
@@ -1255,5 +1256,11 @@
       "console": "Console",
       "api": "API"
     }
+  },
+  "cookieConsent": {
+    "bannerLabel": "Cookie consent",
+    "message": "We use essential cookies for sign-in and security. With your permission we also use analytics cookies to improve Loftlancer. See our <cookiesLink>Cookie Policy</cookiesLink>.",
+    "accept": "Accept analytics",
+    "reject": "Reject analytics"
   }
 }
