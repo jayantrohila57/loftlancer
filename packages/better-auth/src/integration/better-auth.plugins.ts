@@ -25,8 +25,14 @@ export function buildAuthPlugins() {
       roles: betterAuthAdminRoles,
     }),
     magicLink({
-      sendMagicLink: async ({ email, url }) => {
-        await sendMagicLinkEmail({ email, url })
+      sendMagicLink: async ({ email, url }, ctx) => {
+        const request =
+          ctx instanceof Request
+            ? ctx
+            : ctx && typeof ctx === "object" && "request" in ctx
+              ? (ctx.request as Request | undefined)
+              : undefined
+        await sendMagicLinkEmail({ email, url, request })
       },
     }),
     buildSsoPlugin(),

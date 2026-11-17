@@ -8,6 +8,7 @@ export {
   type AuthSignInScreenProps,
 } from "./client/components/sign-in/auth.sign-in-screen"
 export { AuthUnauthorizedScreen } from "./client/components/unauthorized/auth.unauthorized-screen"
+export { AuthVerifyEmailScreen } from "./client/components/verify-email/auth.verify-email-screen"
 export {
   AuthFirstLoginScreen,
   AuthWelcomeScreen,

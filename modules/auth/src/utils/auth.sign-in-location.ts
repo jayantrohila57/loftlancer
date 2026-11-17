@@ -4,7 +4,7 @@ const authLocales = ["en-us", "en-in", "es-es"] as const
 const localePattern = authLocales.join("|")
 
 const authPublicPathPattern = new RegExp(
-  `^/(?:${localePattern})(?:/(?:sign-in(?:/sso)?|check-email|error|unauthorized|continue|welcome|first-login|consent|device)(?:/|$)|/?$)`
+  `^/(?:${localePattern})(?:/(?:sign-in(?:/sso)?|check-email|verify-email|error|unauthorized|continue|welcome|first-login|consent|device)(?:/|$)|/?$)`
 )
 
 function stripAuthAppBasePath(pathname: string): string {
