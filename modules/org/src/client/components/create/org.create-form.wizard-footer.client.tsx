@@ -2,7 +2,6 @@
 
 import { FormKit } from "@features/form"
 import { Button } from "@packages/ui/components/button"
-import { toastManager } from "@packages/ui/components/toast"
 import { useTranslations } from "next-intl"
 import { useFormState } from "react-hook-form"
 
@@ -32,14 +31,6 @@ export function OrgCreateFormWizardFooter({
   const t = useTranslations("ui")
   const { isFirstStep, isLastStep, goPrevious, goNext } = nav
 
-  // Draft persistence is not wired yet — stub until create-draft API exists.
-  function saveDraft() {
-    toastManager.add({
-      title: t("saveDraftComingSoon"),
-      type: "info",
-    })
-  }
-
   return (
     <FormKit.Actions className="shrink-0 bg-transparent px-0 py-3">
       {onCancel ? (
@@ -47,9 +38,6 @@ export function OrgCreateFormWizardFooter({
           {t("cancel")}
         </Button>
       ) : null}
-      <Button type="button" variant="outline" onClick={saveDraft}>
-        {t("saveDraft")}
-      </Button>
       {!isFirstStep ? (
         <Button type="button" variant="outline" onClick={goPrevious}>
           {t("previous")}

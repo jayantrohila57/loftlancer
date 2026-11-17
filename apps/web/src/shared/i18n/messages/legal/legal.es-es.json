@@ -1,0 +1,245 @@
+{
+  "lastUpdatedLabel": "Última actualización",
+  "lastUpdatedDate": "17 de noviembre de 2026",
+  "lastUpdatedLine": "Última actualización: 17 de noviembre de 2026",
+  "terms": {
+    "title": "Términos del servicio",
+    "description": "Estos Términos regulan su acceso y uso de Loftlancer, un espacio de planificación y validación para desarrolladores de software freelance.",
+    "sections": [
+      {
+        "heading": "1. Acuerdo",
+        "paragraphs": [
+          "Estos Términos del servicio (\"Términos\") constituyen un acuerdo vinculante entre usted y Loftlancer (\"Loftlancer\", \"nosotros\" o \"nuestro\") para el uso de los sitios y aplicaciones en loftlancer.com, incluido el sitio de marketing, el servicio de autenticación (/auth), Studio (/studio) y Console (/console) (el \"Servicio\").",
+          "Al crear una cuenta o usar el Servicio, acepta estos Términos y nuestra Política de privacidad. Si no está de acuerdo, no utilice el Servicio."
+        ]
+      },
+      {
+        "heading": "2. Quién puede usar el Servicio",
+        "paragraphs": [
+          "Debe tener al menos 16 años y capacidad para celebrar un contrato. Si usa el Servicio en nombre de una organización, declara que tiene autoridad para vincularla.",
+          "Es responsable de proteger sus métodos de acceso y de la actividad en su cuenta."
+        ]
+      },
+      {
+        "heading": "3. Cuentas y autenticación",
+        "paragraphs": [
+          "Ofrecemos acceso sin contraseña mediante GitHub, Google (si está configurado) y enlaces mágicos por correo con Resend. Debe proporcionar información veraz y mantenerla actualizada.",
+          "Podemos suspender o cerrar cuentas que incumplan estos Términos o supongan riesgo de seguridad o abuso."
+        ]
+      },
+      {
+        "heading": "4. Planes, facturación y pagos",
+        "paragraphs": [
+          "Loftlancer ofrece planes gratuitos y de pago para organizaciones. Los planes de pago se gestionan con Autumn y se facturan con Stripe.",
+          "Las suscripciones se renuevan automáticamente hasta que las cancele. Los impuestos pueden aplicarse. El impago puede conllevar degradación o suspensión tras el periodo de gracia comunicado."
+        ]
+      },
+      {
+        "heading": "5. Su contenido y organizaciones",
+        "paragraphs": [
+          "Usted conserva la titularidad del contenido que envía. Nos concede una licencia limitada para alojar y procesarlo solo para operar el Servicio.",
+          "Los propietarios y administradores de la organización controlan el acceso dentro del espacio de trabajo."
+        ]
+      },
+      {
+        "heading": "6. Uso aceptable",
+        "paragraphs": [
+          "No debe hacer un uso indebido del Servicio, incluido el acceso no autorizado, malware, uso ilícito o incumplimiento de derechos de terceros.",
+          "Pueden aplicarse reglas adicionales en nuestra Política de uso aceptable."
+        ]
+      },
+      {
+        "heading": "7. Servicios de terceros",
+        "paragraphs": [
+          "Integramos proveedores como Vercel, Neon, Vercel Blob, Autumn, Stripe, Resend, analítica (GA4, PostHog, Vercel Web Analytics) y Sentry. Su uso puede estar sujeto a sus condiciones.",
+          "Loftlancer no es responsable de productos de terceros que usted conecte fuera del Servicio."
+        ]
+      },
+      {
+        "heading": "8. Propiedad intelectual",
+        "paragraphs": [
+          "Loftlancer y sus licenciantes son titulares del Servicio, salvo su contenido. No se conceden derechos salvo los expresamente indicados.",
+          "Podemos usar comentarios que nos envíe para mejorar el Servicio."
+        ]
+      },
+      {
+        "heading": "9. Exclusiones de garantía",
+        "paragraphs": [
+          "El Servicio se proporciona \"tal cual\". No garantizamos funcionamiento ininterrumpido ni libre de errores.",
+          "Loftlancer no ofrece asesoramiento legal, fiscal o profesional."
+        ]
+      },
+      {
+        "heading": "10. Limitación de responsabilidad",
+        "paragraphs": [
+          "En la medida permitida por la ley, no seremos responsables de daños indirectos, incidentales o lucro cesante.",
+          "Nuestra responsabilidad agregada se limita al mayor entre (a) lo pagado en los doce meses anteriores o (b) cien dólares estadounidenses, salvo cuando la ley no lo permita."
+        ]
+      },
+      {
+        "heading": "11. Indemnización",
+        "paragraphs": [
+          "Usted defenderá e indemnizará a Loftlancer frente a reclamaciones derivadas de su contenido, su uso del Servicio o el incumplimiento de estos Términos."
+        ]
+      },
+      {
+        "heading": "12. Terminación",
+        "paragraphs": [
+          "Puede dejar de usar el Servicio en cualquier momento y eliminar su cuenta desde los ajustes, con la retención descrita en la Política de privacidad.",
+          "Podemos suspender o terminar el acceso por incumplimiento material o por motivos de seguridad u operativos."
+        ]
+      },
+      {
+        "heading": "13. Cambios",
+        "paragraphs": [
+          "Podemos actualizar estos Términos publicando la versión revisada con nueva fecha. El uso continuado tras los cambios implica aceptación cuando la ley lo permita."
+        ]
+      },
+      {
+        "heading": "14. Ley aplicable",
+        "paragraphs": [
+          "Estos Términos se rigen por las leyes de la India, sin perjuicio de protecciones imperativas del consumidor en su país de residencia.",
+          "Antes de reclamar judicialmente, escríbanos a support@loftlancer.com. Los tribunales de Nueva Delhi (India) tendrán jurisdicción cuando la ley lo permita."
+        ]
+      },
+      {
+        "heading": "15. Contacto",
+        "paragraphs": [
+          "Preguntas sobre estos Términos: support@loftlancer.com."
+        ]
+      }
+    ]
+  },
+  "privacy": {
+    "title": "Política de privacidad",
+    "description": "Cómo Loftlancer recopila, usa y protege datos personales cuando utiliza nuestros sitios y aplicaciones.",
+    "sections": [
+      {
+        "heading": "1. Introducción",
+        "paragraphs": [
+          "Loftlancer opera loftlancer.com y aplicaciones relacionadas. Esta política explica qué datos personales tratamos, con qué fines, con quién los compartimos y sus derechos.",
+          "Responsable: Loftlancer. Privacidad: privacy@loftlancer.com. Soporte: support@loftlancer.com."
+        ]
+      },
+      {
+        "heading": "2. Datos que recopilamos",
+        "paragraphs": [
+          "Datos de cuenta: nombre, correo, imagen de perfil, identificadores de proveedores de acceso, pertenencia a organizaciones y preferencias.",
+          "Datos técnicos y de uso: páginas vistas, interacciones, tipo de dispositivo, dirección IP, ubicación aproximada (si está habilitada), marcas de tiempo y registros.",
+          "Datos de facturación: plan, estado de suscripción y metadatos de pago en Stripe (no guardamos números completos de tarjeta).",
+          "Contenido que sube: datos de organizaciones y proyectos, archivos en Vercel Blob y comunicaciones transaccionales.",
+          "Cookies: según nuestra Política de cookies."
+        ]
+      },
+      {
+        "heading": "3. Cómo usamos los datos",
+        "paragraphs": [
+          "Usamos datos personales para prestar y asegurar el Servicio, autenticar usuarios, operar organizaciones y facturación, enviar correos transaccionales, mejorar el producto y cumplir la ley.",
+          "El correo de marketing solo se envía con su consentimiento. La analítica de producto solo se activa si acepta en el banner de cookies o en los ajustes de privacidad de la cuenta."
+        ]
+      },
+      {
+        "heading": "4. Bases legales (EEE/Reino Unido)",
+        "paragraphs": [
+          "Cuando aplica el RGPD, nos basamos en ejecución de contrato, interés legítimo (seguridad y mejora con salvaguardas), consentimiento (marketing y analítica no esencial) y obligación legal."
+        ]
+      },
+      {
+        "heading": "5. Encargados del tratamiento",
+        "paragraphs": [
+          "Utilizamos Vercel, Neon, Stripe, Autumn, Resend, PostHog, Google Analytics 4 (si da consentimiento), Sentry y GitHub/Google para autenticación, bajo acuerdos que exigen seguridad adecuada."
+        ]
+      },
+      {
+        "heading": "6. Conservación",
+        "paragraphs": [
+          "Conservamos datos de cuenta mientras esté activa y después según necesidades de seguridad, facturación y obligaciones legales.",
+          "Las cuentas eliminadas pueden conservarse en modo de borrado lógico hasta purga manual o plazo legal.",
+          "Los registros y datos analíticos se conservan por periodos limitados según cada proveedor."
+        ]
+      },
+      {
+        "heading": "7. Sus derechos",
+        "paragraphs": [
+          "Según su ubicación, puede tener derecho de acceso, rectificación, supresión, exportación, limitación u oposición, y a retirar el consentimiento.",
+          "India (Ley de protección de datos personales digitales): puede ejercer derechos de acceso, corrección, supresión y reclamación. Contacto: privacy@loftlancer.com.",
+          "Eliminación de cuenta en ajustes. Exportación de datos en ajustes de privacidad o por correo a privacy@loftlancer.com."
+        ]
+      },
+      {
+        "heading": "8. Transferencias internacionales",
+        "paragraphs": [
+          "Podemos tratar datos en Estados Unidos, Unión Europea, India y otras regiones donde operan nuestros proveedores, con salvaguardas adecuadas cuando la ley lo exige."
+        ]
+      },
+      {
+        "heading": "9. Seguridad",
+        "paragraphs": [
+          "Aplicamos cifrado en tránsito, controles de acceso y prácticas razonables para un SaaS. Ningún método es completamente seguro."
+        ]
+      },
+      {
+        "heading": "10. Menores",
+        "paragraphs": ["El Servicio no está dirigido a menores de 16 años."]
+      },
+      {
+        "heading": "11. Cambios",
+        "paragraphs": [
+          "Podemos actualizar esta política publicando la nueva versión con fecha actualizada."
+        ]
+      },
+      {
+        "heading": "12. Contacto",
+        "paragraphs": [
+          "Privacidad: privacy@loftlancer.com. Soporte: support@loftlancer.com."
+        ]
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Política de cookies",
+    "description": "Cómo Loftlancer usa cookies y tecnologías similares en nuestros sitios y aplicaciones.",
+    "sections": [
+      {
+        "heading": "1. Qué son las cookies",
+        "paragraphs": [
+          "Las cookies son pequeños archivos de texto en su dispositivo. También usamos almacenamiento local y scripts de analítica según se describe abajo."
+        ]
+      },
+      {
+        "heading": "2. Cookies esenciales",
+        "paragraphs": [
+          "Son necesarias para el funcionamiento del Servicio: sesión y autenticación (Better Auth), seguridad, idioma, contexto de organización en Studio y preferencias de interfaz.",
+          "No requieren consentimiento y no pueden desactivarse desde el banner sin afectar el acceso."
+        ]
+      },
+      {
+        "heading": "3. Cookies de analítica (opcionales)",
+        "paragraphs": [
+          "Con su consentimiento cargamos Google Analytics 4 (si está configurado), PostHog y Vercel Web Analytics.",
+          "Estas herramientas pueden establecer sus propias cookies. Permanece bloqueadas hasta que acepte en el banner o active la analítica en la cuenta."
+        ]
+      },
+      {
+        "heading": "4. Gestionar preferencias",
+        "paragraphs": [
+          "Use el banner para aceptar o rechazar analítica. Los usuarios registrados pueden cambiar preferencias en Privacidad y datos → Consentimientos.",
+          "También puede gestionar cookies en su navegador."
+        ]
+      },
+      {
+        "heading": "5. Conservación",
+        "paragraphs": [
+          "La cookie de consentimiento de analítica se guarda hasta un año. Las cookies de sesión expiran al cerrar sesión o el navegador según el tipo."
+        ]
+      },
+      {
+        "heading": "6. Cambios y contacto",
+        "paragraphs": [
+          "Podemos actualizar esta política. Consulte la fecha al inicio de la página.",
+          "Preguntas: privacy@loftlancer.com."
+        ]
+      }
+    ]
+  }
+}

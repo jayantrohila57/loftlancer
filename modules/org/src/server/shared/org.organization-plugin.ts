@@ -34,8 +34,12 @@ export function buildOrgOrganizationPluginOptions(): BetterAuthOrganizationPlugi
     roles: orgOrganizationPluginRoles,
     async sendInvitationEmail(data) {
       await sendOrgInvitationEmail({
+        id: data.id,
         email: data.email,
         organization: data.organization,
+        invitation: {
+          inviterId: data.invitation.inviterId ?? data.inviter.user.id,
+        },
       })
     },
     organizationHooks: {

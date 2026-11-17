@@ -1,5 +1,7 @@
 import Shell from "@packages/ui/components/shell"
 
+import { AdminUsersManagementClient } from "./admin.users.client"
+
 export type AdminUsersListItem = {
   id: string
   name: string
@@ -11,16 +13,30 @@ export type AdminUsersListItem = {
 }
 
 export type AdminUsersLabels = {
-  name: string
+  actions: string
+  active: string
+  banAction: string
+  banConfirmDescription: string
+  banConfirmTitle: string
+  banExpires: string
+  banFailed: string
+  banReason: string
+  banSuccess: string
+  banned: string
+  cancel: string
   email: string
-  verified: string
+  empty: string
+  name: string
+  no: string
   role: string
   status: string
-  empty: string
+  unbanAction: string
+  unbanConfirmDescription: string
+  unbanConfirmTitle: string
+  unbanFailed: string
+  unbanSuccess: string
+  verified: string
   yes: string
-  no: string
-  active: string
-  banned: string
 }
 
 export function AdminUsersView(props: {
@@ -77,7 +93,10 @@ export function AdminUsersScreen(props: {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 p-4">
       <h1 className="text-2xl font-semibold">{props.title}</h1>
-      <AdminUsersView labels={props.labels} users={props.users} />
+      <AdminUsersManagementClient
+        initialUsers={props.users}
+        labels={props.labels}
+      />
     </div>
   )
 }

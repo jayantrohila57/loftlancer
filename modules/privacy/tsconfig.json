@@ -9,6 +9,8 @@
       "@features/action": ["../../features/action/src/index.ts"],
       "@features/shell": ["../../features/shell/src/index.ts"],
       "@features/form": ["../../features/form/src/index.ts"],
+      "@features/i18n/server": ["../../features/i18n/src/server.ts"],
+      "@packages/blob": ["../../packages/blob/src/index.ts"],
       "@modules/privacy/utils": ["./src/utils/index.ts"],
       "@modules/security/client": [
         "../../modules/security/src/client/index.ts"

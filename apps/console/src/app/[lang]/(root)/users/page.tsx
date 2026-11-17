@@ -20,14 +20,28 @@ export default async function ConsoleUsersPage({ params }: LangPageProps) {
   return (
     <AdminUsersScreen
       labels={{
+        actions: t("actions"),
         active: t("active"),
+        banAction: t("banAction"),
+        banConfirmDescription: t("banConfirmDescription"),
+        banConfirmTitle: t("banConfirmTitle"),
+        banExpires: t("banExpires"),
+        banFailed: t("banFailed"),
+        banReason: t("banReason"),
+        banSuccess: t("banSuccess"),
         banned: t("banned"),
+        cancel: t("cancel"),
         email: t("email"),
         empty: t("empty"),
         name: t("name"),
         no: t("no"),
         role: t("role"),
         status: t("status"),
+        unbanAction: t("unbanAction"),
+        unbanConfirmDescription: t("unbanConfirmDescription"),
+        unbanConfirmTitle: t("unbanConfirmTitle"),
+        unbanFailed: t("unbanFailed"),
+        unbanSuccess: t("unbanSuccess"),
         verified: t("verified"),
         yes: t("yes"),
       }}

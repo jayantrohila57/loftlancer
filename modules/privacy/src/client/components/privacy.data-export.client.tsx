@@ -13,7 +13,10 @@ import { PrivacyAccountFrame } from "./privacy.frame"
 export function PrivacyDataExportScreen() {
   const t = useTranslations("privacyDataExport")
   const { data: session, isPending } = authClient.useSession()
-  const [submitted, setSubmitted] = useState(false)
+  const [result, setResult] = useState<{
+    readonly downloadUrl?: string
+    readonly expiresAt?: string
+  } | null>(null)
   const schema = useMemo(
     () =>
       z.object({
@@ -40,10 +43,26 @@ export function PrivacyDataExportScreen() {
       description={t("pageDescription")}
       title={t("pageTitle")}
     >
-      {submitted ? (
-        <p className="text-sm text-muted-foreground" role="status">
-          {t("submittedDescription")}
-        </p>
+      {result ? (
+        <div className="space-y-3 text-sm text-muted-foreground" role="status">
+          <p>{t("submittedDescription")}</p>
+          {result.downloadUrl ? (
+            <p>
+              <a
+                className="font-medium text-foreground underline"
+                href={result.downloadUrl}
+                rel="noreferrer"
+              >
+                {t("downloadLink")}
+              </a>
+              {result.expiresAt ? (
+                <span className="block text-xs">
+                  {t("linkExpires", { date: result.expiresAt })}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
+        </div>
       ) : (
         <FormKit
           variant="embedded"
@@ -54,26 +73,33 @@ export function PrivacyDataExportScreen() {
               await toastManager.promise(
                 (async () => {
                   const trimmed = values.message?.trim()
-                  const result =
+                  const response =
                     await securityRpc.security.privacy.dataExport.request({
                       payload: {
                         ...(trimmed ? { message: trimmed } : {}),
                       },
                     })
-                  if (result.status !== "success") {
+                  if (response.status !== "success") {
+                    if (response.error?.code === "DATA_EXPORT_RATE_LIMITED") {
+                      throw new Error(t("rateLimited"))
+                    }
                     throw new Error(
-                      serviceResponseFailureMessage(result, {
+                      serviceResponseFailureMessage(response, {
                         invalid: t("invalid"),
                         fallback: t("submitError"),
                       })
                     )
                   }
-                  setSubmitted(true)
+                  setResult({
+                    downloadUrl: response.data?.downloadUrl,
+                    expiresAt: response.data?.expiresAt,
+                  })
                 })(),
                 {
                   loading: t("submitting"),
                   success: t("submitSuccess"),
-                  error: t("submitError"),
+                  error: (err) =>
+                    err instanceof Error ? err.message : t("submitError"),
                 }
               )
             } catch {
@@ -83,7 +109,7 @@ export function PrivacyDataExportScreen() {
         >
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              {t("manualProcessDescription")}
+              {t("selfServeDescription")}
             </p>
             <FormKit.Field
               name="message"

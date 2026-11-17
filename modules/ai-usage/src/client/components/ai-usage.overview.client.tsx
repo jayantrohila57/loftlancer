@@ -5,6 +5,7 @@ import {
   useOrgSessionActiveId,
   useOrgSessionActiveIdPending,
 } from "@modules/org"
+import { useAccountHubHref } from "@modules/shell"
 import { Button } from "@packages/ui/components/button"
 import {
   Empty,
@@ -53,6 +54,7 @@ function invokeStatusLabel(
 export function AiUsageOverviewScreen() {
   const t = useTranslations("ui")
   const { Link } = useShellNavigation()
+  const billingHref = useAccountHubHref("/account/billing")
   const orgResolving = useOrgSessionActiveIdPending()
   const organizationId = useOrgSessionActiveId()
   const overview = useAiUsageApi.useOverview(organizationId)
@@ -144,7 +146,7 @@ export function AiUsageOverviewScreen() {
       {data.isOrgOwner &&
       data.aiEnabled &&
       (data.invokeStatus === "no_credits" || data.aiCreditBalance === 0) ? (
-        <Button render={<Link href="/account/billing" />}>
+        <Button render={<Link href={billingHref} />}>
           <CreditCard className="size-4" />
           {t("aiUsageBuyCreditsCta")}
         </Button>
