@@ -180,9 +180,7 @@
       },
       {
         "heading": "10. Menores",
-        "paragraphs": [
-          "El Servicio no está dirigido a menores de 16 años."
-        ]
+        "paragraphs": ["El Servicio no está dirigido a menores de 16 años."]
       },
       {
         "heading": "11. Cambios",
@@ -363,6 +361,7 @@
   "overview": {
     "title": "Resumen legal",
     "description": "Índice de documentos legales de Loftlancer.",
+    "indexTitle": "Todos los documentos legales",
     "sections": [
       {
         "heading": "Políticas",

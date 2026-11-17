@@ -522,7 +522,13 @@
         "support": "support@loftlancer.com",
         "privacy": "privacy@loftlancer.com",
         "security": "security@loftlancer.com"
-      }
+      },
+      "emailList": {
+        "supportLine": "Support: {email}",
+        "privacyLine": "Privacy: {email}",
+        "securityLine": "Security: {email}"
+      },
+      "operatorNote": "{legalName} · India-based operator · Draft policies — not legal advice."
     }
   },
   "faqPage": {
@@ -601,11 +607,16 @@
     "metaDescription": "Search help articles and site content on Loftlancer.",
     "title": "Search",
     "description": "Find help articles and pages.",
+    "emptyQuery": "Enter a search term to see matching pages and help articles.",
+    "pagesHeading": "Pages",
+    "noPageResults": "No pages matched your search.",
+    "articlesHeading": "Help articles",
+    "noArticleResults": "No help articles matched your search.",
     "sections": [
       {
         "heading": "How search works",
         "paragraphs": [
-          "Enter keywords to filter Help Center articles. Full-site search may expand over time."
+          "Search matches public pages and Help Center articles. Signed-in product search may expand over time."
         ]
       }
     ]
@@ -615,6 +626,9 @@
     "metaDescription": "HTML sitemap of public Loftlancer pages.",
     "title": "Sitemap",
     "description": "Overview of marketing, product, legal, and resource pages.",
+    "sitePagesHeading": "Site pages",
+    "helpArticlesHeading": "Help articles",
+    "whatsNewLink": "What's new",
     "sections": [
       {
         "heading": "Sections",

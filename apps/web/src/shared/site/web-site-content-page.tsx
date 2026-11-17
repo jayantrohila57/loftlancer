@@ -14,10 +14,6 @@ export type WebSiteContentPageNamespace =
   | "blogPage"
   | "companyStoriesPage"
   | "partnershipsPage"
-  | "faqPage"
-  | "searchPage"
-  | "sitemapPage"
-  | `productPages.${string}`
 
 export interface WebSiteContentPageInput extends LangPageProps {
   readonly namespace: WebSiteContentPageNamespace

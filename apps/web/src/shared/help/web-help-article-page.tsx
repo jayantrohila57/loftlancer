@@ -1,12 +1,10 @@
-import { notFound } from "next/navigation"
 import Shell from "@packages/ui/components/shell"
+import { notFound } from "next/navigation"
+import type { WebHelpArticleSlug } from "@/shared/help/web-help-articles"
+import { getWebHelpArticle } from "@/shared/help/web-help-articles"
+import { WebHelpStillNeedBlock } from "@/shared/help/web-help-still-need-block"
 import { Link } from "@/shared/i18n/web.i18n"
 import { getServerTranslations } from "@/shared/i18n/web.i18n.server"
-import {
-  getWebHelpArticle,
-  type WebHelpArticleSlug,
-} from "@/shared/help/web-help-articles"
-import { WebHelpStillNeedBlock } from "@/shared/help/web-help-still-need-block"
 import type { LangPageProps } from "@/shared/types/web.app.types"
 
 type ArticleSection = {
@@ -22,12 +20,11 @@ export async function WebHelpArticlePage({
   params,
   slug,
 }: WebHelpArticlePageInput) {
+  const { lang } = await params
   const article = getWebHelpArticle(slug)
   if (!article) {
     notFound()
   }
-
-  const { lang } = await params
   const t = await getServerTranslations(params, "helpCenter")
   const sections = t.raw(
     `articles.${article.slug as WebHelpArticleSlug}.sections`

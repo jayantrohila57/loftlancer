@@ -19,7 +19,7 @@ export function WebHelpSearchForm({
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const query = String(formData.get("q") ?? "").trim()
-  const params = new URLSearchParams()
+    const params = new URLSearchParams()
     if (query) {
       params.set("q", query)
     }

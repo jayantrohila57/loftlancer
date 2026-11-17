@@ -105,9 +105,7 @@
       },
       {
         "heading": "15. Contact",
-        "paragraphs": [
-          "Questions about these Terms: support@loftlancer.com."
-        ]
+        "paragraphs": ["Questions about these Terms: support@loftlancer.com."]
       }
     ]
   },
@@ -366,6 +364,7 @@
   "overview": {
     "title": "Legal overview",
     "description": "Index of Loftlancer legal documents.",
+    "indexTitle": "All legal documents",
     "sections": [
       {
         "heading": "Policies",

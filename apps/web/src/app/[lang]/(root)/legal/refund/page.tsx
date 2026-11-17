@@ -1,6 +1,22 @@
-import { WebSitePlaceholderPage } from "@/shared/shell/web-site-placeholder-page"
+import type { Metadata } from "next"
+import {
+  getServerTranslations,
+  initRequestI18n,
+} from "@/shared/i18n/web.i18n.server"
+import { WebLegalDocumentPage } from "@/shared/legal/web-legal-document-page"
 import type { LangPageProps } from "@/shared/types/web.app.types"
 
+export async function generateMetadata({
+  params,
+}: LangPageProps): Promise<Metadata> {
+  await initRequestI18n(params)
+  const t = await getServerTranslations(params, "legal")
+  return {
+    title: t("refund.title"),
+    description: t("refund.description"),
+  }
+}
+
 export default async function LegalRefundPage(props: LangPageProps) {
-  return WebSitePlaceholderPage({ ...props, titleKey: "navLegalRefund" })
+  return WebLegalDocumentPage({ ...props, document: "refund" })
 }

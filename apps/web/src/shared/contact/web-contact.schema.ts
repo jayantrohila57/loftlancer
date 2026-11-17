@@ -17,8 +17,8 @@ export const webContactFormSchema = z.object({
   email: z.string().trim().email().max(254),
   topic: z.enum(webContactTopicValues),
   message: z.string().trim().min(20).max(5000),
-  consent: z.literal(true, {
-    errorMap: () => ({ message: "consentRequired" }),
+  consent: z.boolean().refine((value) => value === true, {
+    message: "consentRequired",
   }),
   companyWebsite: z.string().max(0).optional(),
 })

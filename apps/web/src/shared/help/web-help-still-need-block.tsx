@@ -1,5 +1,6 @@
 import { getAuth } from "@packages/better-auth"
-import { Button } from "@packages/ui/components/button"
+import { buttonVariants } from "@packages/ui/components/button"
+import { cn } from "@packages/ui/lib/utils"
 import { headers } from "next/headers"
 import { Link } from "@/shared/i18n/web.i18n"
 
@@ -35,12 +36,18 @@ export async function WebHelpStillNeedBlock({
         {copy.body}
       </p>
       <div className="mt-4 flex flex-wrap gap-3">
-        <Button asChild size="sm" variant="default">
-          <Link href={supportHref}>{supportLabel}</Link>
-        </Button>
-        <Button asChild size="sm" variant="outline">
-          <Link href={contactHref}>{copy.contactCta}</Link>
-        </Button>
+        <Link
+          className={cn(buttonVariants({ size: "sm", variant: "default" }))}
+          href={supportHref}
+        >
+          {supportLabel}
+        </Link>
+        <Link
+          className={cn(buttonVariants({ size: "sm", variant: "outline" }))}
+          href={contactHref}
+        >
+          {copy.contactCta}
+        </Link>
       </div>
     </aside>
   )

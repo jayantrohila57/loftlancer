@@ -522,7 +522,13 @@
         "support": "support@loftlancer.com",
         "privacy": "privacy@loftlancer.com",
         "security": "security@loftlancer.com"
-      }
+      },
+      "emailList": {
+        "supportLine": "Soporte: {email}",
+        "privacyLine": "Privacidad: {email}",
+        "securityLine": "Seguridad: {email}"
+      },
+      "operatorNote": "{legalName} · Operador con base en la India · Políticas en borrador — no constituye asesoramiento legal."
     }
   },
   "faqPage": {
@@ -601,11 +607,16 @@
     "metaDescription": "Busca artículos de ayuda y contenido en Loftlancer.",
     "title": "Buscar",
     "description": "Encuentra artículos de ayuda y páginas.",
+    "emptyQuery": "Escribe un término para ver páginas y artículos coincidentes.",
+    "pagesHeading": "Páginas",
+    "noPageResults": "Ninguna página coincide con tu búsqueda.",
+    "articlesHeading": "Artículos de ayuda",
+    "noArticleResults": "Ningún artículo de ayuda coincide con tu búsqueda.",
     "sections": [
       {
         "heading": "Cómo funciona la búsqueda",
         "paragraphs": [
-          "Introduce palabras clave para filtrar artículos del centro de ayuda."
+          "La búsqueda coincide con páginas públicas y artículos del centro de ayuda."
         ]
       }
     ]
@@ -615,6 +626,9 @@
     "metaDescription": "Mapa HTML de páginas públicas de Loftlancer.",
     "title": "Mapa del sitio",
     "description": "Resumen de marketing, producto, legal y recursos.",
+    "sitePagesHeading": "Páginas del sitio",
+    "helpArticlesHeading": "Artículos de ayuda",
+    "whatsNewLink": "Novedades",
     "sections": [
       {
         "heading": "Secciones",
@@ -673,9 +687,7 @@
       "sections": [
         {
           "heading": "Espacio compartido",
-          "paragraphs": [
-            "Un plan por cliente con propiedad clara."
-          ]
+          "paragraphs": ["Un plan por cliente con propiedad clara."]
         }
       ]
     },
@@ -715,9 +727,7 @@
       "sections": [
         {
           "heading": "Acceso",
-          "paragraphs": [
-            "Claves API y límites dependen de tu suscripción."
-          ]
+          "paragraphs": ["Claves API y límites dependen de tu suscripción."]
         },
         {
           "heading": "Documentación",

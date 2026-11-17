@@ -4,8 +4,8 @@ import { brandEmails, brandLegal } from "@packages/brand"
 import { sendResendEmail } from "@packages/resend"
 import { headers } from "next/headers"
 import { serverEnv } from "@/shared/config/web.server-env"
-import { assertWebContactRateLimit } from "@/shared/contact/web-contact-rate-limit"
 import { webContactFormSchema } from "@/shared/contact/web-contact.schema"
+import { assertWebContactRateLimit } from "@/shared/contact/web-contact-rate-limit"
 
 export type WebContactActionState =
   | { readonly status: "idle" }

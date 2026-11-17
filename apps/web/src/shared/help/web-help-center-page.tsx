@@ -1,12 +1,12 @@
-import { Link } from "@/shared/i18n/web.i18n"
 import Shell from "@packages/ui/components/shell"
-import { getServerTranslations } from "@/shared/i18n/web.i18n.server"
 import {
-  WEB_HELP_CATEGORIES,
   getWebHelpArticlesByCategory,
+  WEB_HELP_CATEGORIES,
 } from "@/shared/help/web-help-articles"
-import { WebHelpStillNeedBlock } from "@/shared/help/web-help-still-need-block"
 import { WebHelpSearchForm } from "@/shared/help/web-help-search-form.client"
+import { WebHelpStillNeedBlock } from "@/shared/help/web-help-still-need-block"
+import { Link } from "@/shared/i18n/web.i18n"
+import { getServerTranslations } from "@/shared/i18n/web.i18n.server"
 import type { LangPageProps } from "@/shared/types/web.app.types"
 
 export async function WebHelpCenterPage({ params }: LangPageProps) {
@@ -24,7 +24,10 @@ export async function WebHelpCenterPage({ params }: LangPageProps) {
             {t("description")}
           </p>
         </header>
-        <WebHelpSearchForm label={t("searchLabel")} placeholder={t("searchPlaceholder")} />
+        <WebHelpSearchForm
+          label={t("searchLabel")}
+          placeholder={t("searchPlaceholder")}
+        />
         <div className="flex flex-col gap-10">
           {WEB_HELP_CATEGORIES.map((categoryId) => {
             const articles = getWebHelpArticlesByCategory(categoryId)
