@@ -15,6 +15,14 @@ import {
 import { buildSoftDeleteUserPlugin } from "./better-auth.soft-delete"
 import { buildSsoPlugin } from "./better-auth.sso"
 
+function readMagicLinkRequest(ctx: unknown): Request | undefined {
+  if (ctx instanceof Request) return ctx
+  if (ctx && typeof ctx === "object" && "request" in ctx) {
+    return ctx.request as Request | undefined
+  }
+  return undefined
+}
+
 export function buildAuthPlugins() {
   return [
     buildJwtPlugin(),
@@ -25,14 +33,12 @@ export function buildAuthPlugins() {
       roles: betterAuthAdminRoles,
     }),
     magicLink({
-      sendMagicLink: async ({ email, url }, ctx) => {
-        const request =
-          ctx instanceof Request
-            ? ctx
-            : ctx && typeof ctx === "object" && "request" in ctx
-              ? (ctx.request as Request | undefined)
-              : undefined
-        await sendMagicLinkEmail({ email, url, request })
+      storeToken: "hashed",
+      sendMagicLink: async ({ email, url, metadata }, ctx) => {
+        const request = readMagicLinkRequest(ctx)
+        const locale =
+          typeof metadata?.locale === "string" ? metadata.locale : undefined
+        await sendMagicLinkEmail({ email, locale, request, url })
       },
     }),
     buildSsoPlugin(),

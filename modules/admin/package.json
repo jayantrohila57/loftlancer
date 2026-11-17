@@ -9,6 +9,21 @@
     "./server": "./src/server/index.ts",
     "./utils": "./src/utils/index.ts"
   },
+  "dependencies": {
+    "@modules/activity": "workspace:*",
+    "@modules/auth": "workspace:*",
+    "@modules/security": "workspace:*",
+    "@packages/better-auth": "workspace:*",
+    "@packages/drizzle": "workspace:*",
+    "@packages/orpc": "workspace:*",
+    "@packages/react-query": "workspace:*",
+    "@packages/ui": "workspace:*",
+    "@features/shell": "workspace:*",
+    "next": "16.3.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "^4.3.6"
+  },
   "devDependencies": {
     "@packages/typescript-config": "workspace:*",
     "typescript": "^7"

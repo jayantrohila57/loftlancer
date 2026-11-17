@@ -4,10 +4,7 @@ import { toastManager } from "@packages/ui/components/toast"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useEffect, useRef } from "react"
-import {
-  authOAuthCallbackMessageKey,
-  classifyAuthOAuthCallbackError,
-} from "../../../utils/auth.oauth-callback-error"
+import { resolveAuthErrorMessageKey } from "../../../utils/auth.error-message"
 
 export function AuthSignInOauthFeedback() {
   const t = useTranslations("ui")
@@ -20,8 +17,7 @@ export function AuthSignInOauthFeedback() {
     if (handled.current === error) return
     handled.current = error
 
-    const kind = classifyAuthOAuthCallbackError(error)
-    const messageKey = authOAuthCallbackMessageKey[kind]
+    const messageKey = resolveAuthErrorMessageKey(error)
     toastManager.add({ title: t(messageKey), type: "error" })
 
     const url = new URL(window.location.href)

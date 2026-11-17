@@ -4,8 +4,8 @@ import { toastManager } from "@packages/ui/components/toast"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
-
 import { readCheckEmailAddress } from "../../../../utils/auth.check-email-address"
+import { useAuthLocale } from "../../../hooks/auth.locale.client"
 import { api } from "../../sign-in/hooks/auth.api"
 import { useAuthSignInPaths } from "../../sign-in/hooks/auth.sign-in-paths.client"
 
@@ -19,6 +19,7 @@ export interface AuthCheckEmailState {
 
 export function useAuthCheckEmail(): AuthCheckEmailState {
   const t = useTranslations("ui")
+  const locale = useAuthLocale()
   const searchParams = useSearchParams()
   const email = readCheckEmailAddress(searchParams.get("email")) ?? ""
   const { callbackURL, errorCallbackURL, newUserCallbackURL, signInURL } =
@@ -38,6 +39,7 @@ export function useAuthCheckEmail(): AuthCheckEmailState {
           callbackURL,
           email,
           errorCallbackURL,
+          locale,
           newUserCallbackURL,
         }),
         {

@@ -20,11 +20,14 @@ export function useAuthSignInPaths(): AuthSignInPaths {
 
   const signInURL = `${authApp}/${locale}/sign-in${query}`
 
+  const newUserParams = new URLSearchParams()
+  if (returnTo) newUserParams.set("returnTo", returnTo)
+  newUserParams.set("newUser", "1")
+  const newUserQuery = `?${newUserParams.toString()}`
+
   return {
     callbackURL: `${authApp}/${locale}/continue${query}`,
-    newUserCallbackURL: returnTo
-      ? `${authApp}/${locale}/continue${query}`
-      : `${authApp}/${locale}/welcome`,
+    newUserCallbackURL: `${authApp}/${locale}/continue${newUserQuery}`,
     errorCallbackURL: signInURL,
     signInURL,
     checkEmailURL: (email: string) =>

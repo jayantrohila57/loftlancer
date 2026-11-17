@@ -33,7 +33,7 @@ export async function sendResendEmail({
     from,
     html,
     subject,
-    text,
+    ...(text ? { text } : {}),
     to,
   })
 

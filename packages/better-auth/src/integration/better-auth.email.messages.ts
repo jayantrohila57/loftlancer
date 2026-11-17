@@ -1,9 +1,8 @@
 import type { BetterAuthEmailLocale } from "./better-auth.email.locale"
+import type { BrandedEmailCopy } from "./better-auth.email-template"
 
 export type BetterAuthEmailMessageSet = {
-  readonly magicLinkSubject: string
-  readonly magicLinkHtml: (url: string) => string
-  readonly magicLinkText: (url: string) => string
+  readonly magicLinkBranded: BrandedEmailCopy
   readonly verifyEmailSubject: string
   readonly verifyEmailHtml: (url: string) => string
   readonly verifyEmailText: (url: string) => string
@@ -19,13 +18,29 @@ export type BetterAuthEmailMessageSet = {
   readonly disposableEmailDescription: string
 }
 
+const magicLinkBrandedEn: BrandedEmailCopy = {
+  subject: "Your Loftlancer sign-in link",
+  preview: "Sign in to Loftlancer",
+  heading: "Sign in to Loftlancer",
+  body: "Use the button below to sign in. This link expires soon and works once.",
+  cta: "Sign in",
+  plainText: "Sign in to Loftlancer: {url}",
+  ignore: "If you did not request this email, you can ignore it.",
+}
+
+const magicLinkBrandedEs: BrandedEmailCopy = {
+  subject: "Tu enlace de acceso a Loftlancer",
+  preview: "Accede a Loftlancer",
+  heading: "Accede a Loftlancer",
+  body: "Usa el botón para iniciar sesión. El enlace caduca pronto y solo sirve una vez.",
+  cta: "Iniciar sesión",
+  plainText: "Accede a Loftlancer: {url}",
+  ignore: "Si no solicitaste este correo, puedes ignorarlo.",
+}
+
 const messages: Record<BetterAuthEmailLocale, BetterAuthEmailMessageSet> = {
   "en-us": {
-    magicLinkSubject: "Your Loftlancer sign-in link",
-    magicLinkHtml: (url) =>
-      `<p><a href="${url}">Sign in to Loftlancer</a></p><p>If you did not request this email, you can ignore it.</p>`,
-    magicLinkText: (url) =>
-      `Sign in to Loftlancer: ${url}\n\nIf you did not request this email, you can ignore it.`,
+    magicLinkBranded: magicLinkBrandedEn,
     verifyEmailSubject: "Verify your Loftlancer email",
     verifyEmailHtml: (url) =>
       `<p>Confirm your email address for Loftlancer.</p><p><a href="${url}">Verify email</a></p>`,
@@ -40,11 +55,7 @@ const messages: Record<BetterAuthEmailLocale, BetterAuthEmailMessageSet> = {
       "Disposable email addresses cannot be used for Loftlancer accounts.",
   },
   "en-in": {
-    magicLinkSubject: "Your Loftlancer sign-in link",
-    magicLinkHtml: (url) =>
-      `<p><a href="${url}">Sign in to Loftlancer</a></p><p>If you did not request this email, you can ignore it.</p>`,
-    magicLinkText: (url) =>
-      `Sign in to Loftlancer: ${url}\n\nIf you did not request this email, you can ignore it.`,
+    magicLinkBranded: magicLinkBrandedEn,
     verifyEmailSubject: "Verify your Loftlancer email",
     verifyEmailHtml: (url) =>
       `<p>Confirm your email address for Loftlancer.</p><p><a href="${url}">Verify email</a></p>`,
@@ -59,11 +70,7 @@ const messages: Record<BetterAuthEmailLocale, BetterAuthEmailMessageSet> = {
       "Disposable email addresses cannot be used for Loftlancer accounts.",
   },
   "es-es": {
-    magicLinkSubject: "Tu enlace de acceso a Loftlancer",
-    magicLinkHtml: (url) =>
-      `<p><a href="${url}">Inicia sesión en Loftlancer</a></p><p>Si no solicitaste este correo, ignóralo.</p>`,
-    magicLinkText: (url) =>
-      `Inicia sesión en Loftlancer: ${url}\n\nSi no solicitaste este correo, ignóralo.`,
+    magicLinkBranded: magicLinkBrandedEs,
     verifyEmailSubject: "Verifica tu correo de Loftlancer",
     verifyEmailHtml: (url) =>
       `<p>Confirma tu dirección de correo en Loftlancer.</p><p><a href="${url}">Verificar correo</a></p>`,
