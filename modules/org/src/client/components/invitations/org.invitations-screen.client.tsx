@@ -23,9 +23,11 @@ import Shell from "@packages/ui/components/shell"
 import { Spinner } from "@packages/ui/components/spinner"
 import { useLocale, useTranslations } from "next-intl"
 import { useCallback, useEffect, useState } from "react"
+import { isOrgInvitationEmailVerificationError } from "../../../utils/org.invitation-email-verification"
 import { activateOrganizationAfterJoin } from "../../../utils/org.organization-id"
 import { isInvitationAcceptable } from "../../../utils/validation/org.invitation-role"
 import { useOrgAppPaths } from "../org.app-paths.client"
+import { OrgInvitationVerifyEmailPrompt } from "./org.invitation-verify-email-prompt.client"
 
 type Invitation = {
   id: string
@@ -50,6 +52,7 @@ export function OrgInvitationsScreen({
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [declineTarget, setDeclineTarget] = useState<Invitation | null>(null)
+  const [verifyRequired, setVerifyRequired] = useState(false)
   const load = useCallback(async () => {
     setListLoading(true)
     try {
@@ -87,8 +90,15 @@ export function OrgInvitationsScreen({
       const result = accept
         ? await authClient.organization.acceptInvitation({ invitationId: id })
         : await authClient.organization.rejectInvitation({ invitationId: id })
-      if (result.error)
+      if (result.error) {
+        if (accept && isOrgInvitationEmailVerificationError(result.error)) {
+          setVerifyRequired(true)
+          setError(null)
+          return false
+        }
         throw new Error(result.error.message || t("invitationActionError"))
+      }
+      setVerifyRequired(false)
       if (accept) {
         await activateOrganizationAfterJoin(
           authClient.organization.setActive.bind(authClient.organization),
@@ -128,6 +138,7 @@ export function OrgInvitationsScreen({
         </FrameHeader>
         <FramePanel>
           {loading ? <p>{t("loading")}</p> : null}
+          {verifyRequired ? <OrgInvitationVerifyEmailPrompt /> : null}
           {error ? (
             <p role="alert" className="text-sm text-destructive">
               {error}

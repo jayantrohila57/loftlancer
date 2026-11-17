@@ -1,3 +1,5 @@
+import { escapeHtmlAttribute } from "./better-auth.email.escape"
+
 export type BrandedEmailCopy = {
   readonly preview: string
   readonly heading: string
@@ -8,22 +10,7 @@ export type BrandedEmailCopy = {
   readonly plainText: string
 }
 
-export function escapeHtmlAttribute(value: string): string {
-  return value.replace(/[&<>"']/g, (character) => {
-    switch (character) {
-      case "&":
-        return "&amp;"
-      case "<":
-        return "&lt;"
-      case ">":
-        return "&gt;"
-      case '"':
-        return "&quot;"
-      default:
-        return "&#39;"
-    }
-  })
-}
+export { escapeHtmlAttribute }
 
 export function buildBrandedEmailHtml(input: {
   readonly copy: BrandedEmailCopy

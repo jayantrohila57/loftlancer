@@ -37,6 +37,9 @@ export const connectedAccountLinkCallbackMessageKey = {
   alreadyLinked: "accountAlreadyLinked",
   emailMismatch: "accountLinkEmailMismatch",
   provider: "accountLinkProviderError",
+  accountNotLinked: "socialSignInAccountNotLinked",
+  emailNotVerified: "socialSignInEmailNotVerified",
+  disposableEmail: "disposableEmailNotAllowed",
 } as const satisfies Record<ConnectedAccountLinkCallbackFailureKind, string>
 
 export function isConnectedAccountLinkCallbackSuccess(

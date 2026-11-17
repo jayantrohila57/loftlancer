@@ -7,14 +7,23 @@ import {
   getConfiguredDatabaseHooks,
   getConfiguredDeleteUser,
 } from "./better-auth.configure"
+import {
+  sendChangeEmailConfirmationDelivery,
+  sendVerificationEmailDelivery,
+} from "./better-auth.email"
 import { getTrustedAuthOrigins } from "./better-auth.origins"
 import { resolveAuthApiPaths } from "./better-auth.paths"
 import { buildAuthPlugins } from "./better-auth.plugins"
+import {
+  resolveAuthRateLimitOptions,
+  resolveAuthSecondaryStorage,
+} from "./better-auth.rate-limit"
 import {
   requireAuthDatabase,
   requireAuthSecret,
 } from "./better-auth.requirements"
 import { buildSocialProviders } from "./better-auth.social-providers"
+import { createDisposableEmailValidator } from "./better-auth.validate-user"
 
 const globalForAuth = globalThis as unknown as {
   betterAuth: ReturnType<typeof createAuth> | undefined
@@ -22,13 +31,17 @@ const globalForAuth = globalThis as unknown as {
 }
 
 function getAuthConfigKey(): string {
-  return `${serverEnv.BETTER_AUTH_URL}|${serverEnv.DATABASE_URL ?? ""}|${serverEnv.BETTER_AUTH_DEVICE_CLIENT_IDS ?? ""}|${serverEnv.BETTER_AUTH_DEVICE_SCOPES ?? ""}|mcp-oauth-v1|sso-v1|soft-delete-v2|device-authorization-v1|org-v1|autumn-v1`
+  const redisConfigured = Boolean(
+    serverEnv.UPSTASH_REDIS_REST_URL && serverEnv.UPSTASH_REDIS_REST_TOKEN
+  )
+  return `${serverEnv.BETTER_AUTH_URL}|${serverEnv.DATABASE_URL ?? ""}|${serverEnv.BETTER_AUTH_DEVICE_CLIENT_IDS ?? ""}|${serverEnv.BETTER_AUTH_DEVICE_SCOPES ?? ""}|redis=${redisConfigured ? "1" : "0"}|mcp-oauth-v1|sso-v1|soft-delete-v2|device-authorization-v1|org-v1|autumn-v1|rate-limit-v1|cookie-cache-v1|email-verification-v1`
 }
 
 export function createAuth() {
   const db = requireAuthDatabase()
   const secret = requireAuthSecret()
   const { basePath, baseURL } = resolveAuthApiPaths()
+  const secondaryStorage = resolveAuthSecondaryStorage()
 
   return betterAuth({
     advanced: { disableOriginCheck: false },
@@ -41,9 +54,36 @@ export function createAuth() {
       provider: "pg",
       schema,
     }),
+    account: {
+      accountLinking: {
+        enabled: true,
+        trustedProviders: ["github", "google"],
+      },
+    },
+    emailVerification: {
+      autoSignInAfterVerification: true,
+      sendOnSignUp: true,
+      sendVerificationEmail: async ({ user, url }, request) => {
+        await sendVerificationEmailDelivery({
+          email: user.email,
+          url,
+          request,
+        })
+      },
+    },
     plugins: buildAuthPlugins(),
     secret,
-    session: { freshAge: 86_400 },
+    ...(secondaryStorage ? { secondaryStorage } : {}),
+    rateLimit: resolveAuthRateLimitOptions(secondaryStorage),
+    session: {
+      freshAge: 86_400,
+      storeSessionInDatabase: true,
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60,
+      },
+    },
+    verification: secondaryStorage ? { storeInDatabase: true } : undefined,
     socialProviders: buildSocialProviders(),
     user: {
       additionalFields: {
@@ -53,10 +93,25 @@ export function createAuth() {
           input: false,
         },
       },
+      changeEmail: {
+        enabled: true,
+        sendChangeEmailConfirmation: async (
+          { user, newEmail, url },
+          request
+        ) => {
+          await sendChangeEmailConfirmationDelivery({
+            email: user.email,
+            newEmail,
+            url,
+            request,
+          })
+        },
+      },
       deleteUser: {
         enabled: true,
         ...getConfiguredDeleteUser(),
       },
+      validateUserInfo: createDisposableEmailValidator(),
     },
   })
 }

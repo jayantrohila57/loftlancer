@@ -1,6 +1,7 @@
 import "@packages/t3-env/server"
 import { createI18nNextPluginForApp } from "@features/i18n/plugin"
 import {
+  createBaselineSecurityHeaders,
   createSentryBuildOptions,
   readMonorepoAppVersion,
 } from "@packages/sentry/next-config"
@@ -34,6 +35,14 @@ const nextConfig: NextConfig = {
     "@features/theme",
     "@features/i18n",
   ],
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: createBaselineSecurityHeaders(),
+      },
+    ]
+  },
   async redirects(): Promise<Redirect[]> {
     return [
       ...(buildAuthMigratedStudioRedirects() as Redirect[]),

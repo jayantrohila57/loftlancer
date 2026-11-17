@@ -11,13 +11,15 @@
     "@better-auth/oauth-provider": "1.7.19",
     "@better-auth/sso": "1.7.19",
     "@packages/drizzle": "workspace:*",
-    "@packages/mcp": "workspace:*",
     "@packages/logger": "workspace:*",
+    "@packages/mcp": "workspace:*",
     "@packages/resend": "workspace:*",
     "@packages/t3-env": "workspace:*",
+    "@upstash/redis": "^1.41.0",
     "autumn-js": "1.5.11",
     "better-auth": "^1.7.19",
     "better-call": "1.4.5",
+    "disposable-email-domains": "^1.0.62",
     "jose": "^6.2.16"
   },
   "devDependencies": {
