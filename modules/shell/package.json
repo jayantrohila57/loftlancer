@@ -17,6 +17,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "@packages/better-auth": "workspace:*",
+    "@packages/brand": "workspace:*",
     "@packages/t3-env": "workspace:*",
     "@packages/ui": "workspace:*",
     "next-intl": "^4.14.9",

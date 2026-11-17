@@ -1,16 +1,9 @@
 import { readdirSync, readFileSync, statSync } from "node:fs"
 import { join } from "node:path"
 
-/** Mirrors `redirects()` in `apps/auth/next.config.ts` (locale-free path suffixes). */
-export const AUTH_ACCOUNT_LEGACY_REDIRECTS = [
-  ["/account/security/user-activity", "/account/activity/account"],
-  [
-    "/account/security/user-activity/data-management",
-    "/account/activity/data-management",
-  ],
-  ["/account/security/activity", "/account/activity/security"],
-  ["/account/permissions", "/account/security/permissions"],
-] as const
+import { AUTH_ACCOUNT_LEGACY_REDIRECTS } from "./auth-account-legacy-redirects"
+
+export { AUTH_ACCOUNT_LEGACY_REDIRECTS }
 
 /** Migrated to Studio — Auth keeps permanent redirects only. */
 export const AUTH_STUDIO_MIGRATED_PATH_PREFIXES = [
@@ -106,7 +99,7 @@ export function authAppPathHasPage(
     ([legacy]) => legacy === href
   )
   if (redirect) {
-    return pagePaths.has(redirect[0]) && pagePaths.has(redirect[1])
+    return pagePaths.has(redirect[1])
   }
 
   return false

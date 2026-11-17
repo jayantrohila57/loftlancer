@@ -303,7 +303,7 @@ export const activityTargetPaths: Readonly<Record<string, string>> = {
 }
 
 /** Safe read-only destination when per-resource access is not resolved yet. */
-export const activityResourceListPath = "/account/activity/resource" as const
+export const activityResourceListPath = "/account/security/activity" as const
 
 /** Console app route suffixes (cross-app; requires current administrator access). */
 export const activityConsoleTargetSegments: Readonly<Record<string, string>> = {

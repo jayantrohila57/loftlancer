@@ -31,7 +31,7 @@ export function useAuthWelcomePaths(): AuthWelcomePaths {
     welcomeURL: `${localeBase}/welcome${query}`,
     firstLoginURL: `${localeBase}/first-login${query}`,
     accountURL: `${localeBase}/account`,
-    accountOverviewURL: `${localeBase}/account/overview`,
+    accountOverviewURL: `${localeBase}/account`,
     profileURL: `${localeBase}/account/profile`,
     securityURL: `${localeBase}/account/security`,
     organizationsListURL: `${studioBase}/${locale}/organizations`,
