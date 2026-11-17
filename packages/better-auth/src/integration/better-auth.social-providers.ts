@@ -20,6 +20,7 @@ export function buildSocialProviders(): NonNullable<
     providers.google = {
       clientId: googleClientId,
       clientSecret: googleClientSecret,
+      requireEmailVerification: true,
     }
   }
 
@@ -33,6 +34,7 @@ export function buildSocialProviders(): NonNullable<
     providers.github = {
       clientId: githubClientId,
       clientSecret: githubClientSecret,
+      requireEmailVerification: true,
     }
   }
 
