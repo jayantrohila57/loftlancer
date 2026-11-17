@@ -17,6 +17,8 @@ export const serverEnv = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     DATABASE_URL: z.url().optional(),
+    /** Max connections for the shared `pg` pool (`@packages/drizzle`). */
+    DB_POOL_MAX: z.coerce.number().int().positive().optional(),
     CONSOLE_ADMIN_EMAILS: z.string().optional(),
     STUDIO_APP_URL: z.url().optional(),
     CONSOLE_APP_URL: z.url().optional(),
@@ -99,6 +101,7 @@ export const serverEnv = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
+    DB_POOL_MAX: process.env.DB_POOL_MAX,
     CONSOLE_ADMIN_EMAILS: process.env.CONSOLE_ADMIN_EMAILS,
     STUDIO_APP_URL: process.env.STUDIO_APP_URL,
     CONSOLE_APP_URL: process.env.CONSOLE_APP_URL,
