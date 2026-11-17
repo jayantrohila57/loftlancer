@@ -2,6 +2,8 @@ import { getDb } from "@packages/drizzle"
 import { session, user } from "@packages/drizzle/schema"
 import { eq } from "drizzle-orm"
 
+import { buildDeletedUserEmailPlaceholder } from "../../utils/constants/security.constants.deleted-email"
+
 export const DELETED_ACCOUNT_MESSAGE =
   "This account was deleted and cannot be used again."
 
@@ -23,19 +25,30 @@ export async function tombstoneUserById(userId: string): Promise<void> {
 }
 
 /**
- * Revokes every session row, then tombstones the user in one transaction.
- * Better Auth still attempts its own session/user deletes afterward; the user
- * hard-delete hook blocks removal while linked accounts are preserved.
+ * Revokes every session row, tombstones the user, and rewrites email so the
+ * address can be registered again.
  */
-export async function tombstoneUserForDeletion(userId: string): Promise<void> {
+export async function tombstoneUserForDeletion(
+  userId: string,
+  input?: { readonly rewriteEmail?: boolean }
+): Promise<void> {
   const db = getDb()
   if (!db) throw new Error("Database unavailable")
   const deletedAt = new Date()
+  const placeholderEmail =
+    input?.rewriteEmail === false
+      ? undefined
+      : buildDeletedUserEmailPlaceholder(userId)
+
   await db.transaction(async (tx) => {
     await tx.delete(session).where(eq(session.userId, userId))
     await tx
       .update(user)
-      .set({ deletedAt, updatedAt: deletedAt })
+      .set({
+        deletedAt,
+        updatedAt: deletedAt,
+        ...(placeholderEmail ? { email: placeholderEmail } : {}),
+      })
       .where(eq(user.id, userId))
   })
 }

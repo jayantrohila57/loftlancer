@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@features/form": "workspace:*",
+    "@features/i18n": "workspace:*",
     "@features/shell": "workspace:*",
     "@packages/better-auth": "workspace:*",
     "@packages/billing": "workspace:*",

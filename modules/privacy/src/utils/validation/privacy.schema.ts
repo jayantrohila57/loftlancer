@@ -32,6 +32,8 @@ export const dataExportRequestResultSchema = z
   .object({
     requestId: z.string().min(1),
     submittedAt: z.string().min(1),
+    downloadUrl: z.string().url().optional(),
+    expiresAt: z.string().min(1).optional(),
   })
   .strict()
 

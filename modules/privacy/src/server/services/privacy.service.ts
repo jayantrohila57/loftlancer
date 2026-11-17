@@ -1,7 +1,5 @@
 import { logger } from "@packages/logger/server"
 import { createError, createSuccess } from "@packages/orpc"
-import { sendResendEmail } from "@packages/resend"
-import { serverEnv } from "@packages/t3-env/server"
 import type { z } from "zod"
 import type {
   dataExportRequestInputSchema,
@@ -15,7 +13,10 @@ import {
   readPrivacyConsents,
   writePrivacyConsents,
 } from "../repositories/privacy.repository.consents"
-import { createDataExportRequest } from "../repositories/privacy.repository.data-export"
+import {
+  createDataExportRequest,
+  PrivacyDataExportRateLimitError,
+} from "../repositories/privacy.repository.data-export"
 
 export const privacyConsentsService = {
   async get(userId: string) {
@@ -62,44 +63,30 @@ export const privacyConsentsService = {
 export const privacyDataExportService = {
   async request(
     userId: string,
+    userEmail: string,
     input: z.infer<typeof dataExportRequestInputSchema>
   ) {
     try {
-      if (!serverEnv.SUPPORT_EMAIL || !serverEnv.RESEND_API_KEY) {
-        throw new Error("Support email delivery is not configured")
-      }
       const data = dataExportRequestResultSchema.parse(
-        await createDataExportRequest(userId, input)
+        await createDataExportRequest(userId, userEmail, input)
       )
-      const escapeHtml = (value: string) =>
-        value.replace(/[&<>"']/g, (character) => {
-          switch (character) {
-            case "&":
-              return "&amp;"
-            case "<":
-              return "&lt;"
-            case ">":
-              return "&gt;"
-            case '"':
-              return "&quot;"
-            default:
-              return "&#39;"
-          }
+      return createSuccess(
+        data,
+        "Export ready. Check your email for the download link."
+      )
+    } catch (error) {
+      if (error instanceof PrivacyDataExportRateLimitError) {
+        return createError("You can request one data export every 24 hours.", {
+          code: "DATA_EXPORT_RATE_LIMITED",
         })
-      await sendResendEmail({
-        to: serverEnv.SUPPORT_EMAIL,
-        subject: "Account data export request",
-        html: `<p>An account data export was requested.</p><p>Request: ${escapeHtml(data.requestId)}<br>User: ${escapeHtml(userId)}<br>Submitted: ${escapeHtml(data.submittedAt)}</p><p>Message: ${escapeHtml(input.message?.trim() || "None")}</p>`,
-      })
-      return createSuccess(data, "Export request submitted.")
-    } catch {
+      }
       logger.error("service.failed", {
         app: "auth",
         module: "privacy",
         outcome: "error",
         errorCode: "EXPORT_REQUEST_FAILED",
       })
-      return createError("Could not submit export request.", {
+      return createError("Could not generate data export.", {
         code: "EXPORT_REQUEST_FAILED",
       })
     }

@@ -1,17 +1,27 @@
+import { resolveEmailLocaleForEmail } from "@features/i18n/server"
 import { getDb } from "@packages/drizzle"
 import { user, userNotificationPreference } from "@packages/drizzle/schema"
 import { sendResendEmail } from "@packages/resend"
 import { serverEnv } from "@packages/t3-env/server"
 import { eq, sql } from "drizzle-orm"
 
+import { buildOrgInvitationEmailContent } from "./org.email-messages"
+import { resolveInviterDisplayName } from "./org.invitation-preview"
+
 type OrgInvitationEmailInput = {
+  readonly id: string
   readonly email: string
   readonly organization: {
+    readonly id: string
     readonly name: string
+    readonly slug?: string | null
+  }
+  readonly invitation: {
+    readonly inviterId: string
   }
 }
 
-function buildReceivedInvitationsUrl() {
+function buildStudioInviteUrl(locale: string, invitationId: string) {
   const development = serverEnv.NODE_ENV !== "production"
   const studioBase = (
     serverEnv.STUDIO_APP_URL ??
@@ -19,7 +29,7 @@ function buildReceivedInvitationsUrl() {
       ? "http://localhost:3003"
       : new URL("/studio", serverEnv.BETTER_AUTH_URL).toString())
   ).replace(/\/$/, "")
-  return `${studioBase}/en-us/organizations/invitations`
+  return `${studioBase}/${locale}/invite/${invitationId}`
 }
 
 export async function sendOrgInvitationEmail(
@@ -40,26 +50,23 @@ export async function sendOrgInvitationEmail(
 
   if (recipient?.enabled === false) return
 
-  const inviteUrl = buildReceivedInvitationsUrl()
+  const locale = await resolveEmailLocaleForEmail({
+    email: data.email,
+    inviterUserId: data.invitation.inviterId,
+  })
+  const inviteUrl = buildStudioInviteUrl(locale, data.id)
   const orgName = data.organization.name.trim() || "your organization"
-  const escapedOrgName = orgName.replace(/[&<>"']/g, (character) => {
-    switch (character) {
-      case "&":
-        return "&amp;"
-      case "<":
-        return "&lt;"
-      case ">":
-        return "&gt;"
-      case '"':
-        return "&quot;"
-      default:
-        return "&#39;"
-    }
+  const inviterName = await resolveInviterDisplayName(data.invitation.inviterId)
+  const copy = buildOrgInvitationEmailContent(locale, {
+    orgName,
+    inviterName,
+    inviteUrl,
   })
 
   await sendResendEmail({
-    html: `<p>You have been invited to join <strong>${escapedOrgName}</strong> on Loftlancer.</p><p><a href="${inviteUrl}">View your invitations</a> to accept or decline.</p>`,
-    subject: `Invitation to join ${orgName}`,
+    html: copy.html,
+    text: copy.text,
+    subject: copy.subject,
     to: data.email,
   })
 }

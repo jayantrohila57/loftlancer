@@ -15,8 +15,10 @@ import { regionalPreferencesRouter } from "@modules/regional-preferences/server"
 import { sessionsRouter } from "@modules/sessions/server"
 import { ssoRouter } from "@modules/sso/server"
 import { storageRouter } from "@modules/storage/server"
+import { securityAccountDeletionController } from "./security.account-deletion.controller"
 
 export const securityRouter = {
+  accountDeletion: securityAccountDeletionController,
   get admin() {
     return adminRouter
   },
