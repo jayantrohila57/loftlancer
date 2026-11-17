@@ -71,12 +71,14 @@ export type WebSiteNavLabelKey =
   | "navLegalTerms"
   | "navPartnerships"
   | "navPricing"
-  | "navProductAnalytics"
   | "navProductApi"
-  | "navProductCloudPlatform"
+  | "navProductClientValidation"
   | "navProductIntegrations"
+  | "navProductPlanning"
+  | "navProductScopeInsights"
   | "navProductTeamCollaboration"
-  | "navProductWebsiteBuilder"
+  | "navLegalSecurity"
+  | "navLegalSubprocessors"
   | "navSearch"
   | "navSitemap"
 
@@ -99,12 +101,14 @@ export type WebSiteNavDescriptionKey =
   | "navDescLegalTerms"
   | "navDescPartnerships"
   | "navDescPricing"
-  | "navDescProductAnalytics"
   | "navDescProductApi"
-  | "navDescProductCloudPlatform"
+  | "navDescProductClientValidation"
   | "navDescProductIntegrations"
+  | "navDescProductPlanning"
+  | "navDescProductScopeInsights"
   | "navDescProductTeamCollaboration"
-  | "navDescProductWebsiteBuilder"
+  | "navDescLegalSecurity"
+  | "navDescLegalSubprocessors"
   | "navDescSearch"
   | "navDescSitemap"
 
@@ -156,12 +160,14 @@ export type WebSiteNavHref =
   | "/legal/refund"
   | "/legal/terms"
   | "/pricing"
-  | "/product/analytics"
   | "/product/api"
-  | "/product/cloud-platform"
+  | "/product/client-validation"
   | "/product/integrations"
+  | "/product/planning-workspace"
+  | "/product/scope-insights"
   | "/product/team-collaboration"
-  | "/product/website-builder"
+  | "/legal/security"
+  | "/legal/subprocessors"
   | "/search"
   | "/sitemap"
 
@@ -198,23 +204,23 @@ export const webSiteNavItemSpecs: readonly WebSiteNavItemSpec[] = [
     order: 0,
   },
   {
-    descriptionKey: "navDescProductWebsiteBuilder",
+    descriptionKey: "navDescProductPlanning",
     group: "product",
-    href: "/product/website-builder",
-    icon: "globe",
-    id: "site.product.website-builder",
-    keywords: ["website", "builder", "pages", "site"],
-    labelKey: "navProductWebsiteBuilder",
+    href: "/product/planning-workspace",
+    icon: "layers",
+    id: "site.product.planning",
+    keywords: ["planning", "scope", "requirements", "milestones"],
+    labelKey: "navProductPlanning",
     order: 0,
   },
   {
-    descriptionKey: "navDescProductCloudPlatform",
+    descriptionKey: "navDescProductClientValidation",
     group: "product",
-    href: "/product/cloud-platform",
-    icon: "layers",
-    id: "site.product.cloud-platform",
-    keywords: ["cloud", "platform", "hosting", "infrastructure"],
-    labelKey: "navProductCloudPlatform",
+    href: "/product/client-validation",
+    icon: "badge-check",
+    id: "site.product.client-validation",
+    keywords: ["validation", "client", "approval", "sign-off"],
+    labelKey: "navProductClientValidation",
     order: 1,
   },
   {
@@ -228,13 +234,13 @@ export const webSiteNavItemSpecs: readonly WebSiteNavItemSpec[] = [
     order: 2,
   },
   {
-    descriptionKey: "navDescProductAnalytics",
+    descriptionKey: "navDescProductScopeInsights",
     group: "product",
-    href: "/product/analytics",
+    href: "/product/scope-insights",
     icon: "bar-chart-3",
-    id: "site.product.analytics",
-    keywords: ["analytics", "metrics", "insights", "reports"],
-    labelKey: "navProductAnalytics",
+    id: "site.product.scope-insights",
+    keywords: ["scope", "drift", "insights", "delivery"],
+    labelKey: "navProductScopeInsights",
     order: 3,
   },
   {
@@ -444,6 +450,28 @@ export const webSiteNavItemSpecs: readonly WebSiteNavItemSpec[] = [
     order: 6,
   },
   {
+    descriptionKey: "navDescLegalSubprocessors",
+    group: "legal",
+    href: "/legal/subprocessors",
+    icon: "layers",
+    id: "site.legal.subprocessors",
+    keywords: ["subprocessors", "processors", "vendors", "dpa"],
+    labelKey: "navLegalSubprocessors",
+    legalSubGroup: "compliance",
+    order: 7,
+  },
+  {
+    descriptionKey: "navDescLegalSecurity",
+    group: "legal",
+    href: "/legal/security",
+    icon: "shield",
+    id: "site.legal.security",
+    keywords: ["security", "disclosure", "vulnerability", "responsible"],
+    labelKey: "navLegalSecurity",
+    legalSubGroup: "compliance",
+    order: 8,
+  },
+  {
     descriptionKey: "navDescLegalLicenses",
     group: "legal",
     href: "/legal/licenses",
@@ -452,7 +480,7 @@ export const webSiteNavItemSpecs: readonly WebSiteNavItemSpec[] = [
     keywords: ["licenses", "open source", "copyright", "attribution"],
     labelKey: "navLegalLicenses",
     legalSubGroup: "compliance",
-    order: 7,
+    order: 9,
   },
   {
     descriptionKey: "navDescAccessibility",
@@ -463,7 +491,7 @@ export const webSiteNavItemSpecs: readonly WebSiteNavItemSpec[] = [
     keywords: ["accessibility", "a11y", "wcag", "inclusive"],
     labelKey: "navAccessibility",
     legalSubGroup: "compliance",
-    order: 8,
+    order: 10,
   },
 ]
 

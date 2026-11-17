@@ -6,7 +6,17 @@ import Shell from "@packages/ui/components/shell"
 import { getServerTranslations } from "@/shared/i18n/web.i18n.server"
 import type { LangPageProps } from "@/shared/types/web.app.types"
 
-export type WebLegalDocumentId = "terms" | "privacy" | "cookies"
+export type WebLegalDocumentId =
+  | "acceptableUse"
+  | "cookies"
+  | "disclaimer"
+  | "licenses"
+  | "overview"
+  | "privacy"
+  | "refund"
+  | "security"
+  | "subprocessors"
+  | "terms"
 
 type LegalSection = {
   readonly heading: string
