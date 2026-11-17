@@ -3,6 +3,8 @@ import { WebSearchPage } from "@/shared/search/web-search-page"
 import { createWebPageMetadata } from "@/shared/site/web-page-metadata"
 import type { LangPageProps } from "@/shared/types/web.app.types"
 
+export const instant = false
+
 export async function generateMetadata(
   props: LangPageProps
 ): Promise<Metadata> {
