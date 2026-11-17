@@ -617,6 +617,9 @@ importers:
       '@modules/shell':
         specifier: workspace:*
         version: link:../../modules/shell
+      '@modules/whats-new':
+        specifier: workspace:*
+        version: link:../../modules/whats-new
       '@next/third-parties':
         specifier: 16.4.6
         version: 16.4.6(next@16.4.6(@babel/core@7.29.7(supports-color@7.2.0))(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
@@ -647,6 +650,9 @@ importers:
       '@packages/react-query':
         specifier: workspace:*
         version: link:../../packages/react-query
+      '@packages/resend':
+        specifier: workspace:*
+        version: link:../../packages/resend
       '@packages/sentry':
         specifier: workspace:*
         version: link:../../packages/sentry
@@ -659,6 +665,12 @@ importers:
       '@sentry/nextjs':
         specifier: ^11.8.0
         version: 11.12.0(next@16.4.6(@babel/core@7.29.7(supports-color@7.2.0))(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+      '@upstash/ratelimit':
+        specifier: ^2.2.1
+        version: 2.2.1(@upstash/redis@1.41.0)
+      '@upstash/redis':
+        specifier: ^1.41.0
+        version: 1.41.0
       lucide-react:
         specifier: ^1.67.0
         version: 1.67.0(@types/react@19.3.0)(react@19.3.1)
@@ -674,6 +686,9 @@ importers:
       react-dom:
         specifier: 19.3.1
         version: 19.3.1(react@19.3.1)
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
     devDependencies:
       '@packages/typescript-config':
         specifier: workspace:*
@@ -1309,6 +1324,12 @@ importers:
       '@features/shell':
         specifier: workspace:*
         version: link:../../features/shell
+      '@modules/auth':
+        specifier: workspace:*
+        version: link:../auth
+      '@modules/security':
+        specifier: workspace:*
+        version: link:../security
       '@modules/shell':
         specifier: workspace:*
         version: link:../shell
@@ -1643,6 +1664,9 @@ importers:
       '@packages/billing':
         specifier: workspace:*
         version: link:../../packages/billing
+      '@packages/brand':
+        specifier: workspace:*
+        version: link:../../packages/brand
       '@packages/drizzle':
         specifier: workspace:*
         version: link:../../packages/drizzle
@@ -1725,6 +1749,9 @@ importers:
       '@packages/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
+      '@packages/brand':
+        specifier: workspace:*
+        version: link:../../packages/brand
       '@packages/react-query':
         specifier: workspace:*
         version: link:../../packages/react-query

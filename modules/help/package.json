@@ -13,6 +13,8 @@
     "@features/form": "workspace:*",
     "@features/i18n": "workspace:*",
     "@features/shell": "workspace:*",
+    "@modules/auth": "workspace:*",
+    "@modules/security": "workspace:*",
     "@modules/shell": "workspace:*",
     "@packages/better-auth": "workspace:*",
     "@packages/t3-env": "workspace:*",

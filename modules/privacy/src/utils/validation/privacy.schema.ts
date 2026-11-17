@@ -40,3 +40,14 @@ export const dataExportRequestResultSchema = z
 export const dataExportRequestResponseSchema = serviceResponseSchema(
   dataExportRequestResultSchema
 )
+
+export const privacyLegalAcceptanceSchema = z
+  .object({
+    termsVersion: z.string().min(1),
+    acceptedAt: z.string().min(1),
+  })
+  .strict()
+
+export const privacyLegalAcceptanceResponseSchema = serviceResponseSchema(
+  privacyLegalAcceptanceSchema.nullable()
+)

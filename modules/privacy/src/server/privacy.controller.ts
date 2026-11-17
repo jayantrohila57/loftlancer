@@ -8,10 +8,12 @@ import {
   dataExportRequestResponseSchema,
   privacyConsentsResponseSchema,
   privacyConsentsUpdateSchema,
+  privacyLegalAcceptanceResponseSchema,
 } from "../utils/validation/privacy.schema"
 import {
   privacyConsentsService,
   privacyDataExportService,
+  privacyLegalAcceptanceService,
 } from "./services/privacy.service"
 
 export const privacyRouter = {
@@ -54,6 +56,16 @@ export const privacyRouter = {
             context.auth.user.id,
             input.payload
           )
+        )
+      ),
+  },
+  legalAcceptance: {
+    get: protectedProcedure
+      .route(privacyRoutes.legalAcceptance.get)
+      .output(privacyLegalAcceptanceResponseSchema)
+      .handler(async ({ context }) =>
+        privacyLegalAcceptanceResponseSchema.parse(
+          await privacyLegalAcceptanceService.get(context.auth.user.id)
         )
       ),
   },

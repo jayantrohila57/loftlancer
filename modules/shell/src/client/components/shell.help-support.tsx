@@ -1,8 +1,9 @@
 "use client"
 
 import { useShellNavigation } from "@features/shell"
+import { brandLinks } from "@packages/brand"
 import Shell from "@packages/ui/components/shell"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { accountSectionTabs } from "../../utils/config/shell.account-section-tabs.client"
 import type { ShellTranslate } from "../../utils/config/shell.messages"
 import {
@@ -13,13 +14,36 @@ import {
 function HelpSupportOverviewLinks() {
   const t = useTranslations("ui")
   const translate = t as unknown as ShellTranslate
+  const locale = useLocale()
   const { Link } = useShellNavigation()
   const tabs = accountSectionTabs(translate).helpSupport.filter(
     (tab) => tab.value !== "overview"
   )
+  const helpCenterHref = `${brandLinks.website}/${locale}/help`
+  const contactHref = `${brandLinks.website}/${locale}/contact`
 
   return (
     <ul className="space-y-3">
+      <li>
+        <a
+          className="font-medium underline"
+          href={helpCenterHref}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {t("helpCenter")}
+        </a>
+      </li>
+      <li>
+        <a
+          className="font-medium underline"
+          href={contactHref}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {t("publicContactPage")}
+        </a>
+      </li>
       {tabs.map((tab) => (
         <li key={tab.href}>
           <Link className="font-medium underline" href={tab.href}>

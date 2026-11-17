@@ -569,10 +569,14 @@
     "couldNotDeleteAccount": "No se pudo eliminar tu cuenta. Inténtalo de nuevo.",
     "sessionNotFreshForDeletion": "Por tu seguridad, cierra sesión, vuelve a iniciar sesión y regresa aquí para eliminar tu cuenta.",
     "typeEmailToConfirm": "Escribe tu correo electrónico para confirmar",
+    "publicContactPage": "Contáctanos",
     "helpCenter": "Centro de ayuda",
     "helpCenterDescription": "Consulta artículos sobre facturación, almacenamiento, organización y seguridad. Busca por título o resumen.",
-    "helpSupportOverviewDescription": "Abre el centro de ayuda para contenido de autoservicio o contacta con soporte por correo.",
-    "helpSupportContactTabDescription": "Envía un correo a soporte con tu id de usuario e idioma rellenados — sin cola de tickets en la app en v1.",
+    "helpSupportOverviewDescription": "Consulta el centro de ayuda público o gestiona tus tickets de soporte.",
+    "helpSupportContactTabDescription": "Crea tickets con categoría, asunto y mensaje. Consulta el estado en tu cuenta.",
+    "helpSupportTicketDetailDescription": "Revisa el mensaje y el estado de este ticket de soporte.",
+    "legalAcceptanceHistory": "Aceptación legal",
+    "legalAcceptanceHistoryDescription": "Versión de términos y fecha registradas al crear tu cuenta.",
     "helpSearchArticles": "Buscar artículos",
     "helpSearchPlaceholder": "Filtrar por título o resumen",
     "helpNoSearchResults": "Ningún artículo coincide con tu búsqueda.",
@@ -1326,5 +1330,55 @@
     "message": "Usamos cookies esenciales para el acceso y la seguridad. Con su permiso también usamos cookies de analítica para mejorar Loftlancer. Consulte nuestra <cookiesLink>Política de cookies</cookiesLink>.",
     "accept": "Aceptar analítica",
     "reject": "Rechazar analítica"
+  },
+  "privacyLegalAcceptance": {
+    "pageTitle": "Aceptación legal",
+    "pageDescription": "Aceptación registrada de las políticas legales de Loftlancer para tu cuenta.",
+    "publicLegalHint": "Políticas actuales en el sitio público:",
+    "termsLink": "Términos de servicio",
+    "privacyLink": "Política de privacidad",
+    "cookiesLink": "Política de cookies",
+    "termsVersion": "Versión de términos",
+    "acceptedAt": "Aceptado el",
+    "noRecord": "Aún no hay un registro de aceptación para esta cuenta.",
+    "loadError": "No se pudo cargar la aceptación legal.",
+    "invalid": "Solicitud no válida."
+  },
+  "supportTickets": {
+    "yourTickets": "Tus tickets",
+    "empty": "Aún no has abierto ningún ticket de soporte.",
+    "refresh": "Actualizar lista",
+    "createTitle": "Nuevo ticket",
+    "categoryLabel": "Categoría",
+    "subjectLabel": "Asunto",
+    "messageLabel": "Mensaje",
+    "creating": "Enviando ticket…",
+    "createSuccess": "Ticket creado. Revisa tu correo para la confirmación.",
+    "sessionRequired": "Inicia sesión para ver los tickets de soporte.",
+    "lastUpdated": "Última actualización {date}",
+    "listMeta": "{category} · {date}",
+    "category": {
+      "account": "Cuenta",
+      "billing": "Facturación",
+      "security": "Seguridad",
+      "technical": "Técnico",
+      "other": "Otro"
+    },
+    "status": {
+      "open": "Abierto",
+      "in_progress": "En curso",
+      "resolved": "Resuelto",
+      "closed": "Cerrado"
+    },
+    "validation": {
+      "subjectMin": "El asunto debe tener al menos 3 caracteres.",
+      "messageMin": "El mensaje debe tener al menos 10 caracteres."
+    },
+    "errors": {
+      "load": "No se pudieron cargar los tickets.",
+      "loadOne": "No se pudo cargar este ticket.",
+      "create": "No se pudo crear el ticket.",
+      "invalid": "Revisa el formulario e inténtalo de nuevo."
+    }
   }
 }

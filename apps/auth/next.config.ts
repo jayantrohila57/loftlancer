@@ -10,6 +10,7 @@ import type { NextConfig } from "next"
 import type { Redirect } from "next/dist/lib/load-custom-routes"
 import { authBasePath } from "./auth.config"
 import { buildAuthMigratedStudioRedirects } from "./src/shared/auth/auth-studio-redirects"
+import { buildWebLocalePath } from "./src/shared/auth/auth-web-app-url"
 
 const withNextIntl = createI18nNextPluginForApp("auth")
 const appVersion = readMonorepoAppVersion(process.cwd())
@@ -47,24 +48,51 @@ const nextConfig: NextConfig = {
     return [
       ...(buildAuthMigratedStudioRedirects() as Redirect[]),
       {
-        source: "/:lang/account/security/user-activity",
-        destination: "/:lang/account/activity/account",
-        permanent: false,
+        source: "/:lang/account/overview",
+        destination: "/:lang/account",
+        permanent: true,
       },
       {
-        source: "/:lang/account/security/user-activity/data-management",
-        destination: "/:lang/account/activity/data-management",
-        permanent: false,
+        source: "/:lang/account/activity",
+        destination: "/:lang/account/security/user-activity",
+        permanent: true,
       },
       {
-        source: "/:lang/account/security/activity",
-        destination: "/:lang/account/activity/security",
-        permanent: false,
+        source: "/:lang/account/activity/account",
+        destination: "/:lang/account/security/user-activity",
+        permanent: true,
+      },
+      {
+        source: "/:lang/account/activity/security",
+        destination: "/:lang/account/security/activity",
+        permanent: true,
+      },
+      {
+        source: "/:lang/account/activity/resource",
+        destination: "/:lang/account/security/activity",
+        permanent: true,
+      },
+      {
+        source: "/:lang/account/activity/data-management",
+        destination: "/:lang/account/security/user-activity/data-management",
+        permanent: true,
       },
       {
         source: "/:lang/account/permissions",
         destination: "/:lang/account/security/permissions",
-        permanent: false,
+        permanent: true,
+      },
+      {
+        source: "/:lang/account/help-support/help-center",
+        destination: buildWebLocalePath(":lang", "/help"),
+        permanent: true,
+        basePath: false,
+      },
+      {
+        source: "/:lang/account/help-support/help-center/:slug",
+        destination: buildWebLocalePath(":lang", "/help/:slug"),
+        permanent: true,
+        basePath: false,
       },
       {
         source: "/",

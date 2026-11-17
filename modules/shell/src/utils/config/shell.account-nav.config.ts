@@ -2,12 +2,12 @@ import type { ShellSidebarNavSubItem } from "@features/shell"
 import type { LucideIcon } from "lucide-react"
 import {
   Activity,
-  BadgeCheck,
   Bell,
   CalendarClock,
   CircleHelp,
   Database,
   Download,
+  FileText,
   Globe,
   Languages,
   LayoutDashboard,
@@ -35,7 +35,7 @@ const tabIcons: Readonly<Record<string, LucideIcon>> = {
   sessions: Monitor,
   "connected-accounts": Link2,
   "device-authorization": Terminal,
-  permissions: BadgeCheck,
+  permissions: Shield,
   theme: Palette,
   zoom: ZoomIn,
   density: Settings2,
@@ -45,11 +45,14 @@ const tabIcons: Readonly<Record<string, LucideIcon>> = {
   "date-time": CalendarClock,
   numbers: Percent,
   measurements: Ruler,
-  consents: BadgeCheck,
+  consents: Shield,
   "data-export": Download,
   "account-deletion": UserRoundX,
-  "help-center": CircleHelp,
+  "legal-acceptance": FileText,
   "support-tickets": CircleHelp,
+  "user-activity": Activity,
+  activity: Activity,
+  "data-management": Settings2,
 }
 
 export interface AccountSidebarNavItem {
@@ -75,7 +78,7 @@ export function accountSidebarNavGroups(
         {
           href: "/account",
           icon: LayoutDashboard,
-          label: translate("account"),
+          label: translate("overview"),
         },
         {
           href: "/account/profile",
@@ -93,16 +96,6 @@ export function accountSidebarNavGroups(
       label: translate("securityAndActivity"),
       items: [
         {
-          href: "/account/activity",
-          icon: Activity,
-          label: translate("activity"),
-          subItems: tabs.activity.map((tab) => ({
-            href: tab.href,
-            icon: tabIcons[tab.value] ?? LayoutDashboard,
-            label: tab.label,
-          })),
-        },
-        {
           href: "/account/security",
           icon: Shield,
           label: translate("security"),
@@ -118,6 +111,16 @@ export function accountSidebarNavGroups(
       label: translate("personalization"),
       items: [
         {
+          href: "/account/notifications",
+          icon: Bell,
+          label: translate("notifications"),
+          subItems: tabs.notifications.map((tab) => ({
+            href: tab.href,
+            icon: tabIcons[tab.value] ?? LayoutDashboard,
+            label: tab.label,
+          })),
+        },
+        {
           href: "/account/appearance",
           icon: Palette,
           label: translate("appearance"),
@@ -132,16 +135,6 @@ export function accountSidebarNavGroups(
           icon: Languages,
           label: translate("languageRegion"),
           subItems: tabs.languageRegion.map((tab) => ({
-            href: tab.href,
-            icon: tabIcons[tab.value] ?? LayoutDashboard,
-            label: tab.label,
-          })),
-        },
-        {
-          href: "/account/notifications",
-          icon: Bell,
-          label: translate("notifications"),
-          subItems: tabs.notifications.map((tab) => ({
             href: tab.href,
             icon: tabIcons[tab.value] ?? LayoutDashboard,
             label: tab.label,

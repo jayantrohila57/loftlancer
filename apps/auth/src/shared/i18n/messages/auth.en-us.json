@@ -613,10 +613,14 @@
     "couldNotDeleteAccount": "Could not delete your account. Try again.",
     "sessionNotFreshForDeletion": "For your security, sign out and sign in again, then return here to delete your account.",
     "typeEmailToConfirm": "Type your email address to confirm",
+    "publicContactPage": "Contact us",
     "helpCenter": "Help Center",
     "helpCenterDescription": "Browse billing, storage, organization, and security articles. Search by title or summary.",
-    "helpSupportOverviewDescription": "Open the help center for self-serve articles or contact support by email.",
-    "helpSupportContactTabDescription": "Email support with your user id and locale prefilled — no in-app ticket queue in v1.",
+    "helpSupportOverviewDescription": "Browse the public help center or manage your support tickets.",
+    "helpSupportContactTabDescription": "Create tickets with category, subject, and message. Track status in your account.",
+    "helpSupportTicketDetailDescription": "Review the message and status for this support ticket.",
+    "legalAcceptanceHistory": "Legal acceptance",
+    "legalAcceptanceHistoryDescription": "Terms version and date recorded when you created your account.",
     "helpSearchArticles": "Search articles",
     "helpSearchPlaceholder": "Filter by title or summary",
     "helpNoSearchResults": "No articles match your search.",
@@ -1326,5 +1330,55 @@
     "message": "We use essential cookies for sign-in and security. With your permission we also use analytics cookies to improve Loftlancer. See our <cookiesLink>Cookie Policy</cookiesLink>.",
     "accept": "Accept analytics",
     "reject": "Reject analytics"
+  },
+  "privacyLegalAcceptance": {
+    "pageTitle": "Legal acceptance",
+    "pageDescription": "Recorded acceptance of Loftlancer legal policies for your account.",
+    "publicLegalHint": "Current policies on the public site:",
+    "termsLink": "Terms of Service",
+    "privacyLink": "Privacy Policy",
+    "cookiesLink": "Cookie Policy",
+    "termsVersion": "Terms version",
+    "acceptedAt": "Accepted at",
+    "noRecord": "No acceptance record is stored for this account yet.",
+    "loadError": "Could not load legal acceptance.",
+    "invalid": "Invalid request."
+  },
+  "supportTickets": {
+    "yourTickets": "Your tickets",
+    "empty": "You have not opened any support tickets yet.",
+    "refresh": "Refresh list",
+    "createTitle": "New ticket",
+    "categoryLabel": "Category",
+    "subjectLabel": "Subject",
+    "messageLabel": "Message",
+    "creating": "Submitting ticket…",
+    "createSuccess": "Support ticket created. Check your email for confirmation.",
+    "sessionRequired": "Sign in to view support tickets.",
+    "lastUpdated": "Last updated {date}",
+    "listMeta": "{category} · {date}",
+    "category": {
+      "account": "Account",
+      "billing": "Billing",
+      "security": "Security",
+      "technical": "Technical",
+      "other": "Other"
+    },
+    "status": {
+      "open": "Open",
+      "in_progress": "In progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "validation": {
+      "subjectMin": "Subject must be at least 3 characters.",
+      "messageMin": "Message must be at least 10 characters."
+    },
+    "errors": {
+      "load": "Could not load support tickets.",
+      "loadOne": "Could not load this ticket.",
+      "create": "Could not create the support ticket.",
+      "invalid": "Check the form and try again."
+    }
   }
 }
