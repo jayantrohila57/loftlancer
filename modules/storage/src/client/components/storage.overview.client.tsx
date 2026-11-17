@@ -5,6 +5,7 @@ import {
   useOrgSessionActiveId,
   useOrgSessionActiveIdPending,
 } from "@modules/org"
+import { useAccountHubHref } from "@modules/shell"
 import { Button } from "@packages/ui/components/button"
 import {
   Empty,
@@ -39,6 +40,7 @@ export function StorageOverviewScreen() {
   const t = useTranslations("ui")
   const format = useFormatter()
   const { Link } = useShellNavigation()
+  const filesHref = useAccountHubHref("/account/storage/files")
   const organizationId = useOrgSessionActiveId()
   const orgResolving = useOrgSessionActiveIdPending()
   const overview = useStorageApi.useOverview(organizationId)
@@ -157,18 +159,12 @@ export function StorageOverviewScreen() {
                 {t("storageLibraryEmptyDescription")}
               </EmptyDescription>
             </EmptyHeader>
-            <Button
-              variant="outline"
-              render={<Link href="/account/storage/files" />}
-            >
+            <Button variant="outline" render={<Link href={filesHref} />}>
               {t("storageBrowseFiles")}
             </Button>
           </Empty>
         ) : (
-          <Button
-            variant="outline"
-            render={<Link href="/account/storage/files" />}
-          >
+          <Button variant="outline" render={<Link href={filesHref} />}>
             {t("storageBrowseFiles")}
           </Button>
         )

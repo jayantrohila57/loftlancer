@@ -14,10 +14,11 @@ export function AuthMagicLinkEmailInput() {
 
   return (
     <Field className={authSignInLayout.magicLink.field}>
-      <FieldLabel>{t("email")}</FieldLabel>
+      <FieldLabel htmlFor="auth-magic-link-email">{t("email")}</FieldLabel>
       <Input
         autoComplete="email"
         disabled={pending}
+        id="auth-magic-link-email"
         name="email"
         onChange={(event) => setEmail(event.target.value)}
         required

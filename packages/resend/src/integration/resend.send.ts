@@ -7,6 +7,7 @@ export interface SendResendEmailInput {
   readonly from?: string
   readonly html: string
   readonly subject: string
+  readonly text?: string
   readonly to: string
 }
 
@@ -14,6 +15,7 @@ export async function sendResendEmail({
   from = serverEnv.RESEND_FROM ?? RESEND_DEFAULT_FROM,
   html,
   subject,
+  text,
   to,
 }: SendResendEmailInput): Promise<void> {
   const resend = getResend()
@@ -31,6 +33,7 @@ export async function sendResendEmail({
     from,
     html,
     subject,
+    ...(text ? { text } : {}),
     to,
   })
 

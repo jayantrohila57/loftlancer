@@ -4,8 +4,8 @@ import { toastManager } from "@packages/ui/components/toast"
 import { useTranslations } from "next-intl"
 import type { FormEvent } from "react"
 import { useState } from "react"
-
 import { readCheckEmailAddress } from "../../../../utils/auth.check-email-address"
+import { useAuthLocale } from "../../../hooks/auth.locale.client"
 import { api } from "./auth.api"
 import { useAuthSignInPaths } from "./auth.sign-in-paths.client"
 
@@ -18,6 +18,7 @@ export interface AuthMagicLinkSignInState {
 
 export function useAuthMagicLinkSignIn(): AuthMagicLinkSignInState {
   const t = useTranslations("ui")
+  const locale = useAuthLocale()
   const { callbackURL, checkEmailURL, errorCallbackURL, newUserCallbackURL } =
     useAuthSignInPaths()
   const magicLink = api.auth.useMagicLinkSignIn()
@@ -42,6 +43,7 @@ export function useAuthMagicLinkSignIn(): AuthMagicLinkSignInState {
             callbackURL,
             email: normalized,
             errorCallbackURL,
+            locale,
             newUserCallbackURL,
           })
           window.location.assign(checkEmailURL(normalized))

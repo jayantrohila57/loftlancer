@@ -24,6 +24,7 @@ export { HelpSupportPage } from "./client/components/shell.help-support"
 export { createAppLocaleSwitcher } from "./client/components/shell.locale-switcher"
 export { ShellOrgSwitcherLoader } from "./client/components/shell.org-switcher-loader"
 export { PrivacyDataPage } from "./client/components/shell.privacy-data"
+export { useAccountHubHref } from "./client/hooks/shell.use-account-hub-href"
 export type {
   AccountHubCategory,
   AccountHubDestination,

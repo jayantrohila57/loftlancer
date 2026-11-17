@@ -158,6 +158,21 @@ export const activityActions = {
       .strict(),
     target: "console.users",
   },
+  "admin.users.ban": {
+    category: "administration",
+    metadata: z
+      .object({
+        banExpiresIn: z.number().int().nonnegative().nullable().optional(),
+        hasReason: z.boolean().optional(),
+      })
+      .strict(),
+    target: "console.users",
+  },
+  "admin.users.unban": {
+    category: "administration",
+    metadata: z.object({}).strict(),
+    target: "console.users",
+  },
   "admin.sso.connections.list": {
     category: "administration",
     metadata: z
