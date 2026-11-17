@@ -14,7 +14,7 @@
   "devDependencies": {
     "@packages/typescript-config": "workspace:*",
     "@types/react": "^19",
-    "next": "16.4.6",
+    "next": "16.4.5",
     "typescript": "^7"
   },
   "exports": {
