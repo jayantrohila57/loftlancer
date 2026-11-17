@@ -1,6 +1,7 @@
 import "@packages/t3-env/server"
 import { createI18nNextPluginForApp } from "@features/i18n/plugin"
 import {
+  createBaselineSecurityHeaders,
   createSentryBuildOptions,
   readMonorepoAppVersion,
 } from "@packages/sentry/next-config"
@@ -20,6 +21,14 @@ const nextConfig: NextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: createBaselineSecurityHeaders(),
+      },
+    ]
+  },
   transpilePackages: [
     "@packages/better-auth",
     "@packages/drizzle",
