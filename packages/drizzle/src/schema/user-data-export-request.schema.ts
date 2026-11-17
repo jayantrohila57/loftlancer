@@ -8,6 +8,10 @@ export const userDataExportRequest = pgTable("user_data_export_request", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   message: text("message"),
+  artifactPath: text("artifact_path"),
+  artifactUrl: text("artifact_url"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  deliveredAt: timestamp("delivered_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

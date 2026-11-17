@@ -1,5 +1,5 @@
 {
-  "id": "1f7f3984-d447-401a-a844-19346855dc03",
+  "id": "a0985574-c1b2-4e25-8e93-5fe29146f329",
   "prevId": "1c98d762-a6fd-4406-87f4-da2c8ae167df",
   "version": "7",
   "dialect": "postgresql",
@@ -4834,6 +4834,30 @@
           "primaryKey": false,
           "notNull": false
         },
+        "artifact_path": {
+          "name": "artifact_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "artifact_url": {
+          "name": "artifact_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivered_at": {
+          "name": "delivered_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -4847,48 +4871,6 @@
         "user_data_export_request_user_id_user_id_fk": {
           "name": "user_data_export_request_user_id_user_id_fk",
           "tableFrom": "user_data_export_request",
-          "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.user_legal_acceptance": {
-      "name": "user_legal_acceptance",
-      "schema": "",
-      "columns": {
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "terms_version": {
-          "name": "terms_version",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "accepted_at": {
-          "name": "accepted_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "user_legal_acceptance_user_id_user_id_fk": {
-          "name": "user_legal_acceptance_user_id_user_id_fk",
-          "tableFrom": "user_legal_acceptance",
           "tableTo": "user",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],

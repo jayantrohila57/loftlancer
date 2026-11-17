@@ -1,3 +1,4 @@
+import { readOrgInvitationPreview } from "@modules/org/server"
 import { requireStudioAccess } from "@/shared/auth/studio.session"
 import { getServerTranslations } from "@/shared/i18n/studio.i18n.server"
 import { StudioInviteResponse } from "@/shared/org/studio-invite-response"
@@ -13,13 +14,14 @@ export default async function StudioInvitePage({
   await requireStudioAccess(lang, {
     returnPath: `/${lang}/invite/${invitationId}`,
   })
+  const preview = await readOrgInvitationPreview(invitationId)
   const t = await getServerTranslations(params, "ui")
   return (
     <StudioPageSection
       title={t("organizationInvitations")}
       description={t("receivedInvitationsDescription")}
     >
-      <StudioInviteResponse invitationId={invitationId} />
+      <StudioInviteResponse invitationId={invitationId} preview={preview} />
     </StudioPageSection>
   )
 }

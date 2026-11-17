@@ -48,6 +48,7 @@ export {
   maybeDowngradeExpiredGrace,
   startPaymentGrace,
 } from "./integration/billing.grace"
+export { teardownOrganizationForAccountDeletion } from "./integration/billing.org-teardown"
 export {
   type BillingPlanCatalogEntry,
   type BillingPlanCatalogPrice,

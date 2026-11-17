@@ -17,10 +17,12 @@
   },
   "dependencies": {
     "@features/form": "workspace:*",
+    "@features/i18n": "workspace:*",
     "@features/shell": "workspace:*",
     "@modules/activity": "workspace:*",
     "@modules/shell": "workspace:*",
     "@packages/posthog": "workspace:*",
+    "@packages/blob": "workspace:*",
     "@packages/better-auth": "workspace:*",
     "@packages/brand": "workspace:*",
     "@packages/drizzle": "workspace:*",

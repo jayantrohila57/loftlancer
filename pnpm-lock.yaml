@@ -823,9 +823,15 @@ importers:
 
   features/i18n:
     dependencies:
+      '@packages/drizzle':
+        specifier: workspace:*
+        version: link:../../packages/drizzle
       '@packages/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.4(@opentelemetry/api@1.10.0)(@types/pg@8.23.1)(@upstash/redis@1.41.0)(kysely@0.29.8)(pg@8.23.1)
       lucide-react:
         specifier: ^1.67.0
         version: 1.67.0(@types/react@19.3.0)(react@19.3.1)
@@ -1437,6 +1443,9 @@ importers:
       '@features/form':
         specifier: workspace:*
         version: link:../../features/form
+      '@features/i18n':
+        specifier: workspace:*
+        version: link:../../features/i18n
       '@features/shell':
         specifier: workspace:*
         version: link:../../features/shell
@@ -1510,6 +1519,9 @@ importers:
       '@features/form':
         specifier: workspace:*
         version: link:../../features/form
+      '@features/i18n':
+        specifier: workspace:*
+        version: link:../../features/i18n
       '@features/shell':
         specifier: workspace:*
         version: link:../../features/shell
@@ -1522,6 +1534,9 @@ importers:
       '@packages/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
+      '@packages/blob':
+        specifier: workspace:*
+        version: link:../../packages/blob
       '@packages/brand':
         specifier: workspace:*
         version: link:../../packages/brand
@@ -1595,6 +1610,9 @@ importers:
       '@features/form':
         specifier: workspace:*
         version: link:../../features/form
+      '@features/i18n':
+        specifier: workspace:*
+        version: link:../../features/i18n
       '@features/shell':
         specifier: workspace:*
         version: link:../../features/shell
@@ -1622,6 +1640,9 @@ importers:
       '@packages/better-auth':
         specifier: workspace:*
         version: link:../../packages/better-auth
+      '@packages/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@packages/drizzle':
         specifier: workspace:*
         version: link:../../packages/drizzle
@@ -1634,6 +1655,9 @@ importers:
       '@packages/react-query':
         specifier: workspace:*
         version: link:../../packages/react-query
+      '@packages/resend':
+        specifier: workspace:*
+        version: link:../../packages/resend
       '@packages/t3-env':
         specifier: workspace:*
         version: link:../../packages/t3-env
