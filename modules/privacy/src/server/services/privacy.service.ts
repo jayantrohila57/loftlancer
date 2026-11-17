@@ -17,6 +17,7 @@ import {
   createDataExportRequest,
   PrivacyDataExportRateLimitError,
 } from "../repositories/privacy.repository.data-export"
+import { readUserLegalAcceptance } from "../repositories/privacy.repository.legal-acceptance-read"
 
 export const privacyConsentsService = {
   async get(userId: string) {
@@ -55,6 +56,25 @@ export const privacyConsentsService = {
       })
       return createError("Could not update privacy consents.", {
         code: "PREFERENCES_UNAVAILABLE",
+      })
+    }
+  },
+}
+
+export const privacyLegalAcceptanceService = {
+  async get(userId: string) {
+    try {
+      const data = await readUserLegalAcceptance(userId)
+      return createSuccess(data, "Legal acceptance loaded.")
+    } catch {
+      logger.error("service.failed", {
+        app: "auth",
+        module: "privacy",
+        outcome: "error",
+        errorCode: "LEGAL_ACCEPTANCE_UNAVAILABLE",
+      })
+      return createError("Could not load legal acceptance.", {
+        code: "LEGAL_ACCEPTANCE_UNAVAILABLE",
       })
     }
   },

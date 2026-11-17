@@ -11,7 +11,8 @@
     "./server": "./src/server/index.ts",
     "./client": "./src/client/index.ts",
     "./utils": "./src/utils/index.ts",
-    "./server/shared/security.procedure": "./src/server/shared/security.procedure.ts"
+    "./server/shared/security.procedure": "./src/server/shared/security.procedure.ts",
+    "./utils/validation/security.help-support-ticket.schema": "./src/utils/validation/security.help-support-ticket.schema.ts"
   },
   "dependencies": {
     "@features/form": "workspace:*",
@@ -25,6 +26,7 @@
     "@modules/shell": "workspace:*",
     "@modules/storage": "workspace:*",
     "@packages/better-auth": "workspace:*",
+    "@packages/brand": "workspace:*",
     "@packages/billing": "workspace:*",
     "@packages/drizzle": "workspace:*",
     "@packages/logger": "workspace:*",

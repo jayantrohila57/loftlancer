@@ -34,6 +34,11 @@ export function accountSectionTabs(
         value: "consents",
       },
       {
+        href: "/account/privacy-data/legal-acceptance",
+        label: translate("legalAcceptanceHistory"),
+        value: "legal-acceptance",
+      },
+      {
         href: "/account/privacy-data/data-export",
         label: translate("dataExport"),
         value: "data-export",
@@ -51,11 +56,6 @@ export function accountSectionTabs(
         value: "overview",
       },
       {
-        href: "/account/help-support/help-center",
-        label: translate("helpCenter"),
-        value: "help-center",
-      },
-      {
         href: "/account/help-support/support-tickets",
         label: translate("supportTickets"),
         value: "support-tickets",
@@ -64,7 +64,7 @@ export function accountSectionTabs(
     home: [{ href: "/account", label: translate("browse"), value: "browse" }],
     overview: [
       {
-        href: "/account/overview",
+        href: "/account",
         label: translate("overview"),
         value: "overview",
       },
@@ -76,35 +76,8 @@ export function accountSectionTabs(
         value: "general",
       },
     ],
-    activity: [
-      {
-        href: "/account/activity",
-        label: translate("overview"),
-        value: "overview",
-      },
-      {
-        href: "/account/activity/account",
-        label: translate("accountActivity"),
-        value: "account",
-      },
-      {
-        href: "/account/activity/security",
-        label: translate("securityActivity"),
-        value: "security",
-      },
-      {
-        href: "/account/activity/resource",
-        label: translate("resourceActivity"),
-        value: "resource",
-      },
-    ],
-    permissions: [
-      {
-        href: "/account/security/permissions",
-        label: translate("general"),
-        value: "general",
-      },
-    ],
+    activity: [],
+    permissions: [],
     organization: [],
     security: [
       {
@@ -113,19 +86,29 @@ export function accountSectionTabs(
         value: "overview",
       },
       {
+        href: "/account/security/connected-accounts",
+        label: translate("signInMethods"),
+        value: "connected-accounts",
+      },
+      {
         href: "/account/security/sessions",
         label: translate("sessions"),
         value: "sessions",
       },
       {
-        href: "/account/security/connected-accounts",
-        label: translate("connectedAccounts"),
-        value: "connected-accounts",
-      },
-      {
         href: "/account/security/device-authorization",
         label: translate("deviceAuthorization"),
         value: "device-authorization",
+      },
+      {
+        href: "/account/security/user-activity",
+        label: translate("accountActivity"),
+        value: "user-activity",
+      },
+      {
+        href: "/account/security/activity",
+        label: translate("securityActivity"),
+        value: "activity",
       },
       {
         href: "/account/security/permissions",

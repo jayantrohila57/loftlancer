@@ -169,6 +169,13 @@
       "when": 1794891269941,
       "tag": "0023_user_legal_acceptance",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1794894937207,
+      "tag": "0024_many_wraith",
+      "breakpoints": true
     }
   ]
 }

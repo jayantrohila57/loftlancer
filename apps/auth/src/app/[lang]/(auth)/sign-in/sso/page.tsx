@@ -2,6 +2,7 @@ import { AuthSsoSignInScreen } from "@modules/auth/client/components/sign-in/sso
 import { Suspense } from "react"
 import { buildReturnToQuery, pickReturnTo } from "@/shared/auth/auth.return-to"
 import { redirectAuthenticatedUser } from "@/shared/auth/auth.session"
+import { buildWebLocalePath } from "@/shared/auth/auth-web-app-url"
 import type { LangPageProps } from "@/shared/types/auth.app.types"
 import { authBasePath } from "../../../../../../auth.config"
 
@@ -21,7 +22,7 @@ export default async function SsoSignInPage({
     <Suspense fallback={null}>
       <AuthSsoSignInScreen
         backToSignInHref={`${authBasePath}/${lang}/sign-in${returnToQuery}`}
-        docsHref={`${authBasePath}/${lang}/account/help-support/help-center`}
+        docsHref={buildWebLocalePath(lang, "/help")}
       />
     </Suspense>
   )

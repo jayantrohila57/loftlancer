@@ -15,6 +15,7 @@ import { regionalPreferencesRouter } from "@modules/regional-preferences/server"
 import { sessionsRouter } from "@modules/sessions/server"
 import { ssoRouter } from "@modules/sso/server"
 import { storageRouter } from "@modules/storage/server"
+import { helpSupportTicketController } from "./help.support-ticket.controller"
 import { securityAccountDeletionController } from "./security.account-deletion.controller"
 
 export const securityRouter = {
@@ -63,5 +64,8 @@ export const securityRouter = {
   },
   get privacy() {
     return privacyRouter
+  },
+  get help() {
+    return { supportTickets: helpSupportTicketController }
   },
 }

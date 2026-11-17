@@ -24,6 +24,11 @@ to write entries.
 
 ### Added
 
+- Auth account support tickets (create and view in Help & support) with email to support.
+- Auth account help overview links to the public help center and contact page on the marketing site.
+
+### Added
+
 - Public legal pages (Terms, Privacy, Cookie Policy) on the marketing site with localized copy (`en-us`, `en-in`, `es-es`).
 - Sign-in legal notice and recording of terms acceptance for new accounts.
 - Cookie consent banner on web, auth, and studio; analytics loads only after consent.

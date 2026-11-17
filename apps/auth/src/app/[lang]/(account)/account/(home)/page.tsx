@@ -1,12 +1,3 @@
-import { AccountHubSections } from "@/shared/shell/account-hub-frames"
-import { AccountPageSection } from "@/shared/shell/account-page-section"
+import { AuthAccountOverviewView } from "@modules/auth"
 
-export function AuthAccountHubView() {
-  return (
-    <AccountPageSection>
-      <AccountHubSections />
-    </AccountPageSection>
-  )
-}
-
-export default AuthAccountHubView
+export default AuthAccountOverviewView

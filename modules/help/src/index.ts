@@ -1,6 +1,7 @@
 export { HelpArticlePage } from "./client/components/help.article"
 export { HelpHelpCenterPage } from "./client/components/help.help-center"
 export { HelpSupportContactPage } from "./client/components/help.support-contact"
+export { HelpSupportTicketDetailPage } from "./client/components/help.support-ticket-detail"
 export {
   listHelpArticles,
   loadHelpArticle,

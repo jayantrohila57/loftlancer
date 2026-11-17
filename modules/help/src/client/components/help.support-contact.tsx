@@ -1,13 +1,11 @@
 import { ShellAccountFrame, ShellAccountFrameSection } from "@modules/shell"
-import { serverEnv } from "@packages/t3-env/server"
 import Shell from "@packages/ui/components/shell"
 import { getTranslations } from "next-intl/server"
 
-import { HelpSupportContactScreen } from "./help.support-contact.client"
+import { HelpSupportTicketsScreen } from "./help.support-tickets.client"
 
 export async function HelpSupportContactPage() {
   const t = await getTranslations("ui")
-  const supportEmail = serverEnv.SUPPORT_EMAIL ?? ""
 
   return (
     <Shell.Section variant="dashboard">
@@ -16,7 +14,7 @@ export async function HelpSupportContactPage() {
           description={t("helpSupportContactTabDescription")}
           title={t("supportTickets")}
         >
-          <HelpSupportContactScreen supportEmail={supportEmail} />
+          <HelpSupportTicketsScreen />
         </ShellAccountFrameSection>
       </ShellAccountFrame>
     </Shell.Section>

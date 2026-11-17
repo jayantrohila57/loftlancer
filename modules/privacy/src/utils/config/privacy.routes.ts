@@ -21,4 +21,12 @@ export const privacyRoutes = {
       tags: ["Privacy"],
     },
   },
+  legalAcceptance: {
+    get: {
+      method: "POST" as const,
+      path: "/openapi/security/privacy/legal-acceptance/get" as const,
+      summary: "Get recorded legal acceptance for the signed-in user",
+      tags: ["Privacy"],
+    },
+  },
 }

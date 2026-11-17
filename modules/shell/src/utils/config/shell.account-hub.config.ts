@@ -6,10 +6,8 @@ import type { ShellTranslate } from "./shell.messages"
 
 export function sectionKeyForAccountNavHref(href: string): AccountSectionKey {
   if (href === "/account") return "overview"
-  if (href === "/account/overview") return "overview"
   if (href === "/account/profile") return "profile"
-  if (href === "/account/activity") return "activity"
-  if (href === "/account/security") return "security"
+  if (href.startsWith("/account/security")) return "security"
   if (href.startsWith("/account/organization")) return "organization"
   if (href === "/account/notifications") return "notifications"
   if (href.startsWith("/account/language-region")) return "languageRegion"
@@ -49,12 +47,12 @@ function accountHubDestinationDescriptions(
     },
     privacyData: {
       consents: translate("managePrivacyConsentsDescription"),
+      "legal-acceptance": translate("legalAcceptanceHistoryDescription"),
       "data-export": translate("dataExportDescription"),
       "account-deletion": translate("accountDeletion"),
     },
     helpSupport: {
       overview: translate("helpSupportOverviewDescription"),
-      "help-center": translate("helpCenterDescription"),
       "support-tickets": translate("helpSupportContactTabDescription"),
     },
     home: {
@@ -66,15 +64,8 @@ function accountHubDestinationDescriptions(
     profile: {
       general: translate("profileSummary"),
     },
-    activity: {
-      overview: translate("activityCategorySummary"),
-      account: translate("reviewSupportedAccountChangesRecordedOnTheServer"),
-      security: translate("loginActivitySummary"),
-      resource: translate("resourceActivityUnavailable"),
-    },
-    permissions: {
-      general: translate("permissionSummary"),
-    },
+    activity: {},
+    permissions: {},
     organization: {
       overview: translate("organizationSummary"),
       members: translate("organizationMembersSummary"),
@@ -84,12 +75,11 @@ function accountHubDestinationDescriptions(
       overview: translate("securitySummary"),
       sessions: translate("sessionSummary"),
       activity: translate("loginActivitySummary"),
-      "connected-accounts": translate("providersSummary"),
+      "connected-accounts": translate("signInMethods"),
       "device-authorization": translate("deviceAuthorizationPageDescription"),
       "user-activity": translate(
         "reviewSupportedAccountChangesRecordedOnTheServer"
       ),
-      "data-management": translate("activityManagementSummary"),
       permissions: translate("permissionSummary"),
     },
     languageRegion: {
@@ -197,32 +187,27 @@ export function accountHubCategories(
   const categoryDescriptions = accountHubCategoryDescriptions(translate)
 
   return accountSidebarNavGroups(translate).flatMap((group) =>
-    group.items
-      .filter((item) => item.href !== "/account")
-      .map((item) => {
-        const sectionKey = sectionKeyForAccountNavHref(item.href)
-        const navDestinations =
-          item.subItems && item.subItems.length > 0
-            ? item.subItems
-            : [{ href: item.href, icon: item.icon, label: item.label }]
+    group.items.map((item) => {
+      const sectionKey = sectionKeyForAccountNavHref(item.href)
+      const navDestinations =
+        item.subItems && item.subItems.length > 0
+          ? item.subItems
+          : [{ href: item.href, icon: item.icon, label: item.label }]
 
-        return {
-          description: categoryDescriptions[sectionKey],
-          destinations: navDestinations.map((entry) => ({
-            description: accountHubDestinationDescription(
-              translate,
-              entry.href
-            ),
-            href: entry.href,
-            label: entry.label,
-          })),
-          groupLabel: group.label,
-          href: item.href,
-          icon: item.icon,
-          label: item.label,
-          sectionKey,
-        }
-      })
+      return {
+        description: categoryDescriptions[sectionKey],
+        destinations: navDestinations.map((entry) => ({
+          description: accountHubDestinationDescription(translate, entry.href),
+          href: entry.href,
+          label: entry.label,
+        })),
+        groupLabel: group.label,
+        href: item.href,
+        icon: item.icon,
+        label: item.label,
+        sectionKey,
+      }
+    })
   )
 }
 
