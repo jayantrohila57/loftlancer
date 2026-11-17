@@ -152,8 +152,15 @@
     {
       "idx": 21,
       "version": "7",
+      "when": 1794888541425,
+      "tag": "0021_ambitious_dazzler",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
       "when": 1795000000000,
-      "tag": "0021_user_legal_acceptance",
+      "tag": "0022_user_legal_acceptance",
       "breakpoints": true
     }
   ]
