@@ -15,6 +15,8 @@ import { profileAccountProfileLayout } from "../profile.account-profile-layout"
 import { ProfileAccountPersonalSkeleton } from "../profile.account-profile-skeleton"
 import type { ProfilePersonalFormValues } from "./profile.account-personal.schema.client"
 import { createProfilePersonalFormSchema } from "./profile.account-personal.schema.client"
+import { ProfileAccountPersonalEmailChange } from "./profile.account-personal-email.client"
+import { ProfileAccountPersonalResendVerification } from "./profile.account-personal-verify-email.client"
 
 export function ProfileAccountPersonal() {
   const t = useTranslations("ui")
@@ -100,17 +102,25 @@ export function ProfileAccountPersonal() {
             type="email"
             name="email"
             label={
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex flex-wrap items-center gap-2">
                 {t("emailAddress")}{" "}
                 <Badge
                   variant={data.user.emailVerified ? "success" : "secondary"}
                 >
                   {data.user.emailVerified ? t("verified") : t("notVerified")}
                 </Badge>
+                {!data.user.emailVerified ? (
+                  <ProfileAccountPersonalResendVerification
+                    email={data.user.email}
+                  />
+                ) : null}
               </span>
             }
             readOnly
           />
+          <div className="mt-3">
+            <ProfileAccountPersonalEmailChange currentEmail={data.user.email} />
+          </div>
         </FormKit.Section>
         <FormKit.Actions>
           {editingPersonal ? (

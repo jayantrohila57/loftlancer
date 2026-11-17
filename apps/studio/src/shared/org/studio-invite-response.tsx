@@ -1,5 +1,9 @@
 "use client"
 
+import {
+  isOrgInvitationEmailVerificationError,
+  OrgInvitationVerifyEmailPrompt,
+} from "@modules/org/account-screens"
 import { authClient } from "@packages/better-auth/client"
 import { clientEnv } from "@packages/t3-env/client"
 import { Button } from "@packages/ui/components/button"
@@ -42,6 +46,7 @@ export function StudioInviteResponse({
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [verifyRequired, setVerifyRequired] = useState(false)
 
   const sessionEmail = session?.user.email?.toLowerCase() ?? ""
   const previewEmail = preview?.email.toLowerCase() ?? ""
@@ -106,8 +111,15 @@ export function StudioInviteResponse({
         ? await authClient.organization.acceptInvitation({ invitationId })
         : await authClient.organization.rejectInvitation({ invitationId })
       if (result.error) {
+        if (accept && isOrgInvitationEmailVerificationError(result.error)) {
+          setVerifyRequired(true)
+          setError(null)
+          setBusy(false)
+          return
+        }
         throw new Error(result.error.message || t("invitationActionError"))
       }
+      setVerifyRequired(false)
       if (accept) {
         const payload = result.data as
           | { organization?: { id?: string; slug?: string } }
@@ -178,6 +190,10 @@ export function StudioInviteResponse({
         </Button>
       </div>
     )
+  }
+
+  if (verifyRequired) {
+    return <OrgInvitationVerifyEmailPrompt />
   }
 
   if (error) {

@@ -1906,6 +1906,9 @@ importers:
       better-call:
         specifier: 1.4.5
         version: 1.4.5(zod@4.6.7)
+      disposable-email-domains:
+        specifier: ^1.0.62
+        version: 1.0.62
       jose:
         specifier: ^6.2.16
         version: 6.2.16
@@ -5760,6 +5763,9 @@ packages:
   diff@8.0.4:
     resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
     engines: {node: '>=0.3.1'}
+
+  disposable-email-domains@1.0.62:
+    resolution: {integrity: sha512-LBQvhRw7mznQTPoyZbsmYeNOZt1pN5aCsx4BAU/3siVFuiM9f2oyKzUaB8v1jbxFjE3aYqYiMo63kAL4pHgfWQ==}
 
   dot-prop@6.0.1:
     resolution: {integrity: sha512-tE7ztYzXHIeyvc7N+hR3oi7FIbf/NIjVP9hmAt3yMXzrQ072/fpjGLx2GxNxGxUl5V73MEqYzioOMoVhGMJ5cA==}
@@ -10610,6 +10616,8 @@ snapshots:
       dequal: 2.0.3
 
   diff@8.0.4: {}
+
+  disposable-email-domains@1.0.62: {}
 
   dot-prop@6.0.1:
     dependencies:
