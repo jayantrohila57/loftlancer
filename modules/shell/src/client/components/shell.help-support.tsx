@@ -20,6 +20,7 @@ function HelpSupportOverviewLinks() {
     (tab) => tab.value !== "overview"
   )
   const helpCenterHref = `${brandLinks.website}/${locale}/help`
+  const contactHref = `${brandLinks.website}/${locale}/contact`
 
   return (
     <ul className="space-y-3">
@@ -31,6 +32,16 @@ function HelpSupportOverviewLinks() {
           target="_blank"
         >
           {t("helpCenter")}
+        </a>
+      </li>
+      <li>
+        <a
+          className="font-medium underline"
+          href={contactHref}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {t("publicContactPage")}
         </a>
       </li>
       {tabs.map((tab) => (

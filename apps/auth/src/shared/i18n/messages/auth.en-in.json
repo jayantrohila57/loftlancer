@@ -613,6 +613,7 @@
     "couldNotDeleteAccount": "Could not delete your account. Try again.",
     "sessionNotFreshForDeletion": "For your security, sign out and sign in again, then return here to delete your account.",
     "typeEmailToConfirm": "Type your email address to confirm",
+    "publicContactPage": "Contact us",
     "helpCenter": "Help Center",
     "helpCenterDescription": "Browse billing, storage, organization, and security articles. Search by title or summary.",
     "helpSupportOverviewDescription": "Browse the public help center or manage your support tickets.",

@@ -23,6 +23,7 @@ export type ShellMessageKey =
   | "legalAcceptanceHistoryDescription"
   | "helpCenter"
   | "helpCenterDescription"
+  | "publicContactPage"
   | "helpSupportOverviewDescription"
   | "helpSupportContactTabDescription"
   | "supportTickets"

@@ -569,6 +569,7 @@
     "couldNotDeleteAccount": "No se pudo eliminar tu cuenta. Inténtalo de nuevo.",
     "sessionNotFreshForDeletion": "Por tu seguridad, cierra sesión, vuelve a iniciar sesión y regresa aquí para eliminar tu cuenta.",
     "typeEmailToConfirm": "Escribe tu correo electrónico para confirmar",
+    "publicContactPage": "Contáctanos",
     "helpCenter": "Centro de ayuda",
     "helpCenterDescription": "Consulta artículos sobre facturación, almacenamiento, organización y seguridad. Busca por título o resumen.",
     "helpSupportOverviewDescription": "Consulta el centro de ayuda público o gestiona tus tickets de soporte.",
