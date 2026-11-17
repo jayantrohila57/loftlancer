@@ -200,8 +200,7 @@ export const brandEmails = {
   noreply: "noreply@mail.loftlancer.com",
   support: "support@loftlancer.com",
   privacy: "privacy@loftlancer.com",
-  /** TODO: no Loftlancer contact or hello inbox was found. */
-  contact: null,
+  contact: "support@loftlancer.com",
 } as const
 
 /**
@@ -239,8 +238,7 @@ export const brandContact = {
     noreply: "noreply@mail.loftlancer.com",
     support: brandEmails.support,
     privacy: brandEmails.privacy,
-    /** TODO: no Loftlancer contact or hello inbox was found. */
-    contact: null,
+    contact: brandEmails.contact,
   },
   /** TODO: no Loftlancer company phone number was found. */
   phone: null,

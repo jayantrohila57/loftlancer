@@ -1,0 +1,731 @@
+{
+  "helpCenter": {
+    "title": "Centro de ayuda",
+    "description": "Guías para empezar, organizaciones, facturación, privacidad y resolución de problemas en Loftlancer.",
+    "metaTitle": "Centro de ayuda · Loftlancer",
+    "metaDescription": "Artículos de ayuda sobre Loftlancer: espacio de planificación, validación y entrega para desarrolladores freelance.",
+    "searchLabel": "Buscar en la ayuda",
+    "searchPlaceholder": "Buscar artículos…",
+    "backToHelp": "Volver al centro de ayuda",
+    "categories": {
+      "gettingStarted": {
+        "title": "Primeros pasos",
+        "description": "Qué es Loftlancer y cómo crear una cuenta."
+      },
+      "accountSignIn": {
+        "title": "Cuenta e inicio de sesión",
+        "description": "Autenticación sin contraseña, idiomas y sesiones."
+      },
+      "organizationsRoles": {
+        "title": "Organizaciones y roles",
+        "description": "Espacios de trabajo, invitaciones y permisos."
+      },
+      "billingPlans": {
+        "title": "Facturación y planes",
+        "description": "Starter frente a planes de pago, Stripe y facturas."
+      },
+      "privacyData": {
+        "title": "Privacidad y datos",
+        "description": "Cookies, analítica, exportación y eliminación."
+      },
+      "troubleshooting": {
+        "title": "Resolución de problemas",
+        "description": "Correo, errores de pago y soporte."
+      }
+    },
+    "articles": {
+      "what-is-loftlancer": {
+        "title": "¿Qué es Loftlancer?",
+        "summary": "Loftlancer es un espacio de planificación, validación y entrega para desarrolladores freelance; no es un creador de sitios ni un agente de código.",
+        "sections": [
+          {
+            "heading": "Propósito",
+            "paragraphs": [
+              "Te ayuda a convertir ideas vagas del cliente en alcance explícito, planes aprobados y trabajo listo para agentes antes de codificar en producción.",
+              "Mantiene alineadas las expectativas del cliente, tu plan y la implementación hasta la entrega."
+            ]
+          },
+          {
+            "heading": "Qué no es",
+            "paragraphs": [
+              "No aloja sitios arbitrarios, no sustituye tu IDE ni genera productos completos sin tu criterio.",
+              "Tú controlas arquitectura, estimaciones y entrega."
+            ]
+          }
+        ]
+      },
+      "create-your-account": {
+        "title": "Crea tu cuenta",
+        "summary": "Regístrate con un proveedor compatible para acceder a Studio, Console y organizaciones.",
+        "sections": [
+          {
+            "heading": "Opciones de registro",
+            "paragraphs": [
+              "Usa GitHub, Google (si está habilitado) o un enlace mágico por correo.",
+              "Elige tu idioma preferido al registrarte; puedes cambiarlo después en la cuenta."
+            ]
+          },
+          {
+            "heading": "Después del registro",
+            "paragraphs": [
+              "Completas tu perfil en la app de auth y creas o te unes a una organización.",
+              "El plan Starter gratuito no requiere método de pago."
+            ]
+          }
+        ]
+      },
+      "passwordless-sign-in": {
+        "title": "Inicio de sesión sin contraseña",
+        "summary": "Loftlancer usa Better Auth para un acceso seguro sin contraseña.",
+        "sections": [
+          {
+            "heading": "Enlaces mágicos",
+            "paragraphs": [
+              "Introduce tu correo; enviamos un enlace único con Resend. Ábrelo en el mismo dispositivo antes de que caduque.",
+              "Los enlaces son de un solo uso. Solicita otro si expiró."
+            ]
+          },
+          {
+            "heading": "Inicio social",
+            "paragraphs": [
+              "GitHub y Google usan OAuth. Solo guardamos identificadores necesarios para autenticarte.",
+              "Puedes vincular varios proveedores en seguridad de la cuenta cuando esté disponible."
+            ]
+          }
+        ]
+      },
+      "switch-locale": {
+        "title": "Cambiar idioma",
+        "summary": "Loftlancer admite en-us, en-in y es-es en marketing, auth, Studio y Console.",
+        "sections": [
+          {
+            "heading": "Sitio público",
+            "paragraphs": [
+              "Usa el selector del encabezado o rutas con prefijo /en-us, /en-in o /es-es.",
+              "La elección se guarda en una cookie de idioma."
+            ]
+          },
+          {
+            "heading": "Aplicaciones con sesión",
+            "paragraphs": [
+              "Cambia el idioma en Cuenta → Preferencias. El producto respeta tu idioma donde haya traducción."
+            ]
+          }
+        ]
+      },
+      "create-organization": {
+        "title": "Crear una organización",
+        "summary": "Las organizaciones delimitan facturación y colaboración del trabajo con clientes.",
+        "sections": [
+          {
+            "heading": "Quién debe crearla",
+            "paragraphs": [
+              "Freelancers y pequeñas agencias suelen crear una organización por entidad comercial.",
+              "Puedes pertenecer a varias organizaciones con distintos roles."
+            ]
+          },
+          {
+            "heading": "Pasos",
+            "paragraphs": [
+              "En Studio o Console, abre el selector de organización y elige Crear organización.",
+              "Nombra el espacio e invita al equipo según los asientos de tu plan."
+            ]
+          }
+        ]
+      },
+      "invite-teammates": {
+        "title": "Invitar al equipo",
+        "summary": "Añade colaboradores con acceso basado en roles.",
+        "sections": [
+          {
+            "heading": "Invitaciones",
+            "paragraphs": [
+              "Propietarios y gestores envían invitaciones por correo desde ajustes de la organización.",
+              "Las personas aceptan en la app de auth con el rol asignado."
+            ]
+          },
+          {
+            "heading": "Límites de asientos",
+            "paragraphs": [
+              "Los planes de pago incluyen un número fijo de asientos. Mejora el plan o retira miembros inactivos si llegas al límite."
+            ]
+          }
+        ]
+      },
+      "organization-roles": {
+        "title": "Roles en la organización",
+        "summary": "Los roles controlan facturación, invitaciones y proyectos de clientes.",
+        "sections": [
+          {
+            "heading": "Roles habituales",
+            "paragraphs": [
+              "Propietario: control total, incluida facturación y eliminación.",
+              "Gestor: puede invitar y gestionar proyectos.",
+              "Miembro: trabaja en proyectos asignados dentro del plan."
+            ]
+          },
+          {
+            "heading": "Buenas prácticas",
+            "paragraphs": [
+              "La propiedad debe estar en la entidad que paga la suscripción.",
+              "Concede el mínimo privilegio a contratistas y clientes."
+            ]
+          }
+        ]
+      },
+      "free-vs-paid-plans": {
+        "title": "Planes gratuitos y de pago",
+        "summary": "Starter es gratis para solos; los planes de pago amplían asientos y proyectos.",
+        "sections": [
+          {
+            "heading": "Starter",
+            "paragraphs": [
+              "Incluye límites adecuados para validar Loftlancer con un cliente."
+            ]
+          },
+          {
+            "heading": "Planes de pago",
+            "paragraphs": [
+              "Desbloquean más proyectos, almacenamiento, API y colaboración. Compara en la página de precios."
+            ]
+          }
+        ]
+      },
+      "subscribe-and-billing": {
+        "title": "Suscripción y facturación",
+        "summary": "Las suscripciones de pago usan Autumn y se cobran con Stripe.",
+        "sections": [
+          {
+            "heading": "Pago",
+            "paragraphs": [
+              "Elige facturación mensual o anual. Pueden aplicarse impuestos según tu ubicación.",
+              "Facturas y métodos de pago están en ajustes de facturación."
+            ]
+          },
+          {
+            "heading": "Renovaciones",
+            "paragraphs": [
+              "Las suscripciones se renuevan automáticamente hasta cancelarlas. Enviamos recibos por cargos exitosos."
+            ]
+          }
+        ]
+      },
+      "cancel-or-change-plan": {
+        "title": "Cancelar o cambiar plan",
+        "summary": "Mejora, reduce o cancela desde ajustes de facturación.",
+        "sections": [
+          {
+            "heading": "Mejoras",
+            "paragraphs": [
+              "Las mejoras aplican de inmediato; Stripe puede prorratear el periodo actual."
+            ]
+          },
+          {
+            "heading": "Bajadas y cancelación",
+            "paragraphs": [
+              "Las bajadas suelen aplicar al final del periodo.",
+              "Tras cancelar, la organización vuelve a límites Starter salvo que te suscribas de nuevo."
+            ]
+          }
+        ]
+      },
+      "cookie-and-analytics-consent": {
+        "title": "Cookies y consentimiento de analítica",
+        "summary": "Las cookies esenciales operan el producto; la analítica requiere consentimiento.",
+        "sections": [
+          {
+            "heading": "Cookies esenciales",
+            "paragraphs": [
+              "Autenticación, seguridad, idioma y contexto de organización requieren cookies y almacenamiento local."
+            ]
+          },
+          {
+            "heading": "Analítica",
+            "paragraphs": [
+              "Google Analytics 4, PostHog y Vercel Web Analytics solo se cargan tras aceptar analítica en el banner o en privacidad de la cuenta."
+            ]
+          }
+        ]
+      },
+      "export-or-delete-data": {
+        "title": "Exportar o eliminar datos",
+        "summary": "Ejerce derechos desde la cuenta o escribiendo a privacy@loftlancer.com.",
+        "sections": [
+          {
+            "heading": "Controles en el producto",
+            "paragraphs": [
+              "Gestiona consentimientos y eliminación en Cuenta → Privacidad y datos en /auth/{locale}/account/privacy-data.",
+              "La exportación puede ser limitada en acceso anticipado; contacta privacy@loftlancer.com."
+            ]
+          },
+          {
+            "heading": "Conservación",
+            "paragraphs": [
+              "Conservamos registros de facturación y seguridad según la ley tras eliminar la cuenta."
+            ]
+          }
+        ]
+      },
+      "magic-link-not-arriving": {
+        "title": "No llega el enlace mágico",
+        "summary": "Soluciona la entrega de correo para inicio sin contraseña.",
+        "sections": [
+          {
+            "heading": "Spam y errores",
+            "paragraphs": [
+              "Confirma el correo y revisa carpetas de spam o promociones."
+            ]
+          },
+          {
+            "heading": "Límites y filtros",
+            "paragraphs": [
+              "Espera antes de pedir otro enlace. Los filtros corporativos pueden bloquear correo externo; prueba GitHub."
+            ]
+          }
+        ]
+      },
+      "billing-checkout-issues": {
+        "title": "Problemas en el pago",
+        "summary": "Resuelve pagos fallidos y errores de Stripe.",
+        "sections": [
+          {
+            "heading": "Tarjeta rechazada",
+            "paragraphs": [
+              "Verifica dirección de facturación, 3-D Secure y que el banco permita cargos internacionales a Stripe."
+            ]
+          },
+          {
+            "heading": "Si persiste",
+            "paragraphs": [
+              "Anota el error y la hora y contacta soporte con el nombre de la organización. No envíes números completos de tarjeta."
+            ]
+          }
+        ]
+      },
+      "contact-support": {
+        "title": "Contactar soporte",
+        "summary": "Escríbenos para producto, facturación y privacidad.",
+        "sections": [
+          {
+            "heading": "Canales",
+            "paragraphs": [
+              "Correo a support@loftlancer.com o formulario público de contacto.",
+              "Con sesión iniciada, abre tickets en Cuenta → Ayuda y soporte."
+            ]
+          },
+          {
+            "heading": "Tiempos de respuesta",
+            "paragraphs": [
+              "Respondemos en días laborables. Los planes de pago pueden incluir plazos más cortos."
+            ]
+          }
+        ]
+      }
+    },
+    "stillNeedHelp": {
+      "title": "¿Aún necesitas ayuda?",
+      "body": "Contáctanos o abre un ticket si has iniciado sesión.",
+      "contactCta": "Contactar soporte",
+      "ticketsCta": "Abrir tickets de soporte"
+    },
+    "faqItems": [
+      {
+        "question": "¿Es Loftlancer un creador de sitios web?",
+        "answer": "No. Loftlancer es un espacio de planificación, validación y entrega.",
+        "category": "gettingStarted"
+      },
+      {
+        "question": "¿Cómo inicio sesión sin contraseña?",
+        "answer": "Usa GitHub, Google o un enlace mágico por correo.",
+        "category": "accountSignIn"
+      },
+      {
+        "question": "¿Puedo trabajar con compañeros?",
+        "answer": "Sí. Crea una organización e invita miembros con roles.",
+        "category": "organizationsRoles"
+      },
+      {
+        "question": "¿Dónde se gestiona la facturación?",
+        "answer": "El pago usa Autumn y Stripe; gestiona todo en ajustes de facturación.",
+        "category": "billingPlans"
+      },
+      {
+        "question": "¿Cómo controlo las cookies de analítica?",
+        "answer": "Usa el banner de cookies o Privacidad y datos en la cuenta.",
+        "category": "privacyData"
+      },
+      {
+        "question": "¿Qué hago si no llega el enlace mágico?",
+        "answer": "Revisa spam, espera y vuelve a intentarlo o usa GitHub.",
+        "category": "troubleshooting"
+      },
+      {
+        "question": "¿Puedo eliminar mi cuenta y mis datos?",
+        "answer": "Sí, desde Privacidad y datos o privacy@loftlancer.com.",
+        "category": "privacyData"
+      },
+      {
+        "question": "¿Quién opera Loftlancer?",
+        "answer": "Loftlancer opera desde India como SaaS.",
+        "category": "gettingStarted"
+      },
+      {
+        "question": "¿Ofrecen reembolsos?",
+        "answer": "Consulta la política de reembolsos en /legal/refund.",
+        "category": "billingPlans"
+      },
+      {
+        "question": "¿Cómo informo un problema de seguridad?",
+        "answer": "Escribe a security@loftlancer.com.",
+        "category": "troubleshooting"
+      },
+      {
+        "question": "¿Qué idiomas admiten?",
+        "answer": "en-us, en-in y es-es.",
+        "category": "accountSignIn"
+      }
+    ]
+  },
+  "aboutPage": {
+    "metaTitle": "Sobre nosotros · Loftlancer",
+    "metaDescription": "Loftlancer es un espacio de planificación, validación y entrega para desarrolladores freelance.",
+    "title": "Sobre Loftlancer",
+    "description": "Ayudamos a desarrolladores freelance a planificar antes de codificar.",
+    "sections": [
+      {
+        "heading": "Nuestra misión",
+        "paragraphs": [
+          "Loftlancer es la fuente de verdad entre expectativas del cliente, freelance e implementación.",
+          "No somos otro agente de código ni una plataforma cloud genérica."
+        ]
+      },
+      {
+        "heading": "A quién servimos",
+        "paragraphs": [
+          "Desarrolladores freelance que necesitan alcance explícito, validación con clientes y disciplina de entrega."
+        ]
+      },
+      {
+        "heading": "Cómo operamos",
+        "paragraphs": [
+          "Ofrecemos SaaS desde India con socios de infraestructura en todo el mundo.",
+          "Consultas: support@loftlancer.com."
+        ]
+      }
+    ]
+  },
+  "accessibilityPage": {
+    "metaTitle": "Accesibilidad · Loftlancer",
+    "metaDescription": "Compromiso de accesibilidad y prácticas orientadas a WCAG en Loftlancer.",
+    "title": "Accesibilidad",
+    "description": "Queremos que Loftlancer sea utilizable para freelancers y sus clientes.",
+    "sections": [
+      {
+        "heading": "Compromiso",
+        "paragraphs": [
+          "Seguimos WCAG 2.2 nivel AA como objetivo en marketing, auth, Studio y Console.",
+          "Probamos teclado, foco, contraste y lectores de pantalla en trabajo nuevo."
+        ]
+      },
+      {
+        "heading": "Comentarios",
+        "paragraphs": [
+          "Informa barreras a support@loftlancer.com con la URL y la tecnología de asistencia."
+        ]
+      }
+    ]
+  },
+  "blogPage": {
+    "metaTitle": "Blog · Loftlancer",
+    "metaDescription": "Actualizaciones y artículos del equipo Loftlancer.",
+    "title": "Blog",
+    "description": "Aún no hay entradas largas aquí.",
+    "sections": [
+      {
+        "heading": "Novedades del producto",
+        "paragraphs": [
+          "Lee cambios publicados en Novedades y el changelog.",
+          "Las entradas largas aparecerán aquí cuando las publiquemos."
+        ]
+      }
+    ]
+  },
+  "companyStoriesPage": {
+    "metaTitle": "Customer stories · Loftlancer",
+    "metaDescription": "Clientes en acceso anticipado que usan Loftlancer para planificar y entregar.",
+    "title": "Historias de clientes",
+    "description": "Estamos en acceso anticipado; aún no hay casos de estudio pulidos.",
+    "sections": [
+      {
+        "heading": "Comparte tu historia",
+        "paragraphs": [
+          "Si Loftlancer te ayudó con un cliente, cuéntanoslo en la página de contacto.",
+          "Con permiso, podremos destacar tu historia cuando lancemos el programa."
+        ]
+      }
+    ]
+  },
+  "partnershipsPage": {
+    "metaTitle": "Partnerships · Loftlancer",
+    "metaDescription": "Alianzas de integración y comercial con Loftlancer.",
+    "title": "Partnerships",
+    "description": "Colaboramos con herramientas del flujo de entrega freelance.",
+    "sections": [
+      {
+        "heading": "Consultas",
+        "paragraphs": [
+          "Usa el formulario de contacto con tema Ventas u Otro.",
+          "Incluye URL del producto, audiencia e idea de integración."
+        ]
+      }
+    ]
+  },
+  "contactPage": {
+    "metaTitle": "Contacto · Loftlancer",
+    "metaDescription": "Contact Loftlancer sales, support, billing, and privacy.",
+    "title": "Contáctanos",
+    "description": "Envía un mensaje al equipo Loftlancer. Enrutamos por tema al buzón correcto.",
+    "sections": [
+      {
+        "heading": "Antes de escribir",
+        "paragraphs": [
+          "Consulta el centro de ayuda sobre facturación, acceso y privacidad.",
+          "Con sesión iniciada, abre tickets para más contexto."
+        ]
+      }
+    ],
+    "form": {
+      "name": "Tu nombre",
+      "email": "Correo electrónico",
+      "topic": "Tema",
+      "topicOptions": {
+        "sales": "Ventas",
+        "support": "Soporte",
+        "billing": "Facturación",
+        "privacy": "Privacidad",
+        "security": "Seguridad",
+        "press": "Prensa",
+        "other": "Otro"
+      },
+      "message": "Mensaje",
+      "consent": "Acepto que Loftlancer procese este mensaje para responder, según la Política de privacidad.",
+      "honeypot": "",
+      "submit": "Enviar mensaje",
+      "success": "Gracias: hemos enviado tu mensaje.",
+      "error": {
+        "validation": "Revisa los campos e inténtalo de nuevo.",
+        "rateLimited": "Demasiados mensajes; espera unos minutos.",
+        "sendFailed": "No pudimos enviar el mensaje. Escribe a support@loftlancer.com."
+      },
+      "responseTime": "Solemos responder en 1–2 días laborables.",
+      "directEmails": {
+        "support": "support@loftlancer.com",
+        "privacy": "privacy@loftlancer.com",
+        "security": "security@loftlancer.com"
+      }
+    }
+  },
+  "faqPage": {
+    "metaTitle": "FAQ · Loftlancer",
+    "metaDescription": "Preguntas frecuentes sobre planes, privacidad y soporte de Loftlancer.",
+    "title": "Preguntas frecuentes",
+    "description": "Respuestas rápidas sobre Loftlancer.",
+    "sections": [
+      {
+        "heading": "Más detalle",
+        "paragraphs": [
+          "Cada respuesta enlaza con guías del centro de ayuda cuando existe un artículo."
+        ]
+      }
+    ],
+    "faqItems": [
+      {
+        "question": "¿Es Loftlancer un creador de sitios web?",
+        "answer": "No. Loftlancer es un espacio de planificación, validación y entrega.",
+        "category": "gettingStarted"
+      },
+      {
+        "question": "¿Cómo inicio sesión sin contraseña?",
+        "answer": "Usa GitHub, Google o un enlace mágico por correo.",
+        "category": "accountSignIn"
+      },
+      {
+        "question": "¿Puedo trabajar con compañeros?",
+        "answer": "Sí. Crea una organización e invita miembros con roles.",
+        "category": "organizationsRoles"
+      },
+      {
+        "question": "¿Dónde se gestiona la facturación?",
+        "answer": "El pago usa Autumn y Stripe; gestiona todo en ajustes de facturación.",
+        "category": "billingPlans"
+      },
+      {
+        "question": "¿Cómo controlo las cookies de analítica?",
+        "answer": "Usa el banner de cookies o Privacidad y datos en la cuenta.",
+        "category": "privacyData"
+      },
+      {
+        "question": "¿Qué hago si no llega el enlace mágico?",
+        "answer": "Revisa spam, espera y vuelve a intentarlo o usa GitHub.",
+        "category": "troubleshooting"
+      },
+      {
+        "question": "¿Puedo eliminar mi cuenta y mis datos?",
+        "answer": "Sí, desde Privacidad y datos o privacy@loftlancer.com.",
+        "category": "privacyData"
+      },
+      {
+        "question": "¿Quién opera Loftlancer?",
+        "answer": "Loftlancer opera desde India como SaaS.",
+        "category": "gettingStarted"
+      },
+      {
+        "question": "¿Ofrecen reembolsos?",
+        "answer": "Consulta la política de reembolsos en /legal/refund.",
+        "category": "billingPlans"
+      },
+      {
+        "question": "¿Cómo informo un problema de seguridad?",
+        "answer": "Escribe a security@loftlancer.com.",
+        "category": "troubleshooting"
+      },
+      {
+        "question": "¿Qué idiomas admiten?",
+        "answer": "en-us, en-in y es-es.",
+        "category": "accountSignIn"
+      }
+    ]
+  },
+  "searchPage": {
+    "metaTitle": "Search · Loftlancer",
+    "metaDescription": "Busca artículos de ayuda y contenido en Loftlancer.",
+    "title": "Buscar",
+    "description": "Encuentra artículos de ayuda y páginas.",
+    "sections": [
+      {
+        "heading": "Cómo funciona la búsqueda",
+        "paragraphs": [
+          "Introduce palabras clave para filtrar artículos del centro de ayuda."
+        ]
+      }
+    ]
+  },
+  "sitemapPage": {
+    "metaTitle": "Sitemap · Loftlancer",
+    "metaDescription": "Mapa HTML de páginas públicas de Loftlancer.",
+    "title": "Mapa del sitio",
+    "description": "Resumen de marketing, producto, legal y recursos.",
+    "sections": [
+      {
+        "heading": "Secciones",
+        "paragraphs": [
+          "Producto, precios, empresa, recursos y legal están enlazados desde el pie de página."
+        ]
+      }
+    ]
+  },
+  "productPages": {
+    "planning": {
+      "metaTitle": "Planning · Loftlancer",
+      "metaDescription": "Requisitos, hitos y controles de entrega para trabajo freelance.",
+      "title": "Espacio de planificación",
+      "description": "Convierte conversaciones con clientes en planes e hitos.",
+      "sections": [
+        {
+          "heading": "Alcance antes del código",
+          "paragraphs": [
+            "Documenta lo pedido, lo que construirás y lo que queda fuera de alcance."
+          ]
+        },
+        {
+          "heading": "Salida lista para agentes",
+          "paragraphs": [
+            "Exporta planes que los agentes de código puedan seguir sin desviarse."
+          ]
+        }
+      ]
+    },
+    "clientValidation": {
+      "metaTitle": "Client validation · Loftlancer",
+      "metaDescription": "Flujos de validación con el cliente con aprobaciones registradas.",
+      "title": "Validación con el cliente",
+      "description": "Obtén aprobación explícita del cliente sobre alcance y cambios.",
+      "sections": [
+        {
+          "heading": "Aprobaciones",
+          "paragraphs": [
+            "Comparte vistas de solo lectura y captura el visto bueno antes de implementar."
+          ]
+        },
+        {
+          "heading": "Control de cambios",
+          "paragraphs": [
+            "Registra solicitudes de cambio y nuevas estimaciones cuando el cliente cambie de idea."
+          ]
+        }
+      ]
+    },
+    "teamCollaboration": {
+      "metaTitle": "Team collaboration · Loftlancer",
+      "metaDescription": "Organizaciones, asientos y roles para agencias.",
+      "title": "Colaboración en equipo",
+      "description": "Invita colaboradores con roles para equipos pequeños.",
+      "sections": [
+        {
+          "heading": "Espacio compartido",
+          "paragraphs": [
+            "Un plan por cliente con propiedad clara."
+          ]
+        }
+      ]
+    },
+    "integrations": {
+      "metaTitle": "Integrations · Loftlancer",
+      "metaDescription": "Stripe, Autumn, Resend, Neon, Vercel y más vía subencargados.",
+      "title": "Integraciones",
+      "description": "Conecta facturación, correo y observabilidad.",
+      "sections": [
+        {
+          "heading": "Extensibilidad",
+          "paragraphs": [
+            "Usa la API para flujos personalizados si tu plan incluye acceso API."
+          ]
+        }
+      ]
+    },
+    "scopeInsights": {
+      "metaTitle": "Scope insights · Loftlancer",
+      "metaDescription": "Paneles para quien gestiona varios planes de cliente.",
+      "title": "Información de alcance",
+      "description": "Señales de riesgo y deriva en trabajos activos.",
+      "sections": [
+        {
+          "heading": "Visibilidad",
+          "paragraphs": [
+            "Destaca aprobaciones caducadas, cambios abiertos y retrasos en hitos."
+          ]
+        }
+      ]
+    },
+    "api": {
+      "metaTitle": "API · Loftlancer",
+      "metaDescription": "API REST para automatización e herramientas internas.",
+      "title": "API",
+      "description": "Acceso programático a datos de organización y proyectos dentro del plan.",
+      "sections": [
+        {
+          "heading": "Acceso",
+          "paragraphs": [
+            "Claves API y límites dependen de tu suscripción."
+          ]
+        },
+        {
+          "heading": "Documentación",
+          "paragraphs": [
+            "OpenAPI y ejemplos en Console; los cambios incompatibles se versionan."
+          ]
+        }
+      ]
+    }
+  }
+}
