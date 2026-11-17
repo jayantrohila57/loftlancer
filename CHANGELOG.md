@@ -24,6 +24,12 @@ to write entries.
 
 ### Added
 
+- Email verification on sign-up, a verify-email landing page, and **Resend verification** on the profile screen; organization invitations require a verified email before accept, with a clear prompt to verify.
+- Change email from profile (confirmation to your current address, then verification at the new address).
+- Sign-up and magic link reject disposable email domains; OAuth sign-in explains when an email is already registered with another provider and should be linked from Connected accounts.
+
+### Added
+
 - Studio now includes the full Auth organization, billing, subscription, AI usage, storage, and resource activity screens, including AI model usage, usage history, limits and alerts, storage files, storage activity, and trash.
 - Studio organization home: a short onboarding flow when you have no organization, an organization switcher, and org-scoped pages for members, invitations, roles, ownership, billing, usage, and activity.
 - Marketing pricing page with Starter, Pro, Studio, and Enterprise tiers (placeholder prices), a comparison table and FAQ, a sign-in gate before Pro checkout, and success, cancel, and failure pages after subscription purchase.
