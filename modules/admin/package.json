@@ -19,7 +19,7 @@
     "@packages/react-query": "workspace:*",
     "@packages/ui": "workspace:*",
     "@features/shell": "workspace:*",
-    "next": "16.3.1",
+    "next": "16.4.5",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "zod": "^4.3.6"
